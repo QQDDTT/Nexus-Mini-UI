@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#030712" />
+  <title>钢铁防线 · TANK BATTLE | Nexus-Mini</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/tank-battle/icon.svg" />
+  <style>
+    :root {
+      --void: #030712;
+      --panel: rgba(13, 20, 36, 0.84);
+      --border: rgba(0, 240, 255, 0.22);
+      --cyan: #00f0ff;
+      --gold: #fbbf24;
+      --red: #ef4444;
+      --green: #10b981;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      width: 100vw; height: 100dvh; overflow: hidden; overscroll-behavior: none;
+      background: var(--void); color: var(--text);
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    #app {
+      width: 100%; height: 100%;
+      display: grid;
+      grid-template-columns: 230px 1fr 220px;
+      gap: 10px;
+      padding: max(8px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+      background: radial-gradient(circle at 50% 45%, #091326 0%, #030712 85%);
+    }
+    .side-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      backdrop-filter: blur(12px);
+      min-height: 0;
+    }
+    .brand-row {
+      display: flex; align-items: center; gap: 8px;
+      padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .brand-row img { width: 34px; height: 34px; border-radius: 8px; }
+    .brand-row h1 { font-size: 0.96rem; font-weight: 800; color: var(--text); }
+    .brand-row p { font-size: 0.68rem; color: var(--cyan); }
+    .stat-card {
+      background: rgba(3, 7, 18, 0.65);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 7px 10px;
+    }
+    .stat-label { font-size: 0.68rem; color: var(--muted); }
+    .stat-val { font-size: 0.92rem; font-weight: 800; color: var(--text); margin-top: 2px; }
+    .stat-val.gold { color: var(--gold); }
+    .stat-val.cyan { color: var(--cyan); }
+    .btn {
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+    .btn:hover { border-color: var(--cyan); background: rgba(22, 35, 62, 0.92); }
+    .btn:active { transform: scale(0.96); }
+    .btn.primary {
+      background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
+      border-color: #67e8f9;
+      color: #030712;
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+    }
+    .btn.gold { border-color: rgba(251, 191, 36, 0.5); color: var(--gold); }
+    .stage-wrap {
+      display: flex; align-items: center; justify-content: center;
+      position: relative; min-width: 0; min-height: 0;
+    }
+    canvas {
+      background: #050811;
+      border: 2px solid rgba(0, 240, 255, 0.35);
+      border-radius: 8px;
+      box-shadow: 0 0 32px rgba(0, 0, 0, 0.85);
+      max-width: 100%; max-height: 100%;
+      aspect-ratio: 1 / 1;
+      touch-action: none;
+    }
+    /* Virtual D-Pad & Action Buttons */
+    .dpad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 52px);
+      grid-template-rows: repeat(3, 52px);
+      gap: 5px;
+      justify-content: center;
+      margin: 4px auto;
+    }
+    .dpad-btn {
+      width: 52px; height: 52px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(0, 240, 255, 0.32);
+      color: var(--cyan);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      touch-action: none;
+    }
+    .dpad-btn:active, .dpad-btn.pressed {
+      background: rgba(0, 240, 255, 0.28);
+      border-color: var(--cyan);
+      transform: scale(0.95);
+    }
+    .fire-btn {
+      width: 100%; min-height: 68px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
+      border: 2px solid #67e8f9;
+      color: #030712;
+      font-size: 0.95rem;
+      font-weight: 900;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.38);
+      touch-action: none;
+    }
+    .fire-btn:active { transform: scale(0.96); }
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 8500;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal-card {
+      max-width: 520px; width: 100%;
+      background: rgba(9, 14, 26, 0.97);
+      border: 1px solid rgba(0, 240, 255, 0.55);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .upgrade-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 10px; background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
+    }
+    @media (max-width: 860px) {
+      #app { grid-template-columns: 180px 1fr 175px; gap: 6px; padding: 6px; }
+      .dpad-grid { grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(3, 46px); }
+      .dpad-btn { width: 46px; height: 46px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- 左侧：战术仪表盘与十字方向操控 -->
+    <aside class="side-panel">
+      <div>
+        <div class="brand-row">
+          <img src="../assets/tank-battle/icon.svg" alt="Tank Battle" />
+          <div>
+            <h1>钢铁防线</h1>
+            <p>26×26 网格基地守卫</p>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">
+          <div class="stat-card">
+            <div class="stat-label">战役关卡</div>
+            <div class="stat-val cyan" id="hud-stage">第 1 关</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">剩余敌坦</div>
+            <div class="stat-val" id="hud-enemies">16 辆</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">坦克硬币</div>
+            <div class="stat-val gold" id="hud-coins">500</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">战车军衔</div>
+            <div class="stat-val cyan" id="hud-rank">Rank 1</div>
+          </div>
+        </div>
+        <div class="stat-card" style="margin-top:6px;">
+          <div class="stat-label">局域网双通道状态</div>
+          <div class="stat-val" id="hud-lan" style="font-size:0.76rem;color:var(--green);">AI 战术僚机协同中</div>
+        </div>
+      </div>
+
+      <!-- 触控四向十字键 (支持键盘 WASD / 方向键) -->
+      <div>
+        <div style="font-size:0.7rem;color:var(--muted);text-align:center;margin-bottom:4px;">左手方向操控 (或 WASD)</div>
+        <div class="dpad-grid">
+          <div></div>
+          <button class="dpad-btn" data-dir="0" aria-label="Up">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+          </button>
+          <div></div>
+          <button class="dpad-btn" data-dir="3" aria-label="Left">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div style="display:flex;align-items:center;justify-content:center;color:rgba(0,240,255,0.3);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>
+          </div>
+          <button class="dpad-btn" data-dir="1" aria-label="Right">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <div></div>
+          <button class="dpad-btn" data-dir="2" aria-label="Down">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 中央：26x26 网格主战场画布 -->
+    <main class="stage-wrap">
+      <canvas id="battle-canvas" width="624" height="624"></canvas>
+    </main>
+
+    <!-- 右侧：武器开火、战车军械库与局域网联机 -->
+    <aside class="side-panel" style="padding-top:56px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="stat-card">
+          <div class="stat-label">1P 装甲生命 / 鹰标总部</div>
+          <div class="stat-val" id="hud-hp">HP 3 · 总部完好</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">战役得分</div>
+          <div class="stat-val gold" id="hud-score">0</div>
+        </div>
+        <button class="btn gold" id="btn-open-armory">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
+          <span>装甲军械库改装</span>
+        </button>
+        <button class="btn" id="btn-open-lan">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+          <span>局域网双坦联机</span>
+        </button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn" id="btn-fortify-base" style="border-color:rgba(251,191,36,0.45);color:var(--gold);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>钛钢加固总部 (50币)</span>
+        </button>
+        <button class="fire-btn" id="btn-fire">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+          <span>主炮齐射 (SPACE)</span>
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- 装甲军械库改装弹窗 -->
+  <div class="modal-backdrop" id="armory-modal">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-size:1rem;color:var(--cyan);">装甲军械库 · 独立货币改装</h3>
+        <button class="btn" id="btn-close-armory" style="min-height:36px;">关闭</button>
+      </div>
+      <p style="font-size:0.76rem;color:var(--muted);">消耗坦克防御硬币永久提升战车军衔（Rank 1 高速炮 → Rank 2 双联齐射 → Rank 3 穿甲碎钢 → Rank 4 反应重甲）。</p>
+      <div class="upgrade-row">
+        <div>
+          <div style="font-weight:700;font-size:0.86rem;">主战坦克军衔晋升 (<span id="armory-rank-txt">Rank 1</span>)</div>
+          <div style="font-size:0.72rem;color:var(--muted);">提升主炮射速、双发齐射与破拆钛合金钢墙能力</div>
+        </div>
+        <button class="btn primary" id="btn-buy-rank">晋升 (150 币)</button>
+      </div>
+      <div class="upgrade-row">
+        <div>
+          <div style="font-weight:700;font-size:0.86rem;">紧急空投全屏电磁脉冲 (EMP)</div>
+          <div style="font-size:0.72rem;color:var(--muted);">瘫痪全图敌方装甲集群 8 秒</div>
+        </div>
+        <button class="btn gold" id="btn-buy-emp">释放 (80 币)</button>
+      </div>
+      <div class="upgrade-row">
+        <div>
+          <div style="font-weight:700;font-size:0.86rem;">切换战役关卡</div>
+          <div style="font-size:0.72rem;color:var(--muted);">随时重开当前关卡或挑战下一防区</div>
+        </div>
+        <button class="btn" id="btn-next-stage">下一防区</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 局域网一人一机联机弹窗 -->
+  <div class="modal-backdrop" id="lan-modal">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-size:1rem;color:var(--cyan);">局域网 1~5ms 双坦一人一机直连</h3>
+        <button class="btn" id="btn-close-lan" style="min-height:36px;">关闭</button>
+      </div>
+      <p style="font-size:0.76rem;color:var(--muted);line-height:1.5;">
+        两台设备在<strong>同一 Wi-Fi / 手机热点</strong>下输入相同 4 位房间号即可自动建立双通道同步（1P 先锋主坦 + 2P 卫戌双管坦）。断线超过 3.0 秒自动由 AI 僚机无缝接管。
+      </p>
+      <div class="upgrade-row">
+        <div>
+          <div style="font-size:0.72rem;color:var(--muted);">当前局域网房间号</div>
+          <div style="font-size:1.1rem;font-weight:900;color:var(--cyan);" id="lan-room-display">NX-1024</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <input id="lan-room-input" type="text" placeholder="输入房间号如 NX-1024" style="height:44px;background:#030712;border:1px solid var(--border);border-radius:8px;color:#fff;padding:0 10px;width:140px;" />
+          <button class="btn primary" id="btn-join-lan">加入作为 2P</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/nexus-sdk.js"></script>
+  <script>
+    (() => {
+      NexusSDK.initShellUI({ gameId: 'tank-battle', gameTitle: '钢铁防线' });
+
+      const store = NexusSDK.createGameStorage('NEXUS_MINI_TANK_', (isAdmin) => ({
+        currency: { tankCoins: isAdmin ? 999999 : 500 },
+        stats: { wins: isAdmin ? 999 : 5, highScore: isAdmin ? 99999 : 6800 },
+        rank: isAdmin ? 4 : 1
+      }));
+      let saveData = store.load();
+
+      const sprites = NexusSDK.loadSprites('tank-battle', {
+        p1: 'player-tank-p1.svg',
+        p2: 'player-tank-p2.svg',
+        scout: 'enemy-scout.svg',
+        raider: 'enemy-raider.svg',
+        shooter: 'enemy-shooter.svg',
+        mammoth: 'enemy-mammoth.svg',
+        boss: 'enemy-boss-train.svg',
+        eagle: 'base-eagle.svg',
+        brick: 'tile-brick.svg',
+        steel: 'tile-steel.svg',
+        bush: 'tile-bush.svg',
+        crate: 'pickup-crate.svg'
+      });
+
+      const canvas = document.getElementById('battle-canvas');
+      const ctx = canvas.getContext('2d');
+      const GRID = 26;
+      const TILE = 24; // 26 * 24 = 624px
+
+      // Tile types: 0 Empty, 1 Brick, 2 Steel, 3 Bush, 4 River, 5 BaseEagle
+      let map = Array.from({ length: GRID }, () => Array(GRID).fill(0));
+      let stage = 1;
+      let score = 0;
+      let remainingSpawns = 16;
+      let spawnCooldown = 60;
+      let fortifyTimer = 0;
+      let empTimer = 0;
+      let baseAlive = true;
+
+      const DIRS = [
+        { dx: 0, dy: -1, ang: 0 },
+        { dx: 1, dy: 0, ang: Math.PI / 2 },
+        { dx: 0, dy: 1, ang: Math.PI },
+        { dx: -1, dy: 0, ang: -Math.PI / 2 }
+      ];
+
+      const p1 = { x: 8 * TILE, y: 24 * TILE, dir: 0, hp: 3, rank: saveData.rank || 1, shield: 120, cd: 0 };
+      const p2 = { x: 16 * TILE, y: 24 * TILE, dir: 0, hp: 3, rank: 2, shield: 120, cd: 0, isRemote: false };
+      let enemies = [];
+      let bullets = [];
+      let crates = [];
+      let particles = [];
+
+      function buildStageMap(stg) {
+        map = Array.from({ length: GRID }, () => Array(GRID).fill(0));
+        const rng = NexusSDK.createSeededRandom(stg * 9137 + 101);
+        for (let r = 3; r < 22; r += 2) {
+          for (let c = 2; c < 24; c += 2) {
+            const roll = rng();
+            let t = 0;
+            if (roll < 0.36) t = 1; // Brick
+            else if (roll < 0.48) t = 2; // Steel
+            else if (roll < 0.58) t = 3; // Bush
+            else if (roll < 0.64 && r > 6 && r < 18) t = 4; // River
+            map[r][c] = t;
+            map[r][c + 1] = t;
+            map[r + 1][c] = t;
+            map[r + 1][c + 1] = t;
+          }
+        }
+        // Base Eagle & Perimeter Walls at bottom center (cols 11..14, rows 23..25)
+        setBaseWall(1);
+        map[24][12] = 5; map[24][13] = 5;
+        map[25][12] = 5; map[25][13] = 5;
+
+        p1.x = 8 * TILE; p1.y = 24 * TILE; p1.dir = 0; p1.hp = 3; p1.shield = 150;
+        p2.x = 16 * TILE; p2.y = 24 * TILE; p2.dir = 0; p2.hp = 3; p2.shield = 150;
+        enemies = [];
+        bullets = [];
+        crates = [];
+        remainingSpawns = 14 + stg * 2;
+        baseAlive = true;
+
+        // Every 3rd stage spawns a Siege Boss Train at top
+        if (stg % 3 === 0) {
+          enemies.push({
+            type: 'boss', x: 12 * TILE, y: 1 * TILE, dir: 2,
+            hp: 16 + stg * 2, maxHp: 16 + stg * 2, speed: 1.0, cd: 50, size: TILE * 2.4
+          });
+        }
+        updateHud();
+      }
+
+      function setBaseWall(tileType) {
+        const coords = [
+          [23,11],[23,12],[23,13],[23,14],
+          [24,11],[24,14],
+          [25,11],[25,14]
+        ];
+        coords.forEach(([r, c]) => { map[r][c] = tileType; });
+      }
+
+      function spawnEnemy() {
+        if (remainingSpawns <= 0 || enemies.length >= 6) return;
+        const spawnCols = [1, 12, 23];
+        const col = spawnCols[remainingSpawns % 3];
+        const types = ['scout', 'raider', 'shooter', 'mammoth'];
+        const type = types[(remainingSpawns + stage) % types.length];
+        const hpMap = { scout: 1, raider: 1, shooter: 2, mammoth: 4 };
+        const spdMap = { scout: 1.7, raider: 2.3, shooter: 1.6, mammoth: 1.15 };
+        enemies.push({
+          type,
+          x: col * TILE,
+          y: 1 * TILE,
+          dir: 2,
+          hp: hpMap[type],
+          maxHp: hpMap[type],
+          speed: spdMap[type],
+          cd: 40,
+          size: TILE * 1.8
+        });
+        remainingSpawns--;
+        updateHud();
+      }
+
+      function canMoveRect(nx, ny, size = TILE * 1.75) {
+        if (nx < 0 || ny < 0 || nx + size > GRID * TILE || ny + size > GRID * TILE) return false;
+        const c0 = Math.floor(nx / TILE);
+        const c1 = Math.floor((nx + size - 1) / TILE);
+        const r0 = Math.floor(ny / TILE);
+        const r1 = Math.floor((ny + size - 1) / TILE);
+        for (let r = r0; r <= r1; r++) {
+          for (let c = c0; c <= c1; c++) {
+            const t = map[r]?.[c];
+            if (t === 1 || t === 2 || t === 4 || t === 5) return false;
+          }
+        }
+        return true;
+      }
+
+      function fireTank(tank, owner) {
+        if (tank.cd > 0) return;
+        const rank = tank.rank || 1;
+        tank.cd = rank >= 2 ? 14 : 22;
+        const d = DIRS[tank.dir];
+        const speed = rank >= 1 ? 6.8 : 5.2;
+        bullets.push({
+          x: tank.x + TILE * 0.9 + d.dx * 14,
+          y: tank.y + TILE * 0.9 + d.dy * 14,
+          vx: d.dx * speed,
+          vy: d.dy * speed,
+          owner,
+          breakSteel: rank >= 3,
+          dmg: rank >= 2 ? 2 : 1
+        });
+        if (owner === 'p1') NexusSDK.audio.shoot();
+      }
+
+      function explode(x, y, color = '#fbbf24', count = 10) {
+        for (let i = 0; i < count; i++) {
+          const a = (Math.PI * 2 * i) / count + Math.random() * 0.4;
+          const sp = 1.5 + Math.random() * 3.2;
+          particles.push({
+            x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+            life: 20 + Math.floor(Math.random() * 12), color
+          });
+        }
+      }
+
+      // Input Handling (Touch D-Pad + Keyboard)
+      let activeDir = -1;
+      const keys = {};
+      window.addEventListener('keydown', (e) => {
+        keys[e.code] = true;
+        if (e.code === 'KeyW' || e.code === 'ArrowUp') activeDir = 0;
+        if (e.code === 'KeyD' || e.code === 'ArrowRight') activeDir = 1;
+        if (e.code === 'KeyS' || e.code === 'ArrowDown') activeDir = 2;
+        if (e.code === 'KeyA' || e.code === 'ArrowLeft') activeDir = 3;
+        if (e.code === 'Space' || e.code === 'KeyJ') fireTank(p1, 'p1');
+      });
+      window.addEventListener('keyup', (e) => {
+        keys[e.code] = false;
+        if (
+          !keys['KeyW'] && !keys['ArrowUp'] &&
+          !keys['KeyD'] && !keys['ArrowRight'] &&
+          !keys['KeyS'] && !keys['ArrowDown'] &&
+          !keys['KeyA'] && !keys['ArrowLeft']
+        ) {
+          activeDir = -1;
+        }
+      });
+
+      document.querySelectorAll('.dpad-btn').forEach((btn) => {
+        const d = Number(btn.getAttribute('data-dir'));
+        const start = (e) => {
+          e.preventDefault();
+          activeDir = d;
+          btn.classList.add('pressed');
+        };
+        const end = (e) => {
+          e.preventDefault();
+          if (activeDir === d) activeDir = -1;
+          btn.classList.remove('pressed');
+        };
+        btn.addEventListener('pointerdown', start);
+        btn.addEventListener('pointerup', end);
+        btn.addEventListener('pointerleave', end);
+      });
+
+      document.getElementById('btn-fire').addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        fireTank(p1, 'p1');
+      });
+
+      // LAN Dual-Channel Session
+      const lan = NexusSDK.createLanSession('tank-battle', store.getAuth().room);
+      document.getElementById('lan-room-display').textContent = lan.getRoomCode();
+
+      lan.onStatus((st) => {
+        const el = document.getElementById('hud-lan');
+        if (st.connected) {
+          el.textContent = `LAN 已直连 (${st.peerLatencyMs}ms · ${st.role.toUpperCase()})`;
+          el.style.color = '#00f0ff';
+          p2.isRemote = true;
+        } else if (st.failoverActive) {
+          el.textContent = '3s 断线自愈 · AI 僚机已接管';
+          el.style.color = '#fbbf24';
+          p2.isRemote = false;
+        } else {
+          el.textContent = 'AI 战术僚机协同中';
+          el.style.color = '#10b981';
+          p2.isRemote = false;
+        }
+      });
+
+      lan.onFast((msg) => {
+        if (msg.type === 'p2_state') {
+          p2.x = msg.x; p2.y = msg.y; p2.dir = msg.dir;
+          if (msg.fire) fireTank(p2, 'p2');
+        }
+      });
+
+      lan.onReliable((msg) => {
+        if (msg.type === 'fortify') {
+          fortifyTimer = 1200;
+          setBaseWall(2);
+          NexusSDK.audio.upgrade();
+        }
+      });
+
+      function updateAIWingman() {
+        if (p2.isRemote && lan.isConnected()) return;
+        if (Math.random() < 0.04) {
+          // Move toward nearest enemy or guard base
+          const target = enemies[0];
+          if (target) {
+            const dx = target.x - p2.x;
+            const dy = target.y - p2.y;
+            if (Math.abs(dx) > Math.abs(dy)) p2.dir = dx > 0 ? 1 : 3;
+            else p2.dir = dy > 0 ? 2 : 0;
+          } else {
+            p2.dir = Math.floor(Math.random() * 4);
+          }
+        }
+        const d = DIRS[p2.dir];
+        const nx = p2.x + d.dx * 1.9;
+        const ny = p2.y + d.dy * 1.9;
+        if (canMoveRect(nx, ny)) {
+          p2.x = nx; p2.y = ny;
+        } else {
+          p2.dir = (p2.dir + 1) % 4;
+        }
+        if (Math.random() < 0.08) fireTank(p2, 'p2');
+      }
+
+      function updateHud() {
+        document.getElementById('hud-stage').textContent = `第 ${stage} 关`;
+        document.getElementById('hud-enemies').textContent = `${remainingSpawns + enemies.length} 辆`;
+        document.getElementById('hud-coins').textContent = (saveData.currency?.tankCoins ?? 0).toLocaleString();
+        document.getElementById('hud-rank').textContent = `Rank ${p1.rank}`;
+        document.getElementById('hud-hp').textContent = `HP ${p1.hp} · ${baseAlive ? '总部完好' : '总部受损'}`;
+        document.getElementById('hud-score').textContent = score.toLocaleString();
+        document.getElementById('armory-rank-txt').textContent = `Rank ${p1.rank}`;
+      }
+
+      function step() {
+        if (p1.cd > 0) p1.cd--;
+        if (p2.cd > 0) p2.cd--;
+        if (p1.shield > 0) p1.shield--;
+        if (p2.shield > 0) p2.shield--;
+
+        if (fortifyTimer > 0) {
+          fortifyTimer--;
+          if (fortifyTimer === 0) setBaseWall(1);
+        }
+        if (empTimer > 0) empTimer--;
+
+        // Move P1
+        if (activeDir >= 0) {
+          p1.dir = activeDir;
+          const d = DIRS[activeDir];
+          const spd = 2.4 + (p1.rank * 0.2);
+          const nx = p1.x + d.dx * spd;
+          const ny = p1.y + d.dy * spd;
+          if (canMoveRect(nx, ny)) {
+            p1.x = nx; p1.y = ny;
+          }
+          if (lan.isConnected()) {
+            lan.sendFast({ type: 'p2_state', x: p1.x, y: p1.y, dir: p1.dir });
+          }
+        }
+
+        // Update AI Wingman
+        updateAIWingman();
+
+        // Spawn Enemies
+        spawnCooldown--;
+        if (spawnCooldown <= 0) {
+          spawnEnemy();
+          spawnCooldown = 110;
+        }
+
+        // Move Enemies
+        enemies.forEach((en) => {
+          if (empTimer > 0) return;
+          if (en.cd > 0) en.cd--;
+          const d = DIRS[en.dir];
+          const nx = en.x + d.dx * en.speed;
+          const ny = en.y + d.dy * en.speed;
+          if (canMoveRect(nx, ny, en.size || TILE * 1.75)) {
+            en.x = nx; en.y = ny;
+          } else {
+            // Bias towards bottom base
+            en.dir = Math.random() < 0.45 ? 2 : Math.floor(Math.random() * 4);
+          }
+          if (en.cd <= 0) {
+            en.cd = en.type === 'shooter' ? 45 : 75;
+            const bd = DIRS[en.dir];
+            bullets.push({
+              x: en.x + TILE * 0.9 + bd.dx * 12,
+              y: en.y + TILE * 0.9 + bd.dy * 12,
+              vx: bd.dx * 4.6,
+              vy: bd.dy * 4.6,
+              owner: 'enemy',
+              breakSteel: en.type === 'boss',
+              dmg: 1
+            });
+          }
+        });
+
+        // Update Bullets
+        for (let i = bullets.length - 1; i >= 0; i--) {
+          const b = bullets[i];
+          b.x += b.vx;
+          b.y += b.vy;
+          if (b.x < 0 || b.y < 0 || b.x >= GRID * TILE || b.y >= GRID * TILE) {
+            bullets.splice(i, 1);
+            continue;
+          }
+          const c = Math.floor(b.x / TILE);
+          const r = Math.floor(b.y / TILE);
+          const t = map[r]?.[c];
+          if (t === 1) {
+            map[r][c] = 0;
+            explode(b.x, b.y, '#f97316', 6);
+            NexusSDK.audio.hit();
+            bullets.splice(i, 1);
+            continue;
+          } else if (t === 2) {
+            if (b.breakSteel) map[r][c] = 0;
+            explode(b.x, b.y, '#38bdf8', 6);
+            NexusSDK.audio.hit();
+            bullets.splice(i, 1);
+            continue;
+          } else if (t === 5) {
+            if (b.owner === 'enemy') {
+              baseAlive = false;
+              explode(13 * TILE, 24.5 * TILE, '#ef4444', 24);
+              NexusSDK.audio.explosion();
+              // Auto repair after 2s to prevent frustration deadlock
+              setTimeout(() => {
+                baseAlive = true;
+                setBaseWall(2);
+                fortifyTimer = 600;
+                updateHud();
+              }, 2000);
+            }
+            bullets.splice(i, 1);
+            continue;
+          }
+
+          // Check Bullet vs Enemies
+          if (b.owner !== 'enemy') {
+            let hitEnemy = false;
+            for (let j = enemies.length - 1; j >= 0; j--) {
+              const en = enemies[j];
+              const sz = en.size || TILE * 1.8;
+              if (b.x > en.x && b.x < en.x + sz && b.y > en.y && b.y < en.y + sz) {
+                en.hp -= b.dmg;
+                hitEnemy = true;
+                if (en.hp <= 0) {
+                  explode(en.x + sz / 2, en.y + sz / 2, '#fbbf24', 14);
+                  NexusSDK.audio.explosion();
+                  score += en.type === 'boss' ? 1500 : 200;
+                  saveData.currency.tankCoins += en.type === 'boss' ? 150 : 25;
+                  if (score > (saveData.stats.highScore || 0)) saveData.stats.highScore = score;
+                  store.save(saveData);
+                  if (Math.random() < 0.32) {
+                    crates.push({
+                      x: (2 + Math.floor(Math.random() * 20)) * TILE,
+                      y: (4 + Math.floor(Math.random() * 16)) * TILE,
+                      life: 600
+                    });
+                  }
+                  enemies.splice(j, 1);
+                  updateHud();
+                } else {
+                  explode(b.x, b.y, '#00f0ff', 5);
+                  NexusSDK.audio.hit();
+                }
+                break;
+              }
+            }
+            if (hitEnemy) {
+              bullets.splice(i, 1);
+              continue;
+            }
+          } else {
+            // Enemy bullet vs P1
+            if (b.x > p1.x && b.x < p1.x + TILE * 1.8 && b.y > p1.y && b.y < p1.y + TILE * 1.8) {
+              if (p1.shield <= 0) {
+                p1.hp = Math.max(1, p1.hp - 1);
+                p1.shield = 120;
+                explode(p1.x + TILE, p1.y + TILE, '#ef4444', 10);
+                NexusSDK.audio.warn();
+                updateHud();
+              }
+              bullets.splice(i, 1);
+              continue;
+            }
+          }
+        }
+
+        // Check Pickup Crates
+        for (let i = crates.length - 1; i >= 0; i--) {
+          const cr = crates[i];
+          cr.life--;
+          const dist1 = Math.hypot((p1.x + TILE) - (cr.x + TILE), (p1.y + TILE) - (cr.y + TILE));
+          const dist2 = Math.hypot((p2.x + TILE) - (cr.x + TILE), (p2.y + TILE) - (cr.y + TILE));
+          if (dist1 < TILE * 1.6 || dist2 < TILE * 1.6) {
+            NexusSDK.audio.pickup();
+            p1.rank = Math.min(4, p1.rank + 1);
+            saveData.rank = p1.rank;
+            saveData.currency.tankCoins += 60;
+            fortifyTimer = 900;
+            setBaseWall(2);
+            store.save(saveData);
+            updateHud();
+            crates.splice(i, 1);
+          } else if (cr.life <= 0) {
+            crates.splice(i, 1);
+          }
+        }
+
+        // Stage Clear check
+        if (remainingSpawns <= 0 && enemies.length === 0) {
+          NexusSDK.audio.win();
+          stage++;
+          saveData.stats.wins = (saveData.stats.wins || 0) + 1;
+          saveData.currency.tankCoins += 120;
+          store.save(saveData);
+          buildStageMap(stage);
+        }
+
+        // Update particles
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const pt = particles[i];
+          pt.x += pt.vx; pt.y += pt.vy; pt.life--;
+          if (pt.life <= 0) particles.splice(i, 1);
+        }
+      }
+
+      function drawTankSprite(img, tank, labelColor) {
+        const sz = tank.size || TILE * 1.85;
+        ctx.save();
+        ctx.translate(tank.x + sz / 2, tank.y + sz / 2);
+        ctx.rotate(DIRS[tank.dir].ang);
+        if (img && img.complete) {
+          ctx.drawImage(img, -sz / 2, -sz / 2, sz, sz);
+        }
+        ctx.restore();
+        if (tank.shield > 0) {
+          ctx.strokeStyle = labelColor || '#00f0ff';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(tank.x + sz / 2, tank.y + sz / 2, sz * 0.62, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+
+      function render() {
+        ctx.fillStyle = '#050811';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Tactical Grid
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.035)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= GRID; i++) {
+          ctx.beginPath(); ctx.moveTo(i * TILE, 0); ctx.lineTo(i * TILE, GRID * TILE); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(0, i * TILE); ctx.lineTo(GRID * TILE, i * TILE); ctx.stroke();
+        }
+
+        // Pass 1: Ground tiles (Brick, Steel, River)
+        for (let r = 0; r < GRID; r++) {
+          for (let c = 0; c < GRID; c++) {
+            const t = map[r][c];
+            const x = c * TILE;
+            const y = r * TILE;
+            if (t === 1 && sprites.brick?.complete) {
+              ctx.drawImage(sprites.brick, x, y, TILE, TILE);
+            } else if (t === 2 && sprites.steel?.complete) {
+              ctx.drawImage(sprites.steel, x, y, TILE, TILE);
+            } else if (t === 4) {
+              ctx.fillStyle = 'rgba(2, 132, 199, 0.45)';
+              ctx.fillRect(x, y, TILE, TILE);
+              ctx.strokeStyle = 'rgba(0, 240, 255, 0.35)';
+              ctx.beginPath();
+              ctx.moveTo(x + 3, y + TILE * 0.5);
+              ctx.lineTo(x + TILE - 3, y + TILE * 0.5);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Base Eagle (2x2 tiles at col 12, row 24)
+        if (sprites.eagle?.complete) {
+          ctx.drawImage(sprites.eagle, 12 * TILE, 24 * TILE, TILE * 2, TILE * 2);
+        }
+
+        // Pickup Crates
+        crates.forEach((cr) => {
+          if (sprites.crate?.complete) {
+            ctx.drawImage(sprites.crate, cr.x, cr.y, TILE * 1.6, TILE * 1.6);
+          }
+        });
+
+        // Tanks
+        drawTankSprite(sprites.p1, p1, '#00f0ff');
+        drawTankSprite(sprites.p2, p2, '#fbbf24');
+        enemies.forEach((en) => {
+          const sp = sprites[en.type] || sprites.scout;
+          drawTankSprite(sp, en);
+          if (en.maxHp > 1) {
+            const sz = en.size || TILE * 1.8;
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(en.x, en.y - 6, sz, 4);
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(en.x, en.y - 6, sz * (en.hp / en.maxHp), 4);
+          }
+        });
+
+        // Bullets (Multi-layer energy shell)
+        bullets.forEach((b) => {
+          ctx.save();
+          ctx.translate(b.x, b.y);
+          ctx.fillStyle = b.owner === 'enemy' ? '#ef4444' : '#00f0ff';
+          ctx.beginPath(); ctx.arc(0, 0, 4.5, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath(); ctx.arc(0, 0, 2, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+        });
+
+        // Pass 2: Bush Canopy (Occlusion layer above tanks)
+        for (let r = 0; r < GRID; r++) {
+          for (let c = 0; c < GRID; c++) {
+            if (map[r][c] === 3 && sprites.bush?.complete) {
+              ctx.drawImage(sprites.bush, c * TILE, r * TILE, TILE, TILE);
+            }
+          }
+        }
+
+        // Particles
+        particles.forEach((pt) => {
+          ctx.fillStyle = pt.color;
+          ctx.fillRect(pt.x - 2, pt.y - 2, 4, 4);
+        });
+      }
+
+      function loop() {
+        step();
+        render();
+        requestAnimationFrame(loop);
+      }
+
+      // UI Button Bindings
+      document.getElementById('btn-fortify-base').addEventListener('click', () => {
+        if ((saveData.currency?.tankCoins ?? 0) < 50) return;
+        saveData.currency.tankCoins -= 50;
+        fortifyTimer = 1200;
+        setBaseWall(2);
+        lan.sendReliable({ type: 'fortify' });
+        NexusSDK.audio.upgrade();
+        store.save(saveData);
+        updateHud();
+      });
+
+      document.getElementById('btn-open-armory').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('armory-modal').classList.add('active');
+      });
+      document.getElementById('btn-close-armory').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('armory-modal').classList.remove('active');
+      });
+      document.getElementById('btn-buy-rank').addEventListener('click', () => {
+        if (p1.rank >= 4 || (saveData.currency?.tankCoins ?? 0) < 150) return;
+        saveData.currency.tankCoins -= 150;
+        p1.rank++;
+        saveData.rank = p1.rank;
+        store.save(saveData);
+        NexusSDK.audio.upgrade();
+        updateHud();
+      });
+      document.getElementById('btn-buy-emp').addEventListener('click', () => {
+        if ((saveData.currency?.tankCoins ?? 0) < 80) return;
+        saveData.currency.tankCoins -= 80;
+        empTimer = 480;
+        store.save(saveData);
+        NexusSDK.audio.laser();
+        updateHud();
+        document.getElementById('armory-modal').classList.remove('active');
+      });
+      document.getElementById('btn-next-stage').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        stage++;
+        buildStageMap(stage);
+        document.getElementById('armory-modal').classList.remove('active');
+      });
+
+      document.getElementById('btn-open-lan').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('lan-modal').classList.add('active');
+      });
+      document.getElementById('btn-close-lan').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('lan-modal').classList.remove('active');
+      });
+      document.getElementById('btn-join-lan').addEventListener('click', () => {
+        const val = document.getElementById('lan-room-input').value.trim();
+        if (val) {
+          lan.joinRoom(val, 'client');
+          document.getElementById('lan-room-display').textContent = lan.getRoomCode();
+          NexusSDK.audio.upgrade();
+          document.getElementById('lan-modal').classList.remove('active');
+        }
+      });
+
+      buildStageMap(1);
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

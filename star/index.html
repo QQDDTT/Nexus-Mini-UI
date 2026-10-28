@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#030712" />
+  <title>星轨防线 · STAR DEFENDER | Nexus-Mini</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/star-defender/icon.svg" />
+  <style>
+    :root {
+      --void: #030712;
+      --panel: rgba(13, 20, 36, 0.82);
+      --border: rgba(0, 240, 255, 0.24);
+      --cyan: #00f0ff;
+      --gold: #fbbf24;
+      --red: #ef4444;
+      --green: #10b981;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      width: 100vw; height: 100dvh; overflow: hidden; overscroll-behavior: none;
+      background: var(--void); color: var(--text);
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    #space-canvas {
+      position: fixed; inset: 0; width: 100%; height: 100%; display: block;
+      touch-action: none;
+    }
+    /* Top HUD Bar */
+    .top-hud {
+      position: fixed;
+      top: max(10px, env(safe-area-inset-top));
+      left: max(14px, env(safe-area-inset-left));
+      right: 140px;
+      z-index: 100;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      pointer-events: none;
+    }
+    .hud-pill {
+      pointer-events: auto;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 12px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.78rem;
+    }
+    .hud-val { font-weight: 800; color: var(--cyan); }
+    .hud-val.gold { color: var(--gold); }
+    /* Bottom Controls */
+    .stick-zone {
+      position: fixed;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      left: max(22px, env(safe-area-inset-left));
+      width: 132px; height: 132px;
+      border-radius: 50%;
+      background: rgba(13, 20, 36, 0.55);
+      border: 1.5px solid rgba(0, 240, 255, 0.35);
+      z-index: 120;
+      display: flex; align-items: center; justify-content: center;
+      touch-action: none;
+    }
+    .stick-knob {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #00f0ff 0%, #0284c7 100%);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.55);
+      pointer-events: none;
+      transition: transform 0.04s linear;
+    }
+    .right-controls {
+      position: fixed;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      right: max(18px, env(safe-area-inset-right));
+      z-index: 120;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+    }
+    .action-row { display: flex; gap: 8px; }
+    .tac-btn {
+      min-height: 46px; min-width: 46px;
+      padding: 0 14px;
+      border-radius: 10px;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      cursor: pointer;
+    }
+    .tac-btn:active { transform: scale(0.95); }
+    .tac-btn.primary {
+      min-height: 58px; padding: 0 20px;
+      background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
+      border-color: #67e8f9;
+      color: #030712;
+      font-size: 0.9rem; font-weight: 900;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+    }
+    .tac-btn.gold { border-color: rgba(251, 191, 36, 0.5); color: var(--gold); }
+    /* Dockyard Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 8000;
+      background: rgba(3, 7, 18, 0.86);
+      backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal-card {
+      max-width: 620px; width: 100%;
+      background: rgba(9, 14, 26, 0.96);
+      border: 1px solid rgba(0, 240, 255, 0.55);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex; flex-direction: column; gap: 12px;
+      max-height: 88dvh; overflow-y: auto;
+    }
+    .hull-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    }
+    .hull-card {
+      background: rgba(5, 8, 17, 0.75);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px 8px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      cursor: pointer; text-align: center;
+    }
+    .hull-card.active {
+      border-color: var(--cyan);
+      background: rgba(0, 240, 255, 0.12);
+    }
+    .hull-card img { width: 48px; height: 48px; object-fit: contain; }
+    .upgrade-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .up-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    @media (max-width: 720px) {
+      .hull-grid { grid-template-columns: repeat(2, 1fr); }
+      .upgrade-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="space-canvas"></canvas>
+
+  <!-- 顶部战术仪表盘 -->
+  <header class="top-hud">
+    <div class="hud-pill">
+      <img src="../assets/star-defender/icon.svg" alt="" width="22" height="22" />
+      <span style="font-weight:800;">星轨防线</span>
+      <span class="hud-val" id="hud-wave">WAVE 1 / 100</span>
+    </div>
+    <div class="hud-pill">
+      <span>空间站护盾</span>
+      <span class="hud-val" id="hud-station">100%</span>
+    </div>
+    <div class="hud-pill">
+      <span>战功 (Merits)</span>
+      <span class="hud-val gold" id="hud-merits">1,200</span>
+    </div>
+    <div class="hud-pill">
+      <span>合金残骸</span>
+      <span class="hud-val gold" id="hud-scraps">150</span>
+    </div>
+    <div class="hud-pill">
+      <span id="hud-lan" style="color:var(--green);">AI 护航僚机就绪</span>
+    </div>
+  </header>
+
+  <!-- 左手牛顿矢量推进摇杆 -->
+  <div class="stick-zone" id="stick-zone">
+    <div class="stick-knob" id="stick-knob"></div>
+  </div>
+
+  <!-- 右手战术火控与 360° 船坞按钮 -->
+  <div class="right-controls">
+    <div class="action-row">
+      <button class="tac-btn gold" id="btn-open-dock">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>360° 战舰船坞</span>
+      </button>
+      <button class="tac-btn" id="btn-open-lan">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+        <span>局域网护航</span>
+      </button>
+    </div>
+    <div class="action-row">
+      <button class="tac-btn" id="btn-nova">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>脉冲超新星 (E)</span>
+      </button>
+      <button class="tac-btn primary" id="btn-burst">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+        <span>锁定超载齐射 (SPACE)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 360° 模块化战舰船坞与火控改装弹窗 -->
+  <div class="modal-backdrop" id="dock-modal">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-size:1rem;color:var(--cyan);">360° 星轨船坞 · 四大主力星舰底盘与模块化火控</h3>
+        <button class="tac-btn" id="btn-close-dock" style="min-height:36px;">返回战场</button>
+      </div>
+      <div style="font-size:0.75rem;color:var(--muted);">选择出战星舰底盘（切换即时生效，自动继承模块化武器等级）：</div>
+      <div class="hull-grid" id="hull-selector">
+        <div class="hull-card active" data-hull="hullDelta">
+          <img src="../assets/star-defender/sprites/hull-delta.svg" alt="Delta" />
+          <div style="font-size:0.8rem;font-weight:700;">Delta 先锋舰</div>
+          <div style="font-size:0.68rem;color:var(--cyan);">高推重比 · 敏捷拦截</div>
+        </div>
+        <div class="hull-card" data-hull="hullWing">
+          <img src="../assets/star-defender/sprites/hull-wing.svg" alt="Wing" />
+          <div style="font-size:0.8rem;font-weight:700;">Wing 巡洋舰</div>
+          <div style="font-size:0.68rem;color:var(--cyan);">双翼齐射 · 广域覆盖</div>
+        </div>
+        <div class="hull-card" data-hull="hullRing">
+          <img src="../assets/star-defender/sprites/hull-ring.svg" alt="Ring" />
+          <div style="font-size:0.8rem;font-weight:700;">Ring 环轨舰</div>
+          <div style="font-size:0.68rem;color:var(--cyan);">环状力场 · 护盾再生</div>
+        </div>
+        <div class="hull-card" data-hull="hullCross">
+          <img src="../assets/star-defender/sprites/hull-cross.svg" alt="Cross" />
+          <div style="font-size:0.8rem;font-weight:700;">Cross 歼星舰</div>
+          <div style="font-size:0.68rem;color:var(--gold);">重装四联 · 巨兽克星</div>
+        </div>
+      </div>
+
+      <div class="upgrade-grid">
+        <div class="up-box">
+          <div>
+            <div style="font-size:0.82rem;font-weight:700;">高斯磁轨主炮 (<span id="lvl-weapon">Lv.1</span>)</div>
+            <div style="font-size:0.7rem;color:var(--muted);">提升自动索敌射速与多联发弹幕</div>
+          </div>
+          <button class="tac-btn primary" id="btn-up-weapon" style="min-height:38px;font-size:0.76rem;">升级 (200 战功)</button>
+        </div>
+        <div class="up-box">
+          <div>
+            <div style="font-size:0.82rem;font-weight:700;">轨道防卫炮塔 (<span id="lvl-turret">1 座</span>)</div>
+            <div style="font-size:0.7rem;color:var(--muted);">环绕空间站部署自动火控炮塔</div>
+          </div>
+          <button class="tac-btn gold" id="btn-up-turret" style="min-height:38px;font-size:0.76rem;">增设 (50 残骸)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 局域网一人一机双舰护航弹窗 -->
+  <div class="modal-backdrop" id="lan-modal">
+    <div class="modal-card" style="max-width:460px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-size:1rem;color:var(--cyan);">局域网 1~5ms 双舰协同护航</h3>
+        <button class="tac-btn" id="btn-close-lan" style="min-height:36px;">关闭</button>
+      </div>
+      <p style="font-size:0.76rem;color:var(--muted);line-height:1.5;">
+        两台手机在同一 Wi-Fi / 热点下输入相同房间号，即可各自驾驶星舰协同守卫中央星轨空间站。
+      </p>
+      <div class="up-box">
+        <div>
+          <div style="font-size:0.7rem;color:var(--muted);">本机房间号</div>
+          <div style="font-size:1.1rem;font-weight:900;color:var(--cyan);" id="lan-room-code">NX-2048</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <input id="lan-input" type="text" placeholder="房间号" style="height:40px;width:120px;background:#030712;border:1px solid var(--border);border-radius:8px;color:#fff;padding:0 10px;" />
+          <button class="tac-btn primary" id="btn-join-lan" style="min-height:40px;font-size:0.78rem;">联机</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/nexus-sdk.js"></script>
+  <script>
+    (() => {
+      NexusSDK.initShellUI({ gameId: 'star-defender', gameTitle: '星轨防线' });
+
+      const store = NexusSDK.createGameStorage('NEXUS_MINI_SD_', (isAdmin) => ({
+        currency: { warMerits: isAdmin ? 999999 : 1200, scraps: isAdmin ? 99999 : 150 },
+        unlockedShips: 4,
+        highestWave: isAdmin ? 100 : 1,
+        weaponLv: isAdmin ? 5 : 1,
+        turretCount: isAdmin ? 4 : 2,
+        selectedHull: 'hullDelta'
+      }));
+      let saveData = store.load();
+
+      const sprites = NexusSDK.loadSprites('star-defender', {
+        hullDelta: 'hull-delta.svg',
+        hullWing: 'hull-wing.svg',
+        hullRing: 'hull-ring.svg',
+        hullCross: 'hull-cross.svg',
+        station: 'station-core.svg',
+        turret: 'weapon-turret.svg',
+        asteroidIron: 'asteroid-iron.svg',
+        asteroidCrystal: 'asteroid-crystal.svg',
+        swarm: 'enemy-swarm.svg',
+        lurker: 'enemy-lurker.svg',
+        carrier: 'enemy-carrier.svg',
+        leviathan: 'boss-leviathan.svg'
+      });
+
+      const canvas = document.getElementById('space-canvas');
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      let wave = 1;
+      let stationHp = 1000;
+      let stationMaxHp = 1000;
+      let orbitAngle = 0;
+
+      const ship = {
+        x: window.innerWidth * 0.5,
+        y: window.innerHeight * 0.68,
+        vx: 0, vy: 0,
+        angle: 0,
+        hull: saveData.selectedHull || 'hullDelta',
+        fireCd: 0
+      };
+
+      const wingman = {
+        x: window.innerWidth * 0.38,
+        y: window.innerHeight * 0.5,
+        angle: 0,
+        hull: 'hullWing',
+        fireCd: 0,
+        isRemote: false
+      };
+
+      let enemies = [];
+      let projectiles = [];
+      let sparks = [];
+      let stars = Array.from({ length: 70 }, () => ({
+        x: Math.random() * 2000,
+        y: Math.random() * 1200,
+        s: 1 + Math.random() * 2,
+        a: 0.25 + Math.random() * 0.6
+      }));
+
+      function spawnWave(w) {
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const count = 7 + Math.min(18, w * 2);
+        for (let i = 0; i < count; i++) {
+          const ang = (Math.PI * 2 * i) / count + Math.random() * 0.4;
+          const dist = Math.max(canvas.width, canvas.height) * (0.58 + Math.random() * 0.35);
+          const pool = ['asteroidIron', 'asteroidCrystal', 'swarm', 'lurker', 'carrier'];
+          const type = pool[(i + w) % pool.length];
+          const hpBase = type === 'carrier' ? 90 : (type === 'asteroidCrystal' ? 45 : 28);
+          enemies.push({
+            type,
+            x: cx + Math.cos(ang) * dist,
+            y: cy + Math.sin(ang) * dist,
+            hp: hpBase + w * 8,
+            maxHp: hpBase + w * 8,
+            speed: type === 'swarm' ? 1.85 : (type === 'lurker' ? 1.55 : 0.95),
+            r: type === 'carrier' ? 32 : 22,
+            rot: Math.random() * Math.PI * 2
+          });
+        }
+        // Spawn Void Leviathan Boss every 5 waves or on wave 1 preview
+        if (w % 3 === 0) {
+          enemies.push({
+            type: 'leviathan',
+            x: cx + Math.cos(w) * (canvas.width * 0.65),
+            y: cy - canvas.height * 0.58,
+            hp: 360 + w * 60,
+            maxHp: 360 + w * 60,
+            speed: 0.65,
+            r: 48,
+            rot: Math.PI
+          });
+        }
+        updateHud();
+      }
+
+      // Joystick & Keyboard Input
+      let joyVec = { x: 0, y: 0 };
+      const stickZone = document.getElementById('stick-zone');
+      const stickKnob = document.getElementById('stick-knob');
+      let draggingStick = false;
+
+      function handleStick(e) {
+        const rect = stickZone.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const pt = e.touches ? e.touches[0] : e;
+        if (!pt) return;
+        let dx = pt.clientX - cx;
+        let dy = pt.clientY - cy;
+        const maxR = rect.width * 0.38;
+        const dist = Math.hypot(dx, dy);
+        if (dist > maxR) {
+          dx = (dx / dist) * maxR;
+          dy = (dy / dist) * maxR;
+        }
+        stickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+        joyVec.x = dx / maxR;
+        joyVec.y = dy / maxR;
+      }
+
+      stickZone.addEventListener('pointerdown', (e) => {
+        draggingStick = true;
+        handleStick(e);
+      });
+      window.addEventListener('pointermove', (e) => {
+        if (draggingStick) handleStick(e);
+      });
+      window.addEventListener('pointerup', () => {
+        draggingStick = false;
+        stickKnob.style.transform = 'translate(0px, 0px)';
+        joyVec.x = 0; joyVec.y = 0;
+      });
+
+      const keys = {};
+      window.addEventListener('keydown', (e) => {
+        keys[e.code] = true;
+        if (e.code === 'Space') fireOverloadBurst();
+        if (e.code === 'KeyE') triggerSupernova();
+      });
+      window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+      function findNearestEnemy(x, y) {
+        let best = null;
+        let minD = Infinity;
+        for (const en of enemies) {
+          const d = Math.hypot(en.x - x, en.y - y);
+          if (d < minD) {
+            minD = d;
+            best = en;
+          }
+        }
+        return best;
+      }
+
+      function fireShipWeapons(s, isMain) {
+        const target = findNearestEnemy(s.x, s.y);
+        const ang = target ? Math.atan2(target.y - s.y, target.x - s.x) : (s.angle - Math.PI / 2);
+        if (target) s.angle = ang + Math.PI / 2;
+        const wLv = saveData.weaponLv || 1;
+        const barrels = Math.min(4, 1 + Math.floor(wLv / 2));
+        for (let b = 0; b < barrels; b++) {
+          const spread = (b - (barrels - 1) / 2) * 0.12;
+          const a = ang + spread;
+          projectiles.push({
+            x: s.x + Math.cos(a) * 18,
+            y: s.y + Math.sin(a) * 18,
+            vx: Math.cos(a) * 11,
+            vy: Math.sin(a) * 11,
+            dmg: 14 + wLv * 5,
+            color: isMain ? '#00f0ff' : '#fbbf24',
+            life: 75
+          });
+        }
+        if (isMain) NexusSDK.audio.shoot();
+      }
+
+      function fireOverloadBurst() {
+        NexusSDK.audio.laser();
+        for (let i = 0; i < 12; i++) {
+          const a = (Math.PI * 2 * i) / 12;
+          projectiles.push({
+            x: ship.x, y: ship.y,
+            vx: Math.cos(a) * 12, vy: Math.sin(a) * 12,
+            dmg: 28 + (saveData.weaponLv || 1) * 6,
+            color: '#00f0ff',
+            life: 80
+          });
+        }
+      }
+
+      function triggerSupernova() {
+        NexusSDK.audio.explosion();
+        enemies.forEach((en) => {
+          en.hp -= 85;
+          for (let i = 0; i < 5; i++) {
+            sparks.push({
+              x: en.x, y: en.y,
+              vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6,
+              life: 24, color: '#fbbf24'
+            });
+          }
+        });
+      }
+
+      document.getElementById('btn-burst').addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        fireOverloadBurst();
+      });
+      document.getElementById('btn-nova').addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        triggerSupernova();
+      });
+
+      // LAN Co-op Session
+      const lan = NexusSDK.createLanSession('star-defender', store.getAuth().room);
+      document.getElementById('lan-room-code').textContent = lan.getRoomCode();
+      lan.onStatus((st) => {
+        const el = document.getElementById('hud-lan');
+        if (st.connected) {
+          el.textContent = `LAN 双舰已直连 (${st.peerLatencyMs}ms)`;
+          el.style.color = '#00f0ff';
+          wingman.isRemote = true;
+        } else {
+          el.textContent = st.failoverActive ? 'AI 护航已无缝接管' : 'AI 护航僚机就绪';
+          el.style.color = '#10b981';
+          wingman.isRemote = false;
+        }
+      });
+      lan.onFast((msg) => {
+        if (msg.type === 'ship') {
+          wingman.x = msg.x; wingman.y = msg.y; wingman.angle = msg.angle; wingman.hull = msg.hull;
+        }
+      });
+
+      function updateHud() {
+        document.getElementById('hud-wave').textContent = `WAVE ${wave} / 100`;
+        document.getElementById('hud-station').textContent = `${Math.max(0, Math.round((stationHp / stationMaxHp) * 100))}%`;
+        document.getElementById('hud-merits').textContent = (saveData.currency?.warMerits ?? 0).toLocaleString();
+        document.getElementById('hud-scraps').textContent = (saveData.currency?.scraps ?? 0).toLocaleString();
+        document.getElementById('lvl-weapon').textContent = `Lv.${saveData.weaponLv || 1}`;
+        document.getElementById('lvl-turret').textContent = `${saveData.turretCount || 2} 座`;
+      }
+
+      function step() {
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        orbitAngle += 0.015;
+
+        // Keyboard vector fallback
+        let kx = joyVec.x;
+        let ky = joyVec.y;
+        if (keys['KeyW'] || keys['ArrowUp']) ky = -1;
+        if (keys['KeyS'] || keys['ArrowDown']) ky = 1;
+        if (keys['KeyA'] || keys['ArrowLeft']) kx = -1;
+        if (keys['KeyD'] || keys['ArrowRight']) kx = 1;
+
+        // Newtonian Thrust + Inertial Damping
+        ship.vx = ship.vx * 0.90 + kx * 0.65;
+        ship.vy = ship.vy * 0.90 + ky * 0.65;
+        ship.x = Math.max(36, Math.min(canvas.width - 36, ship.x + ship.vx));
+        ship.y = Math.max(36, Math.min(canvas.height - 36, ship.y + ship.vy));
+
+        if (Math.hypot(kx, ky) > 0.1) {
+          ship.angle = Math.atan2(ky, kx) + Math.PI / 2;
+        }
+
+        if (lan.isConnected()) {
+          lan.sendFast({ type: 'ship', x: ship.x, y: ship.y, angle: ship.angle, hull: ship.hull });
+        }
+
+        // Auto Fire Control
+        ship.fireCd--;
+        if (ship.fireCd <= 0 && enemies.length > 0) {
+          fireShipWeapons(ship, true);
+          ship.fireCd = Math.max(10, 24 - (saveData.weaponLv || 1) * 2);
+        }
+
+        // Wingman AI Orbit & Fire
+        if (!wingman.isRemote) {
+          wingman.x = cx + Math.cos(orbitAngle * 1.3) * 145;
+          wingman.y = cy + Math.sin(orbitAngle * 1.3) * 145;
+        }
+        wingman.fireCd--;
+        if (wingman.fireCd <= 0 && enemies.length > 0) {
+          fireShipWeapons(wingman, false);
+          wingman.fireCd = 26;
+        }
+
+        // Orbital Station Turrets Fire
+        const tCount = saveData.turretCount || 2;
+        if (Math.random() < 0.08 && enemies.length > 0) {
+          const idx = Math.floor(Math.random() * tCount);
+          const ta = orbitAngle + (Math.PI * 2 * idx) / tCount;
+          const tx = cx + Math.cos(ta) * 72;
+          const ty = cy + Math.sin(ta) * 72;
+          const target = findNearestEnemy(tx, ty);
+          if (target) {
+            const a = Math.atan2(target.y - ty, target.x - tx);
+            projectiles.push({
+              x: tx, y: ty, vx: Math.cos(a) * 9.5, vy: Math.sin(a) * 9.5,
+              dmg: 12, color: '#38bdf8', life: 65
+            });
+          }
+        }
+
+        // Update Enemies
+        for (let i = enemies.length - 1; i >= 0; i--) {
+          const en = enemies[i];
+          const ang = Math.atan2(cy - en.y, cx - en.x);
+          en.x += Math.cos(ang) * en.speed;
+          en.y += Math.sin(ang) * en.speed;
+          en.rot = ang + Math.PI / 2;
+
+          // Collide with Station Core
+          if (Math.hypot(en.x - cx, en.y - cy) < 48 + en.r * 0.5) {
+            stationHp = Math.max(100, stationHp - 35);
+            NexusSDK.audio.warn();
+            enemies.splice(i, 1);
+            updateHud();
+            continue;
+          }
+
+          if (en.hp <= 0) {
+            NexusSDK.audio.explosion();
+            for (let k = 0; k < 8; k++) {
+              sparks.push({
+                x: en.x, y: en.y,
+                vx: (Math.random() - 0.5) * 5, vy: (Math.random() - 0.5) * 5,
+                life: 20, color: en.type === 'asteroidCrystal' ? '#00f0ff' : '#fbbf24'
+              });
+            }
+            saveData.currency.warMerits += en.type === 'leviathan' ? 400 : 35;
+            saveData.currency.scraps += en.type === 'asteroidCrystal' ? 12 : 5;
+            store.save(saveData);
+            enemies.splice(i, 1);
+            updateHud();
+          }
+        }
+
+        // Update Projectiles
+        for (let i = projectiles.length - 1; i >= 0; i--) {
+          const p = projectiles[i];
+          p.x += p.vx; p.y += p.vy; p.life--;
+          let hit = false;
+          for (let j = enemies.length - 1; j >= 0; j--) {
+            const en = enemies[j];
+            if (Math.hypot(p.x - en.x, p.y - en.y) < en.r + 6) {
+              en.hp -= p.dmg;
+              hit = true;
+              sparks.push({ x: p.x, y: p.y, vx: (Math.random() - 0.5) * 3, vy: (Math.random() - 0.5) * 3, life: 12, color: p.color });
+              break;
+            }
+          }
+          if (hit || p.life <= 0) projectiles.splice(i, 1);
+        }
+
+        // Next Wave Check
+        if (enemies.length === 0) {
+          NexusSDK.audio.win();
+          wave = Math.min(100, wave + 1);
+          if (wave > (saveData.highestWave || 1)) saveData.highestWave = wave;
+          stationHp = Math.min(stationMaxHp, stationHp + 150);
+          store.save(saveData);
+          spawnWave(wave);
+        }
+
+        for (let i = sparks.length - 1; i >= 0; i--) {
+          const sp = sparks[i];
+          sp.x += sp.vx; sp.y += sp.vy; sp.life--;
+          if (sp.life <= 0) sparks.splice(i, 1);
+        }
+      }
+
+      function render() {
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        ctx.fillStyle = '#030712';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Deep Space Starfield
+        stars.forEach((st) => {
+          ctx.fillStyle = `rgba(148, 163, 184, ${st.a})`;
+          ctx.fillRect(st.x % canvas.width, st.y % canvas.height, st.s, st.s);
+        });
+
+        // Orbital Defense Rings
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.12)';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(cx, cy, 72, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, 145, 0, Math.PI * 2); ctx.stroke();
+
+        // Central Station Core SVG Sprite
+        if (sprites.station?.complete) {
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(orbitAngle * 0.25);
+          ctx.drawImage(sprites.station, -46, -46, 92, 92);
+          ctx.restore();
+        }
+
+        // Orbital Weapon Turret SVG Sprites
+        const tCount = saveData.turretCount || 2;
+        for (let i = 0; i < tCount; i++) {
+          const ta = orbitAngle + (Math.PI * 2 * i) / tCount;
+          const tx = cx + Math.cos(ta) * 72;
+          const ty = cy + Math.sin(ta) * 72;
+          if (sprites.turret?.complete) {
+            ctx.save();
+            ctx.translate(tx, ty);
+            ctx.rotate(ta + Math.PI / 2);
+            ctx.drawImage(sprites.turret, -16, -16, 32, 32);
+            ctx.restore();
+          }
+        }
+
+        // Enemies & Off-Screen Boundary Projection Arrows
+        enemies.forEach((en) => {
+          const sp = sprites[en.type] || sprites.swarm;
+          const sz = en.r * 2.2;
+          if (en.x >= -40 && en.x <= canvas.width + 40 && en.y >= -40 && en.y <= canvas.height + 40) {
+            ctx.save();
+            ctx.translate(en.x, en.y);
+            ctx.rotate(en.rot);
+            if (sp?.complete) ctx.drawImage(sp, -sz / 2, -sz / 2, sz, sz);
+            ctx.restore();
+
+            // Health bar
+            ctx.fillStyle = 'rgba(0,0,0,0.65)';
+            ctx.fillRect(en.x - 18, en.y - en.r - 8, 36, 4);
+            ctx.fillStyle = en.type === 'leviathan' ? '#fbbf24' : '#ef4444';
+            ctx.fillRect(en.x - 18, en.y - en.r - 8, 36 * Math.max(0, en.hp / en.maxHp), 4);
+          } else {
+            // Offscreen boundary threat arrow projection
+            const ang = Math.atan2(en.y - cy, en.x - cx);
+            const bx = Math.max(24, Math.min(canvas.width - 24, cx + Math.cos(ang) * (canvas.width * 0.46)));
+            const by = Math.max(24, Math.min(canvas.height - 24, cy + Math.sin(ang) * (canvas.height * 0.44)));
+            ctx.save();
+            ctx.translate(bx, by);
+            ctx.rotate(ang);
+            ctx.fillStyle = en.type === 'leviathan' ? '#fbbf24' : '#ef4444';
+            ctx.beginPath();
+            ctx.moveTo(8, 0); ctx.lineTo(-6, -5); ctx.lineTo(-6, 5); ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          }
+        });
+
+        // Wingman Ship SVG Sprite
+        const wSprite = sprites[wingman.hull] || sprites.hullWing;
+        if (wSprite?.complete) {
+          ctx.save();
+          ctx.translate(wingman.x, wingman.y);
+          ctx.rotate(wingman.angle);
+          ctx.drawImage(wSprite, -24, -24, 48, 48);
+          ctx.restore();
+        }
+
+        // Player Ship SVG Sprite
+        const pSprite = sprites[ship.hull] || sprites.hullDelta;
+        if (pSprite?.complete) {
+          ctx.save();
+          ctx.translate(ship.x, ship.y);
+          ctx.rotate(ship.angle);
+          ctx.drawImage(pSprite, -28, -28, 56, 56);
+          ctx.restore();
+        }
+
+        // Projectiles
+        projectiles.forEach((p) => {
+          ctx.fillStyle = p.color;
+          ctx.beginPath(); ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2); ctx.fill();
+        });
+
+        // Sparks
+        sparks.forEach((s) => {
+          ctx.fillStyle = s.color;
+          ctx.fillRect(s.x - 2, s.y - 2, 4, 4);
+        });
+      }
+
+      function loop() {
+        step();
+        render();
+        requestAnimationFrame(loop);
+      }
+
+      // Dockyard & LAN Modal bindings
+      document.getElementById('btn-open-dock').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('dock-modal').classList.add('active');
+      });
+      document.getElementById('btn-close-dock').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('dock-modal').classList.remove('active');
+      });
+
+      document.querySelectorAll('#hull-selector .hull-card').forEach((card) => {
+        if (card.getAttribute('data-hull') === ship.hull) card.classList.add('active');
+        else card.classList.remove('active');
+        card.addEventListener('click', () => {
+          NexusSDK.audio.upgrade();
+          ship.hull = card.getAttribute('data-hull');
+          saveData.selectedHull = ship.hull;
+          store.save(saveData);
+          document.querySelectorAll('#hull-selector .hull-card').forEach((c) => c.classList.remove('active'));
+          card.classList.add('active');
+        });
+      });
+
+      document.getElementById('btn-up-weapon').addEventListener('click', () => {
+        if ((saveData.currency?.warMerits ?? 0) < 200) return;
+        saveData.currency.warMerits -= 200;
+        saveData.weaponLv = (saveData.weaponLv || 1) + 1;
+        store.save(saveData);
+        NexusSDK.audio.upgrade();
+        updateHud();
+      });
+
+      document.getElementById('btn-up-turret').addEventListener('click', () => {
+        if ((saveData.currency?.scraps ?? 0) < 50 || (saveData.turretCount || 2) >= 8) return;
+        saveData.currency.scraps -= 50;
+        saveData.turretCount = (saveData.turretCount || 2) + 1;
+        store.save(saveData);
+        NexusSDK.audio.upgrade();
+        updateHud();
+      });
+
+      document.getElementById('btn-open-lan').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('lan-modal').classList.add('active');
+      });
+      document.getElementById('btn-close-lan').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('lan-modal').classList.remove('active');
+      });
+      document.getElementById('btn-join-lan').addEventListener('click', () => {
+        const code = document.getElementById('lan-input').value.trim();
+        if (code) {
+          lan.joinRoom(code, 'client');
+          document.getElementById('lan-room-code').textContent = lan.getRoomCode();
+          NexusSDK.audio.upgrade();
+          document.getElementById('lan-modal').classList.remove('active');
+        }
+      });
+
+      spawnWave(1);
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

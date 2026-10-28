@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#030712" />
+  <title>微界演化 · MICRO-GENESIS | Nexus-Mini</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/micro-genesis/icon.svg" />
+  <style>
+    :root {
+      --void: #030712;
+      --panel: rgba(13, 20, 36, 0.84);
+      --border: rgba(0, 240, 255, 0.24);
+      --cyan: #00f0ff;
+      --gold: #fbbf24;
+      --red: #ef4444;
+      --green: #10b981;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      width: 100vw; height: 100dvh; overflow: hidden; overscroll-behavior: none;
+      background: var(--void); color: var(--text);
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    #petri-canvas {
+      position: fixed; inset: 0; width: 100%; height: 100%; display: block;
+      touch-action: none;
+    }
+    .top-hud {
+      position: fixed;
+      top: max(10px, env(safe-area-inset-top));
+      left: max(14px, env(safe-area-inset-left));
+      right: 135px;
+      z-index: 100;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      pointer-events: none;
+    }
+    .hud-pill {
+      pointer-events: auto;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 12px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.76rem;
+    }
+    .hud-val { font-weight: 800; color: var(--cyan); }
+    .hud-val.gold { color: var(--gold); }
+    .bottom-bar {
+      position: fixed;
+      bottom: max(14px, env(safe-area-inset-bottom));
+      left: max(14px, env(safe-area-inset-left));
+      right: max(14px, env(safe-area-inset-right));
+      z-index: 120;
+      display: flex; align-items: center; justify-content: space-between;
+      pointer-events: none;
+    }
+    .btn-row { pointer-events: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+    .bio-btn {
+      min-height: 46px;
+      padding: 0 14px;
+      border-radius: 10px;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.78rem; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 6px;
+      cursor: pointer;
+    }
+    .bio-btn:active { transform: scale(0.95); }
+    .bio-btn.primary {
+      min-height: 54px; padding: 0 18px;
+      background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
+      border-color: #67e8f9;
+      color: #030712;
+      font-size: 0.86rem; font-weight: 900;
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.38);
+    }
+    .bio-btn.gold { border-color: rgba(251, 191, 36, 0.5); color: var(--gold); }
+    .bio-btn img { width: 22px; height: 22px; object-fit: contain; }
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 8000;
+      background: rgba(3, 7, 18, 0.88);
+      backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal-card {
+      max-width: 640px; width: 100%;
+      background: rgba(9, 14, 26, 0.96);
+      border: 1px solid rgba(0, 240, 255, 0.55);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex; flex-direction: column; gap: 12px;
+      max-height: 88dvh; overflow-y: auto;
+    }
+    .soma-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .organ-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .part-card {
+      background: rgba(5, 8, 17, 0.78);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 8px 6px;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      text-align: center; cursor: pointer;
+    }
+    .part-card.active {
+      border-color: var(--cyan);
+      background: rgba(0, 240, 255, 0.14);
+    }
+    .part-card img { width: 42px; height: 42px; object-fit: contain; }
+    @media (max-width: 720px) {
+      .soma-grid { grid-template-columns: 1fr; }
+      .organ-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="petri-canvas"></canvas>
+
+  <!-- 顶部生态生物量与基因序列仪表盘 -->
+  <header class="top-hud">
+    <div class="hud-pill">
+      <img src="../assets/micro-genesis/icon.svg" alt="" width="20" height="20" />
+      <span style="font-weight:800;">微界演化</span>
+      <span class="hud-val" id="hud-biomass">我方生物量 62%</span>
+    </div>
+    <div class="hud-pill">
+      <span>代谢能量 (ATP)</span>
+      <span class="hud-val" id="hud-atp">120</span>
+    </div>
+    <div class="hud-pill">
+      <span>基因序列点 (DNA)</span>
+      <span class="hud-val gold" id="hud-dna">1,500</span>
+    </div>
+    <div class="hud-pill">
+      <span>双螺旋结晶</span>
+      <span class="hud-val gold" id="hud-helix">80</span>
+    </div>
+    <div class="hud-pill">
+      <span id="hud-lan" style="color:var(--green);">R-K 生态演化沙盘运行中</span>
+    </div>
+  </header>
+
+  <!-- 底部实验室、信息素指挥与分裂热键 -->
+  <div class="bottom-bar">
+    <div class="btn-row">
+      <button class="bio-btn gold" id="btn-open-lab">
+        <img src="../assets/micro-genesis/sprites/soma-diploid.svg" alt="Lab" />
+        <span>基因体节装配实验室</span>
+      </button>
+      <button class="bio-btn" id="btn-pheromone">
+        <img src="../assets/micro-genesis/sprites/organ-cnidocyte.svg" alt="Pheromone" />
+        <span id="pheromone-label">信息素：猎杀集结</span>
+      </button>
+      <button class="bio-btn" id="btn-open-lan">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+        <span>局域网 1v1 / 基因码</span>
+      </button>
+    </div>
+    <div class="btn-row">
+      <button class="bio-btn primary" id="btn-mitosis">
+        <img src="../assets/micro-genesis/sprites/organ-chloroplast.svg" alt="Mitosis" />
+        <span>有丝分裂增殖 (消耗 35 ATP)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 基因体节与器官装配实验室弹窗 -->
+  <div class="modal-backdrop" id="lab-modal">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-size:1rem;color:var(--cyan);">基因体节骨架与功能器官装配实验室</h3>
+        <button class="bio-btn" id="btn-close-lab" style="min-height:36px;">投入培养皿</button>
+      </div>
+      <div style="font-size:0.75rem;color:var(--muted);">1. 选择基础多细胞体节底盘（R 策略高分裂 vs K 策略巨兽）：</div>
+      <div class="soma-grid" id="soma-selector">
+        <div class="part-card" data-soma="prokaryote">
+          <img src="../assets/micro-genesis/sprites/soma-prokaryote.svg" alt="Prokaryote" />
+          <div style="font-size:0.8rem;font-weight:700;">原核单室胞体 (R策略)</div>
+          <div style="font-size:0.68rem;color:var(--cyan);">极速分裂 · 低能耗虫群</div>
+        </div>
+        <div class="part-card active" data-soma="diploid">
+          <img src="../assets/micro-genesis/sprites/soma-diploid.svg" alt="Diploid" />
+          <div style="font-size:0.8rem;font-weight:700;">双节游猎胞体 (均衡)</div>
+          <div style="font-size:0.68rem;color:var(--cyan);">攻守兼备 · 双器官槽位</div>
+        </div>
+        <div class="part-card" data-soma="titan">
+          <img src="../assets/micro-genesis/sprites/soma-titan.svg" alt="Titan" />
+          <div style="font-size:0.8rem;font-weight:700;">多节泰坦胞体 (K策略)</div>
+          <div style="font-size:0.68rem;color:var(--gold);">高额生命 · 霸主级体型</div>
+        </div>
+      </div>
+
+      <div style="font-size:0.75rem;color:var(--muted);">2. 挂载外显解剖学功能器官（可多选组合，即时同步至族群）：</div>
+      <div class="organ-grid" id="organ-selector">
+        <div class="part-card active" data-organ="flagella">
+          <img src="../assets/micro-genesis/sprites/organ-flagella.svg" alt="Flagella" />
+          <div style="font-size:0.74rem;font-weight:700;">螺旋鞭毛器</div>
+          <div style="font-size:0.64rem;color:var(--cyan);">移速 +45%</div>
+        </div>
+        <div class="part-card active" data-organ="mandible">
+          <img src="../assets/micro-genesis/sprites/organ-mandible.svg" alt="Mandible" />
+          <div style="font-size:0.74rem;font-weight:700;">几丁质撕咬颚</div>
+          <div style="font-size:0.64rem;color:var(--cyan);">近战噬咬 +60%</div>
+        </div>
+        <div class="part-card" data-organ="chitin">
+          <img src="../assets/micro-genesis/sprites/organ-chitin.svg" alt="Chitin" />
+          <div style="font-size:0.74rem;font-weight:700;">外骨骼重甲</div>
+          <div style="font-size:0.64rem;color:var(--cyan);">减伤 +40%</div>
+        </div>
+        <div class="part-card" data-organ="cnidocyte">
+          <img src="../assets/micro-genesis/sprites/organ-cnidocyte.svg" alt="Cnidocyte" />
+          <div style="font-size:0.74rem;font-weight:700;">剧毒刺胞腺</div>
+          <div style="font-size:0.64rem;color:var(--cyan);">远程毒刺齐射</div>
+        </div>
+        <div class="part-card active" data-organ="chloroplast">
+          <img src="../assets/micro-genesis/sprites/organ-chloroplast.svg" alt="Chloroplast" />
+          <div style="font-size:0.74rem;font-weight:700;">叶绿体光合核</div>
+          <div style="font-size:0.64rem;color:var(--green);">自养生成 ATP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 局域网 1v1 生态沙盘与 URL 基因挑战码弹窗 -->
+  <div class="modal-backdrop" id="lan-modal">
+    <div class="modal-card" style="max-width:480px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-size:1rem;color:var(--cyan);">局域网 1v1 生态对决 & 基因挑战码</h3>
+        <button class="bio-btn" id="btn-close-lan" style="min-height:36px;">关闭</button>
+      </div>
+      <p style="font-size:0.76rem;color:var(--muted);line-height:1.5;">
+        支持同 Wi-Fi / 热点下两台手机实时展开培养皿生态争夺，或复制当前物种基因码发给好友异步攻擂：
+      </p>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div style="font-size:1.05rem;font-weight:900;color:var(--cyan);" id="lan-room-txt">NX-5012</div>
+        <input id="lan-input" type="text" placeholder="输入局域网房间号" style="height:40px;flex:1;background:#030712;border:1px solid var(--border);border-radius:8px;color:#fff;padding:0 10px;" />
+        <button class="bio-btn primary" id="btn-join-lan" style="min-height:40px;font-size:0.76rem;">1v1 直连</button>
+      </div>
+      <button class="bio-btn gold" id="btn-copy-gene" style="width:100%;justify-content:center;">复制当前物种基因代码 (Gene Blueprint)</button>
+    </div>
+  </div>
+
+  <script src="../shared/nexus-sdk.js"></script>
+  <script>
+    (() => {
+      NexusSDK.initShellUI({ gameId: 'micro-genesis', gameTitle: '微界演化' });
+
+      const store = NexusSDK.createGameStorage('NEXUS_MINI_GENESIS_', (isAdmin) => ({
+        currency: { genePoints: isAdmin ? 999999 : 1500, helixShards: isAdmin ? 9999 : 80 },
+        arenaTier: isAdmin ? '寒武纪霸主 (Tier VI)' : '原生代新星 (Tier II)',
+        winStreak: isAdmin ? 88 : 3,
+        soma: 'diploid',
+        organs: ['flagella', 'mandible', 'chloroplast']
+      }));
+      let saveData = store.load();
+
+      const sprites = NexusSDK.loadSprites('micro-genesis', {
+        prokaryote: 'soma-prokaryote.svg',
+        diploid: 'soma-diploid.svg',
+        titan: 'soma-titan.svg',
+        flagella: 'organ-flagella.svg',
+        mandible: 'organ-mandible.svg',
+        chitin: 'organ-chitin.svg',
+        cnidocyte: 'organ-cnidocyte.svg',
+        chloroplast: 'organ-chloroplast.svg',
+        algae: 'env-algae.svg',
+        vent: 'env-vent.svg',
+        planarian: 'boss-planarian.svg',
+        anomalocaris: 'boss-anomalocaris.svg'
+      });
+
+      const canvas = document.getElementById('petri-canvas');
+      const ctx = canvas.getContext('2d');
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      let atp = 120;
+      let currentSoma = saveData.soma || 'diploid';
+      let activeOrgans = new Set(saveData.organs || ['flagella', 'mandible', 'chloroplast']);
+      let pheromoneMode = 'hunt'; // 'hunt' | 'forage' | 'guard'
+
+      // Alpha Specimen (Player directly controlled leader)
+      const alpha = {
+        x: window.innerWidth * 0.35,
+        y: window.innerHeight * 0.5,
+        tx: window.innerWidth * 0.35,
+        ty: window.innerHeight * 0.5,
+        angle: 0,
+        hp: 200,
+        maxHp: 200
+      };
+
+      let friendlyCells = [];
+      let rivalCells = [];
+      let nutrients = [];
+      let vents = [
+        { x: window.innerWidth * 0.28, y: window.innerHeight * 0.38 },
+        { x: window.innerWidth * 0.72, y: window.innerHeight * 0.62 }
+      ];
+      let toxinDarts = [];
+
+      function initEcosystem() {
+        friendlyCells = [];
+        rivalCells = [];
+        nutrients = [];
+        for (let i = 0; i < 6; i++) spawnFriendlyCell(alpha.x + (Math.random() - 0.5) * 90, alpha.y + (Math.random() - 0.5) * 90);
+        for (let i = 0; i < 6; i++) spawnRivalCell( false );
+        // Spawn 1 Ancient Boss (Planarian or Anomalocaris)
+        spawnRivalCell(true);
+        for (let i = 0; i < 20; i++) spawnNutrient();
+        updateHud();
+      }
+
+      function spawnFriendlyCell(x, y) {
+        const hpMap = { prokaryote: 55, diploid: 95, titan: 180 };
+        const szMap = { prokaryote: 28, diploid: 38, titan: 52 };
+        friendlyCells.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          angle: Math.random() * Math.PI * 2,
+          soma: currentSoma,
+          hp: hpMap[currentSoma] || 95,
+          maxHp: hpMap[currentSoma] || 95,
+          size: szMap[currentSoma] || 38,
+          shootCd: 50
+        });
+      }
+
+      function spawnRivalCell(isBoss) {
+        const types = isBoss ? ['planarian', 'anomalocaris'] : ['prokaryote', 'diploid', 'titan'];
+        const type = types[Math.floor(Math.random() * types.length)];
+        const hp = isBoss ? 360 : 85;
+        rivalCells.push({
+          x: canvas.width * (0.6 + Math.random() * 0.32),
+          y: 80 + Math.random() * (canvas.height - 160),
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          angle: Math.random() * Math.PI * 2,
+          type,
+          isBoss,
+          hp,
+          maxHp: hp,
+          size: isBoss ? 64 : 38
+        });
+      }
+
+      function spawnNutrient() {
+        if (nutrients.length >= 28) return;
+        nutrients.push({
+          x: 60 + Math.random() * (canvas.width - 120),
+          y: 70 + Math.random() * (canvas.height - 140),
+          r: 16
+        });
+      }
+
+      canvas.addEventListener('pointerdown', (e) => {
+        alpha.tx = e.clientX;
+        alpha.ty = e.clientY;
+        NexusSDK.audio.tap();
+      });
+      canvas.addEventListener('pointermove', (e) => {
+        if (e.buttons > 0) {
+          alpha.tx = e.clientX;
+          alpha.ty = e.clientY;
+        }
+      });
+
+      // LAN 1v1 Session
+      const lan = NexusSDK.createLanSession('micro-genesis', store.getAuth().room);
+      document.getElementById('lan-room-txt').textContent = lan.getRoomCode();
+      lan.onStatus((st) => {
+        const el = document.getElementById('hud-lan');
+        if (st.connected) {
+          el.textContent = `LAN 1v1 培养皿已直连 (${st.peerLatencyMs}ms)`;
+          el.style.color = '#00f0ff';
+        } else {
+          el.textContent = 'R-K 生态演化沙盘运行中';
+          el.style.color = '#10b981';
+        }
+      });
+      lan.onReliable((msg) => {
+        if (msg.type === 'rival_wave') {
+          spawnRivalCell(false);
+          spawnRivalCell(false);
+        }
+      });
+
+      function updateHud() {
+        const fBio = friendlyCells.length + 2;
+        const rBio = Math.max(1, rivalCells.length);
+        const pct = Math.round((fBio / (fBio + rBio)) * 100);
+        document.getElementById('hud-biomass').textContent = `我方生物量 ${pct}%`;
+        document.getElementById('hud-atp').textContent = Math.floor(atp);
+        document.getElementById('hud-dna').textContent = (saveData.currency?.genePoints ?? 0).toLocaleString();
+        document.getElementById('hud-helix').textContent = (saveData.currency?.helixShards ?? 0).toLocaleString();
+      }
+
+      function step() {
+        // Passive Chloroplast ATP & Thermal Vent ATP
+        if (activeOrgans.has('chloroplast')) {
+          atp = Math.min(300, atp + 0.08);
+        }
+        if (Math.random() < 0.05) spawnNutrient();
+
+        // Move Alpha Specimen
+        const dx = alpha.tx - alpha.x;
+        const dy = alpha.ty - alpha.y;
+        const dist = Math.hypot(dx, dy);
+        const spdBoost = activeOrgans.has('flagella') ? 1.45 : 1.0;
+        if (dist > 4) {
+          alpha.angle = Math.atan2(dy, dx) + Math.PI / 2;
+          alpha.x += (dx / dist) * 3.2 * spdBoost;
+          alpha.y += (dy / dist) * 3.2 * spdBoost;
+        }
+
+        // Alpha & Friendly Cells Consume Algae Nutrients
+        for (let i = nutrients.length - 1; i >= 0; i--) {
+          const n = nutrients[i];
+          let eaten = Math.hypot(alpha.x - n.x, alpha.y - n.y) < 32;
+          if (!eaten) {
+            eaten = friendlyCells.some((fc) => Math.hypot(fc.x - n.x, fc.y - n.y) < fc.size * 0.65);
+          }
+          if (eaten) {
+            atp = Math.min(300, atp + 14);
+            NexusSDK.audio.pop();
+            nutrients.splice(i, 1);
+            // Auto R-strategy mitosis if ATP reaches threshold
+            if (atp >= 85 && friendlyCells.length < 18) {
+              atp -= 35;
+              spawnFriendlyCell(alpha.x, alpha.y);
+            }
+            updateHud();
+          }
+        }
+
+        // Friendly Colony AI (Guided by Pheromone Mode)
+        friendlyCells.forEach((fc) => {
+          fc.soma = currentSoma;
+          let targetX = alpha.x;
+          let targetY = alpha.y;
+          if (pheromoneMode === 'hunt' && rivalCells.length > 0) {
+            const rv = rivalCells[0];
+            targetX = rv.x; targetY = rv.y;
+          } else if (pheromoneMode === 'forage' && nutrients.length > 0) {
+            const nu = nutrients[0];
+            targetX = nu.x; targetY = nu.y;
+          }
+          const ang = Math.atan2(targetY - fc.y, targetX - fc.x);
+          fc.vx = fc.vx * 0.9 + Math.cos(ang) * 0.25 * spdBoost;
+          fc.vy = fc.vy * 0.9 + Math.sin(ang) * 0.25 * spdBoost;
+          fc.x = Math.max(30, Math.min(canvas.width - 30, fc.x + fc.vx));
+          fc.y = Math.max(30, Math.min(canvas.height - 30, fc.y + fc.vy));
+          fc.angle = Math.atan2(fc.vy, fc.vx) + Math.PI / 2;
+
+          // Cnidocyte Ranged Toxin Dart
+          if (activeOrgans.has('cnidocyte') && rivalCells.length > 0) {
+            fc.shootCd--;
+            if (fc.shootCd <= 0) {
+              fc.shootCd = 65;
+              const rv = rivalCells[0];
+              const a = Math.atan2(rv.y - fc.y, rv.x - fc.x);
+              toxinDarts.push({ x: fc.x, y: fc.y, vx: Math.cos(a) * 8, vy: Math.sin(a) * 8, life: 55 });
+            }
+          }
+        });
+
+        // Update Toxin Darts
+        for (let i = toxinDarts.length - 1; i >= 0; i--) {
+          const td = toxinDarts[i];
+          td.x += td.vx; td.y += td.vy; td.life--;
+          let hit = false;
+          for (const rv of rivalCells) {
+            if (Math.hypot(td.x - rv.x, td.y - rv.y) < rv.size * 0.55) {
+              rv.hp -= 18;
+              hit = true;
+              break;
+            }
+          }
+          if (hit || td.life <= 0) toxinDarts.splice(i, 1);
+        }
+
+        // Rival Cells & Ancient Boss AI + Melee Combat
+        const biteDmg = activeOrgans.has('mandible') ? 1.8 : 1.0;
+        const armorMult = activeOrgans.has('chitin') ? 0.6 : 1.0;
+
+        for (let i = rivalCells.length - 1; i >= 0; i--) {
+          const rv = rivalCells[i];
+          // Planarian regeneration trait
+          if (rv.type === 'planarian' && rv.hp < rv.maxHp) rv.hp += 0.08;
+
+          const target = friendlyCells[0] || alpha;
+          const ang = Math.atan2(target.y - rv.y, target.x - rv.x);
+          rv.x += Math.cos(ang) * (rv.isBoss ? 1.15 : 1.55);
+          rv.y += Math.sin(ang) * (rv.isBoss ? 1.15 : 1.55);
+          rv.angle = ang + Math.PI / 2;
+
+          // Contact with Alpha
+          if (Math.hypot(rv.x - alpha.x, rv.y - alpha.y) < rv.size * 0.6 + 22) {
+            rv.hp -= 1.8 * biteDmg;
+          }
+
+          // Contact with Friendly Colony
+          for (let j = friendlyCells.length - 1; j >= 0; j--) {
+            const fc = friendlyCells[j];
+            if (Math.hypot(rv.x - fc.x, rv.y - fc.y) < (rv.size + fc.size) * 0.45) {
+              rv.hp -= 1.4 * biteDmg;
+              fc.hp -= 0.9 * armorMult;
+              if (fc.hp <= 0) {
+                friendlyCells.splice(j, 1);
+                updateHud();
+              }
+            }
+          }
+
+          if (rv.hp <= 0) {
+            NexusSDK.audio.pickup();
+            saveData.currency.genePoints += rv.isBoss ? 250 : 40;
+            if (rv.isBoss) saveData.currency.helixShards += 5;
+            store.save(saveData);
+            atp = Math.min(300, atp + 35);
+            rivalCells.splice(i, 1);
+            setTimeout(() => spawnRivalCell(Math.random() < 0.25), 1200);
+            updateHud();
+          }
+        }
+      }
+
+      function drawOrganismsWithOrgans(x, y, angle, somaKey, size, isAlpha) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+
+        // Attached Organelles Layer
+        if (activeOrgans.has('flagella') && sprites.flagella?.complete) {
+          ctx.drawImage(sprites.flagella, -size * 0.35, size * 0.28, size * 0.7, size * 0.7);
+        }
+        if (activeOrgans.has('mandible') && sprites.mandible?.complete) {
+          ctx.drawImage(sprites.mandible, -size * 0.4, -size * 0.82, size * 0.8, size * 0.7);
+        }
+
+        // Core Soma SVG Sprite
+        const somaSprite = sprites[somaKey] || sprites.diploid;
+        if (somaSprite?.complete) {
+          ctx.drawImage(somaSprite, -size / 2, -size / 2, size, size);
+        }
+
+        if (activeOrgans.has('chloroplast') && sprites.chloroplast?.complete) {
+          ctx.drawImage(sprites.chloroplast, -size * 0.25, -size * 0.25, size * 0.5, size * 0.5);
+        }
+        if (activeOrgans.has('chitin') && sprites.chitin?.complete) {
+          ctx.drawImage(sprites.chitin, -size * 0.42, -size * 0.42, size * 0.84, size * 0.84);
+        }
+
+        ctx.restore();
+
+        if (isAlpha) {
+          ctx.strokeStyle = '#00f0ff';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(x, y, size * 0.65, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+
+      function render() {
+        ctx.fillStyle = '#030712';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Microscopic Petri-Dish Grid
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.035)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < canvas.width; x += 54) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+        }
+        for (let y = 0; y < canvas.height; y += 54) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+        }
+
+        // Hydrothermal Vents SVG Sprites
+        vents.forEach((v) => {
+          if (sprites.vent?.complete) {
+            ctx.drawImage(sprites.vent, v.x - 42, v.y - 42, 84, 84);
+          }
+        });
+
+        // Photosynthetic Algae Clusters SVG Sprites
+        nutrients.forEach((n) => {
+          if (sprites.algae?.complete) {
+            ctx.drawImage(sprites.algae, n.x - 18, n.y - 18, 36, 36);
+          }
+        });
+
+        // Friendly Colony Organisms
+        friendlyCells.forEach((fc) => {
+          drawOrganismsWithOrgans(fc.x, fc.y, fc.angle, fc.soma, fc.size, false);
+        });
+
+        // Player Alpha Leader
+        drawOrganismsWithOrgans(alpha.x, alpha.y, alpha.angle, currentSoma, 54, true);
+
+        // Rival Strain & Ancient Bosses (Planarian & Anomalocaris SVG Sprites)
+        rivalCells.forEach((rv) => {
+          const sp = sprites[rv.type] || sprites.diploid;
+          ctx.save();
+          ctx.translate(rv.x, rv.y);
+          ctx.rotate(rv.angle);
+          if (sp?.complete) {
+            ctx.drawImage(sp, -rv.size / 2, -rv.size / 2, rv.size, rv.size);
+          }
+          ctx.restore();
+
+          // Rival / Boss Health Bar
+          ctx.fillStyle = 'rgba(0,0,0,0.7)';
+          ctx.fillRect(rv.x - 22, rv.y - rv.size / 2 - 8, 44, 4);
+          ctx.fillStyle = rv.isBoss ? '#fbbf24' : '#ef4444';
+          ctx.fillRect(rv.x - 22, rv.y - rv.size / 2 - 8, 44 * Math.max(0, rv.hp / rv.maxHp), 4);
+        });
+
+        // Cnidocyte Toxin Darts
+        toxinDarts.forEach((td) => {
+          ctx.fillStyle = '#10b981';
+          ctx.beginPath();
+          ctx.arc(td.x, td.y, 4, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      function loop() {
+        step();
+        render();
+        requestAnimationFrame(loop);
+      }
+
+      // UI Controls
+      document.getElementById('btn-mitosis').addEventListener('click', () => {
+        if (atp < 35) return;
+        atp -= 35;
+        spawnFriendlyCell(alpha.x + (Math.random() - 0.5) * 40, alpha.y + (Math.random() - 0.5) * 40);
+        if (lan.isConnected()) lan.sendReliable({ type: 'rival_wave' });
+        NexusSDK.audio.upgrade();
+        updateHud();
+      });
+
+      document.getElementById('btn-pheromone').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        const modes = [
+          { id: 'hunt', label: '信息素：猎杀集结' },
+          { id: 'forage', label: '信息素：采食微藻' },
+          { id: 'guard', label: '信息素：环卫首领' }
+        ];
+        const idx = (modes.findIndex((m) => m.id === pheromoneMode) + 1) % modes.length;
+        pheromoneMode = modes[idx].id;
+        document.getElementById('pheromone-label').textContent = modes[idx].label;
+      });
+
+      document.getElementById('btn-open-lab').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('lab-modal').classList.add('active');
+      });
+      document.getElementById('btn-close-lab').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('lab-modal').classList.remove('active');
+      });
+
+      document.querySelectorAll('#soma-selector .part-card').forEach((card) => {
+        card.classList.toggle('active', card.getAttribute('data-soma') === currentSoma);
+        card.addEventListener('click', () => {
+          NexusSDK.audio.upgrade();
+          currentSoma = card.getAttribute('data-soma');
+          saveData.soma = currentSoma;
+          store.save(saveData);
+          document.querySelectorAll('#soma-selector .part-card').forEach((c) => c.classList.remove('active'));
+          card.classList.add('active');
+        });
+      });
+
+      document.querySelectorAll('#organ-selector .part-card').forEach((card) => {
+        const org = card.getAttribute('data-organ');
+        card.classList.toggle('active', activeOrgans.has(org));
+        card.addEventListener('click', () => {
+          NexusSDK.audio.tap();
+          if (activeOrgans.has(org) && activeOrgans.size > 1) {
+            activeOrgans.delete(org);
+            card.classList.remove('active');
+          } else {
+            activeOrgans.add(org);
+            card.classList.add('active');
+          }
+          saveData.organs = Array.from(activeOrgans);
+          store.save(saveData);
+        });
+      });
+
+      document.getElementById('btn-open-lan').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('lan-modal').classList.add('active');
+      });
+      document.getElementById('btn-close-lan').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('lan-modal').classList.remove('active');
+      });
+      document.getElementById('btn-join-lan').addEventListener('click', () => {
+        const val = document.getElementById('lan-input').value.trim();
+        if (val) {
+          lan.joinRoom(val, 'client');
+          document.getElementById('lan-room-txt').textContent = lan.getRoomCode();
+          NexusSDK.audio.upgrade();
+          document.getElementById('lan-modal').classList.remove('active');
+        }
+      });
+      document.getElementById('btn-copy-gene').addEventListener('click', () => {
+        const geneCode = 'GENE-' + btoa(JSON.stringify({ s: currentSoma, o: Array.from(activeOrgans) }));
+        navigator.clipboard?.writeText(geneCode).catch(() => {});
+        NexusSDK.audio.pickup();
+        document.getElementById('lan-modal').classList.remove('active');
+      });
+
+      initEcosystem();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

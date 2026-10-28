@@ -1,9 +1,15 @@
-const CACHE_NAME = 'nexus-mini-portal-v2.0';
+const CACHE_NAME = 'nexus-mini-portal-v3.0';
 const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon.svg',
+  './shared/nexus-sdk.js',
+  './tank/index.html',
+  './star/index.html',
+  './miner/index.html',
+  './pudding/index.html',
+  './genesis/index.html',
   './assets/tank-battle/icon.svg',
   './assets/star-defender/icon.svg',
   './assets/star-defender/concept.jpg',

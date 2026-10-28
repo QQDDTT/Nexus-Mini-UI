@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#030712" />
+  <title>保卫布丁 · PUDDING DEFENSE | Nexus-Mini</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/pudding-defense/icon.svg" />
+  <style>
+    :root {
+      --void: #030712;
+      --panel: rgba(13, 20, 36, 0.86);
+      --border: rgba(0, 240, 255, 0.25);
+      --cyan: #00f0ff;
+      --gold: #fbbf24;
+      --red: #ef4444;
+      --green: #10b981;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      width: 100vw; height: 100dvh; overflow: hidden; overscroll-behavior: none;
+      background: var(--void); color: var(--text);
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    #td-layout {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      padding: max(6px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+      gap: 6px;
+      background: radial-gradient(circle at 50% 40%, #0b1528 0%, #030712 85%);
+    }
+    .top-bar {
+      height: 46px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding-right: 118px;
+      gap: 8px;
+    }
+    .hud-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .hud-pill {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 5px 11px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.76rem;
+    }
+    .hud-val { font-weight: 800; color: var(--cyan); }
+    .hud-val.gold { color: var(--gold); }
+    .board-container {
+      flex: 1; min-height: 0;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    canvas {
+      background: #060b16;
+      border: 2px solid rgba(0, 240, 255, 0.32);
+      border-radius: 12px;
+      max-width: 100%; max-height: 100%;
+      aspect-ratio: 16 / 9;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+      touch-action: none;
+    }
+    /* Bottom Tower Dock */
+    .tower-dock {
+      height: 62px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      overflow-x: auto;
+    }
+    .tower-btn {
+      min-height: 54px; min-width: 118px;
+      padding: 4px 10px;
+      border-radius: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+    .tower-btn.active {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.32);
+    }
+    .tower-btn img { width: 34px; height: 34px; object-fit: contain; }
+    .t-name { font-size: 0.76rem; font-weight: 700; text-align: left; }
+    .t-cost { font-size: 0.68rem; color: var(--gold); font-weight: 700; text-align: left; }
+    .skill-btn {
+      min-height: 54px; padding: 0 14px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
+      border: 1px solid #67e8f9;
+      color: #030712;
+      font-size: 0.78rem; font-weight: 900;
+      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 8000;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal-card {
+      max-width: 460px; width: 100%;
+      background: rgba(9, 14, 26, 0.96);
+      border: 1px solid rgba(0, 240, 255, 0.55);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="td-layout">
+    <!-- 顶部状态栏 -->
+    <header class="top-bar">
+      <div class="hud-group">
+        <div class="hud-pill">
+          <img src="../assets/pudding-defense/icon.svg" alt="" width="20" height="20" />
+          <span style="font-weight:800;">保卫布丁</span>
+          <span class="hud-val" id="hud-wave">波次 1 / 15</span>
+        </div>
+        <div class="hud-pill">
+          <span>局内糖币</span>
+          <span class="hud-val gold" id="hud-gold">360</span>
+        </div>
+        <div class="hud-pill">
+          <span>皇家布丁完整度</span>
+          <span class="hud-val" id="hud-pudding">10 / 10 HP</span>
+        </div>
+        <div class="hud-pill">
+          <span>储备皇家糖晶</span>
+          <span class="hud-val gold" id="hud-crystals">600</span>
+        </div>
+      </div>
+      <div class="hud-group">
+        <button class="hud-pill" id="btn-speed" style="cursor:pointer;color:var(--cyan);font-weight:800;">1x 正常速度</button>
+        <button class="hud-pill" id="btn-open-lan" style="cursor:pointer;">LAN 双防区联机</button>
+      </div>
+    </header>
+
+    <!-- 16x9 战术棋盘画布 -->
+    <main class="board-container">
+      <canvas id="td-canvas" width="960" height="540"></canvas>
+    </main>
+
+    <!-- 底部五大甜品卫士建造栏与全屏暴风雪合体技 -->
+    <footer class="tower-dock" id="tower-dock">
+      <button class="tower-btn active" data-tower="boba">
+        <img src="../assets/pudding-defense/sprites/tower-boba.svg" alt="Boba" />
+        <div>
+          <div class="t-name">波波连射塔</div>
+          <div class="t-cost">100 糖币 · 高频点射</div>
+        </div>
+      </button>
+      <button class="tower-btn" data-tower="frost">
+        <img src="../assets/pudding-defense/sprites/tower-frost.svg" alt="Frost" />
+        <div>
+          <div class="t-name">冰霜北极熊</div>
+          <div class="t-cost">120 糖币 · 45%减速</div>
+        </div>
+      </button>
+      <button class="tower-btn" data-tower="sun">
+        <img src="../assets/pudding-defense/sprites/tower-sun.svg" alt="Sun" />
+        <div>
+          <div class="t-name">太阳蛋黄炮</div>
+          <div class="t-cost">160 糖币 · 全周AOE</div>
+        </div>
+      </button>
+      <button class="tower-btn" data-tower="missile">
+        <img src="../assets/pudding-defense/sprites/tower-missile.svg" alt="Missile" />
+        <div>
+          <div class="t-name">泡泡糖导弹</div>
+          <div class="t-cost">180 糖币 · 远程追踪</div>
+        </div>
+      </button>
+      <button class="tower-btn" data-tower="prism">
+        <img src="../assets/pudding-defense/sprites/tower-prism.svg" alt="Prism" />
+        <div>
+          <div class="t-name">彩虹棱镜塔</div>
+          <div class="t-cost">220 糖币 · 折射破甲</div>
+        </div>
+      </button>
+      <button class="skill-btn" id="btn-blizzard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>糖霜暴风雪 (100糖币)</span>
+      </button>
+    </footer>
+  </div>
+
+  <!-- 局域网双人协同建塔弹窗 -->
+  <div class="modal-backdrop" id="lan-modal">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-size:1rem;color:var(--cyan);">局域网 1~5ms 双防区协同塔防</h3>
+        <button class="hud-pill" id="btn-close-lan" style="cursor:pointer;">关闭</button>
+      </div>
+      <p style="font-size:0.76rem;color:var(--muted);line-height:1.5;">
+        两台手机在同一 Wi-Fi / 热点下输入相同房间号，即可实时同步建塔、集火标点清除路障并共享糖币！
+      </p>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div style="font-size:1.1rem;font-weight:900;color:var(--cyan);" id="lan-room-code">NX-4096</div>
+        <input id="lan-input" type="text" placeholder="输入房间号" style="height:40px;flex:1;background:#030712;border:1px solid var(--border);border-radius:8px;color:#fff;padding:0 10px;" />
+        <button class="skill-btn" id="btn-join-lan" style="min-height:40px;">加入防区</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/nexus-sdk.js"></script>
+  <script>
+    (() => {
+      NexusSDK.initShellUI({ gameId: 'pudding-defense', gameTitle: '保卫布丁' });
+
+      const store = NexusSDK.createGameStorage('NEXUS_MINI_PUDDING_', (isAdmin) => ({
+        currency: { sugarCrystals: isAdmin ? 99999 : 600 },
+        goldenPuddings: isAdmin ? 30 : 4,
+        clearedChapters: isAdmin ? 5 : 1
+      }));
+      let saveData = store.load();
+
+      const sprites = NexusSDK.loadSprites('pudding-defense', {
+        pudding: 'pudding-core.svg',
+        boba: 'tower-boba.svg',
+        frost: 'tower-frost.svg',
+        sun: 'tower-sun.svg',
+        missile: 'tower-missile.svg',
+        prism: 'tower-prism.svg',
+        sugar: 'obstacle-sugar.svg',
+        cake: 'obstacle-cake.svg',
+        cookie: 'monster-cookie.svg',
+        boar: 'monster-boar.svg',
+        jelly: 'monster-jelly.svg',
+        glutton: 'boss-glutton.svg'
+      });
+
+      const canvas = document.getElementById('td-canvas');
+      const ctx = canvas.getContext('2d');
+      const COLS = 16;
+      const ROWS = 9;
+      const CELL = 60; // 16*60 = 960, 9*60 = 540
+
+      const TOWER_DEFS = {
+        boba:    { cost: 100, range: 165, cd: 24, dmg: 18, color: '#00f0ff' },
+        frost:   { cost: 120, range: 150, cd: 38, dmg: 12, color: '#38bdf8', slow: 0.55 },
+        sun:     { cost: 160, range: 135, cd: 52, dmg: 26, color: '#fbbf24', aoe: true },
+        missile: { cost: 180, range: 260, cd: 55, dmg: 45, color: '#f43f5e' },
+        prism:   { cost: 220, range: 210, cd: 32, dmg: 38, color: '#a855f7' }
+      };
+
+      // Winding Path Waypoints (Grid Coordinates [col, row])
+      const WAYPOINTS = [
+        [0, 2], [4, 2], [4, 6], [8, 6], [8, 1], [12, 1], [12, 7], [15, 7]
+      ];
+      const pathSet = new Set();
+      for (let i = 0; i < WAYPOINTS.length - 1; i++) {
+        const [c1, r1] = WAYPOINTS[i];
+        const [c2, r2] = WAYPOINTS[i + 1];
+        for (let c = Math.min(c1, c2); c <= Math.max(c1, c2); c++) {
+          for (let r = Math.min(r1, r2); r <= Math.max(r1, r2); r++) {
+            pathSet.add(`${c},${r}`);
+          }
+        }
+      }
+
+      let selectedTowerType = 'boba';
+      let gold = 380;
+      let wave = 1;
+      let puddingHp = 10;
+      let speedMult = 1;
+      let freezeTimer = 0;
+      let focusTarget = null;
+
+      let towers = [];
+      let obstacles = [];
+      let monsters = [];
+      let bullets = [];
+      let pulses = [];
+      let spawnQueue = 10;
+      let spawnTick = 40;
+
+      function initObstacles() {
+        obstacles = [];
+        const spots = [
+          [2, 4, 'sugar'], [3, 4, 'cake'], [6, 3, 'sugar'], [6, 4, 'cake'],
+          [10, 3, 'sugar'], [10, 5, 'cake'], [13, 3, 'sugar'], [14, 4, 'cake']
+        ];
+        spots.forEach(([c, r, type]) => {
+          const maxHp = type === 'cake' ? 240 : 130;
+          obstacles.push({
+            c, r,
+            x: c * CELL + CELL / 2,
+            y: r * CELL + CELL / 2,
+            type,
+            hp: maxHp,
+            maxHp,
+            reward: type === 'cake' ? 150 : 80
+          });
+        });
+      }
+
+      function spawnMonster() {
+        const types = ['cookie', 'boar', 'jelly'];
+        const type = (spawnQueue === 1 && wave % 2 === 0) ? 'glutton' : types[(spawnQueue + wave) % types.length];
+        const baseHp = type === 'glutton' ? 520 : (type === 'boar' ? 135 : 75);
+        const spd = type === 'boar' ? 1.55 : (type === 'glutton' ? 0.75 : 1.15);
+        monsters.push({
+          type,
+          wpIdx: 0,
+          x: WAYPOINTS[0][0] * CELL + CELL / 2,
+          y: WAYPOINTS[0][1] * CELL + CELL / 2,
+          hp: baseHp + wave * 32,
+          maxHp: baseHp + wave * 32,
+          speed: spd,
+          slowTimer: 0
+        });
+      }
+
+      // LAN Co-op Session
+      const lan = NexusSDK.createLanSession('pudding-defense', store.getAuth().room);
+      document.getElementById('lan-room-code').textContent = lan.getRoomCode();
+      lan.onReliable((msg) => {
+        if (msg.type === 'place_tower') {
+          placeOrUpgradeTower(msg.c, msg.r, msg.tType, false);
+        }
+      });
+
+      function placeOrUpgradeTower(c, r, tType, broadcast = true) {
+        if (pathSet.has(`${c},${r}`)) return;
+        const obs = obstacles.find((o) => o.c === c && o.r === r);
+        if (obs) {
+          focusTarget = obs;
+          NexusSDK.audio.tap();
+          return;
+        }
+        const existing = towers.find((t) => t.c === c && t.r === r);
+        if (existing) {
+          const upCost = 90 * existing.level;
+          if (existing.level < 3 && gold >= upCost) {
+            gold -= upCost;
+            existing.level++;
+            existing.dmg = Math.round(existing.dmg * 1.45);
+            existing.range += 18;
+            NexusSDK.audio.upgrade();
+            updateHud();
+          }
+          return;
+        }
+        const def = TOWER_DEFS[tType];
+        if (!def || gold < def.cost) return;
+        gold -= def.cost;
+        towers.push({
+          c, r,
+          x: c * CELL + CELL / 2,
+          y: r * CELL + CELL / 2,
+          type: tType,
+          level: 1,
+          range: def.range,
+          cdMax: def.cd,
+          cd: 0,
+          dmg: def.dmg,
+          color: def.color,
+          slow: def.slow || 0,
+          aoe: !!def.aoe
+        });
+        NexusSDK.audio.pop();
+        if (broadcast && lan.isConnected()) {
+          lan.sendReliable({ type: 'place_tower', c, r, tType });
+        }
+        updateHud();
+      }
+
+      canvas.addEventListener('pointerdown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const px = (e.clientX - rect.left) * scaleX;
+        const py = (e.clientY - rect.top) * scaleY;
+
+        // Check if user tapped a monster to lock focus
+        for (const m of monsters) {
+          if (Math.hypot(px - m.x, py - m.y) < 28) {
+            focusTarget = m;
+            NexusSDK.audio.tap();
+            return;
+          }
+        }
+
+        const c = Math.floor(px / CELL);
+        const r = Math.floor(py / CELL);
+        if (c >= 0 && c < COLS && r >= 0 && r < ROWS) {
+          placeOrUpgradeTower(c, r, selectedTowerType, true);
+        }
+      });
+
+      function updateHud() {
+        document.getElementById('hud-wave').textContent = `波次 ${wave} / 15`;
+        document.getElementById('hud-gold').textContent = gold.toLocaleString();
+        document.getElementById('hud-pudding').textContent = `${puddingHp} / 10 HP`;
+        document.getElementById('hud-crystals').textContent = (saveData.currency?.sugarCrystals ?? 0).toLocaleString();
+      }
+
+      function stepOnce() {
+        if (freezeTimer > 0) freezeTimer--;
+
+        // Spawn monsters
+        if (spawnQueue > 0) {
+          spawnTick--;
+          if (spawnTick <= 0) {
+            spawnMonster();
+            spawnQueue--;
+            spawnTick = 55;
+          }
+        } else if (monsters.length === 0) {
+          NexusSDK.audio.win();
+          wave++;
+          gold += 140;
+          saveData.currency.sugarCrystals += 45;
+          if (puddingHp === 10) saveData.goldenPuddings = (saveData.goldenPuddings || 0) + 1;
+          store.save(saveData);
+          spawnQueue = 8 + wave * 2;
+          updateHud();
+        }
+
+        // Move Monsters along Waypoints
+        for (let i = monsters.length - 1; i >= 0; i--) {
+          const m = monsters[i];
+          if (m.slowTimer > 0) m.slowTimer--;
+          const targetWp = WAYPOINTS[m.wpIdx + 1];
+          if (!targetWp) {
+            // Reached Royal Pudding Core
+            puddingHp = Math.max(1, puddingHp - 1);
+            NexusSDK.audio.warn();
+            if (focusTarget === m) focusTarget = null;
+            monsters.splice(i, 1);
+            updateHud();
+            continue;
+          }
+          const tx = targetWp[0] * CELL + CELL / 2;
+          const ty = targetWp[1] * CELL + CELL / 2;
+          const dx = tx - m.x;
+          const dy = ty - m.y;
+          const dist = Math.hypot(dx, dy);
+          const spd = freezeTimer > 0 ? m.speed * 0.2 : (m.slowTimer > 0 ? m.speed * 0.55 : m.speed);
+          if (dist <= spd) {
+            m.x = tx; m.y = ty;
+            m.wpIdx++;
+          } else {
+            m.x += (dx / dist) * spd;
+            m.y += (dy / dist) * spd;
+          }
+        }
+
+        // Towers Attack Logic (Prioritize Focus Target or First Monster / Obstacle)
+        towers.forEach((tw) => {
+          if (tw.cd > 0) tw.cd--;
+          if (tw.cd > 0) return;
+
+          if (tw.aoe) {
+            // Sun Tower 360° AOE Pulse
+            const hasTarget = monsters.some((m) => Math.hypot(m.x - tw.x, m.y - tw.y) <= tw.range) ||
+                              obstacles.some((o) => Math.hypot(o.x - tw.x, o.y - tw.y) <= tw.range);
+            if (hasTarget) {
+              tw.cd = tw.cdMax;
+              pulses.push({ x: tw.x, y: tw.y, r: 16, maxR: tw.range, alpha: 0.9, color: tw.color });
+              NexusSDK.audio.pop();
+              monsters.forEach((m) => {
+                if (Math.hypot(m.x - tw.x, m.y - tw.y) <= tw.range) dDamage(m, tw.dmg);
+              });
+              obstacles.forEach((o) => {
+                if (Math.hypot(o.x - tw.x, o.y - tw.y) <= tw.range) dDamage(o, tw.dmg);
+              });
+            }
+            return;
+          }
+
+          let target = null;
+          if (focusTarget && focusTarget.hp > 0 && Math.hypot(focusTarget.x - tw.x, focusTarget.y - tw.y) <= tw.range) {
+            target = focusTarget;
+          } else {
+            target = monsters.find((m) => Math.hypot(m.x - tw.x, m.y - tw.y) <= tw.range) ||
+                     obstacles.find((o) => Math.hypot(o.x - tw.x, o.y - tw.y) <= tw.range);
+          }
+
+          if (target) {
+            tw.cd = tw.cdMax;
+            bullets.push({
+              x: tw.x, y: tw.y,
+              target,
+              dmg: tw.dmg,
+              slow: tw.slow,
+              color: tw.color
+            });
+            NexusSDK.audio.pop();
+          }
+        });
+
+        // Update Bullets
+        for (let i = bullets.length - 1; i >= 0; i--) {
+          const b = bullets[i];
+          if (!b.target || b.target.hp <= 0) {
+            bullets.splice(i, 1);
+            continue;
+          }
+          const dx = b.target.x - b.x;
+          const dy = b.target.y - b.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 12) {
+            if (b.slow && b.target.wpIdx !== undefined) b.target.slowTimer = 90;
+            dDamage(b.target, b.dmg);
+            bullets.splice(i, 1);
+          } else {
+            b.x += (dx / dist) * 10.5;
+            b.y += (dy / dist) * 10.5;
+          }
+        }
+
+        // Cleanup dead monsters & obstacles
+        for (let i = monsters.length - 1; i >= 0; i--) {
+          const m = monsters[i];
+          if (m.hp <= 0) {
+            gold += m.type === 'glutton' ? 120 : 28;
+            if (focusTarget === m) focusTarget = null;
+            monsters.splice(i, 1);
+            updateHud();
+          }
+        }
+        for (let i = obstacles.length - 1; i >= 0; i--) {
+          const o = obstacles[i];
+          if (o.hp <= 0) {
+            gold += o.reward;
+            saveData.currency.sugarCrystals += 20;
+            store.save(saveData);
+            NexusSDK.audio.pickup();
+            if (focusTarget === o) focusTarget = null;
+            obstacles.splice(i, 1);
+            updateHud();
+          }
+        }
+
+        for (let i = pulses.length - 1; i >= 0; i--) {
+          const p = pulses[i];
+          p.r += (p.maxR - p.r) * 0.22;
+          p.alpha -= 0.05;
+          if (p.alpha <= 0) pulses.splice(i, 1);
+        }
+      }
+
+      function dDamage(entity, dmg) {
+        entity.hp -= dmg;
+      }
+
+      function render() {
+        ctx.fillStyle = '#060b16';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw 16x9 Grid & Winding Path
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            const x = c * CELL;
+            const y = r * CELL;
+            if (pathSet.has(`${c},${r}`)) {
+              ctx.fillStyle = 'rgba(0, 240, 255, 0.09)';
+              ctx.fillRect(x + 2, y + 2, CELL - 4, CELL - 4);
+            } else {
+              ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+              ctx.strokeRect(x, y, CELL, CELL);
+            }
+          }
+        }
+
+        // Obstacles (Sugar & Cake SVG Sprites)
+        obstacles.forEach((o) => {
+          const sp = sprites[o.type];
+          if (sp?.complete) {
+            ctx.drawImage(sp, o.x - 24, o.y - 24, 48, 48);
+          }
+          if (o.hp < o.maxHp) {
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(o.x - 20, o.y - 28, 40, 4);
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(o.x - 20, o.y - 28, 40 * (o.hp / o.maxHp), 4);
+          }
+        });
+
+        // Royal Caramel Pudding Core at last Waypoint [15, 7]
+        const [pc, pr] = WAYPOINTS[WAYPOINTS.length - 1];
+        if (sprites.pudding?.complete) {
+          ctx.drawImage(sprites.pudding, pc * CELL + 4, pr * CELL + 4, 52, 52);
+        }
+
+        // Towers (5 Dessert Guardians SVG Sprites)
+        towers.forEach((tw) => {
+          const sp = sprites[tw.type];
+          if (sp?.complete) {
+            ctx.drawImage(sp, tw.x - 25, tw.y - 25, 50, 50);
+          }
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = 'bold 11px Orbitron, sans-serif';
+          ctx.fillText(`Lv.${tw.level}`, tw.x - 12, tw.y + 26);
+        });
+
+        // Monsters (SVG Sprites)
+        monsters.forEach((m) => {
+          const sp = sprites[m.type] || sprites.cookie;
+          const sz = m.type === 'glutton' ? 54 : 44;
+          if (sp?.complete) {
+            ctx.drawImage(sp, m.x - sz / 2, m.y - sz / 2, sz, sz);
+          }
+          ctx.fillStyle = 'rgba(0,0,0,0.7)';
+          ctx.fillRect(m.x - 18, m.y - sz / 2 - 6, 36, 4);
+          ctx.fillStyle = '#ef4444';
+          ctx.fillRect(m.x - 18, m.y - sz / 2 - 6, 36 * Math.max(0, m.hp / m.maxHp), 4);
+        });
+
+        // Target Focus Lock Reticle
+        if (focusTarget && focusTarget.hp > 0) {
+          ctx.strokeStyle = '#ef4444';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(focusTarget.x, focusTarget.y, 26, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // AOE Pulses & Bullets
+        pulses.forEach((p) => {
+          ctx.strokeStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        });
+
+        bullets.forEach((b) => {
+          ctx.fillStyle = b.color;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, 5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      function loop() {
+        for (let s = 0; s < speedMult; s++) stepOnce();
+        render();
+        requestAnimationFrame(loop);
+      }
+
+      // UI Dock Bindings
+      document.querySelectorAll('#tower-dock .tower-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          NexusSDK.audio.tap();
+          selectedTowerType = btn.getAttribute('data-tower');
+          document.querySelectorAll('#tower-dock .tower-btn').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+
+      document.getElementById('btn-blizzard').addEventListener('click', () => {
+        if (gold < 100) return;
+        gold -= 100;
+        freezeTimer = 300;
+        monsters.forEach((m) => { m.hp -= 45; });
+        NexusSDK.audio.laser();
+        updateHud();
+      });
+
+      document.getElementById('btn-speed').addEventListener('click', (e) => {
+        NexusSDK.audio.tap();
+        speedMult = speedMult === 1 ? 2 : 1;
+        e.currentTarget.textContent = `${speedMult}x 战斗速度`;
+      });
+
+      document.getElementById('btn-open-lan').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('lan-modal').classList.add('active');
+      });
+      document.getElementById('btn-close-lan').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        document.getElementById('lan-modal').classList.remove('active');
+      });
+      document.getElementById('btn-join-lan').addEventListener('click', () => {
+        const val = document.getElementById('lan-input').value.trim();
+        if (val) {
+          lan.joinRoom(val, 'client');
+          document.getElementById('lan-room-code').textContent = lan.getRoomCode();
+          NexusSDK.audio.upgrade();
+          document.getElementById('lan-modal').classList.remove('active');
+        }
+      });
+
+      initObstacles();
+      // Pre-place 1 starter Boba Tower so action starts immediately
+      towers.push({
+        c: 3, r: 3, x: 3 * CELL + 30, y: 3 * CELL + 30,
+        type: 'boba', level: 1, range: 165, cdMax: 24, cd: 0, dmg: 18, color: '#00f0ff', slow: 0, aoe: false
+      });
+      updateHud();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

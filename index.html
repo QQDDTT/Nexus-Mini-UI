@@ -1028,7 +1028,7 @@
         <footer class="hero-actions">
           <button class="primary-cta" id="btn-launch-game">
             <svg class="nx-ico" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>
-            <span>立即全屏出击 (精灵贴图预览舱)</span>
+            <span>立即全屏出击 (进入实机游戏)</span>
           </button>
           <button class="secondary-cta" id="btn-open-pwa-guide">
             <svg class="nx-ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1057,15 +1057,7 @@
 
   <!-- 全屏内联微游容器 (Arcade Fullscreen Frame) -->
   <div id="arcade-frame-overlay">
-    <div class="sandbox-hud">
-      <h3 id="sandbox-title">星轨防线 · 实时矢量精灵战术预览舱</h3>
-      <p id="sandbox-desc">滑动/点击屏幕操控主角精灵贴图 · 严禁符号替代美术 · 离散瞬态音效已启用</p>
-    </div>
-    <button class="floating-return-pill" id="btn-exit-arcade">
-      <svg class="nx-ico" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      <span>返回大厅清单</span>
-    </button>
-    <canvas id="sandbox-canvas"></canvas>
+    <iframe id="game-iframe" title="Nexus-Mini Fullscreen Game Frame" allow="fullscreen; autoplay" style="width:100%;height:100%;border:none;display:block;background:#030712;"></iframe>
   </div>
 
   <!-- 统帅身份登录与切换模态弹窗 -->
@@ -1210,6 +1202,7 @@
         name: '星轨防线',
         en: 'STAR DEFENDER',
         genre: '深空战术射击',
+        entryUrl: './star/index.html',
         icon: './assets/star-defender/icon.svg',
         storageKeyPrefix: 'NEXUS_MINI_SD_',
         multiplayerMode: '一人一机 · 局域网 1~5ms 护航 / URL 星域挑战',
@@ -1260,6 +1253,7 @@
         name: '钢铁防线',
         en: 'TANK BATTLE',
         genre: '基地合作守卫',
+        entryUrl: './tank/index.html',
         icon: './assets/tank-battle/icon.svg',
         storageKeyPrefix: 'NEXUS_MINI_TANK_',
         multiplayerMode: '一人一机 · 局域网 1~5ms 双坦协同守基地',
@@ -1307,6 +1301,7 @@
         name: '掘金先锋',
         en: 'GOLD MINER VANGUARD',
         genre: '物理动量益智',
+        entryUrl: './miner/index.html',
         icon: './assets/gold-miner/icon.svg',
         storageKeyPrefix: 'NEXUS_MINI_MINER_',
         multiplayerMode: '一人一机 · 局域网双钩合力起吊 / URL 残影竞速',
@@ -1354,6 +1349,7 @@
         name: '保卫布丁',
         en: 'PUDDING DEFENSE',
         genre: 'Q萌治愈系塔防',
+        entryUrl: './pudding/index.html',
         icon: './assets/pudding-defense/icon.svg',
         storageKeyPrefix: 'NEXUS_MINI_PUDDING_',
         multiplayerMode: '一人一机 · 局域网双人协同建塔与集火',
@@ -1404,6 +1400,7 @@
         name: '微界演化',
         en: 'MICRO-GENESIS',
         genre: '基因演化沙盒',
+        entryUrl: './genesis/index.html',
         icon: './assets/micro-genesis/icon.svg',
         storageKeyPrefix: 'NEXUS_MINI_GENESIS_',
         multiplayerMode: '一人一机 · 局域网 1v1 生态沙盘 / URL 基因码攻擂',
@@ -1782,153 +1779,47 @@
     }
 
     /* =========================================================================
-     * 5. 全屏内联微游容器：真实加载 SVG 矢量精灵贴图渲染 (严禁简陋纯色块/符号)
+     * 5. 全屏内联微游容器：Iframe 容器承载完整 5 大微游实机代码 + PostMessage 身份握手
      * ========================================================================= */
-    let sandboxRaf = null;
     function launchArcadeSandbox() {
       NexusAudio.launch();
       const overlay = document.getElementById('arcade-frame-overlay');
-      const canvas = document.getElementById('sandbox-canvas');
-      const ctx = canvas.getContext('2d');
-      overlay.classList.add('active');
-
-      document.getElementById('sandbox-title').textContent =
-        `${currentGame.name} (${currentGame.en}) · 全屏矢量精灵贴图预览舱`;
-      document.getElementById('sandbox-desc').textContent =
-        `统帅: ${currentUser.nickname} [${currentUser.userId}] · 实时渲染 12 套多层 SVG 精灵贴图资产`;
-
-      // 预加载当前游戏的 SVG 精灵贴图
-      const loadedSprites = currentGame.sprites.map((sp) => {
-        const img = new Image();
-        img.src = sp.src;
-        return { img, name: sp.name };
+      const iframe = document.getElementById('game-iframe');
+      const params = new URLSearchParams({
+        userId: currentUser.userId,
+        userName: currentUser.nickname,
+        token: currentUser.token || '',
+        room: currentRoomCode
       });
-      const heroSprite = loadedSprites[0]?.img;
-
-      function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize);
-
-      const player = { x: canvas.width * 0.5, y: canvas.height * 0.72, tx: canvas.width * 0.5, ty: canvas.height * 0.72, angle: 0 };
-      const pulses = [];
-      const entities = Array.from({ length: 11 }, (_, i) => ({
-        spriteIdx: 1 + (i % (loadedSprites.length - 1)),
-        x: 80 + Math.random() * (canvas.width - 160),
-        y: 80 + Math.random() * (canvas.height * 0.52),
-        r: 26,
-        vx: (Math.random() - 0.5) * 2.2,
-        vy: (Math.random() - 0.5) * 1.6
-      }));
-      let score = 0;
-
-      function onPointer(e) {
-        const pt = e.touches ? e.touches[0] : e;
-        if (!pt) return;
-        player.tx = pt.clientX;
-        player.ty = pt.clientY;
-      }
-      function onFire(e) {
-        onPointer(e);
-        NexusAudio.tap();
-        const dx = player.tx - player.x;
-        const dy = player.ty - player.y;
-        const ang = Math.atan2(dy, dx);
-        player.angle = ang + Math.PI / 2;
-        pulses.push({ x: player.x, y: player.y, vx: Math.cos(ang) * 12, vy: Math.sin(ang) * 12, ang, life: 70 });
-      }
-
-      canvas.onpointermove = onPointer;
-      canvas.onpointerdown = onFire;
-
-      function loop() {
-        if (!overlay.classList.contains('active')) return;
-        ctx.fillStyle = '#030712';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // 微网格
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.04)';
-        ctx.lineWidth = 1;
-        for (let x = 0; x < canvas.width; x += 48) {
-          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-        }
-        for (let y = 0; y < canvas.height; y += 48) {
-          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-        }
-
-        player.x += (player.tx - player.x) * 0.14;
-        player.y += (player.ty - player.y) * 0.14;
-
-        // 渲染敌方/矿石/生物 SVG 精灵贴图
-        entities.forEach((ent) => {
-          ent.x += ent.vx;
-          ent.y += ent.vy;
-          if (ent.x < 40 || ent.x > canvas.width - 40) ent.vx *= -1;
-          if (ent.y < 60 || ent.y > canvas.height - 60) ent.vy *= -1;
-
-          const spObj = loadedSprites[ent.spriteIdx];
-          if (spObj && spObj.img.complete) {
-            ctx.drawImage(spObj.img, ent.x - 28, ent.y - 28, 56, 56);
-          }
-        });
-
-        // 渲染多层能量脉冲弹
-        for (let i = pulses.length - 1; i >= 0; i--) {
-          const p = pulses[i];
-          p.x += p.vx;
-          p.y += p.vy;
-          p.life--;
-
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.ang);
-          ctx.fillStyle = '#0284c7';
-          ctx.fillRect(-10, -4, 20, 8);
-          ctx.fillStyle = '#00f0ff';
-          ctx.fillRect(-6, -2, 14, 4);
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(2, -1, 6, 2);
-          ctx.restore();
-
-          entities.forEach((ent) => {
-            const dist = Math.hypot(p.x - ent.x, p.y - ent.y);
-            if (dist < ent.r + 8) {
-              p.life = 0;
-              score += 100;
-              ent.x = 70 + Math.random() * (canvas.width - 140);
-              ent.y = 70 + Math.random() * (canvas.height * 0.5);
-              NexusAudio.success();
-            }
-          });
-
-          if (p.life <= 0) pulses.splice(i, 1);
-        }
-
-        // 渲染主角 SVG 精灵贴图
-        ctx.save();
-        ctx.translate(player.x, player.y);
-        ctx.rotate(player.angle);
-        if (heroSprite && heroSprite.complete) {
-          ctx.drawImage(heroSprite, -34, -34, 68, 68);
-        }
-        ctx.restore();
-
-        ctx.fillStyle = '#fbbf24';
-        ctx.font = 'bold 15px Orbitron, sans-serif';
-        ctx.fillText(`SPRITE SANDBOX SCORE: ${score}`, 20, canvas.height - 22);
-
-        sandboxRaf = requestAnimationFrame(loop);
-      }
-      sandboxRaf = requestAnimationFrame(loop);
+      overlay.classList.add('active');
+      iframe.src = `${currentGame.entryUrl}?${params.toString()}`;
     }
 
-    document.getElementById('btn-exit-arcade').addEventListener('click', () => {
+    function exitArcadeFrame() {
       NexusAudio.tap();
-      document.getElementById('arcade-frame-overlay').classList.remove('active');
-      if (sandboxRaf) cancelAnimationFrame(sandboxRaf);
+      const overlay = document.getElementById('arcade-frame-overlay');
+      const iframe = document.getElementById('game-iframe');
+      overlay.classList.remove('active');
+      iframe.src = 'about:blank';
       NexusAudio.cleanup();
+      renderHeroStage();
+    }
+
+    window.addEventListener('message', (e) => {
+      if (!e.data || !e.data.type) return;
+      if (e.data.type === 'NEXUS_GET_AUTH') {
+        const iframe = document.getElementById('game-iframe');
+        iframe?.contentWindow?.postMessage({
+          type: 'NEXUS_AUTH_RESP',
+          userId: currentUser.userId,
+          nickname: currentUser.nickname,
+          token: currentUser.token || ''
+        }, '*');
+      } else if (e.data.type === 'NEXUS_SAVE_SYNC') {
+        if (currentTab === 'save') renderHeroStage();
+      } else if (e.data.type === 'NEXUS_EXIT_GAME') {
+        exitArcadeFrame();
+      }
     });
 
     /* =========================================================================
