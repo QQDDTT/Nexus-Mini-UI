@@ -32,7 +32,7 @@
       position: fixed;
       top: max(10px, env(safe-area-inset-top));
       left: max(14px, env(safe-area-inset-left));
-      right: 120px;
+      right: 72px;
       z-index: 100;
       display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
       pointer-events: none;
@@ -59,65 +59,33 @@
       display: flex; align-items: center; justify-content: space-between;
       pointer-events: none;
     }
-    .btn-row { pointer-events: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-row { pointer-events: auto; display: flex; gap: 8px; align-items: center; }
     .bio-btn {
-      min-height: 46px;
-      padding: 0 14px;
-      border-radius: 10px;
+      width: 52px; height: 52px;
+      min-width: 52px; min-height: 52px;
+      padding: 0;
+      border-radius: 14px;
       background: var(--panel);
       backdrop-filter: blur(10px);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       color: var(--text);
-      font-size: 0.78rem; font-weight: 700;
-      display: inline-flex; align-items: center; gap: 6px;
+      display: inline-flex; align-items: center; justify-content: center;
       cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     }
-    .bio-btn:active { transform: scale(0.95); }
+    .bio-btn:active { transform: scale(0.92); }
     .bio-btn.primary {
-      min-height: 54px; padding: 0 18px;
+      width: 68px; height: 68px;
+      min-width: 68px; min-height: 68px;
+      border-radius: 50%;
       background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
-      border-color: #67e8f9;
+      border: 2px solid #67e8f9;
       color: #030712;
-      font-size: 0.86rem; font-weight: 900;
-      box-shadow: 0 0 18px rgba(0, 240, 255, 0.38);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.42);
     }
-    .bio-btn.gold { border-color: rgba(251, 191, 36, 0.5); color: var(--gold); }
-    .bio-btn img { width: 22px; height: 22px; object-fit: contain; }
-    .modal-backdrop {
-      position: fixed; inset: 0; z-index: 8000;
-      background: rgba(3, 7, 18, 0.88);
-      backdrop-filter: blur(10px);
-      display: none; align-items: center; justify-content: center; padding: 16px;
-    }
-    .modal-backdrop.active { display: flex; }
-    .modal-card {
-      max-width: 640px; width: 100%;
-      background: rgba(9, 14, 26, 0.96);
-      border: 1px solid rgba(0, 240, 255, 0.55);
-      border-radius: 16px;
-      padding: 18px 20px;
-      display: flex; flex-direction: column; gap: 12px;
-      max-height: 88dvh; overflow-y: auto;
-    }
-    .soma-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .organ-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-    .part-card {
-      background: rgba(5, 8, 17, 0.78);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
-      padding: 8px 6px;
-      display: flex; flex-direction: column; align-items: center; gap: 5px;
-      text-align: center; cursor: pointer;
-    }
-    .part-card.active {
-      border-color: var(--cyan);
-      background: rgba(0, 240, 255, 0.14);
-    }
-    .part-card img { width: 42px; height: 42px; object-fit: contain; }
-    @media (max-width: 720px) {
-      .soma-grid { grid-template-columns: 1fr; }
-      .organ-grid { grid-template-columns: repeat(3, 1fr); }
-    }
+    .bio-btn.gold { border-color: rgba(251, 191, 36, 0.55); color: var(--gold); }
+    .bio-btn img { width: 30px; height: 30px; object-fit: contain; pointer-events: none; }
+    .bio-btn.primary img { width: 34px; height: 34px; }
   </style>
 </head>
 <body>
@@ -147,19 +115,22 @@
     </div>
   </header>
 
-  <!-- 底部体节切换、信息素指挥与有丝分裂纯图标按钮 -->
+  <!-- 底部纯图标按钮：左下体节切换 + 信息素切换，右下冲刺撕咬 + 有丝分裂 -->
   <div class="bottom-bar">
     <div class="btn-row">
-      <button class="bio-btn gold" id="btn-cycle-soma" aria-label="切换细胞体节" title="切换细胞体节" style="width:52px;height:52px;padding:0;border-radius:14px;justify-content:center;">
-        <img id="soma-btn-ico" src="../assets/micro-genesis/sprites/soma-diploid.svg" alt="Soma" style="width:30px;height:30px;" />
+      <button class="bio-btn gold" id="btn-cycle-soma" aria-label="切换细胞体节" title="切换细胞体节">
+        <img id="soma-btn-ico" src="../assets/micro-genesis/sprites/soma-diploid.svg" alt="Soma" />
       </button>
-      <button class="bio-btn" id="btn-pheromone" aria-label="切换信息素指令" title="切换信息素指令" style="width:52px;height:52px;padding:0;border-radius:14px;justify-content:center;">
-        <img id="pheromone-ico" src="../assets/micro-genesis/sprites/organ-cnidocyte.svg" alt="Pheromone" style="width:28px;height:28px;" />
+      <button class="bio-btn" id="btn-pheromone" aria-label="切换信息素指令" title="切换信息素指令" style="border-color:rgba(239,68,68,0.75);">
+        <img id="pheromone-ico" src="../assets/micro-genesis/sprites/organ-cnidocyte.svg" alt="Pheromone" />
       </button>
     </div>
     <div class="btn-row">
-      <button class="bio-btn primary" id="btn-mitosis" aria-label="有丝分裂增殖" title="有丝分裂增殖" style="width:66px;height:66px;min-height:66px;padding:0;border-radius:50%;justify-content:center;">
-        <img src="../assets/micro-genesis/sprites/organ-chloroplast.svg" alt="Mitosis" style="width:34px;height:34px;" />
+      <button class="bio-btn" id="btn-dash-bite" aria-label="骨颚突刺撕咬" title="骨颚突刺撕咬" style="border-color:rgba(239,68,68,0.75);box-shadow:0 0 14px rgba(239,68,68,0.28);">
+        <img src="../assets/micro-genesis/sprites/organ-mandible.svg" alt="Dash Bite" />
+      </button>
+      <button class="bio-btn primary" id="btn-mitosis" aria-label="有丝分裂增殖" title="有丝分裂增殖">
+        <img src="../assets/micro-genesis/sprites/organ-chloroplast.svg" alt="Mitosis" />
       </button>
     </div>
   </div>
@@ -174,7 +145,7 @@
         arenaTier: isAdmin ? '寒武纪霸主 (Tier VI)' : '原生代新星 (Tier II)',
         winStreak: isAdmin ? 88 : 3,
         soma: 'diploid',
-        organs: ['flagella', 'mandible', 'chloroplast']
+        organs: ['flagella', 'mandible', 'chloroplast', 'chitin', 'cnidocyte']
       }));
       let saveData = store.load();
 
@@ -202,28 +173,63 @@
       resize();
       window.addEventListener('resize', resize);
 
-      let atp = 120;
+      let atp = 150;
       let currentSoma = saveData.soma || 'diploid';
-      let activeOrgans = new Set(saveData.organs || ['flagella', 'mandible', 'chloroplast']);
+      let activeOrgans = new Set(saveData.organs || ['flagella', 'mandible', 'chloroplast', 'chitin', 'cnidocyte']);
       let pheromoneMode = 'hunt'; // 'hunt' | 'forage' | 'guard'
+      let tick = 0;
 
-      // Alpha Specimen (Player directly controlled leader)
+      // Juice & Kinesthetics State (Hit-Stop, Trauma Shake, Squash & Stretch)
+      let hitStopFrames = 0;
+      let screenTrauma = 0;
+
+      // Visual FX Pools for Differentiated Collisions
+      let shockwaves = [];    // Expanding rings (phagocytosis, carapace spark, thermal surge, mitosis)
+      let particles = [];     // Blood droplets, carapace shards, ATP bubbles, toxin splashes
+      let slashArcs = [];     // Mandible bite crescent slashes
+      let lightningArcs = []; // Bio-electric / chitin deflection arcs
+      let vortices = [];      // Flagella propulsion fluid wake rings
+      let mitosisAnims = [];  // Pinch-and-stretch cell division animations
+      let marineSnow = [];    // Deep-sea ambient colloidal suspension
+
+      for (let i = 0; i < 38; i++) {
+        marineSnow.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          r: 0.8 + Math.random() * 1.8,
+          alpha: 0.12 + Math.random() * 0.25,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: -0.15 - Math.random() * 0.25
+        });
+      }
+
+      // Player Alpha Specimen with Elastic Physics & Deformation State
       const alpha = {
         x: window.innerWidth * 0.35,
-        y: window.innerHeight * 0.5,
+        y: window.innerHeight * 0.52,
+        vx: 0,
+        vy: 0,
         tx: window.innerWidth * 0.35,
-        ty: window.innerHeight * 0.5,
+        ty: window.innerHeight * 0.52,
         angle: 0,
-        hp: 200,
-        maxHp: 200
+        hp: 240,
+        maxHp: 240,
+        size: 54,
+        mass: 3.4,
+        scaleX: 1,
+        scaleY: 1,
+        flash: 0,
+        jawSnap: 0,
+        dashTimer: 0,
+        ventBoost: 0
       };
 
       let friendlyCells = [];
       let rivalCells = [];
       let nutrients = [];
       let vents = [
-        { x: window.innerWidth * 0.28, y: window.innerHeight * 0.38 },
-        { x: window.innerWidth * 0.72, y: window.innerHeight * 0.62 }
+        { x: window.innerWidth * 0.27, y: window.innerHeight * 0.42, pulse: 0 },
+        { x: window.innerWidth * 0.73, y: window.innerHeight * 0.60, pulse: Math.PI }
       ];
       let toxinDarts = [];
 
@@ -231,37 +237,65 @@
         friendlyCells = [];
         rivalCells = [];
         nutrients = [];
-        for (let i = 0; i < 6; i++) spawnFriendlyCell(alpha.x + (Math.random() - 0.5) * 90, alpha.y + (Math.random() - 0.5) * 90);
-        for (let i = 0; i < 6; i++) spawnRivalCell( false );
-        // Spawn 1 Ancient Boss (Planarian or Anomalocaris)
-        spawnRivalCell(true);
+        for (let i = 0; i < 6; i++) {
+          spawnFriendlyCell(alpha.x + (Math.random() - 0.5) * 110, alpha.y + (Math.random() - 0.5) * 110, false);
+        }
+        for (let i = 0; i < 5; i++) spawnRivalCell(false);
+        spawnRivalCell(true); // Ancient Boss (Planarian or Anomalocaris)
         for (let i = 0; i < 20; i++) spawnNutrient();
         updateHud();
       }
 
-      function spawnFriendlyCell(x, y) {
-        const hpMap = { prokaryote: 55, diploid: 95, titan: 180 };
-        const szMap = { prokaryote: 28, diploid: 38, titan: 52 };
+      function getSomaSpecs(somaKey) {
+        if (somaKey === 'prokaryote') return { hp: 60, size: 30, mass: 1.1, speed: 1.25 };
+        if (somaKey === 'titan') return { hp: 195, size: 50, mass: 3.0, speed: 0.82 };
+        return { hp: 105, size: 38, mass: 1.8, speed: 1.0 };
+      }
+
+      function spawnFriendlyCell(x, y, withMitosisFX = true) {
+        const spec = getSomaSpecs(currentSoma);
+        const angle = Math.random() * Math.PI * 2;
+        if (withMitosisFX) {
+          mitosisAnims.push({
+            x, y,
+            angle,
+            soma: currentSoma,
+            size: spec.size,
+            progress: 0
+          });
+          spawnShockwave(x, y, spec.size * 1.3, '#00f0ff', 2.5);
+          spawnParticles(x, y, '#00f0ff', 10, 2.8, 3.5);
+        }
         friendlyCells.push({
-          x, y,
-          vx: (Math.random() - 0.5) * 2,
-          vy: (Math.random() - 0.5) * 2,
-          angle: Math.random() * Math.PI * 2,
+          x: x + Math.cos(angle) * 14,
+          y: y + Math.sin(angle) * 14,
+          vx: Math.cos(angle) * 3.6,
+          vy: Math.sin(angle) * 3.6,
+          angle,
           soma: currentSoma,
-          hp: hpMap[currentSoma] || 95,
-          maxHp: hpMap[currentSoma] || 95,
-          size: szMap[currentSoma] || 38,
-          shootCd: 50
+          hp: spec.hp,
+          maxHp: spec.hp,
+          size: spec.size,
+          mass: spec.mass,
+          speedMult: spec.speed,
+          scaleX: 1.35,
+          scaleY: 0.72,
+          flash: 6,
+          jawSnap: 0,
+          shootCd: 45 + Math.floor(Math.random() * 25),
+          hitCd: 0
         });
       }
 
       function spawnRivalCell(isBoss) {
         const types = isBoss ? ['planarian', 'anomalocaris'] : ['prokaryote', 'diploid', 'titan'];
         const type = types[Math.floor(Math.random() * types.length)];
-        const hp = isBoss ? 360 : 85;
+        const hp = isBoss ? 380 : (type === 'titan' ? 140 : 85);
+        const sz = isBoss ? 66 : (type === 'titan' ? 46 : 36);
+        const mass = isBoss ? 5.2 : (type === 'titan' ? 2.6 : 1.5);
         rivalCells.push({
-          x: canvas.width * (0.6 + Math.random() * 0.32),
-          y: 80 + Math.random() * (canvas.height - 160),
+          x: canvas.width * (0.58 + Math.random() * 0.34),
+          y: 75 + Math.random() * (canvas.height - 150),
           vx: (Math.random() - 0.5) * 2,
           vy: (Math.random() - 0.5) * 2,
           angle: Math.random() * Math.PI * 2,
@@ -269,22 +303,195 @@
           isBoss,
           hp,
           maxHp: hp,
-          size: isBoss ? 64 : 38
+          size: sz,
+          mass,
+          scaleX: 1.25,
+          scaleY: 0.8,
+          flash: 0,
+          poisonTimer: 0,
+          hitCd: 0
         });
       }
 
-      function spawnNutrient() {
-        if (nutrients.length >= 28) return;
+      function spawnNutrient(x, y, isMeat = false) {
+        if (nutrients.length >= 32) return;
         nutrients.push({
-          x: 60 + Math.random() * (canvas.width - 120),
-          y: 70 + Math.random() * (canvas.height - 140),
-          r: 16
+          x: x ?? (60 + Math.random() * (canvas.width - 120)),
+          y: y ?? (70 + Math.random() * (canvas.height - 140)),
+          vx: isMeat ? (Math.random() - 0.5) * 3.8 : (Math.random() - 0.5) * 0.4,
+          vy: isMeat ? (Math.random() - 0.5) * 3.8 : (Math.random() - 0.5) * 0.4,
+          r: isMeat ? 14 : 16,
+          rot: Math.random() * Math.PI * 2,
+          isMeat,
+          suckTarget: null,
+          scale: 1
         });
+      }
+
+      // Animation Spawners for Different Collision Types
+      function spawnShockwave(x, y, maxR, color, lineWidth = 2.5) {
+        shockwaves.push({ x, y, r: 6, maxR, color, alpha: 0.95, lineWidth });
+      }
+
+      function spawnParticles(x, y, color, count = 8, speed = 3.5, size = 3.5) {
+        for (let i = 0; i < count; i++) {
+          const a = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+          const sp = speed * (0.5 + Math.random() * 0.8);
+          particles.push({
+            x, y,
+            vx: Math.cos(a) * sp,
+            vy: Math.sin(a) * sp,
+            r: size * (0.65 + Math.random() * 0.6),
+            color,
+            alpha: 1,
+            decay: 0.028 + Math.random() * 0.02
+          });
+        }
+      }
+
+      function spawnBiteSlash(x, y, angle, radius, color = '#ef4444') {
+        slashArcs.push({
+          x, y, angle,
+          r: radius,
+          alpha: 1.0,
+          color
+        });
+      }
+
+      function spawnDeflectArc(x1, y1, x2, y2, color = '#fbbf24') {
+        lightningArcs.push({ x1, y1, x2, y2, color, life: 8 });
+      }
+
+      // Collision Physics Engine: Impulse + Squash & Stretch + Specific FX
+      function resolvePairCollision(a, b, mode) {
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
+        const rA = (a.size || 40) * 0.46;
+        const rB = (b.size || 40) * 0.46;
+        const minDist = rA + rB;
+        if (dist >= minDist) return false;
+
+        const nx = dx / dist;
+        const ny = dy / dist;
+        const overlap = minDist - dist;
+        const totalMass = (a.mass || 1.5) + (b.mass || 1.5);
+
+        // Positional separation
+        a.x -= nx * overlap * ((b.mass || 1.5) / totalMass);
+        a.y -= ny * overlap * ((b.mass || 1.5) / totalMass);
+        b.x += nx * overlap * ((a.mass || 1.5) / totalMass);
+        b.y += ny * overlap * ((a.mass || 1.5) / totalMass);
+
+        // Contact Midpoint
+        const cx = a.x + nx * rA;
+        const cy = a.y + ny * rA;
+
+        if (mode === 'flock') {
+          // 1. Soft Membrane Elastic Boid Repulsion (Friendly vs Friendly)
+          const push = 1.15;
+          a.vx -= nx * push * 0.5;
+          a.vy -= ny * push * 0.5;
+          b.vx += nx * push * 0.5;
+          b.vy += ny * push * 0.5;
+          // Gentle jelly squish
+          a.scaleX = 1.14; a.scaleY = 0.88;
+          b.scaleX = 1.14; b.scaleY = 0.88;
+          if (Math.random() < 0.15) {
+            spawnShockwave(cx, cy, 18, 'rgba(0, 240, 255, 0.45)', 1.2);
+          }
+          return true;
+        }
+
+        if (mode === 'combat') {
+          // 2. Predatory Mandible Bite vs Chitin Carapace Deflection
+          const knock = a === alpha && alpha.dashTimer > 0 ? 9.5 : 5.2;
+          a.vx = -nx * knock * ((b.mass || 1.5) / totalMass);
+          a.vy = -ny * knock * ((b.mass || 1.5) / totalMass);
+          b.vx = nx * knock * ((a.mass || 1.5) / totalMass) * 1.35;
+          b.vy = ny * knock * ((a.mass || 1.5) / totalMass) * 1.35;
+
+          // Pronounced Squash & Stretch along impact normal
+          a.scaleX = 1.32; a.scaleY = 0.72;
+          b.scaleX = 0.70; b.scaleY = 1.36;
+          a.jawSnap = 10;
+
+          const hasMandible = activeOrgans.has('mandible');
+          const hasChitin = activeOrgans.has('chitin');
+          const dashMult = (a === alpha && alpha.dashTimer > 0) ? 2.4 : 1.0;
+          const biteDmg = (a === alpha ? 16 : 11) * (hasMandible ? 1.65 : 1.0) * dashMult;
+          const enemyDmg = (b.isBoss ? 14 : 7) * (hasChitin ? 0.52 : 1.0);
+
+          b.hp -= biteDmg;
+          b.flash = 6;
+          if (a !== alpha) {
+            a.hp -= enemyDmg;
+            a.flash = 4;
+          } else {
+            screenTrauma = Math.min(1.0, screenTrauma + (b.isBoss ? 0.45 : 0.25));
+          }
+
+          // Hit-Stop micro-freeze on heavy Alpha bite or Boss clash
+          if (a === alpha && (alpha.dashTimer > 0 || b.isBoss)) {
+            hitStopFrames = 2;
+          }
+
+          // Mandible Crimson Slash Arc + Cytoplasmic Blood Droplets
+          const impactAngle = Math.atan2(ny, nx);
+          spawnBiteSlash(cx, cy, impactAngle, rB * 0.95, '#ef4444');
+          spawnParticles(cx, cy, '#ef4444', a === alpha ? 10 : 6, 4.2, 3.8);
+
+          // Chitin Carapace Golden Hexagon Spark & Deflection Arc
+          if (hasChitin || b.type === 'titan' || b.isBoss) {
+            spawnShockwave(cx, cy, 34, '#fbbf24', 2.2);
+            spawnDeflectArc(a.x, a.y, b.x, b.y, '#fbbf24');
+            spawnParticles(cx, cy, '#fbbf24', 5, 4.8, 2.8);
+            NexusSDK.audio.hit();
+          } else {
+            NexusSDK.audio.shoot();
+          }
+          return true;
+        }
+        return false;
+      }
+
+      function triggerAlphaDashBite() {
+        if (atp < 15) return;
+        atp -= 15;
+        alpha.dashTimer = 16;
+        alpha.jawSnap = 14;
+        alpha.scaleX = 0.68;
+        alpha.scaleY = 1.42;
+
+        // Aim toward nearest rival or current target pointer
+        let ang = alpha.angle - Math.PI / 2;
+        if (rivalCells.length > 0) {
+          let best = rivalCells[0];
+          let minD = Math.hypot(best.x - alpha.x, best.y - alpha.y);
+          for (const rv of rivalCells) {
+            const d = Math.hypot(rv.x - alpha.x, rv.y - alpha.y);
+            if (d < minD) { minD = d; best = rv; }
+          }
+          ang = Math.atan2(best.y - alpha.y, best.x - alpha.x);
+          alpha.angle = ang + Math.PI / 2;
+        }
+        alpha.vx = Math.cos(ang) * 12.5;
+        alpha.vy = Math.sin(ang) * 12.5;
+        alpha.tx = alpha.x + Math.cos(ang) * 160;
+        alpha.ty = alpha.y + Math.sin(ang) * 160;
+
+        // Hydraulic jet wake burst + mandible slash preview
+        spawnShockwave(alpha.x - Math.cos(ang) * 22, alpha.y - Math.sin(ang) * 22, 42, '#00f0ff', 2.8);
+        spawnParticles(alpha.x - Math.cos(ang) * 24, alpha.y - Math.sin(ang) * 24, '#00f0ff', 12, 4.5, 3.5);
+        spawnBiteSlash(alpha.x + Math.cos(ang) * 28, alpha.y + Math.sin(ang) * 28, ang, 34, '#00f0ff');
+        NexusSDK.audio.laser();
+        updateHud();
       }
 
       canvas.addEventListener('pointerdown', (e) => {
         alpha.tx = e.clientX;
         alpha.ty = e.clientY;
+        spawnShockwave(e.clientX, e.clientY, 26, 'rgba(0, 240, 255, 0.5)', 1.5);
         NexusSDK.audio.tap();
       });
       canvas.addEventListener('pointermove', (e) => {
@@ -299,10 +506,10 @@
       lan.onStatus((st) => {
         const el = document.getElementById('hud-lan');
         if (st.connected) {
-          el.textContent = `LAN 1v1 培养皿已直连 (${st.peerLatencyMs}ms)`;
+          el.textContent = `LAN 1v1 (${st.peerLatencyMs}ms)`;
           el.style.color = '#00f0ff';
         } else {
-          el.textContent = 'R-K 生态演化沙盘运行中';
+          el.textContent = 'R-K 演化沙盘';
           el.style.color = '#10b981';
         }
       });
@@ -324,46 +531,139 @@
       }
 
       function step() {
-        // Passive Chloroplast ATP & Thermal Vent ATP
+        tick++;
+        if (hitStopFrames > 0) {
+          hitStopFrames--;
+          return;
+        }
+
+        // Decay Trauma & Deformation Scales smoothly back to (1, 1)
+        screenTrauma = Math.max(0, screenTrauma - 0.045);
+        alpha.scaleX += (1 - alpha.scaleX) * 0.18;
+        alpha.scaleY += (1 - alpha.scaleY) * 0.18;
+        if (alpha.flash > 0) alpha.flash--;
+        if (alpha.jawSnap > 0) alpha.jawSnap--;
+        if (alpha.dashTimer > 0) alpha.dashTimer--;
+        if (alpha.ventBoost > 0) alpha.ventBoost--;
+
         if (activeOrgans.has('chloroplast')) {
-          atp = Math.min(300, atp + 0.08);
+          atp = Math.min(300, atp + 0.09);
         }
         if (Math.random() < 0.05) spawnNutrient();
 
-        // Move Alpha Specimen
+        // 5. Hydrothermal Vent Collision & Thermal Surge Impulse
+        vents.forEach((v) => {
+          v.pulse += 0.05;
+          if (Math.sin(v.pulse) > 0.96 && Math.random() < 0.35) {
+            spawnShockwave(v.x, v.y, 72, 'rgba(251, 191, 36, 0.55)', 2.0);
+          }
+          // Check Alpha & Friendly Cells entering thermal vent core
+          const dAlpha = Math.hypot(alpha.x - v.x, alpha.y - v.y);
+          if (dAlpha < 46 && alpha.ventBoost <= 0) {
+            alpha.ventBoost = 45;
+            atp = Math.min(300, atp + 18);
+            const pushAng = Math.atan2(alpha.y - v.y, alpha.x - v.x);
+            alpha.vx += Math.cos(pushAng) * 6.5;
+            alpha.vy += Math.sin(pushAng) * 6.5;
+            alpha.scaleX = 0.78; alpha.scaleY = 1.28;
+            spawnShockwave(v.x, v.y, 64, '#fbbf24', 2.6);
+            spawnParticles(v.x, v.y, '#fbbf24', 8, 3.8, 3.2);
+            NexusSDK.audio.pickup();
+            updateHud();
+          }
+        });
+
+        // Move Alpha Specimen (Seek pointer + Velocity damping)
         const dx = alpha.tx - alpha.x;
         const dy = alpha.ty - alpha.y;
         const dist = Math.hypot(dx, dy);
-        const spdBoost = activeOrgans.has('flagella') ? 1.45 : 1.0;
-        if (dist > 4) {
-          alpha.angle = Math.atan2(dy, dx) + Math.PI / 2;
-          alpha.x += (dx / dist) * 3.2 * spdBoost;
-          alpha.y += (dy / dist) * 3.2 * spdBoost;
+        const spdBoost = (activeOrgans.has('flagella') ? 1.4 : 1.0) * (alpha.ventBoost > 0 ? 1.35 : 1.0);
+        if (dist > 6 && alpha.dashTimer <= 0) {
+          const targetAng = Math.atan2(dy, dx);
+          alpha.vx = alpha.vx * 0.84 + Math.cos(targetAng) * 0.72 * spdBoost;
+          alpha.vy = alpha.vy * 0.84 + Math.sin(targetAng) * 0.72 * spdBoost;
+          alpha.angle = Math.atan2(alpha.vy, alpha.vx) + Math.PI / 2;
+        } else {
+          alpha.vx *= 0.88;
+          alpha.vy *= 0.88;
+        }
+        alpha.x = Math.max(34, Math.min(canvas.width - 34, alpha.x + alpha.vx));
+        alpha.y = Math.max(58, Math.min(canvas.height - 34, alpha.y + alpha.vy));
+
+        // Emit Flagella Propulsion Fluid Wake Vortices
+        if (Math.hypot(alpha.vx, alpha.vy) > 2.2 && tick % 6 === 0) {
+          const tailAng = alpha.angle + Math.PI / 2;
+          vortices.push({
+            x: alpha.x + Math.cos(tailAng) * 26,
+            y: alpha.y + Math.sin(tailAng) * 26,
+            r: 4,
+            maxR: 20,
+            alpha: 0.55
+          });
         }
 
-        // Alpha & Friendly Cells Consume Algae Nutrients
+        // 3. Phagocytosis / Suction Funnel Collision with Algae & Meat Nutrients
         for (let i = nutrients.length - 1; i >= 0; i--) {
           const n = nutrients[i];
-          let eaten = Math.hypot(alpha.x - n.x, alpha.y - n.y) < 32;
-          if (!eaten) {
-            eaten = friendlyCells.some((fc) => Math.hypot(fc.x - n.x, fc.y - n.y) < fc.size * 0.65);
-          }
-          if (eaten) {
-            atp = Math.min(300, atp + 14);
-            NexusSDK.audio.pop();
-            nutrients.splice(i, 1);
-            // Auto R-strategy mitosis if ATP reaches threshold
-            if (atp >= 85 && friendlyCells.length < 18) {
-              atp -= 35;
-              spawnFriendlyCell(alpha.x, alpha.y);
+          n.rot += 0.03;
+          n.x = Math.max(30, Math.min(canvas.width - 30, n.x + n.vx));
+          n.y = Math.max(60, Math.min(canvas.height - 30, n.y + n.vy));
+          n.vx *= 0.94;
+          n.vy *= 0.94;
+
+          // Find closest consumer within suction radius (56px)
+          let consumer = null;
+          let minD = Math.hypot(alpha.x - n.x, alpha.y - n.y);
+          if (minD < 58) {
+            consumer = alpha;
+          } else {
+            for (const fc of friendlyCells) {
+              const d = Math.hypot(fc.x - n.x, fc.y - n.y);
+              if (d < 46 && d < minD) {
+                minD = d;
+                consumer = fc;
+              }
             }
-            updateHud();
+          }
+
+          if (consumer) {
+            // Pull nutrient into mouth funnel with spiral suction
+            n.x += (consumer.x - n.x) * 0.26;
+            n.y += (consumer.y - n.y) * 0.26;
+            n.scale = Math.max(0.25, minD / 56);
+
+            if (minD < 22) {
+              // Swallowed! Trigger gulping deformation + emerald ATP burst
+              consumer.scaleX = 1.24;
+              consumer.scaleY = 1.24;
+              consumer.jawSnap = 7;
+              const gain = n.isMeat ? 24 : 14;
+              atp = Math.min(300, atp + gain);
+              spawnShockwave(n.x, n.y, 28, n.isMeat ? '#fbbf24' : '#10b981', 2.0);
+              spawnParticles(n.x, n.y, n.isMeat ? '#fbbf24' : '#10b981', 6, 2.6, 2.8);
+              NexusSDK.audio.pop();
+              nutrients.splice(i, 1);
+
+              // Auto R-strategy mitosis if ATP reaches threshold
+              if (atp >= 95 && friendlyCells.length < 18) {
+                atp -= 35;
+                spawnFriendlyCell(consumer.x, consumer.y, true);
+              }
+              updateHud();
+            }
+          } else {
+            n.scale = Math.min(1, n.scale + 0.08);
           }
         }
 
-        // Friendly Colony AI (Guided by Pheromone Mode)
+        // Update Friendly Colony AI & Movement
         friendlyCells.forEach((fc) => {
-          fc.soma = currentSoma;
+          fc.scaleX += (1 - fc.scaleX) * 0.18;
+          fc.scaleY += (1 - fc.scaleY) * 0.18;
+          if (fc.flash > 0) fc.flash--;
+          if (fc.jawSnap > 0) fc.jawSnap--;
+          if (fc.hitCd > 0) fc.hitCd--;
+
           let targetX = alpha.x;
           let targetY = alpha.y;
           if (pheromoneMode === 'hunt' && rivalCells.length > 0) {
@@ -374,32 +674,48 @@
             targetX = nu.x; targetY = nu.y;
           }
           const ang = Math.atan2(targetY - fc.y, targetX - fc.x);
-          fc.vx = fc.vx * 0.9 + Math.cos(ang) * 0.25 * spdBoost;
-          fc.vy = fc.vy * 0.9 + Math.sin(ang) * 0.25 * spdBoost;
+          fc.vx = fc.vx * 0.90 + Math.cos(ang) * 0.30 * spdBoost * (fc.speedMult || 1);
+          fc.vy = fc.vy * 0.90 + Math.sin(ang) * 0.30 * spdBoost * (fc.speedMult || 1);
           fc.x = Math.max(30, Math.min(canvas.width - 30, fc.x + fc.vx));
-          fc.y = Math.max(30, Math.min(canvas.height - 30, fc.y + fc.vy));
+          fc.y = Math.max(58, Math.min(canvas.height - 30, fc.y + fc.vy));
           fc.angle = Math.atan2(fc.vy, fc.vx) + Math.PI / 2;
 
           // Cnidocyte Ranged Toxin Dart
           if (activeOrgans.has('cnidocyte') && rivalCells.length > 0) {
             fc.shootCd--;
             if (fc.shootCd <= 0) {
-              fc.shootCd = 65;
+              fc.shootCd = 62;
               const rv = rivalCells[0];
               const a = Math.atan2(rv.y - fc.y, rv.x - fc.x);
-              toxinDarts.push({ x: fc.x, y: fc.y, vx: Math.cos(a) * 8, vy: Math.sin(a) * 8, life: 55 });
+              fc.scaleX = 1.18; fc.scaleY = 0.85;
+              toxinDarts.push({ x: fc.x, y: fc.y, vx: Math.cos(a) * 8.5, vy: Math.sin(a) * 8.5, life: 55 });
             }
           }
         });
 
-        // Update Toxin Darts
+        // 1. Friendly-vs-Friendly & Friendly-vs-Alpha Soft Membrane Boid Collisions
+        for (let i = 0; i < friendlyCells.length; i++) {
+          resolvePairCollision(alpha, friendlyCells[i], 'flock');
+          for (let j = i + 1; j < friendlyCells.length; j++) {
+            resolvePairCollision(friendlyCells[i], friendlyCells[j], 'flock');
+          }
+        }
+
+        // 4. Cnidocyte Toxin Dart Collision & Paralysis Splash
         for (let i = toxinDarts.length - 1; i >= 0; i--) {
           const td = toxinDarts[i];
           td.x += td.vx; td.y += td.vy; td.life--;
           let hit = false;
           for (const rv of rivalCells) {
-            if (Math.hypot(td.x - rv.x, td.y - rv.y) < rv.size * 0.55) {
-              rv.hp -= 18;
+            if (Math.hypot(td.x - rv.x, td.y - rv.y) < rv.size * 0.52) {
+              rv.hp -= 20;
+              rv.flash = 5;
+              rv.poisonTimer = 95; // Neurotoxin paralysis slow
+              rv.scaleX = 0.78; rv.scaleY = 1.25;
+              rv.vx += td.vx * 0.28;
+              rv.vy += td.vy * 0.28;
+              spawnShockwave(td.x, td.y, 24, '#a855f7', 2.0);
+              spawnParticles(td.x, td.y, '#10b981', 7, 3.2, 3.0);
               hit = true;
               break;
             }
@@ -407,95 +723,219 @@
           if (hit || td.life <= 0) toxinDarts.splice(i, 1);
         }
 
-        // Rival Cells & Ancient Boss AI + Melee Combat
-        const biteDmg = activeOrgans.has('mandible') ? 1.8 : 1.0;
-        const armorMult = activeOrgans.has('chitin') ? 0.6 : 1.0;
-
+        // Rival Cells & Ancient Boss AI + Rigid/Predatory Combat Collisions
         for (let i = rivalCells.length - 1; i >= 0; i--) {
           const rv = rivalCells[i];
-          // Planarian regeneration trait
+          rv.scaleX += (1 - rv.scaleX) * 0.16;
+          rv.scaleY += (1 - rv.scaleY) * 0.16;
+          if (rv.flash > 0) rv.flash--;
+          if (rv.poisonTimer > 0) rv.poisonTimer--;
+          if (rv.hitCd > 0) rv.hitCd--;
+
           if (rv.type === 'planarian' && rv.hp < rv.maxHp) rv.hp += 0.08;
 
           const target = friendlyCells[0] || alpha;
           const ang = Math.atan2(target.y - rv.y, target.x - rv.x);
-          rv.x += Math.cos(ang) * (rv.isBoss ? 1.15 : 1.55);
-          rv.y += Math.sin(ang) * (rv.isBoss ? 1.15 : 1.55);
-          rv.angle = ang + Math.PI / 2;
+          const poisonSlow = rv.poisonTimer > 0 ? 0.48 : 1.0;
+          const accel = (rv.isBoss ? 0.22 : 0.28) * poisonSlow;
+          rv.vx = rv.vx * 0.88 + Math.cos(ang) * accel;
+          rv.vy = rv.vy * 0.88 + Math.sin(ang) * accel;
+          rv.x = Math.max(36, Math.min(canvas.width - 36, rv.x + rv.vx));
+          rv.y = Math.max(60, Math.min(canvas.height - 36, rv.y + rv.vy));
+          rv.angle = Math.atan2(rv.vy, rv.vx) + Math.PI / 2;
 
-          // Contact with Alpha
-          if (Math.hypot(rv.x - alpha.x, rv.y - alpha.y) < rv.size * 0.6 + 22) {
-            rv.hp -= 1.8 * biteDmg;
+          // Rival-vs-Rival Soft Separation
+          for (let k = i - 1; k >= 0; k--) {
+            resolvePairCollision(rv, rivalCells[k], 'flock');
           }
 
-          // Contact with Friendly Colony
+          // Combat Collision with Player Alpha
+          if (rv.hitCd <= 0 && resolvePairCollision(alpha, rv, 'combat')) {
+            rv.hitCd = 10;
+          }
+
+          // Combat Collision with Friendly Colony
           for (let j = friendlyCells.length - 1; j >= 0; j--) {
             const fc = friendlyCells[j];
-            if (Math.hypot(rv.x - fc.x, rv.y - fc.y) < (rv.size + fc.size) * 0.45) {
-              rv.hp -= 1.4 * biteDmg;
-              fc.hp -= 0.9 * armorMult;
+            if (fc.hitCd <= 0 && resolvePairCollision(fc, rv, 'combat')) {
+              fc.hitCd = 12;
               if (fc.hp <= 0) {
+                // Friendly cell lysis burst
+                spawnShockwave(fc.x, fc.y, 32, '#ef4444', 2.2);
+                spawnParticles(fc.x, fc.y, '#00f0ff', 10, 3.8, 3.4);
                 friendlyCells.splice(j, 1);
                 updateHud();
               }
             }
           }
 
+          // 6. Rival / Boss Death Lysis Explosion & Planarian Fission Split
           if (rv.hp <= 0) {
-            NexusSDK.audio.pickup();
-            saveData.currency.genePoints += rv.isBoss ? 250 : 40;
+            NexusSDK.audio.explosion();
+            screenTrauma = Math.min(1.0, screenTrauma + (rv.isBoss ? 0.65 : 0.3));
+            spawnShockwave(rv.x, rv.y, rv.size * 1.45, rv.isBoss ? '#fbbf24' : '#ef4444', 3.2);
+            spawnParticles(rv.x, rv.y, rv.isBoss ? '#fbbf24' : '#ef4444', rv.isBoss ? 22 : 12, 5.2, 4.2);
+
+            // Drop high-ATP organic meat clusters on lysis
+            const drops = rv.isBoss ? 4 : 2;
+            for (let d = 0; d < drops; d++) {
+              spawnNutrient(rv.x + (Math.random() - 0.5) * 36, rv.y + (Math.random() - 0.5) * 36, true);
+            }
+
+            // Planarian Boss Special Collision Trait: Fission into 2 smaller Planarians on first death!
+            if (rv.isBoss && rv.type === 'planarian' && !rv.hasSplit) {
+              for (let s = -1; s <= 1; s += 2) {
+                rivalCells.push({
+                  x: rv.x + s * 24,
+                  y: rv.y + s * 16,
+                  vx: s * 4.5,
+                  vy: -s * 2.5,
+                  angle: rv.angle,
+                  type: 'planarian',
+                  isBoss: false,
+                  hasSplit: true,
+                  hp: 130,
+                  maxHp: 130,
+                  size: 44,
+                  mass: 2.4,
+                  scaleX: 1.4,
+                  scaleY: 0.65,
+                  flash: 8,
+                  poisonTimer: 0,
+                  hitCd: 15
+                });
+              }
+            }
+
+            saveData.currency.genePoints += rv.isBoss ? 250 : 45;
             if (rv.isBoss) saveData.currency.helixShards += 5;
             store.save(saveData);
             atp = Math.min(300, atp + 35);
             rivalCells.splice(i, 1);
-            setTimeout(() => spawnRivalCell(Math.random() < 0.25), 1200);
+            setTimeout(() => spawnRivalCell(Math.random() < 0.28), 1100);
             updateHud();
           }
         }
+
+        // Update FX Pools
+        for (let i = shockwaves.length - 1; i >= 0; i--) {
+          const sw = shockwaves[i];
+          sw.r += (sw.maxR - sw.r) * 0.22;
+          sw.alpha -= 0.048;
+          if (sw.alpha <= 0.02) shockwaves.splice(i, 1);
+        }
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.92;
+          p.vy *= 0.92;
+          p.alpha -= p.decay;
+          if (p.alpha <= 0.02) particles.splice(i, 1);
+        }
+        for (let i = slashArcs.length - 1; i >= 0; i--) {
+          slashArcs[i].alpha -= 0.11;
+          slashArcs[i].r += 1.8;
+          if (slashArcs[i].alpha <= 0) slashArcs.splice(i, 1);
+        }
+        for (let i = lightningArcs.length - 1; i >= 0; i--) {
+          lightningArcs[i].life--;
+          if (lightningArcs[i].life <= 0) lightningArcs.splice(i, 1);
+        }
+        for (let i = vortices.length - 1; i >= 0; i--) {
+          const vt = vortices[i];
+          vt.r += (vt.maxR - vt.r) * 0.12;
+          vt.alpha -= 0.022;
+          if (vt.alpha <= 0.02) vortices.splice(i, 1);
+        }
+        for (let i = mitosisAnims.length - 1; i >= 0; i--) {
+          mitosisAnims[i].progress += 0.065;
+          if (mitosisAnims[i].progress >= 1) mitosisAnims.splice(i, 1);
+        }
+        marineSnow.forEach((ms) => {
+          ms.x = (ms.x + ms.vx + canvas.width) % canvas.width;
+          ms.y = (ms.y + ms.vy + canvas.height) % canvas.height;
+        });
       }
 
-      function drawOrganismsWithOrgans(x, y, angle, somaKey, size, isAlpha) {
+      function drawOrganismsWithOrgans(entity, somaKey, isAlpha) {
+        const { x, y, angle, size } = entity;
+        const sx = entity.scaleX || 1;
+        const sy = entity.scaleY || 1;
+        const jaw = entity.jawSnap || 0;
+        const swimWave = Math.sin(tick * 0.22 + x * 0.05) * 0.14;
+
         ctx.save();
         ctx.translate(x, y);
-        ctx.rotate(angle);
+        ctx.rotate(angle + swimWave * 0.35);
+        ctx.scale(sx, sy);
 
-        // Attached Organelles Layer
+        // 1. Flagella Undulating Propulsion Tail
         if (activeOrgans.has('flagella') && sprites.flagella?.complete) {
-          ctx.drawImage(sprites.flagella, -size * 0.35, size * 0.28, size * 0.7, size * 0.7);
-        }
-        if (activeOrgans.has('mandible') && sprites.mandible?.complete) {
-          ctx.drawImage(sprites.mandible, -size * 0.4, -size * 0.82, size * 0.8, size * 0.7);
+          ctx.save();
+          ctx.translate(0, size * 0.28);
+          ctx.rotate(Math.sin(tick * 0.35) * 0.28);
+          ctx.drawImage(sprites.flagella, -size * 0.35, 0, size * 0.7, size * 0.7);
+          ctx.restore();
         }
 
-        // Core Soma SVG Sprite
+        // 2. Mandible Snap-Jaw Animation on Bite Collision
+        if (activeOrgans.has('mandible') && sprites.mandible?.complete) {
+          const jawSpread = jaw > 0 ? Math.sin(jaw * 0.6) * 0.32 : 0;
+          const jawThrust = jaw > 0 ? -size * 0.16 : 0;
+          ctx.save();
+          ctx.translate(0, -size * 0.55 + jawThrust);
+          ctx.scale(1 + jawSpread, 1);
+          ctx.drawImage(sprites.mandible, -size * 0.42, -size * 0.32, size * 0.84, size * 0.72);
+          ctx.restore();
+        }
+
+        // 3. Core Soma SVG Sprite
         const somaSprite = sprites[somaKey] || sprites.diploid;
         if (somaSprite?.complete) {
           ctx.drawImage(somaSprite, -size / 2, -size / 2, size, size);
         }
 
+        // 4. Chloroplast Internal Core & Chitin Carapace Armor
         if (activeOrgans.has('chloroplast') && sprites.chloroplast?.complete) {
-          ctx.drawImage(sprites.chloroplast, -size * 0.25, -size * 0.25, size * 0.5, size * 0.5);
+          ctx.drawImage(sprites.chloroplast, -size * 0.24, -size * 0.24, size * 0.48, size * 0.48);
         }
         if (activeOrgans.has('chitin') && sprites.chitin?.complete) {
           ctx.drawImage(sprites.chitin, -size * 0.42, -size * 0.42, size * 0.84, size * 0.84);
         }
 
+        // 5. White Flash Overlay on Impact
+        if (entity.flash > 0) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+          ctx.beginPath();
+          ctx.arc(0, 0, size * 0.46, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
         ctx.restore();
 
         if (isAlpha) {
-          ctx.strokeStyle = '#00f0ff';
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = alpha.dashTimer > 0 ? '#fbbf24' : '#00f0ff';
+          ctx.lineWidth = alpha.dashTimer > 0 ? 3 : 2;
           ctx.beginPath();
-          ctx.arc(x, y, size * 0.65, 0, Math.PI * 2);
+          ctx.arc(x, y, size * 0.66, 0, Math.PI * 2);
           ctx.stroke();
         }
       }
 
       function render() {
+        ctx.save();
+        // Nonlinear Trauma Camera Shake
+        if (screenTrauma > 0.01) {
+          const shake = screenTrauma * screenTrauma * 14;
+          ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+        }
+
         ctx.fillStyle = '#030712';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Microscopic Petri-Dish Grid
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.035)';
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.03)';
         ctx.lineWidth = 1;
         for (let x = 0; x < canvas.width; x += 54) {
           ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
@@ -504,36 +944,104 @@
           ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
         }
 
-        // Hydrothermal Vents SVG Sprites
+        // Deep-Sea Marine Snow Particles
+        marineSnow.forEach((ms) => {
+          ctx.fillStyle = `rgba(148, 163, 184, ${ms.alpha})`;
+          ctx.beginPath();
+          ctx.arc(ms.x, ms.y, ms.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Flagella Fluid Wake Vortices
+        vortices.forEach((vt) => {
+          ctx.strokeStyle = `rgba(0, 240, 255, ${vt.alpha})`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.arc(vt.x, vt.y, vt.r, 0, Math.PI * 2);
+          ctx.stroke();
+        });
+
+        // Hydrothermal Vents SVG Sprites + Thermal Aura
         vents.forEach((v) => {
+          const auraR = 44 + Math.sin(v.pulse) * 6;
+          const grad = ctx.createRadialGradient(v.x, v.y, 8, v.x, v.y, auraR);
+          grad.addColorStop(0, 'rgba(251, 191, 36, 0.22)');
+          grad.addColorStop(1, 'rgba(251, 191, 36, 0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(v.x, v.y, auraR, 0, Math.PI * 2);
+          ctx.fill();
+
           if (sprites.vent?.complete) {
             ctx.drawImage(sprites.vent, v.x - 42, v.y - 42, 84, 84);
           }
         });
 
-        // Photosynthetic Algae Clusters SVG Sprites
+        // Photosynthetic Algae & High-ATP Meat Nutrients (with Suction Scaling)
         nutrients.forEach((n) => {
+          ctx.save();
+          ctx.translate(n.x, n.y);
+          ctx.rotate(n.rot);
+          ctx.scale(n.scale || 1, n.scale || 1);
           if (sprites.algae?.complete) {
-            ctx.drawImage(sprites.algae, n.x - 18, n.y - 18, 36, 36);
+            ctx.drawImage(sprites.algae, -18, -18, 36, 36);
           }
+          if (n.isMeat) {
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, 0, 14, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          ctx.restore();
+        });
+
+        // Mitosis Cell Division Pinch-and-Bridge Animation
+        mitosisAnims.forEach((ma) => {
+          const p = ma.progress;
+          const sep = p * ma.size * 0.65;
+          ctx.save();
+          ctx.translate(ma.x, ma.y);
+          ctx.rotate(ma.angle);
+          ctx.strokeStyle = `rgba(0, 240, 255, ${1 - p})`;
+          ctx.lineWidth = (1 - p) * 10;
+          ctx.beginPath();
+          ctx.moveTo(-sep, 0);
+          ctx.lineTo(sep, 0);
+          ctx.stroke();
+          ctx.restore();
         });
 
         // Friendly Colony Organisms
         friendlyCells.forEach((fc) => {
-          drawOrganismsWithOrgans(fc.x, fc.y, fc.angle, fc.soma, fc.size, false);
+          drawOrganismsWithOrgans(fc, fc.soma, false);
         });
 
         // Player Alpha Leader
-        drawOrganismsWithOrgans(alpha.x, alpha.y, alpha.angle, currentSoma, 54, true);
+        drawOrganismsWithOrgans(alpha, currentSoma, true);
 
-        // Rival Strain & Ancient Bosses (Planarian & Anomalocaris SVG Sprites)
+        // Rival Strain & Ancient Bosses (with Squash & Stretch, Poison Tint & Flash)
         rivalCells.forEach((rv) => {
           const sp = sprites[rv.type] || sprites.diploid;
           ctx.save();
           ctx.translate(rv.x, rv.y);
           ctx.rotate(rv.angle);
+          ctx.scale(rv.scaleX || 1, rv.scaleY || 1);
           if (sp?.complete) {
             ctx.drawImage(sp, -rv.size / 2, -rv.size / 2, rv.size, rv.size);
+          }
+          if (rv.poisonTimer > 0) {
+            ctx.strokeStyle = 'rgba(168, 85, 247, 0.75)';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.arc(0, 0, rv.size * 0.48, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          if (rv.flash > 0) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.58)';
+            ctx.beginPath();
+            ctx.arc(0, 0, rv.size * 0.45, 0, Math.PI * 2);
+            ctx.fill();
           }
           ctx.restore();
 
@@ -548,9 +1056,67 @@
         toxinDarts.forEach((td) => {
           ctx.fillStyle = '#10b981';
           ctx.beginPath();
-          ctx.arc(td.x, td.y, 4, 0, Math.PI * 2);
+          ctx.arc(td.x, td.y, 4.5, 0, Math.PI * 2);
           ctx.fill();
+          ctx.strokeStyle = '#a855f7';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
         });
+
+        // Mandible Bite Crescent Slash Arcs
+        slashArcs.forEach((sl) => {
+          ctx.save();
+          ctx.translate(sl.x, sl.y);
+          ctx.rotate(sl.angle);
+          ctx.strokeStyle = sl.color;
+          ctx.globalAlpha = sl.alpha;
+          ctx.lineWidth = 4;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.arc(0, 0, sl.r, -Math.PI * 0.42, Math.PI * 0.42);
+          ctx.stroke();
+          ctx.restore();
+        });
+
+        // Chitin Carapace Deflection Lightning Arcs
+        lightningArcs.forEach((la) => {
+          ctx.save();
+          ctx.strokeStyle = la.color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(la.x1, la.y1);
+          const mx = (la.x1 + la.x2) / 2 + (Math.random() - 0.5) * 14;
+          const my = (la.y1 + la.y2) / 2 + (Math.random() - 0.5) * 14;
+          ctx.lineTo(mx, my);
+          ctx.lineTo(la.x2, la.y2);
+          ctx.stroke();
+          ctx.restore();
+        });
+
+        // Expanding Collision Shockwaves
+        shockwaves.forEach((sw) => {
+          ctx.save();
+          ctx.strokeStyle = sw.color;
+          ctx.globalAlpha = Math.max(0, sw.alpha);
+          ctx.lineWidth = sw.lineWidth;
+          ctx.beginPath();
+          ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        });
+
+        // Cytoplasmic Droplets & Carapace Sparks
+        particles.forEach((p) => {
+          ctx.save();
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+
+        ctx.restore();
       }
 
       function loop() {
@@ -559,26 +1125,40 @@
         requestAnimationFrame(loop);
       }
 
-      // UI Controls
-      document.getElementById('btn-mitosis').addEventListener('click', () => {
+      // UI Icon-Only Controls
+      document.getElementById('btn-dash-bite').addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        triggerAlphaDashBite();
+      });
+
+      document.getElementById('btn-mitosis').addEventListener('pointerdown', (e) => {
+        e.preventDefault();
         if (atp < 35) return;
         atp -= 35;
-        spawnFriendlyCell(alpha.x + (Math.random() - 0.5) * 40, alpha.y + (Math.random() - 0.5) * 40);
+        alpha.scaleX = 1.38;
+        alpha.scaleY = 0.68;
+        spawnFriendlyCell(alpha.x, alpha.y, true);
         if (lan.isConnected()) lan.sendReliable({ type: 'rival_wave' });
         NexusSDK.audio.upgrade();
         updateHud();
       });
 
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') triggerAlphaDashBite();
+        if (e.code === 'KeyE') document.getElementById('btn-mitosis').dispatchEvent(new PointerEvent('pointerdown'));
+      });
+
       document.getElementById('btn-pheromone').addEventListener('click', (e) => {
         NexusSDK.audio.tap();
         const modes = [
-          { id: 'hunt', border: 'rgba(239, 68, 68, 0.7)' },
-          { id: 'forage', border: 'rgba(16, 185, 129, 0.7)' },
-          { id: 'guard', border: 'rgba(0, 240, 255, 0.7)' }
+          { id: 'hunt', border: 'rgba(239, 68, 68, 0.78)', color: '#ef4444' },
+          { id: 'forage', border: 'rgba(16, 185, 129, 0.78)', color: '#10b981' },
+          { id: 'guard', border: 'rgba(0, 240, 255, 0.78)', color: '#00f0ff' }
         ];
         const idx = (modes.findIndex((m) => m.id === pheromoneMode) + 1) % modes.length;
         pheromoneMode = modes[idx].id;
         e.currentTarget.style.borderColor = modes[idx].border;
+        spawnShockwave(alpha.x, alpha.y, 78, modes[idx].color, 2.4);
       });
 
       const SOMA_LIST = [
@@ -591,6 +1171,11 @@
         const idx = (SOMA_LIST.findIndex((s) => s.id === currentSoma) + 1) % SOMA_LIST.length;
         currentSoma = SOMA_LIST[idx].id;
         saveData.soma = currentSoma;
+        const spec = getSomaSpecs(currentSoma);
+        alpha.mass = spec.mass * 1.4;
+        alpha.scaleX = 1.32;
+        alpha.scaleY = 0.74;
+        spawnShockwave(alpha.x, alpha.y, 56, '#fbbf24', 2.6);
         document.getElementById('soma-btn-ico').src = SOMA_LIST[idx].src;
         store.save(saveData);
       });
