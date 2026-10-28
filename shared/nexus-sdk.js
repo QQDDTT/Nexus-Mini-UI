@@ -424,19 +424,19 @@
         top: max(10px, env(safe-area-inset-top));
         right: max(14px, env(safe-area-inset-right));
         z-index: 9000;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
         min-height: 44px;
-        padding: 0 14px;
-        border-radius: 9999px;
+        padding: 0;
+        border-radius: 50%;
         background: rgba(9, 14, 26, 0.88);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(0, 240, 255, 0.45);
         color: #f8fafc;
-        font-family: 'Noto Sans SC', sans-serif;
-        font-size: 0.78rem;
-        font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        justify-content: center;
         cursor: pointer;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
         transition: all 0.15s ease;
@@ -499,9 +499,10 @@
       const btn = document.createElement('button');
       btn.id = 'nx-return-btn';
       btn.className = 'nx-return-pill';
+      btn.setAttribute('aria-label', '返回大厅');
+      btn.setAttribute('title', '返回大厅');
       btn.innerHTML = `
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        <span>返回清单</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       `;
       btn.addEventListener('click', () => {
         AudioEngine.tap();

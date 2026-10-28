@@ -147,103 +147,20 @@
     </div>
   </header>
 
-  <!-- 底部实验室、信息素指挥与分裂热键 -->
+  <!-- 底部体节切换、信息素指挥与有丝分裂纯图标按钮 -->
   <div class="bottom-bar">
     <div class="btn-row">
-      <button class="bio-btn gold" id="btn-open-lab">
-        <img src="../assets/micro-genesis/sprites/soma-diploid.svg" alt="Lab" />
-        <span>基因体节装配实验室</span>
+      <button class="bio-btn gold" id="btn-cycle-soma" aria-label="切换细胞体节" title="切换细胞体节" style="width:52px;height:52px;padding:0;border-radius:14px;justify-content:center;">
+        <img id="soma-btn-ico" src="../assets/micro-genesis/sprites/soma-diploid.svg" alt="Soma" style="width:30px;height:30px;" />
       </button>
-      <button class="bio-btn" id="btn-pheromone">
-        <img src="../assets/micro-genesis/sprites/organ-cnidocyte.svg" alt="Pheromone" />
-        <span id="pheromone-label">信息素：猎杀集结</span>
-      </button>
-      <button class="bio-btn" id="btn-open-lan">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-        <span>局域网 1v1 / 基因码</span>
+      <button class="bio-btn" id="btn-pheromone" aria-label="切换信息素指令" title="切换信息素指令" style="width:52px;height:52px;padding:0;border-radius:14px;justify-content:center;">
+        <img id="pheromone-ico" src="../assets/micro-genesis/sprites/organ-cnidocyte.svg" alt="Pheromone" style="width:28px;height:28px;" />
       </button>
     </div>
     <div class="btn-row">
-      <button class="bio-btn primary" id="btn-mitosis">
-        <img src="../assets/micro-genesis/sprites/organ-chloroplast.svg" alt="Mitosis" />
-        <span>有丝分裂增殖 (消耗 35 ATP)</span>
+      <button class="bio-btn primary" id="btn-mitosis" aria-label="有丝分裂增殖" title="有丝分裂增殖" style="width:66px;height:66px;min-height:66px;padding:0;border-radius:50%;justify-content:center;">
+        <img src="../assets/micro-genesis/sprites/organ-chloroplast.svg" alt="Mitosis" style="width:34px;height:34px;" />
       </button>
-    </div>
-  </div>
-
-  <!-- 基因体节与器官装配实验室弹窗 -->
-  <div class="modal-backdrop" id="lab-modal">
-    <div class="modal-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-size:1rem;color:var(--cyan);">基因体节骨架与功能器官装配实验室</h3>
-        <button class="bio-btn" id="btn-close-lab" style="min-height:36px;">投入培养皿</button>
-      </div>
-      <div style="font-size:0.75rem;color:var(--muted);">1. 选择基础多细胞体节底盘（R 策略高分裂 vs K 策略巨兽）：</div>
-      <div class="soma-grid" id="soma-selector">
-        <div class="part-card" data-soma="prokaryote">
-          <img src="../assets/micro-genesis/sprites/soma-prokaryote.svg" alt="Prokaryote" />
-          <div style="font-size:0.8rem;font-weight:700;">原核单室胞体 (R策略)</div>
-          <div style="font-size:0.68rem;color:var(--cyan);">极速分裂 · 低能耗虫群</div>
-        </div>
-        <div class="part-card active" data-soma="diploid">
-          <img src="../assets/micro-genesis/sprites/soma-diploid.svg" alt="Diploid" />
-          <div style="font-size:0.8rem;font-weight:700;">双节游猎胞体 (均衡)</div>
-          <div style="font-size:0.68rem;color:var(--cyan);">攻守兼备 · 双器官槽位</div>
-        </div>
-        <div class="part-card" data-soma="titan">
-          <img src="../assets/micro-genesis/sprites/soma-titan.svg" alt="Titan" />
-          <div style="font-size:0.8rem;font-weight:700;">多节泰坦胞体 (K策略)</div>
-          <div style="font-size:0.68rem;color:var(--gold);">高额生命 · 霸主级体型</div>
-        </div>
-      </div>
-
-      <div style="font-size:0.75rem;color:var(--muted);">2. 挂载外显解剖学功能器官（可多选组合，即时同步至族群）：</div>
-      <div class="organ-grid" id="organ-selector">
-        <div class="part-card active" data-organ="flagella">
-          <img src="../assets/micro-genesis/sprites/organ-flagella.svg" alt="Flagella" />
-          <div style="font-size:0.74rem;font-weight:700;">螺旋鞭毛器</div>
-          <div style="font-size:0.64rem;color:var(--cyan);">移速 +45%</div>
-        </div>
-        <div class="part-card active" data-organ="mandible">
-          <img src="../assets/micro-genesis/sprites/organ-mandible.svg" alt="Mandible" />
-          <div style="font-size:0.74rem;font-weight:700;">几丁质撕咬颚</div>
-          <div style="font-size:0.64rem;color:var(--cyan);">近战噬咬 +60%</div>
-        </div>
-        <div class="part-card" data-organ="chitin">
-          <img src="../assets/micro-genesis/sprites/organ-chitin.svg" alt="Chitin" />
-          <div style="font-size:0.74rem;font-weight:700;">外骨骼重甲</div>
-          <div style="font-size:0.64rem;color:var(--cyan);">减伤 +40%</div>
-        </div>
-        <div class="part-card" data-organ="cnidocyte">
-          <img src="../assets/micro-genesis/sprites/organ-cnidocyte.svg" alt="Cnidocyte" />
-          <div style="font-size:0.74rem;font-weight:700;">剧毒刺胞腺</div>
-          <div style="font-size:0.64rem;color:var(--cyan);">远程毒刺齐射</div>
-        </div>
-        <div class="part-card active" data-organ="chloroplast">
-          <img src="../assets/micro-genesis/sprites/organ-chloroplast.svg" alt="Chloroplast" />
-          <div style="font-size:0.74rem;font-weight:700;">叶绿体光合核</div>
-          <div style="font-size:0.64rem;color:var(--green);">自养生成 ATP</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 局域网 1v1 生态沙盘与 URL 基因挑战码弹窗 -->
-  <div class="modal-backdrop" id="lan-modal">
-    <div class="modal-card" style="max-width:480px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-size:1rem;color:var(--cyan);">局域网 1v1 生态对决 & 基因挑战码</h3>
-        <button class="bio-btn" id="btn-close-lan" style="min-height:36px;">关闭</button>
-      </div>
-      <p style="font-size:0.76rem;color:var(--muted);line-height:1.5;">
-        支持同 Wi-Fi / 热点下两台手机实时展开培养皿生态争夺，或复制当前物种基因码发给好友异步攻擂：
-      </p>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <div style="font-size:1.05rem;font-weight:900;color:var(--cyan);" id="lan-room-txt">NX-5012</div>
-        <input id="lan-input" type="text" placeholder="输入局域网房间号" style="height:40px;flex:1;background:#030712;border:1px solid var(--border);border-radius:8px;color:#fff;padding:0 10px;" />
-        <button class="bio-btn primary" id="btn-join-lan" style="min-height:40px;font-size:0.76rem;">1v1 直连</button>
-      </div>
-      <button class="bio-btn gold" id="btn-copy-gene" style="width:100%;justify-content:center;">复制当前物种基因代码 (Gene Blueprint)</button>
     </div>
   </div>
 
@@ -379,7 +296,6 @@
 
       // LAN 1v1 Session
       const lan = NexusSDK.createLanSession('micro-genesis', store.getAuth().room);
-      document.getElementById('lan-room-txt').textContent = lan.getRoomCode();
       lan.onStatus((st) => {
         const el = document.getElementById('hud-lan');
         if (st.connected) {
@@ -653,78 +569,30 @@
         updateHud();
       });
 
-      document.getElementById('btn-pheromone').addEventListener('click', () => {
+      document.getElementById('btn-pheromone').addEventListener('click', (e) => {
         NexusSDK.audio.tap();
         const modes = [
-          { id: 'hunt', label: '信息素：猎杀集结' },
-          { id: 'forage', label: '信息素：采食微藻' },
-          { id: 'guard', label: '信息素：环卫首领' }
+          { id: 'hunt', border: 'rgba(239, 68, 68, 0.7)' },
+          { id: 'forage', border: 'rgba(16, 185, 129, 0.7)' },
+          { id: 'guard', border: 'rgba(0, 240, 255, 0.7)' }
         ];
         const idx = (modes.findIndex((m) => m.id === pheromoneMode) + 1) % modes.length;
         pheromoneMode = modes[idx].id;
-        document.getElementById('pheromone-label').textContent = modes[idx].label;
+        e.currentTarget.style.borderColor = modes[idx].border;
       });
 
-      document.getElementById('btn-open-lab').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lab-modal').classList.add('active');
-      });
-      document.getElementById('btn-close-lab').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lab-modal').classList.remove('active');
-      });
-
-      document.querySelectorAll('#soma-selector .part-card').forEach((card) => {
-        card.classList.toggle('active', card.getAttribute('data-soma') === currentSoma);
-        card.addEventListener('click', () => {
-          NexusSDK.audio.upgrade();
-          currentSoma = card.getAttribute('data-soma');
-          saveData.soma = currentSoma;
-          store.save(saveData);
-          document.querySelectorAll('#soma-selector .part-card').forEach((c) => c.classList.remove('active'));
-          card.classList.add('active');
-        });
-      });
-
-      document.querySelectorAll('#organ-selector .part-card').forEach((card) => {
-        const org = card.getAttribute('data-organ');
-        card.classList.toggle('active', activeOrgans.has(org));
-        card.addEventListener('click', () => {
-          NexusSDK.audio.tap();
-          if (activeOrgans.has(org) && activeOrgans.size > 1) {
-            activeOrgans.delete(org);
-            card.classList.remove('active');
-          } else {
-            activeOrgans.add(org);
-            card.classList.add('active');
-          }
-          saveData.organs = Array.from(activeOrgans);
-          store.save(saveData);
-        });
-      });
-
-      document.getElementById('btn-open-lan').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lan-modal').classList.add('active');
-      });
-      document.getElementById('btn-close-lan').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lan-modal').classList.remove('active');
-      });
-      document.getElementById('btn-join-lan').addEventListener('click', () => {
-        const val = document.getElementById('lan-input').value.trim();
-        if (val) {
-          lan.joinRoom(val, 'client');
-          document.getElementById('lan-room-txt').textContent = lan.getRoomCode();
-          NexusSDK.audio.upgrade();
-          document.getElementById('lan-modal').classList.remove('active');
-        }
-      });
-      document.getElementById('btn-copy-gene').addEventListener('click', () => {
-        const geneCode = 'GENE-' + btoa(JSON.stringify({ s: currentSoma, o: Array.from(activeOrgans) }));
-        navigator.clipboard?.writeText(geneCode).catch(() => {});
-        NexusSDK.audio.pickup();
-        document.getElementById('lan-modal').classList.remove('active');
+      const SOMA_LIST = [
+        { id: 'prokaryote', src: '../assets/micro-genesis/sprites/soma-prokaryote.svg' },
+        { id: 'diploid', src: '../assets/micro-genesis/sprites/soma-diploid.svg' },
+        { id: 'titan', src: '../assets/micro-genesis/sprites/soma-titan.svg' }
+      ];
+      document.getElementById('btn-cycle-soma').addEventListener('click', () => {
+        NexusSDK.audio.upgrade();
+        const idx = (SOMA_LIST.findIndex((s) => s.id === currentSoma) + 1) % SOMA_LIST.length;
+        currentSoma = SOMA_LIST[idx].id;
+        saveData.soma = currentSoma;
+        document.getElementById('soma-btn-ico').src = SOMA_LIST[idx].src;
+        store.save(saveData);
       });
 
       initEcosystem();

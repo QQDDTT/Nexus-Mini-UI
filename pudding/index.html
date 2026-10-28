@@ -66,42 +66,41 @@
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
       touch-action: none;
     }
-    /* Bottom Tower Dock */
+    /* Bottom Compact Icon-Only Tower Dock */
     .tower-dock {
-      height: 54px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      overflow-x: auto;
+      height: 50px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .tower-btn {
-      min-height: 48px; min-width: 110px;
-      padding: 4px 8px;
-      border-radius: 10px;
+      width: 48px; height: 48px;
+      min-width: 48px; min-height: 48px;
+      padding: 0;
+      border-radius: 12px;
       background: var(--panel);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       color: var(--text);
-      display: flex; align-items: center; gap: 6px;
+      display: inline-flex; align-items: center; justify-content: center;
       cursor: pointer;
-      white-space: nowrap;
       transition: all 0.14s ease;
     }
     .tower-btn.active {
-      background: rgba(0, 240, 255, 0.15);
+      background: rgba(0, 240, 255, 0.18);
       border-color: var(--cyan);
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.32);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.36);
+      transform: translateY(-2px);
     }
-    .tower-btn img { width: 30px; height: 30px; object-fit: contain; flex-shrink: 0; }
-    .t-name { font-size: 0.74rem; font-weight: 700; text-align: left; white-space: nowrap; }
-    .t-cost { font-size: 0.65rem; color: var(--gold); font-weight: 700; text-align: left; white-space: nowrap; }
+    .tower-btn img { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
     .skill-btn {
-      min-height: 48px; padding: 0 12px;
-      border-radius: 10px;
+      width: 48px; height: 48px;
+      min-width: 48px; min-height: 48px;
+      padding: 0;
+      border-radius: 12px;
       background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
-      border: 1px solid #67e8f9;
+      border: 1.5px solid #67e8f9;
       color: #030712;
-      font-size: 0.76rem; font-weight: 900;
-      white-space: nowrap;
       cursor: pointer;
-      display: inline-flex; align-items: center; gap: 6px;
+      display: inline-flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
     }
     .modal-backdrop {
       position: fixed; inset: 0; z-index: 8000;
@@ -144,8 +143,9 @@
         </div>
       </div>
       <div class="hud-group">
-        <button class="hud-pill" id="btn-speed" style="cursor:pointer;color:var(--cyan);font-weight:800;">1x 速度</button>
-        <button class="hud-pill" id="btn-open-lan" style="cursor:pointer;color:var(--text);font-weight:700;">LAN 联机</button>
+        <button class="hud-pill" id="btn-speed" aria-label="切换战斗倍速" title="切换战斗倍速" style="width:44px;min-width:44px;padding:0;justify-content:center;cursor:pointer;color:var(--cyan);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg>
+        </button>
       </div>
     </header>
 
@@ -154,66 +154,27 @@
       <canvas id="td-canvas" width="960" height="540"></canvas>
     </main>
 
-    <!-- 底部五大甜品卫士建造栏与全屏暴风雪合体技 -->
+    <!-- 底部五大甜品卫士纯图标建造栏与全屏暴风雪技能按钮 -->
     <footer class="tower-dock" id="tower-dock">
-      <button class="tower-btn active" data-tower="boba">
+      <button class="tower-btn active" data-tower="boba" aria-label="波波连射塔" title="波波连射塔">
         <img src="../assets/pudding-defense/sprites/tower-boba.svg" alt="Boba" />
-        <div>
-          <div class="t-name">波波连射塔</div>
-          <div class="t-cost">100 糖币 · 点射</div>
-        </div>
       </button>
-      <button class="tower-btn" data-tower="frost">
+      <button class="tower-btn" data-tower="frost" aria-label="冰霜北极熊" title="冰霜北极熊">
         <img src="../assets/pudding-defense/sprites/tower-frost.svg" alt="Frost" />
-        <div>
-          <div class="t-name">冰霜北极熊</div>
-          <div class="t-cost">120 糖币 · 减速</div>
-        </div>
       </button>
-      <button class="tower-btn" data-tower="sun">
+      <button class="tower-btn" data-tower="sun" aria-label="太阳蛋黄炮" title="太阳蛋黄炮">
         <img src="../assets/pudding-defense/sprites/tower-sun.svg" alt="Sun" />
-        <div>
-          <div class="t-name">太阳蛋黄炮</div>
-          <div class="t-cost">160 糖币 · AOE</div>
-        </div>
       </button>
-      <button class="tower-btn" data-tower="missile">
+      <button class="tower-btn" data-tower="missile" aria-label="泡泡糖导弹" title="泡泡糖导弹">
         <img src="../assets/pudding-defense/sprites/tower-missile.svg" alt="Missile" />
-        <div>
-          <div class="t-name">泡泡糖导弹</div>
-          <div class="t-cost">180 糖币 · 追踪</div>
-        </div>
       </button>
-      <button class="tower-btn" data-tower="prism">
+      <button class="tower-btn" data-tower="prism" aria-label="彩虹棱镜塔" title="彩虹棱镜塔">
         <img src="../assets/pudding-defense/sprites/tower-prism.svg" alt="Prism" />
-        <div>
-          <div class="t-name">彩虹棱镜塔</div>
-          <div class="t-cost">220 糖币 · 棱镜</div>
-        </div>
       </button>
-      <button class="skill-btn" id="btn-blizzard">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        <span>糖霜暴风雪 (100)</span>
+      <button class="skill-btn" id="btn-blizzard" aria-label="糖霜暴风雪" title="糖霜暴风雪">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       </button>
     </footer>
-  </div>
-
-  <!-- 局域网双人协同建塔弹窗 -->
-  <div class="modal-backdrop" id="lan-modal">
-    <div class="modal-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-size:1rem;color:var(--cyan);">局域网 1~5ms 双防区协同塔防</h3>
-        <button class="hud-pill" id="btn-close-lan" style="cursor:pointer;">关闭</button>
-      </div>
-      <p style="font-size:0.76rem;color:var(--muted);line-height:1.5;">
-        两台手机在同一 Wi-Fi / 热点下输入相同房间号，即可实时同步建塔、集火标点清除路障并共享糖币！
-      </p>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <div style="font-size:1.1rem;font-weight:900;color:var(--cyan);" id="lan-room-code">NX-4096</div>
-        <input id="lan-input" type="text" placeholder="输入房间号" style="height:40px;flex:1;background:#030712;border:1px solid var(--border);border-radius:8px;color:#fff;padding:0 10px;" />
-        <button class="skill-btn" id="btn-join-lan" style="min-height:40px;">加入防区</button>
-      </div>
-    </div>
   </div>
 
   <script src="../shared/nexus-sdk.js"></script>
@@ -327,7 +288,6 @@
 
       // LAN Co-op Session
       const lan = NexusSDK.createLanSession('pudding-defense', store.getAuth().room);
-      document.getElementById('lan-room-code').textContent = lan.getRoomCode();
       lan.onReliable((msg) => {
         if (msg.type === 'place_tower') {
           placeOrUpgradeTower(msg.c, msg.r, msg.tType, false);
@@ -678,25 +638,8 @@
       document.getElementById('btn-speed').addEventListener('click', (e) => {
         NexusSDK.audio.tap();
         speedMult = speedMult === 1 ? 2 : 1;
-        e.currentTarget.textContent = `${speedMult}x 战斗速度`;
-      });
-
-      document.getElementById('btn-open-lan').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lan-modal').classList.add('active');
-      });
-      document.getElementById('btn-close-lan').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lan-modal').classList.remove('active');
-      });
-      document.getElementById('btn-join-lan').addEventListener('click', () => {
-        const val = document.getElementById('lan-input').value.trim();
-        if (val) {
-          lan.joinRoom(val, 'client');
-          document.getElementById('lan-room-code').textContent = lan.getRoomCode();
-          NexusSDK.audio.upgrade();
-          document.getElementById('lan-modal').classList.remove('active');
-        }
+        e.currentTarget.style.background = speedMult === 2 ? 'rgba(0, 240, 255, 0.22)' : 'var(--panel)';
+        e.currentTarget.style.borderColor = speedMult === 2 ? 'var(--cyan)' : 'var(--border)';
       });
 
       initObstacles();

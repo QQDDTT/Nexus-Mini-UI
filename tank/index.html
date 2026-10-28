@@ -242,80 +242,15 @@
         </div>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <button class="btn gold" id="btn-open-armory">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
-          <span>装甲军械库改装</span>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+        <button class="btn" id="btn-fortify-base" aria-label="加固总部" title="加固总部" style="width:52px;height:52px;padding:0;border-radius:14px;border-color:rgba(251,191,36,0.55);color:var(--gold);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </button>
-        <button class="btn" id="btn-open-lan">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-          <span>局域网双坦联机</span>
-        </button>
-        <button class="btn" id="btn-fortify-base" style="border-color:rgba(251,191,36,0.45);color:var(--gold);">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>加固总部 (50币)</span>
-        </button>
-        <button class="fire-btn" id="btn-fire">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
-          <span>主炮齐射 (SPACE)</span>
+        <button class="fire-btn" id="btn-fire" aria-label="主炮齐射" title="主炮齐射" style="width:76px;height:76px;min-height:76px;border-radius:50%;padding:0;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
         </button>
       </div>
     </aside>
-  </div>
-
-  <!-- 装甲军械库改装弹窗 -->
-  <div class="modal-backdrop" id="armory-modal">
-    <div class="modal-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-size:1rem;color:var(--cyan);">装甲军械库 · 独立货币改装</h3>
-        <button class="btn" id="btn-close-armory" style="min-height:36px;">关闭</button>
-      </div>
-      <p style="font-size:0.76rem;color:var(--muted);">消耗坦克防御硬币永久提升战车军衔（Rank 1 高速炮 → Rank 2 双联齐射 → Rank 3 穿甲碎钢 → Rank 4 反应重甲）。</p>
-      <div class="upgrade-row">
-        <div>
-          <div style="font-weight:700;font-size:0.86rem;">主战坦克军衔晋升 (<span id="armory-rank-txt">Rank 1</span>)</div>
-          <div style="font-size:0.72rem;color:var(--muted);">提升主炮射速、双发齐射与破拆钛合金钢墙能力</div>
-        </div>
-        <button class="btn primary" id="btn-buy-rank">晋升 (150 币)</button>
-      </div>
-      <div class="upgrade-row">
-        <div>
-          <div style="font-weight:700;font-size:0.86rem;">紧急空投全屏电磁脉冲 (EMP)</div>
-          <div style="font-size:0.72rem;color:var(--muted);">瘫痪全图敌方装甲集群 8 秒</div>
-        </div>
-        <button class="btn gold" id="btn-buy-emp">释放 (80 币)</button>
-      </div>
-      <div class="upgrade-row">
-        <div>
-          <div style="font-weight:700;font-size:0.86rem;">切换战役关卡</div>
-          <div style="font-size:0.72rem;color:var(--muted);">随时重开当前关卡或挑战下一防区</div>
-        </div>
-        <button class="btn" id="btn-next-stage">下一防区</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 局域网一人一机联机弹窗 -->
-  <div class="modal-backdrop" id="lan-modal">
-    <div class="modal-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-size:1rem;color:var(--cyan);">局域网 1~5ms 双坦一人一机直连</h3>
-        <button class="btn" id="btn-close-lan" style="min-height:36px;">关闭</button>
-      </div>
-      <p style="font-size:0.76rem;color:var(--muted);line-height:1.5;">
-        两台设备在<strong>同一 Wi-Fi / 手机热点</strong>下输入相同 4 位房间号即可自动建立双通道同步（1P 先锋主坦 + 2P 卫戌双管坦）。断线超过 3.0 秒自动由 AI 僚机无缝接管。
-      </p>
-      <div class="upgrade-row">
-        <div>
-          <div style="font-size:0.72rem;color:var(--muted);">当前局域网房间号</div>
-          <div style="font-size:1.1rem;font-weight:900;color:var(--cyan);" id="lan-room-display">NX-1024</div>
-        </div>
-        <div style="display:flex;gap:6px;">
-          <input id="lan-room-input" type="text" placeholder="输入房间号如 NX-1024" style="height:44px;background:#030712;border:1px solid var(--border);border-radius:8px;color:#fff;padding:0 10px;width:140px;" />
-          <button class="btn primary" id="btn-join-lan">加入作为 2P</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <script src="../shared/nexus-sdk.js"></script>
@@ -537,7 +472,6 @@
 
       // LAN Dual-Channel Session
       const lan = NexusSDK.createLanSession('tank-battle', store.getAuth().room);
-      document.getElementById('lan-room-display').textContent = lan.getRoomCode();
 
       lan.onStatus((st) => {
         const el = document.getElementById('hud-lan');
@@ -603,7 +537,6 @@
         document.getElementById('hud-rank').textContent = `Rank ${p1.rank}`;
         document.getElementById('hud-hp').textContent = `HP${p1.hp}·${baseAlive ? '完好' : '受损'}`;
         document.getElementById('hud-score').textContent = score.toLocaleString();
-        document.getElementById('armory-rank-txt').textContent = `Rank ${p1.rank}`;
       }
 
       function step() {
@@ -925,57 +858,6 @@
         NexusSDK.audio.upgrade();
         store.save(saveData);
         updateHud();
-      });
-
-      document.getElementById('btn-open-armory').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('armory-modal').classList.add('active');
-      });
-      document.getElementById('btn-close-armory').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('armory-modal').classList.remove('active');
-      });
-      document.getElementById('btn-buy-rank').addEventListener('click', () => {
-        if (p1.rank >= 4 || (saveData.currency?.tankCoins ?? 0) < 150) return;
-        saveData.currency.tankCoins -= 150;
-        p1.rank++;
-        saveData.rank = p1.rank;
-        store.save(saveData);
-        NexusSDK.audio.upgrade();
-        updateHud();
-      });
-      document.getElementById('btn-buy-emp').addEventListener('click', () => {
-        if ((saveData.currency?.tankCoins ?? 0) < 80) return;
-        saveData.currency.tankCoins -= 80;
-        empTimer = 480;
-        store.save(saveData);
-        NexusSDK.audio.laser();
-        updateHud();
-        document.getElementById('armory-modal').classList.remove('active');
-      });
-      document.getElementById('btn-next-stage').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        stage++;
-        buildStageMap(stage);
-        document.getElementById('armory-modal').classList.remove('active');
-      });
-
-      document.getElementById('btn-open-lan').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lan-modal').classList.add('active');
-      });
-      document.getElementById('btn-close-lan').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lan-modal').classList.remove('active');
-      });
-      document.getElementById('btn-join-lan').addEventListener('click', () => {
-        const val = document.getElementById('lan-room-input').value.trim();
-        if (val) {
-          lan.joinRoom(val, 'client');
-          document.getElementById('lan-room-display').textContent = lan.getRoomCode();
-          NexusSDK.audio.upgrade();
-          document.getElementById('lan-modal').classList.remove('active');
-        }
       });
 
       buildStageMap(1);

@@ -184,100 +184,18 @@
     <div class="stick-knob" id="stick-knob"></div>
   </div>
 
-  <!-- 右手战术火控与 360° 船坞按钮 -->
+  <!-- 右手战术火控与底盘循环切换纯图标按钮 -->
   <div class="right-controls">
-    <div class="action-row">
-      <button class="tac-btn gold" id="btn-open-dock">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>360° 战舰船坞</span>
+    <div class="action-row" style="align-items:center;gap:10px;">
+      <button class="tac-btn gold" id="btn-cycle-hull" aria-label="切换星舰底盘" title="切换星舰底盘" style="width:52px;height:52px;padding:0;border-radius:14px;">
+        <img id="btn-hull-ico" src="../assets/star-defender/sprites/hull-delta.svg" alt="Hull" style="width:32px;height:32px;object-fit:contain;" />
       </button>
-      <button class="tac-btn" id="btn-open-lan">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-        <span>局域网护航</span>
+      <button class="tac-btn" id="btn-nova" aria-label="脉冲超新星" title="脉冲超新星" style="width:52px;height:52px;padding:0;border-radius:14px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       </button>
-    </div>
-    <div class="action-row">
-      <button class="tac-btn" id="btn-nova">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        <span>脉冲超新星 (E)</span>
+      <button class="tac-btn primary" id="btn-burst" aria-label="锁定超载齐射" title="锁定超载齐射" style="width:68px;height:68px;min-height:68px;padding:0;border-radius:50%;">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
       </button>
-      <button class="tac-btn primary" id="btn-burst">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
-        <span>锁定超载齐射 (SPACE)</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- 360° 模块化战舰船坞与火控改装弹窗 -->
-  <div class="modal-backdrop" id="dock-modal">
-    <div class="modal-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-size:1rem;color:var(--cyan);">360° 星轨船坞 · 四大主力星舰底盘与模块化火控</h3>
-        <button class="tac-btn" id="btn-close-dock" style="min-height:36px;">返回战场</button>
-      </div>
-      <div style="font-size:0.75rem;color:var(--muted);">选择出战星舰底盘（切换即时生效，自动继承模块化武器等级）：</div>
-      <div class="hull-grid" id="hull-selector">
-        <div class="hull-card active" data-hull="hullDelta">
-          <img src="../assets/star-defender/sprites/hull-delta.svg" alt="Delta" />
-          <div style="font-size:0.8rem;font-weight:700;">Delta 先锋舰</div>
-          <div style="font-size:0.68rem;color:var(--cyan);">高推重比 · 敏捷拦截</div>
-        </div>
-        <div class="hull-card" data-hull="hullWing">
-          <img src="../assets/star-defender/sprites/hull-wing.svg" alt="Wing" />
-          <div style="font-size:0.8rem;font-weight:700;">Wing 巡洋舰</div>
-          <div style="font-size:0.68rem;color:var(--cyan);">双翼齐射 · 广域覆盖</div>
-        </div>
-        <div class="hull-card" data-hull="hullRing">
-          <img src="../assets/star-defender/sprites/hull-ring.svg" alt="Ring" />
-          <div style="font-size:0.8rem;font-weight:700;">Ring 环轨舰</div>
-          <div style="font-size:0.68rem;color:var(--cyan);">环状力场 · 护盾再生</div>
-        </div>
-        <div class="hull-card" data-hull="hullCross">
-          <img src="../assets/star-defender/sprites/hull-cross.svg" alt="Cross" />
-          <div style="font-size:0.8rem;font-weight:700;">Cross 歼星舰</div>
-          <div style="font-size:0.68rem;color:var(--gold);">重装四联 · 巨兽克星</div>
-        </div>
-      </div>
-
-      <div class="upgrade-grid">
-        <div class="up-box">
-          <div>
-            <div style="font-size:0.82rem;font-weight:700;">高斯磁轨主炮 (<span id="lvl-weapon">Lv.1</span>)</div>
-            <div style="font-size:0.7rem;color:var(--muted);">提升自动索敌射速与多联发弹幕</div>
-          </div>
-          <button class="tac-btn primary" id="btn-up-weapon" style="min-height:38px;font-size:0.76rem;">升级 (200 战功)</button>
-        </div>
-        <div class="up-box">
-          <div>
-            <div style="font-size:0.82rem;font-weight:700;">轨道防卫炮塔 (<span id="lvl-turret">1 座</span>)</div>
-            <div style="font-size:0.7rem;color:var(--muted);">环绕空间站部署自动火控炮塔</div>
-          </div>
-          <button class="tac-btn gold" id="btn-up-turret" style="min-height:38px;font-size:0.76rem;">增设 (50 残骸)</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 局域网一人一机双舰护航弹窗 -->
-  <div class="modal-backdrop" id="lan-modal">
-    <div class="modal-card" style="max-width:460px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-size:1rem;color:var(--cyan);">局域网 1~5ms 双舰协同护航</h3>
-        <button class="tac-btn" id="btn-close-lan" style="min-height:36px;">关闭</button>
-      </div>
-      <p style="font-size:0.76rem;color:var(--muted);line-height:1.5;">
-        两台手机在同一 Wi-Fi / 热点下输入相同房间号，即可各自驾驶星舰协同守卫中央星轨空间站。
-      </p>
-      <div class="up-box">
-        <div>
-          <div style="font-size:0.7rem;color:var(--muted);">本机房间号</div>
-          <div style="font-size:1.1rem;font-weight:900;color:var(--cyan);" id="lan-room-code">NX-2048</div>
-        </div>
-        <div style="display:flex;gap:6px;">
-          <input id="lan-input" type="text" placeholder="房间号" style="height:40px;width:120px;background:#030712;border:1px solid var(--border);border-radius:8px;color:#fff;padding:0 10px;" />
-          <button class="tac-btn primary" id="btn-join-lan" style="min-height:40px;font-size:0.78rem;">联机</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -511,7 +429,6 @@
 
       // LAN Co-op Session
       const lan = NexusSDK.createLanSession('star-defender', store.getAuth().room);
-      document.getElementById('lan-room-code').textContent = lan.getRoomCode();
       lan.onStatus((st) => {
         const el = document.getElementById('hud-lan');
         if (st.connected) {
@@ -535,8 +452,6 @@
         document.getElementById('hud-station').textContent = `${Math.max(0, Math.round((stationHp / stationMaxHp) * 100))}%`;
         document.getElementById('hud-merits').textContent = (saveData.currency?.warMerits ?? 0).toLocaleString();
         document.getElementById('hud-scraps').textContent = (saveData.currency?.scraps ?? 0).toLocaleString();
-        document.getElementById('lvl-weapon').textContent = `Lv.${saveData.weaponLv || 1}`;
-        document.getElementById('lvl-turret').textContent = `${saveData.turretCount || 2} 座`;
       }
 
       function step() {
@@ -782,63 +697,20 @@
         requestAnimationFrame(loop);
       }
 
-      // Dockyard & LAN Modal bindings
-      document.getElementById('btn-open-dock').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('dock-modal').classList.add('active');
-      });
-      document.getElementById('btn-close-dock').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('dock-modal').classList.remove('active');
-      });
-
-      document.querySelectorAll('#hull-selector .hull-card').forEach((card) => {
-        if (card.getAttribute('data-hull') === ship.hull) card.classList.add('active');
-        else card.classList.remove('active');
-        card.addEventListener('click', () => {
-          NexusSDK.audio.upgrade();
-          ship.hull = card.getAttribute('data-hull');
-          saveData.selectedHull = ship.hull;
-          store.save(saveData);
-          document.querySelectorAll('#hull-selector .hull-card').forEach((c) => c.classList.remove('active'));
-          card.classList.add('active');
-        });
-      });
-
-      document.getElementById('btn-up-weapon').addEventListener('click', () => {
-        if ((saveData.currency?.warMerits ?? 0) < 200) return;
-        saveData.currency.warMerits -= 200;
-        saveData.weaponLv = (saveData.weaponLv || 1) + 1;
-        store.save(saveData);
+      // Hull Cycle button binding
+      const HULL_LIST = [
+        { id: 'hullDelta', src: '../assets/star-defender/sprites/hull-delta.svg' },
+        { id: 'hullWing', src: '../assets/star-defender/sprites/hull-wing.svg' },
+        { id: 'hullRing', src: '../assets/star-defender/sprites/hull-ring.svg' },
+        { id: 'hullCross', src: '../assets/star-defender/sprites/hull-cross.svg' }
+      ];
+      document.getElementById('btn-cycle-hull').addEventListener('click', () => {
         NexusSDK.audio.upgrade();
-        updateHud();
-      });
-
-      document.getElementById('btn-up-turret').addEventListener('click', () => {
-        if ((saveData.currency?.scraps ?? 0) < 50 || (saveData.turretCount || 2) >= 8) return;
-        saveData.currency.scraps -= 50;
-        saveData.turretCount = (saveData.turretCount || 2) + 1;
+        const idx = (HULL_LIST.findIndex((h) => h.id === ship.hull) + 1) % HULL_LIST.length;
+        ship.hull = HULL_LIST[idx].id;
+        saveData.selectedHull = ship.hull;
+        document.getElementById('btn-hull-ico').src = HULL_LIST[idx].src;
         store.save(saveData);
-        NexusSDK.audio.upgrade();
-        updateHud();
-      });
-
-      document.getElementById('btn-open-lan').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lan-modal').classList.add('active');
-      });
-      document.getElementById('btn-close-lan').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lan-modal').classList.remove('active');
-      });
-      document.getElementById('btn-join-lan').addEventListener('click', () => {
-        const code = document.getElementById('lan-input').value.trim();
-        if (code) {
-          lan.joinRoom(code, 'client');
-          document.getElementById('lan-room-code').textContent = lan.getRoomCode();
-          NexusSDK.audio.upgrade();
-          document.getElementById('lan-modal').classList.remove('active');
-        }
       });
 
       spawnWave(1);

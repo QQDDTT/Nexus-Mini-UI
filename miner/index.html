@@ -148,79 +148,17 @@
     </div>
   </header>
 
-  <!-- 底部双手操控栏 -->
+  <!-- 底部双手操控栏 (纯图标无文字) -->
   <div class="bottom-controls">
     <div class="ctrl-group">
-      <button class="act-btn danger" id="btn-dynamite">
-        <img src="../assets/gold-miner/sprites/item-dynamite.svg" alt="Dynamite" />
-        <span>投掷雷管 (<span id="hud-dyn-count">3</span>) [W/↑]</span>
-      </button>
-      <button class="act-btn" id="btn-open-shop">
-        <img src="../assets/gold-miner/sprites/item-tonic.svg" alt="Shop" />
-        <span>矿区杂货铺</span>
-      </button>
-      <button class="act-btn" id="btn-open-lan">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-        <span>局域网双钩</span>
+      <button class="act-btn danger" id="btn-dynamite" aria-label="投掷雷管" title="投掷雷管" style="width:54px;height:54px;padding:0;border-radius:14px;justify-content:center;">
+        <img src="../assets/gold-miner/sprites/item-dynamite.svg" alt="Dynamite" style="width:30px;height:30px;" />
       </button>
     </div>
     <div class="ctrl-group">
-      <button class="act-btn primary" id="btn-launch-hook">
-        <img src="../assets/gold-miner/sprites/claw-hook.svg" alt="Hook" />
-        <span>发射合金抓钩 (SPACE / 点击矿区)</span>
+      <button class="act-btn primary" id="btn-launch-hook" aria-label="发射合金抓钩" title="发射合金抓钩" style="width:68px;height:68px;min-height:68px;padding:0;border-radius:50%;justify-content:center;">
+        <img src="../assets/gold-miner/sprites/claw-hook.svg" alt="Hook" style="width:34px;height:34px;" />
       </button>
-    </div>
-  </div>
-
-  <!-- 局间矿区杂货铺弹窗 -->
-  <div class="modal-backdrop" id="shop-modal">
-    <div class="modal-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-size:1rem;color:var(--cyan);">矿区补给杂货铺 · 物理起吊增益</h3>
-        <button class="act-btn" id="btn-close-shop" style="min-height:36px;">继续采矿</button>
-      </div>
-      <div class="shop-grid">
-        <div class="shop-item">
-          <img src="../assets/gold-miner/sprites/item-dynamite.svg" alt="Dynamite" />
-          <div style="font-size:0.84rem;font-weight:700;">救险高能雷管</div>
-          <div style="font-size:0.7rem;color:var(--muted);">炸毁钩上的笨重花岗岩并秒收钩爪</div>
-          <button class="act-btn primary" id="buy-dynamite" style="min-height:38px;font-size:0.76rem;padding:0 12px;">购买 ($120)</button>
-        </div>
-        <div class="shop-item">
-          <img src="../assets/gold-miner/sprites/item-tonic.svg" alt="Tonic" />
-          <div style="font-size:0.84rem;font-weight:700;">大力神液压剂</div>
-          <div style="font-size:0.7rem;color:var(--muted);">抓钩回收阻尼系数提升 1.65 倍</div>
-          <button class="act-btn primary" id="buy-tonic" style="min-height:38px;font-size:0.76rem;padding:0 12px;">购买 ($260)</button>
-        </div>
-        <div class="shop-item">
-          <img src="../assets/gold-miner/sprites/item-clover.svg" alt="Clover" />
-          <div style="font-size:0.84rem;font-weight:700;">幸运四叶草芯片</div>
-          <div style="font-size:0.7rem;color:var(--muted);">盲盒必出高额钞票且钻石溢价 +50%</div>
-          <button class="act-btn primary" id="buy-clover" style="min-height:38px;font-size:0.76rem;padding:0 12px;">购买 ($200)</button>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px;border-top:1px solid rgba(255,255,255,0.08);">
-        <span style="font-size:0.76rem;color:var(--muted);">双钩同时命中的 700kg 远古巨金享受 2.2 倍合力起吊提速！</span>
-        <button class="act-btn" id="btn-next-level" style="min-height:38px;">深入下一矿层</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 局域网双钩联机弹窗 -->
-  <div class="modal-backdrop" id="lan-modal">
-    <div class="modal-card" style="max-width:440px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-size:1rem;color:var(--cyan);">局域网 1~5ms 双钩合力联机</h3>
-        <button class="act-btn" id="btn-close-lan" style="min-height:36px;">关闭</button>
-      </div>
-      <p style="font-size:0.76rem;color:var(--muted);line-height:1.5;">
-        两台手机在同一 Wi-Fi / 热点下输入相同房间号，即可各自控制 1P 与 2P 采矿机甲合力起吊 700kg 远古巨金，或互扔救险雷管炸碎巨石！
-      </p>
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-        <div style="font-size:1.1rem;font-weight:900;color:var(--cyan);" id="lan-code-txt">NX-3088</div>
-        <input id="lan-code-input" type="text" placeholder="输入房间号" style="height:42px;flex:1;background:#030712;border:1px solid var(--border);border-radius:8px;color:#fff;padding:0 10px;" />
-        <button class="act-btn primary" id="btn-join-lan" style="min-height:42px;font-size:0.78rem;padding:0 14px;">直连</button>
-      </div>
     </div>
   </div>
 
@@ -353,7 +291,7 @@
               if (stage > (saveData.maxStage || 1)) saveData.maxStage = stage;
               saveData.currency.goldBars += 100;
               store.save(saveData);
-              document.getElementById('shop-modal').classList.add('active');
+              generateMineStage(stage);
             } else {
               generateMineStage(stage);
             }
@@ -477,7 +415,6 @@
 
       // LAN Session
       const lan = NexusSDK.createLanSession('gold-miner', store.getAuth().room);
-      document.getElementById('lan-code-txt').textContent = lan.getRoomCode();
       lan.onStatus((st) => {
         const el = document.getElementById('hud-lan');
         if (st.connected) {
@@ -502,7 +439,6 @@
         document.getElementById('hud-cash').textContent = `$${cash.toLocaleString()} / $${targetCash.toLocaleString()}`;
         document.getElementById('hud-timer').textContent = `${timeLeft}s`;
         document.getElementById('hud-bars').textContent = (saveData.currency?.goldBars ?? 0).toLocaleString();
-        document.getElementById('hud-dyn-count').textContent = saveData.dynamites ?? 0;
       }
 
       function step() {
@@ -633,49 +569,6 @@
       window.addEventListener('keydown', (e) => {
         if (e.code === 'Space' || e.code === 'KeyS' || e.code === 'ArrowDown') launchHook(p1Hook, true);
         if (e.code === 'KeyW' || e.code === 'ArrowUp') useDynamite();
-      });
-
-      // Shop & LAN bindings
-      document.getElementById('btn-open-shop').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('shop-modal').classList.add('active');
-      });
-      document.getElementById('btn-close-shop').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('shop-modal').classList.remove('active');
-      });
-      document.getElementById('buy-dynamite').addEventListener('click', () => {
-        if (cash >= 120) { cash -= 120; saveData.dynamites = (saveData.dynamites || 0) + 1; store.save(saveData); NexusSDK.audio.upgrade(); updateHud(); }
-      });
-      document.getElementById('buy-tonic').addEventListener('click', () => {
-        if (cash >= 260) { cash -= 260; saveData.tonicBuff = true; store.save(saveData); NexusSDK.audio.upgrade(); updateHud(); }
-      });
-      document.getElementById('buy-clover').addEventListener('click', () => {
-        if (cash >= 200) { cash -= 200; saveData.cloverBuff = true; store.save(saveData); NexusSDK.audio.upgrade(); updateHud(); }
-      });
-      document.getElementById('btn-next-level').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        stage++;
-        generateMineStage(stage);
-        document.getElementById('shop-modal').classList.remove('active');
-      });
-
-      document.getElementById('btn-open-lan').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lan-modal').classList.add('active');
-      });
-      document.getElementById('btn-close-lan').addEventListener('click', () => {
-        NexusSDK.audio.tap();
-        document.getElementById('lan-modal').classList.remove('active');
-      });
-      document.getElementById('btn-join-lan').addEventListener('click', () => {
-        const val = document.getElementById('lan-code-input').value.trim();
-        if (val) {
-          lan.joinRoom(val, 'client');
-          document.getElementById('lan-code-txt').textContent = lan.getRoomCode();
-          NexusSDK.audio.upgrade();
-          document.getElementById('lan-modal').classList.remove('active');
-        }
       });
 
       generateMineStage(1);
