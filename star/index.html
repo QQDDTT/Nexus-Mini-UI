@@ -33,9 +33,9 @@
       position: fixed;
       top: max(10px, env(safe-area-inset-top));
       left: max(14px, env(safe-area-inset-left));
-      right: 140px;
+      right: 120px;
       z-index: 100;
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
       pointer-events: none;
     }
     .hud-pill {
@@ -44,9 +44,10 @@
       backdrop-filter: blur(10px);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 6px 12px;
-      display: flex; align-items: center; gap: 8px;
-      font-size: 0.78rem;
+      padding: 6px 10px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.74rem;
+      white-space: nowrap;
     }
     .hud-val { font-weight: 800; color: var(--cyan); }
     .hud-val.gold { color: var(--gold); }
@@ -157,24 +158,24 @@
   <!-- 顶部战术仪表盘 -->
   <header class="top-hud">
     <div class="hud-pill">
-      <img src="../assets/star-defender/icon.svg" alt="" width="22" height="22" />
+      <img src="../assets/star-defender/icon.svg" alt="" width="20" height="20" />
       <span style="font-weight:800;">星轨防线</span>
       <span class="hud-val" id="hud-wave">WAVE 1 / 100</span>
     </div>
     <div class="hud-pill">
-      <span>空间站护盾</span>
+      <span>护盾</span>
       <span class="hud-val" id="hud-station">100%</span>
     </div>
     <div class="hud-pill">
-      <span>战功 (Merits)</span>
+      <span>战功</span>
       <span class="hud-val gold" id="hud-merits">1,200</span>
     </div>
     <div class="hud-pill">
-      <span>合金残骸</span>
+      <span>残骸</span>
       <span class="hud-val gold" id="hud-scraps">150</span>
     </div>
     <div class="hud-pill">
-      <span id="hud-lan" style="color:var(--green);">AI 护航僚机就绪</span>
+      <span id="hud-lan" style="color:var(--green);">AI 护航中</span>
     </div>
   </header>
 

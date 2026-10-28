@@ -915,6 +915,34 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    @media (max-width: 1120px) {
+      .brand-sub { display: none; }
+    }
+    @media (max-width: 920px) {
+      .status-pill { display: none; }
+    }
+    @media (max-height: 460px) {
+      #portal-shell { padding: 6px 10px; gap: 6px; }
+      .topbar { height: 44px; padding: 0 10px; }
+      .hero-stage { padding: 8px 12px; gap: 6px; }
+      .hero-game-icon { width: 42px; height: 42px; border-radius: 10px; }
+      .hero-game-name { font-size: 1.05rem; }
+      .hero-tagline { display: none; }
+      .inspector-tabs { gap: 4px; padding-bottom: 5px; }
+      .tab-btn { min-height: 36px; padding: 0 9px; font-size: 0.72rem; gap: 4px; }
+      .info-grid { gap: 6px; margin-bottom: 6px; }
+      .stat-box { padding: 5px 8px; }
+      .stat-val { font-size: 0.78rem; }
+      .feature-item { padding: 6px 8px; }
+      .feature-item h4 { font-size: 0.76rem; margin-bottom: 2px; }
+      .feature-item p { font-size: 0.7rem; line-height: 1.35; }
+      .hero-actions { padding-top: 6px; gap: 8px; }
+      .matrix-roster { padding: 8px; gap: 5px; }
+      .game-card-item { min-height: 46px; padding: 6px 8px; gap: 8px; }
+      .card-thumb { width: 34px; height: 34px; }
+      .card-name { font-size: 0.8rem; }
+      .card-sub { font-size: 0.68rem; }
+    }
     @media (max-width: 760px) {
       .brand-sub { display: none; }
       .workspace-grid { grid-template-columns: 64fr 36fr; }
@@ -1026,9 +1054,9 @@
 
         <!-- 底部双通道操作栏 (唯一 10% 电光青视觉重心) -->
         <footer class="hero-actions">
-          <button class="primary-cta" id="btn-launch-game">
+          <button class="primary-cta" id="btn-launch-game" style="white-space:nowrap;">
             <svg class="nx-ico" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>
-            <span>立即全屏出击 (进入实机游戏)</span>
+            <span>立即全屏出击</span>
           </button>
           <button class="secondary-cta" id="btn-open-pwa-guide">
             <svg class="nx-ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>

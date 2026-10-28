@@ -36,45 +36,47 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       backdrop-filter: blur(12px);
       min-height: 0;
+      overflow: hidden;
     }
     .brand-row {
       display: flex; align-items: center; gap: 8px;
-      padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    .brand-row img { width: 34px; height: 34px; border-radius: 8px; }
-    .brand-row h1 { font-size: 0.96rem; font-weight: 800; color: var(--text); }
-    .brand-row p { font-size: 0.68rem; color: var(--cyan); }
+    .brand-row img { width: 28px; height: 28px; border-radius: 6px; }
+    .brand-row h1 { font-size: 0.88rem; font-weight: 800; color: var(--text); white-space: nowrap; }
+    .brand-row p { font-size: 0.64rem; color: var(--cyan); white-space: nowrap; }
     .stat-card {
       background: rgba(3, 7, 18, 0.65);
       border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 8px;
-      padding: 7px 10px;
+      border-radius: 7px;
+      padding: 4px 7px;
     }
-    .stat-label { font-size: 0.68rem; color: var(--muted); }
-    .stat-val { font-size: 0.92rem; font-weight: 800; color: var(--text); margin-top: 2px; }
+    .stat-label { font-size: 0.63rem; color: var(--muted); white-space: nowrap; }
+    .stat-val { font-size: 0.82rem; font-weight: 800; color: var(--text); margin-top: 1px; white-space: nowrap; }
     .stat-val.gold { color: var(--gold); }
     .stat-val.cyan { color: var(--cyan); }
     .btn {
       min-height: 44px;
-      padding: 0 12px;
+      padding: 0 10px;
       border-radius: 8px;
       border: 1px solid var(--border);
       background: rgba(15, 23, 42, 0.85);
       color: var(--text);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
       cursor: pointer;
+      white-space: nowrap;
       transition: all 0.14s ease;
     }
     .btn:hover { border-color: var(--cyan); background: rgba(22, 35, 62, 0.92); }
@@ -102,15 +104,15 @@
     /* Virtual D-Pad & Action Buttons */
     .dpad-grid {
       display: grid;
-      grid-template-columns: repeat(3, 52px);
-      grid-template-rows: repeat(3, 52px);
-      gap: 5px;
+      grid-template-columns: repeat(3, 46px);
+      grid-template-rows: repeat(3, 46px);
+      gap: 4px;
       justify-content: center;
-      margin: 4px auto;
+      margin: 2px auto;
     }
     .dpad-btn {
-      width: 52px; height: 52px;
-      border-radius: 10px;
+      width: 46px; height: 46px;
+      border-radius: 9px;
       background: rgba(15, 23, 42, 0.9);
       border: 1px solid rgba(0, 240, 255, 0.32);
       color: var(--cyan);
@@ -124,15 +126,16 @@
       transform: scale(0.95);
     }
     .fire-btn {
-      width: 100%; min-height: 68px;
-      border-radius: 14px;
+      width: 100%; min-height: 50px;
+      border-radius: 12px;
       background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
       border: 2px solid #67e8f9;
       color: #030712;
-      font-size: 0.95rem;
+      font-size: 0.86rem;
       font-weight: 900;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 2px;
+      display: flex; flex-direction: row; align-items: center; justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
       cursor: pointer;
       box-shadow: 0 0 20px rgba(0, 240, 255, 0.38);
       touch-action: none;
@@ -158,10 +161,8 @@
       padding: 8px 10px; background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
     }
-    @media (max-width: 860px) {
-      #app { grid-template-columns: 180px 1fr 175px; gap: 6px; padding: 6px; }
-      .dpad-grid { grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(3, 46px); }
-      .dpad-btn { width: 46px; height: 46px; }
+    @media (max-width: 880px) {
+      #app { grid-template-columns: 188px 1fr 188px; gap: 6px; padding: 6px; }
     }
   </style>
 </head>
@@ -174,10 +175,10 @@
           <img src="../assets/tank-battle/icon.svg" alt="Tank Battle" />
           <div>
             <h1>钢铁防线</h1>
-            <p>26×26 网格基地守卫</p>
+            <p id="hud-lan" style="color:var(--green);">AI 战术僚机协同</p>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px;">
           <div class="stat-card">
             <div class="stat-label">战役关卡</div>
             <div class="stat-val cyan" id="hud-stage">第 1 关</div>
@@ -195,33 +196,28 @@
             <div class="stat-val cyan" id="hud-rank">Rank 1</div>
           </div>
         </div>
-        <div class="stat-card" style="margin-top:6px;">
-          <div class="stat-label">局域网双通道状态</div>
-          <div class="stat-val" id="hud-lan" style="font-size:0.76rem;color:var(--green);">AI 战术僚机协同中</div>
-        </div>
       </div>
 
       <!-- 触控四向十字键 (支持键盘 WASD / 方向键) -->
       <div>
-        <div style="font-size:0.7rem;color:var(--muted);text-align:center;margin-bottom:4px;">左手方向操控 (或 WASD)</div>
         <div class="dpad-grid">
           <div></div>
           <button class="dpad-btn" data-dir="0" aria-label="Up">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
           </button>
           <div></div>
           <button class="dpad-btn" data-dir="3" aria-label="Left">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
           </button>
           <div style="display:flex;align-items:center;justify-content:center;color:rgba(0,240,255,0.3);">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>
           </div>
           <button class="dpad-btn" data-dir="1" aria-label="Right">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
           <div></div>
           <button class="dpad-btn" data-dir="2" aria-label="Down">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div></div>
         </div>
@@ -234,33 +230,33 @@
     </main>
 
     <!-- 右侧：武器开火、战车军械库与局域网联机 -->
-    <aside class="side-panel" style="padding-top:56px;">
-      <div style="display:flex;flex-direction:column;gap:6px;">
+    <aside class="side-panel" style="padding-top:50px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
         <div class="stat-card">
-          <div class="stat-label">1P 装甲生命 / 鹰标总部</div>
-          <div class="stat-val" id="hud-hp">HP 3 · 总部完好</div>
+          <div class="stat-label">装甲/总部</div>
+          <div class="stat-val" id="hud-hp" style="font-size:0.75rem;">HP3·完好</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">战役得分</div>
           <div class="stat-val gold" id="hud-score">0</div>
         </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:5px;">
         <button class="btn gold" id="btn-open-armory">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
           <span>装甲军械库改装</span>
         </button>
         <button class="btn" id="btn-open-lan">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
           <span>局域网双坦联机</span>
         </button>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:8px;">
         <button class="btn" id="btn-fortify-base" style="border-color:rgba(251,191,36,0.45);color:var(--gold);">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>钛钢加固总部 (50币)</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>加固总部 (50币)</span>
         </button>
         <button class="fire-btn" id="btn-fire">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
           <span>主炮齐射 (SPACE)</span>
         </button>
       </div>
@@ -605,7 +601,7 @@
         document.getElementById('hud-enemies').textContent = `${remainingSpawns + enemies.length} 辆`;
         document.getElementById('hud-coins').textContent = (saveData.currency?.tankCoins ?? 0).toLocaleString();
         document.getElementById('hud-rank').textContent = `Rank ${p1.rank}`;
-        document.getElementById('hud-hp').textContent = `HP ${p1.hp} · ${baseAlive ? '总部完好' : '总部受损'}`;
+        document.getElementById('hud-hp').textContent = `HP${p1.hp}·${baseAlive ? '完好' : '受损'}`;
         document.getElementById('hud-score').textContent = score.toLocaleString();
         document.getElementById('armory-rank-txt').textContent = `Rank ${p1.rank}`;
       }

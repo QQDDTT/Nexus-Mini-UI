@@ -1,32 +1,22 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
   <defs>
     <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
       <stop offset="0%" stop-color="#0f2442" stop-opacity="0.75"/>
       <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
-    </linearGradient>
     <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#fde047"/>
       <stop offset="50%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#451a03"/>
-    </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f87171"/>
-      <stop offset="50%" stop-color="#dc2626"/>
-      <stop offset="100%" stop-color="#450a0a"/>
-    </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e2e8f0"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#78350f"/>
     </linearGradient>
   </defs>
+  <!-- Layer 1: Armored Command Bunker Base -->
   <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <rect x="18" y="18" width="92" height="92" rx="16" fill="#0f172a" stroke="#fbbf24" stroke-width="3"/>
-  <polygon points="64,22 76,46 104,34 88,68 100,94 64,82 28,94 40,68 24,34 52,46" fill="url(#goldArmor)" stroke="#fef9c3" stroke-width="2"/>
-  <circle cx="64" cy="58" r="10" fill="#00f0ff" stroke="#ffffff" stroke-width="2"/>
+  <rect x="16" y="16" width="96" height="96" rx="16" fill="#0f172a" stroke="#fbbf24" stroke-width="3"/>
+  <!-- Layer 2: Cyber Eagle Spread Wings & Tail Silhouette -->
+  <path d="M64 24 L76 42 L108 32 L96 58 L104 72 L78 72 L86 98 L64 88 L42 98 L50 72 L24 72 L32 58 L20 32 L52 42 Z" fill="url(#goldArmor)" stroke="#fef9c3" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Layer 3: Eagle Shield Core & Glowing Eye Crest -->
+  <polygon points="64,44 78,58 64,80 50,58" fill="#082f49" stroke="#00f0ff" stroke-width="2"/>
+  <circle cx="64" cy="58" r="6" fill="#00f0ff"/>
+  <circle cx="64" cy="58" r="2.5" fill="#ffffff"/>
 </svg>

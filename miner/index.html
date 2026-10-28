@@ -32,9 +32,9 @@
       position: fixed;
       top: max(10px, env(safe-area-inset-top));
       left: max(14px, env(safe-area-inset-left));
-      right: 135px;
+      right: 120px;
       z-index: 100;
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
       pointer-events: none;
     }
     .hud-chip {
@@ -43,9 +43,10 @@
       backdrop-filter: blur(10px);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 6px 12px;
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.78rem;
+      padding: 6px 10px;
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.74rem;
+      white-space: nowrap;
     }
     .hud-val { font-weight: 800; color: var(--cyan); }
     .hud-val.gold { color: var(--gold); }
@@ -126,24 +127,24 @@
   <!-- 顶部矿层与收益仪表盘 -->
   <header class="top-bar">
     <div class="hud-chip">
-      <img src="../assets/gold-miner/icon.svg" alt="" width="22" height="22" />
+      <img src="../assets/gold-miner/icon.svg" alt="" width="20" height="20" />
       <span style="font-weight:800;">掘金先锋</span>
       <span class="hud-val" id="hud-stage">矿层 #1</span>
     </div>
     <div class="hud-chip">
-      <span>当前现金 / 目标</span>
+      <span>现金/目标</span>
       <span class="hud-val gold" id="hud-cash">$0 / $650</span>
     </div>
     <div class="hud-chip">
-      <span>倒计时</span>
+      <span>计时</span>
       <span class="hud-val" id="hud-timer">60s</span>
     </div>
     <div class="hud-chip">
-      <span>储备金条</span>
+      <span>金条</span>
       <span class="hud-val gold" id="hud-bars">850</span>
     </div>
     <div class="hud-chip">
-      <span id="hud-lan" style="color:var(--green);">2P 勘探僚机协同起吊中</span>
+      <span id="hud-lan" style="color:var(--green);">2P 合力起吊中</span>
     </div>
   </header>
 
@@ -304,18 +305,28 @@
         const topY = Math.max(150, h * 0.28);
 
         const defs = [
-          { type: 'giant', count: 3, r: 42, mass: 7.0, val: 500 },
-          { type: 'gold', count: 6, r: 26, mass: 2.6, val: 200 },
-          { type: 'diamond', count: 3 + Math.min(4, stg), r: 20, mass: 0.9, val: 650 },
-          { type: 'rock', count: 5, r: 28, mass: 5.2, val: 45 },
-          { type: 'bag', count: 3, r: 25, mass: 1.5, val: 350 },
-          { type: 'tnt', count: 2, r: 26, mass: 1.2, val: 10 }
+          { type: 'giant', count: 2, r: 36, mass: 7.0, val: 500 },
+          { type: 'gold', count: 5, r: 24, mass: 2.6, val: 200 },
+          { type: 'diamond', count: 3 + Math.min(3, stg), r: 18, mass: 0.9, val: 650 },
+          { type: 'rock', count: 4, r: 25, mass: 5.2, val: 45 },
+          { type: 'bag', count: 2, r: 23, mass: 1.5, val: 350 },
+          { type: 'tnt', count: 2, r: 24, mass: 1.2, val: 10 }
         ];
 
         defs.forEach((d) => {
           for (let i = 0; i < d.count; i++) {
-            const x = 70 + rng() * (w - 140);
-            const y = topY + rng() * (h - topY - 90);
+            let x = 70 + rng() * (w - 140);
+            let y = topY + rng() * (h - topY - 82);
+            for (let attempt = 0; attempt < 24; attempt++) {
+              const candX = 64 + rng() * (w - 128);
+              const candY = topY + rng() * (h - topY - 82);
+              const clash = minerals.some((m) => Math.hypot(candX - m.x, candY - m.y) < (d.r + m.r + 12));
+              if (!clash) {
+                x = candX;
+                y = candY;
+                break;
+              }
+            }
             minerals.push({
               id: `${d.type}_${i}_${Math.floor(rng() * 9999)}`,
               type: d.type,

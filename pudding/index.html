@@ -32,19 +32,23 @@
       background: radial-gradient(circle at 50% 40%, #0b1528 0%, #030712 85%);
     }
     .top-bar {
-      height: 46px; flex-shrink: 0;
+      height: 44px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: space-between;
-      padding-right: 118px;
-      gap: 8px;
+      padding-right: 112px;
+      gap: 6px;
+      flex-wrap: nowrap;
     }
-    .hud-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .hud-group { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
     .hud-pill {
+      min-height: 44px;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 5px 11px;
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.76rem;
+      padding: 0 10px;
+      color: var(--text);
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.73rem;
+      white-space: nowrap;
     }
     .hud-val { font-weight: 800; color: var(--cyan); }
     .hud-val.gold { color: var(--gold); }
@@ -64,19 +68,20 @@
     }
     /* Bottom Tower Dock */
     .tower-dock {
-      height: 62px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      height: 54px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
       overflow-x: auto;
     }
     .tower-btn {
-      min-height: 54px; min-width: 118px;
-      padding: 4px 10px;
+      min-height: 48px; min-width: 110px;
+      padding: 4px 8px;
       border-radius: 10px;
       background: var(--panel);
       border: 1px solid var(--border);
       color: var(--text);
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: 6px;
       cursor: pointer;
+      white-space: nowrap;
       transition: all 0.14s ease;
     }
     .tower-btn.active {
@@ -84,16 +89,17 @@
       border-color: var(--cyan);
       box-shadow: 0 0 14px rgba(0, 240, 255, 0.32);
     }
-    .tower-btn img { width: 34px; height: 34px; object-fit: contain; }
-    .t-name { font-size: 0.76rem; font-weight: 700; text-align: left; }
-    .t-cost { font-size: 0.68rem; color: var(--gold); font-weight: 700; text-align: left; }
+    .tower-btn img { width: 30px; height: 30px; object-fit: contain; flex-shrink: 0; }
+    .t-name { font-size: 0.74rem; font-weight: 700; text-align: left; white-space: nowrap; }
+    .t-cost { font-size: 0.65rem; color: var(--gold); font-weight: 700; text-align: left; white-space: nowrap; }
     .skill-btn {
-      min-height: 54px; padding: 0 14px;
+      min-height: 48px; padding: 0 12px;
       border-radius: 10px;
       background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
       border: 1px solid #67e8f9;
       color: #030712;
-      font-size: 0.78rem; font-weight: 900;
+      font-size: 0.76rem; font-weight: 900;
+      white-space: nowrap;
       cursor: pointer;
       display: inline-flex; align-items: center; gap: 6px;
     }
@@ -120,26 +126,26 @@
     <header class="top-bar">
       <div class="hud-group">
         <div class="hud-pill">
-          <img src="../assets/pudding-defense/icon.svg" alt="" width="20" height="20" />
+          <img src="../assets/pudding-defense/icon.svg" alt="" width="18" height="18" />
           <span style="font-weight:800;">保卫布丁</span>
           <span class="hud-val" id="hud-wave">波次 1 / 15</span>
         </div>
         <div class="hud-pill">
-          <span>局内糖币</span>
+          <span>糖币</span>
           <span class="hud-val gold" id="hud-gold">360</span>
         </div>
         <div class="hud-pill">
-          <span>皇家布丁完整度</span>
+          <span>布丁</span>
           <span class="hud-val" id="hud-pudding">10 / 10 HP</span>
         </div>
         <div class="hud-pill">
-          <span>储备皇家糖晶</span>
+          <span>糖晶</span>
           <span class="hud-val gold" id="hud-crystals">600</span>
         </div>
       </div>
       <div class="hud-group">
-        <button class="hud-pill" id="btn-speed" style="cursor:pointer;color:var(--cyan);font-weight:800;">1x 正常速度</button>
-        <button class="hud-pill" id="btn-open-lan" style="cursor:pointer;">LAN 双防区联机</button>
+        <button class="hud-pill" id="btn-speed" style="cursor:pointer;color:var(--cyan);font-weight:800;">1x 速度</button>
+        <button class="hud-pill" id="btn-open-lan" style="cursor:pointer;color:var(--text);font-weight:700;">LAN 联机</button>
       </div>
     </header>
 
@@ -154,40 +160,40 @@
         <img src="../assets/pudding-defense/sprites/tower-boba.svg" alt="Boba" />
         <div>
           <div class="t-name">波波连射塔</div>
-          <div class="t-cost">100 糖币 · 高频点射</div>
+          <div class="t-cost">100 糖币 · 点射</div>
         </div>
       </button>
       <button class="tower-btn" data-tower="frost">
         <img src="../assets/pudding-defense/sprites/tower-frost.svg" alt="Frost" />
         <div>
           <div class="t-name">冰霜北极熊</div>
-          <div class="t-cost">120 糖币 · 45%减速</div>
+          <div class="t-cost">120 糖币 · 减速</div>
         </div>
       </button>
       <button class="tower-btn" data-tower="sun">
         <img src="../assets/pudding-defense/sprites/tower-sun.svg" alt="Sun" />
         <div>
           <div class="t-name">太阳蛋黄炮</div>
-          <div class="t-cost">160 糖币 · 全周AOE</div>
+          <div class="t-cost">160 糖币 · AOE</div>
         </div>
       </button>
       <button class="tower-btn" data-tower="missile">
         <img src="../assets/pudding-defense/sprites/tower-missile.svg" alt="Missile" />
         <div>
           <div class="t-name">泡泡糖导弹</div>
-          <div class="t-cost">180 糖币 · 远程追踪</div>
+          <div class="t-cost">180 糖币 · 追踪</div>
         </div>
       </button>
       <button class="tower-btn" data-tower="prism">
         <img src="../assets/pudding-defense/sprites/tower-prism.svg" alt="Prism" />
         <div>
           <div class="t-name">彩虹棱镜塔</div>
-          <div class="t-cost">220 糖币 · 折射破甲</div>
+          <div class="t-cost">220 糖币 · 棱镜</div>
         </div>
       </button>
       <button class="skill-btn" id="btn-blizzard">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        <span>糖霜暴风雪 (100糖币)</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>糖霜暴风雪 (100)</span>
       </button>
     </footer>
   </div>
