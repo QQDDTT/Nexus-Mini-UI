@@ -1,0 +1,40 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="45%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fca5a5"/>
+      <stop offset="50%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f1f5f9"/>
+      <stop offset="50%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
+  <ellipse cx="64" cy="98" rx="50" ry="14" fill="#e2e8f0" stroke="#94a3b8" stroke-width="3"/>
+  <path d="M24 94 L34 40 C38 26 90 26 94 40 L104 94 Z" fill="url(#goldArmor)" stroke="#fef08a" stroke-width="3"/>
+  <path d="M34 40 C38 26 90 26 94 40 C94 52 82 56 76 48 C70 58 58 58 52 48 C46 56 34 52 34 40 Z" fill="#78350f" stroke="#b45309" stroke-width="2"/>
+  <circle cx="64" cy="22" r="10" fill="#ef4444" stroke="#fecaca" stroke-width="2"/>
+  <circle cx="50" cy="70" r="5" fill="#1c1917"/>
+  <circle cx="78" cy="70" r="5" fill="#1c1917"/>
+</svg>

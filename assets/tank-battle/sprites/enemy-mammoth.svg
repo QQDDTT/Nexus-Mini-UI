@@ -1,0 +1,36 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#0f2442" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="50%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#450a0a"/>
+    </linearGradient>
+    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="50%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
+  <rect x="16" y="22" width="22" height="86" rx="6" fill="#0f172a" stroke="#f59e0b" stroke-width="2.5"/>
+  <rect x="90" y="22" width="22" height="86" rx="6" fill="#0f172a" stroke="#f59e0b" stroke-width="2.5"/>
+  <rect x="30" y="28" width="68" height="74" rx="12" fill="url(#crimsonArmor)" stroke="#fde047" stroke-width="2.5"/>
+  <rect x="48" y="8" width="12" height="46" rx="3" fill="url(#steelGrad)" stroke="#fbbf24" stroke-width="2"/>
+  <rect x="68" y="8" width="12" height="46" rx="3" fill="url(#steelGrad)" stroke="#fbbf24" stroke-width="2"/>
+  <polygon points="46,52 82,52 88,82 40,82" fill="#450a0a" stroke="#fbbf24" stroke-width="2"/>
+  <circle cx="64" cy="67" r="8" fill="#ef4444"/>
+</svg>

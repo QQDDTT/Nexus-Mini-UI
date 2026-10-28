@@ -1,0 +1,37 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="45%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fca5a5"/>
+      <stop offset="50%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f1f5f9"/>
+      <stop offset="50%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
+  <polygon points="58,24 98,34 108,74 84,104 36,104 20,68 32,34" fill="url(#steelGrad)" stroke="#94a3b8" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M40 54 L66 64 L82 48" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="44,38 72,42 60,58" fill="#cbd5e1" fill-opacity="0.35"/>
+</svg>
