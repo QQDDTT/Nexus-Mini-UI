@@ -62,7 +62,7 @@
       top: max(6px, env(safe-area-inset-top));
       left: max(10px, env(safe-area-inset-left));
       right: max(64px, calc(env(safe-area-inset-right) + 56px));
-      height: 44px;
+      height: 48px;
       z-index: 500;
       display: flex;
       align-items: center;
@@ -97,7 +97,8 @@
     }
     .nav-tabs::-webkit-scrollbar { display: none; }
     .nav-tab-btn {
-      min-height: 38px;
+      min-width: 44px;
+      min-height: 44px;
       padding: 0 10px;
       border-radius: 8px;
       border: 1px solid rgba(148, 163, 184, 0.2);
@@ -139,7 +140,7 @@
     /* 六大一级页面容器 */
     .mg-page {
       position: fixed;
-      top: calc(max(6px, env(safe-area-inset-top)) + 50px);
+      top: calc(max(6px, env(safe-area-inset-top)) + 54px);
       bottom: max(8px, env(safe-area-inset-bottom));
       left: max(10px, env(safe-area-inset-left));
       right: max(10px, env(safe-area-inset-right));
@@ -211,7 +212,8 @@
     }
     .cta-primary:active { transform: scale(0.96); }
     .btn-ghost {
-      min-height: 38px;
+      min-width: 44px;
+      min-height: 44px;
       padding: 0 11px;
       border-radius: 8px;
       border: 1px solid var(--mg-border-subtle);
@@ -373,6 +375,8 @@
       gap: 5px;
     }
     .torso-btn {
+      min-width: 44px;
+      min-height: 44px;
       background: rgba(15, 23, 42, 0.85);
       border: 1.5px solid rgba(148, 163, 184, 0.22);
       border-radius: 8px;
@@ -381,6 +385,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 2px;
       color: var(--mg-text-primary);
     }
@@ -452,14 +457,14 @@
       flex-shrink: 0;
     }
     .lvl-btn, .lvl-pill {
-      min-width: 24px;
-      min-height: 22px;
+      min-width: 44px;
+      min-height: 44px;
       padding: 0 3px;
-      border-radius: 4px;
+      border-radius: 6px;
       border: 1px solid rgba(148, 163, 184, 0.25);
       background: rgba(15, 23, 42, 0.9);
       color: var(--mg-text-secondary);
-      font-size: 0.56rem;
+      font-size: 0.62rem;
       font-weight: 800;
       cursor: pointer;
     }
@@ -516,7 +521,8 @@
       gap: 4px;
     }
     .numpad-btn {
-      min-height: 40px;
+      min-width: 44px;
+      min-height: 44px;
       border-radius: 7px;
       border: 1px solid rgba(0, 240, 255, 0.25);
       background: rgba(15, 23, 42, 0.9);
@@ -883,7 +889,7 @@
             <div style="font-size:0.72rem;font-weight:800;color:var(--mg-text-primary);" id="editor-preview-title">当前物种：夜行声呐刺猎虫</div>
             <div style="font-size:0.6rem;color:var(--mg-accent-cyan);" id="editor-preview-sub">流线三节真核体 (T02) · 肉食掠食者</div>
           </div>
-          <button class="btn-ghost" id="editor-toggle-daynight-btn" style="min-height:32px;padding:0 9px;font-size:0.66rem;">
+          <button class="btn-ghost" id="editor-toggle-daynight-btn" style="min-height:44px;padding:0 9px;font-size:0.66rem;">
             预览环境：白昼
           </button>
         </div>
@@ -1157,7 +1163,7 @@
           <span class="badge-tag green" id="drawer-cur-energy-lbl">当前能量: 85% MaxE</span>
           <span style="font-size:0.64rem;color:var(--mg-text-secondary);" id="drawer-cd-status-lbl">重构冷却: 就绪</span>
         </div>
-        <button class="btn-ghost" id="drawer-close-btn" style="min-height:32px;padding:0 10px;">关闭抽屉 ×</button>
+        <button class="btn-ghost" id="drawer-close-btn" style="min-height:44px;padding:0 10px;">关闭抽屉 ×</button>
       </div>
 
       <!-- 跨躯干加载内联二次确认条 (严禁使用原生 confirm) -->
@@ -1166,9 +1172,9 @@
           目标物种属于<strong>不同躯干</strong>，加载后将创立<strong>全新物种种群</strong>并以 <strong>1 只初始始祖个体 (100% HP, 50% MaxE)</strong> 重新开始演化！是否先将当前物种存入基因库？
         </span>
         <div style="display:flex;gap:6px;flex-shrink:0;">
-          <button class="btn-ghost gold" id="confirm-save-then-load-btn" style="min-height:32px;">先存入基因库再加载</button>
-          <button class="cta-primary" id="confirm-direct-load-btn" style="min-height:32px;padding:0 12px;font-size:0.7rem;">直接加载新种群</button>
-          <button class="btn-ghost" id="confirm-cancel-load-btn" style="min-height:32px;">取消</button>
+          <button class="btn-ghost gold" id="confirm-save-then-load-btn" style="min-height:44px;">先存入基因库再加载</button>
+          <button class="cta-primary" id="confirm-direct-load-btn" style="min-height:44px;padding:0 12px;font-size:0.7rem;">直接加载新种群</button>
+          <button class="btn-ghost" id="confirm-cancel-load-btn" style="min-height:44px;">取消</button>
         </div>
       </div>
 
@@ -1571,15 +1577,25 @@
             longestSurvivalSec: Math.max(0, Math.round(Number(src.records?.longestSurvivalSec) || 0))
           }
         };
-        const computed = computeBlueprintStats(bp);
+        const computed = computeBlueprintStats(bp, false);
+        const suppressedComputed = computeBlueprintStats(bp, true);
         bp.dietType = computed.dietType;
         bp.statsSummary = computed.statsSummary;
+        bp.suppressedStatsSummary = suppressedComputed.statsSummary;
         return bp;
       }
 
-      function computeBlueprintStats(bp) {
+      function getEffectiveStats(org) {
+        if (!org || !org.blueprint) return {};
+        return (org.suppressedTimer > 0 && org.blueprint.suppressedStatsSummary)
+          ? org.blueprint.suppressedStatsSummary
+          : org.blueprint.statsSummary;
+      }
+
+      function computeBlueprintStats(bp, forceLv1 = false) {
         const torso = TORSOS[bp.torsoId] || TORSOS['torso-t2-stream'];
-        const coreSpec = ORGAN_CATALOG[bp.slots.core.id].levels[bp.slots.core.level];
+        const effLv = (lv) => (forceLv1 ? 1 : lv);
+        const coreSpec = ORGAN_CATALOG[bp.slots.core.id].levels[effLv(bp.slots.core.level)];
 
         let maxHp = torso.baseHp;
         const maxEnergy = Math.round(coreSpec.baseE * Math.pow(torso.volume, 0.6));
@@ -1590,11 +1606,12 @@
         let eyeOrgans = [];
         let earOrgans = [];
         bp.slots.sensory.forEach((s) => {
-          const spec = ORGAN_CATALOG[s.id].levels[s.level];
+          const lv = effLv(s.level);
+          const spec = ORGAN_CATALOG[s.id].levels[lv];
           bmr += spec.bmr;
           totalGpCost += spec.gp;
-          if (s.id === 'sensory-eye') eyeOrgans.push({ level: s.level, ...spec });
-          if (s.id === 'sensory-ear') earOrgans.push({ level: s.level, ...spec });
+          if (s.id === 'sensory-eye') eyeOrgans.push({ level: lv, ...spec });
+          if (s.id === 'sensory-ear') earOrgans.push({ level: lv, ...spec });
         });
         eyeOrgans.sort((a, b) => b.level - a.level);
         earOrgans.sort((a, b) => b.level - a.level);
@@ -1625,11 +1642,11 @@
 
         // 口部插槽合成 (双同系口器 +35% 伤害/吸附半径，能耗 +50%)
         const firstMouthSeries = ORGAN_CATALOG[bp.slots.mouth[0].id];
-        const firstMouthSpec = firstMouthSeries.levels[bp.slots.mouth[0].level];
+        const firstMouthSpec = firstMouthSeries.levels[effLv(bp.slots.mouth[0].level)];
         const dualMouthMult = bp.slots.mouth.length > 1 ? 1.35 : 1.0;
         const dualMouthCostMult = bp.slots.mouth.length > 1 ? 1.50 : 1.0;
         bp.slots.mouth.forEach((m) => {
-          const spec = ORGAN_CATALOG[m.id].levels[m.level];
+          const spec = ORGAN_CATALOG[m.id].levels[effLv(m.level)];
           bmr += spec.bmr;
           totalGpCost += spec.gp;
         });
@@ -1639,13 +1656,14 @@
         let sumTorque = 0;
         let activeSkill = null;
         bp.slots.locomotion.forEach((l) => {
-          const spec = ORGAN_CATALOG[l.id].levels[l.level];
+          const lv = effLv(l.level);
+          const spec = ORGAN_CATALOG[l.id].levels[lv];
           bmr += spec.bmr;
           totalGpCost += spec.gp;
           sumThrust += spec.thrust;
           sumTorque += spec.torque;
           if (spec.skill && !activeSkill) {
-            activeSkill = { type: spec.skill, organId: l.id, level: l.level, sprite: spec.sprite, cost: spec.skillCost, cd: spec.skillCd, spec };
+            activeSkill = { type: spec.skill, organId: l.id, level: lv, sprite: spec.sprite, cost: spec.skillCost, cd: spec.skillCd, spec };
           }
         });
 
@@ -1653,7 +1671,8 @@
         let scaleProd = 1.0;
         let reflectRatio = 0;
         bp.slots.utility.forEach((u) => {
-          const spec = ORGAN_CATALOG[u.id].levels[u.level];
+          const lv = effLv(u.level);
+          const spec = ORGAN_CATALOG[u.id].levels[lv];
           bmr += spec.bmr;
           totalGpCost += spec.gp;
           if (u.id === 'util-scales') {
@@ -1662,7 +1681,7 @@
             reflectRatio = Math.max(reflectRatio, spec.reflect || 0);
           }
           if (spec.skill) {
-            activeSkill = { type: spec.skill, organId: u.id, level: u.level, sprite: spec.sprite, cost: spec.skillCost, cd: spec.skillCd, spec };
+            activeSkill = { type: spec.skill, organId: u.id, level: lv, sprite: spec.sprite, cost: spec.skillCost, cd: spec.skillCd, spec };
           }
         });
         const damageReduction = Math.min(0.70, +(1 - scaleProd).toFixed(3));
@@ -2164,7 +2183,7 @@
           </div>
           <div style="display:flex;gap:6px;margin-top:auto;">
             <button class="btn-ghost" id="gb-edit-in-page4-btn" style="flex:1;border-color:var(--mg-accent-cyan);color:var(--mg-accent-cyan);">载入 4.编辑页面 修改</button>
-            <button class="cta-primary" id="gb-launch-in-page5-btn" style="flex:1;min-height:36px;">设为出战并前往 5.大厅 ➔</button>
+            <button class="cta-primary" id="gb-launch-in-page5-btn" style="flex:1;min-height:44px;">设为出战并前往 5.大厅 ➔</button>
             <button class="btn-ghost danger" id="gb-delete-btn">删除</button>
           </div>
         `;
@@ -2609,14 +2628,18 @@
       let guestInputCode = '';
       let isLanGuest = false;
 
-      function initLanHostSession(code) {
+      function initLanHostSession(code, asGuest = false) {
         if (lanSession && lanSession.destroy) lanSession.destroy();
         lanRoomCode = code;
-        isLanGuest = false;
+        isLanGuest = Boolean(asGuest);
         const badgeEl = document.getElementById('lobby-host-room-code');
         if (badgeEl) badgeEl.textContent = '房间号: ' + lanRoomCode;
         const statusEl = document.getElementById('lobby-lan-status-badge');
-        if (statusEl) statusEl.textContent = '房主移动端已建房 (' + lanRoomCode + ')';
+        if (statusEl) {
+          statusEl.textContent = isLanGuest
+            ? '客机已连入房主移动端 (' + lanRoomCode + ')'
+            : '房主移动端已建房 (' + lanRoomCode + ')';
+        }
 
         lanSession = NexusSDK.createLanSession('micro-genesis', lanRoomCode);
         const onMsg = (msg) => {
@@ -2625,11 +2648,17 @@
             NexusSDK.audio.pickup();
             showToast('局域网客机已连入房主移动设备房间 (' + lanRoomCode + ')！');
             if (statusEl) statusEl.textContent = '客机已连接 · 房主移动端权威同步中';
-          } else if (msg.type === 'GUEST_INPUT' && arenaState.running && arenaState.rivalAlpha) {
+          } else if (msg.type === 'GUEST_INPUT' && !isLanGuest && arenaState.running && arenaState.rivalAlpha) {
             // 房主移动端接收客机操控指令驱动 2P 始祖
             arenaState.rivalAlpha.targetAngle = Number(msg.angle) || 0;
             if (msg.skill) triggerEntityActiveSkill(arenaState.rivalAlpha);
             if (msg.mitosis) tryMitosisReproduce(arenaState.rivalAlpha);
+          } else if (msg.type === 'HOST_STATE' && isLanGuest && arenaState.running && arenaState.rivalAlpha) {
+            // 客机接收房主移动端 20Hz 权威状态帧同步
+            if (Number.isFinite(msg.hostX)) arenaState.rivalAlpha.x = msg.hostX;
+            if (Number.isFinite(msg.hostY)) arenaState.rivalAlpha.y = msg.hostY;
+            if (Number.isFinite(msg.hostAng)) arenaState.rivalAlpha.angle = msg.hostAng;
+            if (Number.isFinite(msg.hostHp)) arenaState.rivalAlpha.hp = msg.hostHp;
           }
         };
         if (lanSession.onReliable) lanSession.onReliable(onMsg);
@@ -2709,7 +2738,7 @@
             showToast('请输入完整的 4 位房主房间码！');
             return;
           }
-          initLanHostSession(guestInputCode);
+          initLanHostSession(guestInputCode, true);
           if (lanSession && lanSession.joinRoom) lanSession.joinRoom(guestInputCode, 'client');
           if (lanSession && lanSession.sendReliable) lanSession.sendReliable({ type: 'GUEST_JOIN', code: guestInputCode });
           showToast('已向房主移动设备 (' + guestInputCode + ') 发送直连握手！');
@@ -2740,6 +2769,7 @@
         timeSec: 0,
         lastTickMs: 0,
         lastAlgaeSpawnSec: 0,
+        lastLanSyncSec: 0,
         pheromoneIdx: 0,
         showSensoryOverlay: true,
         intraSpeciesCd: 0,
@@ -2760,7 +2790,7 @@
         drawerDraft: null,
         drawerSelectedGbId: '',
         pendingCrossTorsoTarget: null,
-        unlockedTorsos: new Set(['torso-t1-micro', 'torso-t2-shuttle']),
+        unlockedTorsos: new Set(['torso-t1-micro']),
         unlockedOrganLevels: new Map()
       };
 
@@ -2791,7 +2821,7 @@
         let delta = 0;
         const tSpec = TORSOS[targetBp.torsoId];
         if (tSpec && !arenaState.unlockedTorsos.has(targetBp.torsoId)) {
-          delta += tSpec.unlockGp || 0;
+          delta += tSpec.transitionGp || 0;
         }
         getBlueprintOrganEntries(targetBp).forEach((entry) => {
           const unlockedLv = arenaState.unlockedOrganLevels.get(entry.key) || 0;
@@ -2845,6 +2875,9 @@
           mimicTimer: 0,
           blindTimer: 0,
           stunTimer: 0,
+          slowTimer: 0,
+          iceShieldTimer: 0,
+          bossSplitDone: false,
           poisonTimer: 0,
           poisonDps: 0,
           suppressedTimer: 0,
@@ -2885,6 +2918,7 @@
         arenaState.biome = BIOMES[selectedBiomeId] || BIOMES[0];
         arenaState.timeSec = 0;
         arenaState.lastAlgaeSpawnSec = 0;
+        arenaState.lastLanSyncSec = 0;
         arenaState.intraSpeciesCd = 0;
         arenaState.crossTorsoCd = 0;
         arenaState.organisms = [];
@@ -2903,7 +2937,7 @@
         arenaState.playerActiveBlueprint = arenaState.gpRule === 'standard'
           ? makeStarterLv1Blueprint(arenaState.playerFullBlueprint)
           : validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(arenaState.playerFullBlueprint)));
-        arenaState.unlockedTorsos = new Set(['torso-t1-micro', 'torso-t2-shuttle']);
+        arenaState.unlockedTorsos = new Set([arenaState.playerActiveBlueprint.torsoId]);
         arenaState.unlockedOrganLevels = new Map();
         recordBlueprintUnlocked(arenaState.playerActiveBlueprint);
 
@@ -3020,7 +3054,7 @@
           }
           return;
         }
-        let sk = ent.blueprint.statsSummary.activeSkill;
+        let sk = getEffectiveStats(ent).activeSkill;
         // 第四章首领【千目原质母体】优先或交替使用已同化器官的主动技能
         if (ent.assimilatedOrgans && ent.assimilatedOrgans.length > 0) {
           const latestAssim = ent.assimilatedOrgans[ent.assimilatedOrgans.length - 1];
@@ -3487,10 +3521,16 @@
 
       document.getElementById('btn-organ-skill')?.addEventListener('click', () => {
         triggerEntityActiveSkill(arenaState.alpha);
+        if (isLanGuest && lanSession && lanSession.sendFast && arenaState.alpha) {
+          lanSession.sendFast({ type: 'GUEST_INPUT', angle: arenaState.alpha.targetAngle, skill: true, mitosis: false });
+        }
       });
 
       document.getElementById('btn-mitosis')?.addEventListener('click', () => {
         tryMitosisReproduce(arenaState.alpha);
+        if (isLanGuest && lanSession && lanSession.sendFast && arenaState.alpha) {
+          lanSession.sendFast({ type: 'GUEST_INPUT', angle: arenaState.alpha.targetAngle, skill: false, mitosis: true });
+        }
       });
 
       document.getElementById('arena-back-lobby-btn')?.addEventListener('click', () => {
@@ -3502,17 +3542,38 @@
        * ===================================================================== */
       function applyDamage(victim, rawDmg, attacker) {
         if (!victim || victim.hp <= 0) return;
-        const vSt = victim.blueprint.statsSummary;
+        const vSt = getEffectiveStats(victim);
         let finalDmg = rawDmg * (1 - vSt.damageReduction);
 
-        // 晶甲熔岩虱正面减伤机制
+        // 第二章首领【晶甲熔岩虱】正面硫化晶甲减免伤害
         if (victim.isBoss && selectedBiomeId === 1 && attacker) {
           const angToAttacker = Math.atan2(attacker.y - victim.y, attacker.x - victim.x);
           const diff = Math.abs(Math.atan2(Math.sin(angToAttacker - victim.angle), Math.cos(angToAttacker - victim.angle)));
-          if (diff < Math.PI * 0.55) finalDmg *= 0.35;
+          if (diff < Math.PI * 0.55) finalDmg *= 0.20;
+        }
+
+        // 第三章首领【霜刃水母】8 秒限时冰晶护盾减伤
+        if (victim.isBoss && selectedBiomeId === 2 && victim.iceShieldTimer > 0) {
+          finalDmg *= 0.35;
         }
 
         victim.hp -= finalDmg;
+
+        // 第一章首领【吞天水螅】HP < 50% 时断触化为 3 只游猎分身
+        if (victim.isBoss && selectedBiomeId === 0 && !victim.bossSplitDone && victim.hp > 0 && victim.hp < victim.maxHp * 0.50) {
+          victim.bossSplitDone = true;
+          for (let k = 0; k < 3; k++) {
+            const ang = (k / 3) * Math.PI * 2;
+            const clone = spawnOrganismEntity(victim.blueprint, victim.x + Math.cos(ang) * 65, victim.y + Math.sin(ang) * 65, 'enemy', {
+              colonyId: victim.colonyId,
+              isBoss: false,
+              hpRatio: 0.45,
+              energyRatio: 0.80
+            });
+            arenaState.organisms.push(clone);
+          }
+          showToast('首领【吞天水螅】生命低于 50%，断触裂变为 3 只游猎分身！');
+        }
 
         // 伤害仇恨记入仇恨表
         if (attacker && attacker.id !== victim.id) {
@@ -3604,7 +3665,7 @@
         const dist = Math.hypot(dx, dy);
         if (dist <= 65) return { sensed: true, mode: 'tactile' };
 
-        const st = observer.blueprint.statsSummary;
+        const st = getEffectiveStats(observer);
 
         // 1. 听觉声呐判定 (360° 全向，无视黑夜、墨囊与光学拟态；对静止微藻或怠速静止生物仅在 staticSenseRange 内可测)
         if (st.maxEarLv > 0) {
@@ -3712,13 +3773,15 @@
 
         arenaState.organisms.forEach((org) => {
           if (org.hp <= 0) return;
-          const st = org.blueprint.statsSummary;
+          const st = getEffectiveStats(org);
           if (org.skillCd > 0) org.skillCd = Math.max(0, org.skillCd - dt);
           if (org.biteCd > 0) org.biteCd = Math.max(0, org.biteCd - dt);
           if (org.mimicTimer > 0) org.mimicTimer = Math.max(0, org.mimicTimer - dt);
           if (org.blindTimer > 0) org.blindTimer = Math.max(0, org.blindTimer - dt);
           if (org.stunTimer > 0) org.stunTimer = Math.max(0, org.stunTimer - dt);
           if (org.suppressedTimer > 0) org.suppressedTimer = Math.max(0, org.suppressedTimer - dt);
+          if (org.slowTimer > 0) org.slowTimer = Math.max(0, org.slowTimer - dt);
+          if (org.iceShieldTimer > 0) org.iceShieldTimer = Math.max(0, org.iceShieldTimer - dt);
 
           // 清理第四章首领【千目原质母体】已到期的 12.0s FIFO 同化器官槽位
           if (org.assimilatedOrgans && org.assimilatedOrgans.length > 0) {
@@ -3745,10 +3808,32 @@
             org.hp = Math.max(1, org.hp - org.poisonDps * dt);
           }
 
-          // 第五章首领【虚空噬菌裂变兽】周期性释放 4.0s 基因降阶光束
-          if (org.isBoss && selectedBiomeId === 4 && alpha && Math.hypot(alpha.x - org.x, alpha.y - org.y) < 280) {
-            if (Math.floor(arenaState.timeSec) % 9 === 0) {
-              alpha.suppressedTimer = 4.0;
+          // 各章节首领专属环境与机制：
+          if (org.isBoss && alpha) {
+            const dToAlpha = Math.hypot(alpha.x - org.x, alpha.y - org.y);
+            // 第一章首领【阿米巴吞噬巨核】：周期性旋涡吸附 (<260px 向首领中心牵引)
+            if (selectedBiomeId === 0 && dToAlpha < 260 && dToAlpha > 12) {
+              const pull = ((260 - dToAlpha) / 260) * 65 * dt;
+              alpha.x += ((org.x - alpha.x) / dToAlpha) * pull;
+              alpha.y += ((org.y - alpha.y) / dToAlpha) * pull;
+            }
+            // 第三章首领【寒冰利维坦】：周期性寒潮减速波 (60% 减速) + 冰甲护盾 (正面减伤 75%)
+            if (selectedBiomeId === 2) {
+              if (Math.floor(arenaState.timeSec) % 10 === 0) {
+                org.iceShieldTimer = 6.0;
+                if (dToAlpha < 260) alpha.slowTimer = 3.5;
+              }
+            }
+            // 第五章首领【虚空噬菌裂变兽】：向心黑洞引力场 + 周期性 4.0s 基因降阶光束 (强制降为 Lv.1)
+            if (selectedBiomeId === 4 && dToAlpha < 280) {
+              if (dToAlpha > 12) {
+                const pull = ((280 - dToAlpha) / 280) * 80 * dt;
+                alpha.x += ((org.x - alpha.x) / dToAlpha) * pull;
+                alpha.y += ((org.y - alpha.y) / dToAlpha) * pull;
+              }
+              if (Math.floor(arenaState.timeSec) % 9 === 0) {
+                alpha.suppressedTimer = 4.0;
+              }
             }
           }
 
@@ -3873,14 +3958,15 @@
             }
           }
 
-          // 3. 转向角速度阻尼与移动推进物理 (重度饥饿 Energy <= 0 时移动速度下降 35%)
+          // 3. 转向角速度阻尼与移动推进物理 (重度饥饿 Energy <= 0 时移动速度下降 35%；受寒潮减速时下降 60%)
           if (org.stunTimer <= 0) {
             const angDiff = Math.atan2(Math.sin(org.targetAngle - org.angle), Math.cos(org.targetAngle - org.angle));
             const maxTurnStep = st.maxTurnRate * dt;
             org.angle += Math.max(-maxTurnStep, Math.min(maxTurnStep, angDiff));
 
             const starvationMult = org.energy <= 0 ? 0.65 : 1.0;
-            const cruiseSpd = (st.maxSpeed * starvationMult) / arenaState.biome.dragMult;
+            const slowMult = org.slowTimer > 0 ? 0.40 : 1.0;
+            const cruiseSpd = (st.maxSpeed * starvationMult * slowMult) / arenaState.biome.dragMult;
             org.vx = org.vx * 0.86 + Math.cos(org.angle) * cruiseSpd * 0.14;
             org.vy = org.vy * 0.86 + Math.sin(org.angle) * cruiseSpd * 0.14;
           } else {
@@ -3942,6 +4028,16 @@
           if (arenaState.foods[i].ttl <= 0) arenaState.foods.splice(i, 1);
         }
 
+        // 局域网 20Hz 状态同步广播 (Host 权威状态 / Guest 航向输入)
+        if (lanChannel && alpha && (arenaState.timeSec - (arenaState.lastLanSyncSec || 0) >= 0.05)) {
+          arenaState.lastLanSyncSec = arenaState.timeSec;
+          if (arenaState.isLanGuest) {
+            lanChannel.postMessage({ type: 'GUEST_INPUT', angle: alpha.targetAngle });
+          } else {
+            lanChannel.postMessage({ type: 'HOST_STATE', hostX: alpha.x, hostY: alpha.y, hostAng: alpha.angle, hostHp: alpha.hp });
+          }
+        }
+
         // 更新顶部无文字纯 SVG 状态进度条
         if (alpha) {
           const hpBar = document.getElementById('hud-hp-bar');
@@ -3992,7 +4088,7 @@
 
       function renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, sonarWireframeMode) {
         const alpha = arenaState.alpha;
-        const st = alpha.blueprint.statsSummary;
+        const st = getEffectiveStats(alpha);
 
         // 1. 背景底色与培养皿坐标网格
         ctx.fillStyle = sonarWireframeMode ? '#030712' : (isNight ? '#020612' : arenaState.biome.bgTint);
@@ -4112,7 +4208,7 @@
         const h = canvas.height;
         const camX = alpha.x;
         const camY = alpha.y;
-        const st = alpha.blueprint.statsSummary;
+        const st = getEffectiveStats(alpha);
         const cyc = arenaState.timeSec % 180;
         const isNight = arenaState.biome.forceNight || (cyc >= 82 && cyc <= 170);
 
