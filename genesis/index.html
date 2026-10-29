@@ -2759,8 +2759,53 @@
         pointerWorldY: WORLD_H * 0.5,
         drawerDraft: null,
         drawerSelectedGbId: '',
-        pendingCrossTorsoTarget: null
+        pendingCrossTorsoTarget: null,
+        unlockedTorsos: new Set(['torso-t1-micro', 'torso-t2-shuttle']),
+        unlockedOrganLevels: new Map()
       };
+
+      function getBlueprintOrganEntries(bp) {
+        if (!bp || !bp.slots) return [];
+        const list = [{ key: `core:0:${bp.slots.core.id}`, id: bp.slots.core.id, level: bp.slots.core.level }];
+        ['sensory', 'mouth', 'locomotion', 'utility'].forEach((cat) => {
+          (bp.slots[cat] || []).forEach((s, idx) => {
+            list.push({ key: `${cat}:${idx}:${s.id}`, id: s.id, level: s.level });
+          });
+        });
+        return list;
+      }
+
+      function recordBlueprintUnlocked(bp) {
+        if (!bp) return;
+        arenaState.unlockedTorsos.add(bp.torsoId);
+        getBlueprintOrganEntries(bp).forEach((entry) => {
+          const prevLv = arenaState.unlockedOrganLevels.get(entry.key) || 0;
+          if (entry.level > prevLv) {
+            arenaState.unlockedOrganLevels.set(entry.key, entry.level);
+          }
+        });
+      }
+
+      function computeBlueprintDeltaGp(targetBp) {
+        if (!targetBp || arenaState.matchMode === 'free_sandbox') return 0;
+        let delta = 0;
+        const tSpec = TORSOS[targetBp.torsoId];
+        if (tSpec && !arenaState.unlockedTorsos.has(targetBp.torsoId)) {
+          delta += tSpec.unlockGp || 0;
+        }
+        getBlueprintOrganEntries(targetBp).forEach((entry) => {
+          const unlockedLv = arenaState.unlockedOrganLevels.get(entry.key) || 0;
+          if (entry.level > unlockedLv) {
+            const cat = ORGAN_CATALOG[entry.id];
+            if (cat && cat.levels) {
+              const targetCost = cat.levels[entry.level]?.gp || 0;
+              const unlockedCost = unlockedLv > 0 ? (cat.levels[unlockedLv]?.gp || 0) : 0;
+              delta += Math.max(0, targetCost - unlockedCost);
+            }
+          }
+        });
+        return delta;
+      }
 
       function makeStarterLv1Blueprint(fullBp) {
         const clone = JSON.parse(JSON.stringify(fullBp));
@@ -2858,6 +2903,9 @@
         arenaState.playerActiveBlueprint = arenaState.gpRule === 'standard'
           ? makeStarterLv1Blueprint(arenaState.playerFullBlueprint)
           : validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(arenaState.playerFullBlueprint)));
+        arenaState.unlockedTorsos = new Set(['torso-t1-micro', 'torso-t2-shuttle']);
+        arenaState.unlockedOrganLevels = new Map();
+        recordBlueprintUnlocked(arenaState.playerActiveBlueprint);
 
         // 生成 8 处海底热泉喷口 (Hydrothermal Vents)
         for (let i = 0; i < 8; i++) {
@@ -2965,6 +3013,13 @@
        * ===================================================================== */
       function triggerEntityActiveSkill(ent) {
         if (!ent || ent.hp <= 0 || ent.stunTimer > 0) return;
+        if (ent.energy <= 0) {
+          if (ent === arenaState.alpha) {
+            NexusSDK.audio.warn();
+            showToast('重度饥饿衰竭中，无法释放主动技能！');
+          }
+          return;
+        }
         let sk = ent.blueprint.statsSummary.activeSkill;
         // 第四章首领【千目原质母体】优先或交替使用已同化器官的主动技能
         if (ent.assimilatedOrgans && ent.assimilatedOrgans.length > 0) {
@@ -3073,15 +3128,15 @@
         }
       }
 
-      // 分裂繁殖同族电脑 NPC 后代 (02 第 3.2 节 & 04 第 2.3 节)
+      // 分裂繁殖同族电脑 NPC 后代 (02 第 3.2 节 & 04 第 2.3 节 & 05 第 1.2 节)
       function tryMitosisReproduce(parent) {
         if (!parent || parent.hp <= 0) return false;
         const st = parent.blueprint.statsSummary;
-        const needE = parent.maxEnergy * st.reproRatio;
+        const needE = parent.maxEnergy * 0.80;
         if (parent.energy < needE) {
           if (parent === arenaState.alpha) {
             NexusSDK.audio.warn();
-            showToast(`能量需达到 ${Math.round(st.reproRatio * 100)}% 上限方可分裂繁殖同族 NPC！`);
+            showToast(`能量需达到 80% 上限方可分裂繁殖同族 NPC（单次扣除 ${Math.round(st.reproRatio * 100)}% MaxE）！`);
           }
           return false;
         }
@@ -3094,7 +3149,7 @@
           return false;
         }
 
-        parent.energy -= parent.maxEnergy * 0.45;
+        parent.energy = Math.max(0, parent.energy - parent.maxEnergy * st.reproRatio);
         const childX = parent.x - Math.cos(parent.angle) * (parent.radius * 2.1);
         const childY = parent.y - Math.sin(parent.angle) * (parent.radius * 2.1);
         const child = spawnOrganismEntity(parent.blueprint, childX, childY, parent.faction, {
@@ -3124,7 +3179,7 @@
         const currentBp = alpha.blueprint;
         const isSameTorso = targetBp.torsoId === currentBp.torsoId;
 
-        const deltaGp = Math.max(0, targetBp.statsSummary.totalGpCost - currentBp.statsSummary.totalGpCost);
+        const deltaGp = computeBlueprintDeltaGp(targetBp);
 
         if (isSameTorso) {
           // 情形 A：同躯干 —— 种群内器官进化与表型同步更新 (04 第 5.4.3.A 节)
@@ -3194,6 +3249,7 @@
 
           arenaState.playerActiveBlueprint = targetBp;
           arenaState.playerFullBlueprint = targetBp;
+          recordBlueprintUnlocked(targetBp);
           persistState();
           syncArenaHudButtons();
           closeInGameDrawer();
@@ -3264,6 +3320,7 @@
         arenaState.organisms.unshift(newAlpha);
         arenaState.playerActiveBlueprint = targetBp;
         arenaState.playerFullBlueprint = targetBp;
+        recordBlueprintUnlocked(targetBp);
 
         persistState();
         syncArenaHudButtons();
@@ -3312,7 +3369,10 @@
         const diffLbl = document.getElementById('drawer-mod-diff-lbl');
         if (diffLbl) {
           const same = draftTorso.id === curTorso.id;
-          diffLbl.textContent = same ? '同躯干 · 种群内器官进化' : '跨躯干 · 诞生全新物种 (1只始祖)';
+          const draftDeltaGp = computeBlueprintDeltaGp(arenaState.drawerDraft);
+          diffLbl.textContent = same
+            ? `同躯干 · 种群内器官进化 (差额 ${draftDeltaGp} GP)`
+            : `跨躯干 · 诞生全新物种 (1只始祖 · 差额 ${draftDeltaGp} GP)`;
           diffLbl.style.color = same ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-gold)';
         }
 
@@ -3331,7 +3391,7 @@
           playerGeneBank.forEach((sp) => {
             const t = TORSOS[sp.torsoId];
             const isSame = sp.torsoId === alpha.blueprint.torsoId;
-            const deltaGp = Math.max(0, sp.statsSummary.totalGpCost - alpha.blueprint.statsSummary.totalGpCost);
+            const deltaGp = computeBlueprintDeltaGp(sp);
             const card = document.createElement('div');
             card.className = 'species-card' + (sp.speciesId === arenaState.drawerSelectedGbId ? ' selected' : '');
             card.innerHTML = `
@@ -3546,13 +3606,12 @@
 
         const st = observer.blueprint.statsSummary;
 
-        // 1. 听觉声呐判定 (360° 全向，无视黑夜、墨囊与光学拟态)
+        // 1. 听觉声呐判定 (360° 全向，无视黑夜、墨囊与光学拟态；对静止微藻或怠速静止生物仅在 staticSenseRange 内可测)
         if (st.maxEarLv > 0) {
-          if (isStaticAlgae) {
-            if (dist <= st.staticSenseRange) return { sensed: true, mode: 'sonar' };
-          } else {
-            if (dist <= st.sonarRange) return { sensed: true, mode: 'sonar' };
-          }
+          const targetSpeed = isStaticAlgae ? 0 : Math.hypot(target.vx || 0, target.vy || 0);
+          const isStationary = isStaticAlgae || targetSpeed < 8;
+          const effSonarR = isStationary ? Math.max(65, st.staticSenseRange) : st.sonarRange;
+          if (dist <= effSonarR) return { sensed: true, mode: 'sonar' };
         }
 
         // 2. 视觉扇形锥判定 (受黑夜、墨囊致盲与敌方拟态皮肤克制)
@@ -3725,7 +3784,7 @@
           } else {
             // 电脑 NPC 感官驱动效用 AI 决策
             const w = org.blueprint.aiWeights;
-            if (org.energy >= org.maxEnergy * (st.reproRatio + 0.06) && Math.random() < dt * w.w_repro) {
+            if (org.energy >= org.maxEnergy * 0.80 && Math.random() < dt * w.w_repro) {
               tryMitosisReproduce(org);
             }
 
@@ -3743,12 +3802,20 @@
 
             let nearestEnemy = null;
             let nearestEnemyDist = 9999;
+            let bestEnemyScore = 9999;
             arenaState.organisms.forEach((other) => {
               if (other.hp <= 0 || other.colonyId === org.colonyId) return;
               const d = Math.hypot(other.x - org.x, other.y - org.y);
-              if (d < nearestEnemyDist && canEntitySenseTarget(org, other, isNight, false).sensed) {
-                nearestEnemyDist = d;
-                nearestEnemy = other;
+              if (canEntitySenseTarget(org, other, isNight, false).sensed) {
+                const selfHatred = org.hatredMap.get(other.id) || 0;
+                const sharedAlphaHatred = (org.colonyId === 'player_colony' && alpha) ? (alpha.hatredMap.get(other.id) || 0) * 0.65 : 0;
+                const hatredBonus = Math.min(180, (selfHatred + sharedAlphaHatred) * 2.2);
+                const effScore = d - hatredBonus;
+                if (effScore < bestEnemyScore) {
+                  bestEnemyScore = effScore;
+                  nearestEnemyDist = d;
+                  nearestEnemy = other;
+                }
               }
             });
 
@@ -3784,15 +3851,36 @@
                 org.targetAngle = org.angle + Math.sin(arenaState.timeSec * 0.7 + org.phaseOffset) * 0.25;
               }
             }
+
+            // 同族电脑 NPC 防扎堆分离向量 (d < 55px 时施加排斥分量)
+            let sepX = 0;
+            let sepY = 0;
+            arenaState.organisms.forEach((kin) => {
+              if (kin === org || kin.hp <= 0 || kin.colonyId !== org.colonyId) return;
+              const kx = org.x - kin.x;
+              const ky = org.y - kin.y;
+              const kd = Math.hypot(kx, ky);
+              if (kd > 0.1 && kd < 55) {
+                const push = ((55 - kd) / 55) * 0.85;
+                sepX += (kx / kd) * push;
+                sepY += (ky / kd) * push;
+              }
+            });
+            if (sepX !== 0 || sepY !== 0) {
+              const dirX = Math.cos(org.targetAngle) + sepX;
+              const dirY = Math.sin(org.targetAngle) + sepY;
+              org.targetAngle = Math.atan2(dirY, dirX);
+            }
           }
 
-          // 3. 转向角速度阻尼与移动推进物理
+          // 3. 转向角速度阻尼与移动推进物理 (重度饥饿 Energy <= 0 时移动速度下降 35%)
           if (org.stunTimer <= 0) {
             const angDiff = Math.atan2(Math.sin(org.targetAngle - org.angle), Math.cos(org.targetAngle - org.angle));
             const maxTurnStep = st.maxTurnRate * dt;
             org.angle += Math.max(-maxTurnStep, Math.min(maxTurnStep, angDiff));
 
-            const cruiseSpd = st.maxSpeed / arenaState.biome.dragMult;
+            const starvationMult = org.energy <= 0 ? 0.65 : 1.0;
+            const cruiseSpd = (st.maxSpeed * starvationMult) / arenaState.biome.dragMult;
             org.vx = org.vx * 0.86 + Math.cos(org.angle) * cruiseSpd * 0.14;
             org.vy = org.vy * 0.86 + Math.sin(org.angle) * cruiseSpd * 0.14;
           } else {
@@ -3983,7 +4071,25 @@
           const dist = Math.hypot(org.x - alpha.x, org.y - alpha.y);
           if (org !== alpha) {
             if (sonarWireframeMode) {
-              if (dist > st.sonarRange) return;
+              const targetSpeed = Math.hypot(org.vx || 0, org.vy || 0);
+              const effSonarR = targetSpeed < 8 ? Math.max(65, st.staticSenseRange) : st.sonarRange;
+              if (dist > effSonarR) return;
+              if (dist <= 65 || (arenaState.timeSec - org.sonarLastPulseSec) >= st.sonarPulseSec) {
+                org.sonarLastSeenX = org.x;
+                org.sonarLastSeenY = org.y;
+                org.sonarLastPulseSec = arenaState.timeSec;
+              }
+              const savedX = org.x;
+              const savedY = org.y;
+              org.x = org.sonarLastSeenX;
+              org.y = org.sonarLastSeenY;
+              drawOrganism(ctx, org, {
+                timeSec: arenaState.timeSec,
+                sonarWireframe: true
+              });
+              org.x = savedX;
+              org.y = savedY;
+              return;
             } else {
               // 彩色视觉通道：拟态皮肤在 >90px 外隐匿
               const senseCheck = canEntitySenseTarget(alpha, org, isNight, false);
