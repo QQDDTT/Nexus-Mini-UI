@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="elec2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#00f0ff"/>
+      <stop offset="80%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.2 高压电鳗柱：串联六角生物电极盘阵列 + 双极高压电弧环 -->
+  <circle cx="64" cy="64" r="48" fill="none" stroke="#00f0ff" stroke-width="2.5" stroke-dasharray="10 4"/>
+  <!-- 左右电极导杆 -->
+  <rect x="22" y="36" width="14" height="56" rx="7" fill="#1e3a8a" stroke="#00f0ff" stroke-width="2.2"/>
+  <rect x="92" y="36" width="14" height="56" rx="7" fill="#1e3a8a" stroke="#00f0ff" stroke-width="2.2"/>
+  <!-- 中央串联发电盘柱 -->
+  <ellipse cx="64" cy="40" rx="22" ry="9" fill="url(#elec2)" stroke="#7dd3fc" stroke-width="2"/>
+  <ellipse cx="64" cy="64" rx="24" ry="10" fill="url(#elec2)" stroke="#ffffff" stroke-width="2.5"/>
+  <ellipse cx="64" cy="88" rx="22" ry="9" fill="url(#elec2)" stroke="#7dd3fc" stroke-width="2"/>
+  <!-- 高压跳火电弧 -->
+  <polyline points="29,36 46,20 64,26 82,18 99,36" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
+  <polyline points="29,92 46,108 64,102 82,110 99,92" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
+  <circle cx="29" cy="36" r="4" fill="#fbbf24"/>
+  <circle cx="99" cy="36" r="4" fill="#fbbf24"/>
+  <circle cx="29" cy="92" r="4" fill="#fbbf24"/>
+  <circle cx="99" cy="92" r="4" fill="#fbbf24"/>
+</svg>

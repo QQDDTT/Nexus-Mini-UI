@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="scale1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="55%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <!-- Lv.1 角质细鳞：三片鱼鳞状叠瓦角质盾板 -->
+  <!-- 后层两侧鳞片 -->
+  <path d="M 22 46 Q 48 22 70 46 Q 70 84 46 98 Q 22 84 22 46 Z" fill="url(#scale1)" stroke="#cbd5e1" stroke-width="2.2"/>
+  <path d="M 58 46 Q 82 22 106 46 Q 106 84 82 98 Q 58 84 58 46 Z" fill="url(#scale1)" stroke="#cbd5e1" stroke-width="2.2"/>
+  <!-- 前层主鳞片 -->
+  <path d="M 36 32 Q 64 10 92 32 Q 92 78 64 108 Q 36 78 36 32 Z" fill="url(#scale1)" stroke="#e2e8f0" stroke-width="3"/>
+  <!-- 鳞脊中轴棱线 -->
+  <line x1="64" y1="22" x2="64" y2="102" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 46 46 L 64 60 L 82 46" fill="none" stroke="#cbd5e1" stroke-width="2" opacity="0.7"/>
+  <path d="M 48 66 L 64 80 L 80 66" fill="none" stroke="#cbd5e1" stroke-width="2" opacity="0.7"/>
+</svg>

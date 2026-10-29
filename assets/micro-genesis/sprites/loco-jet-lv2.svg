@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="jetSac2" cx="45%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#00f0ff"/>
+      <stop offset="60%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#082f49"/>
+    </radialGradient>
+    <linearGradient id="plume2" x1="0" y1="0.5" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#00f0ff"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Lv.2 双联脉冲喷口：上下双压力腔 + 双喷嘴 + 蓝白激波环 -->
+  <!-- 上喷腔 -->
+  <ellipse cx="40" cy="46" rx="24" ry="14" fill="url(#jetSac2)" stroke="#00f0ff" stroke-width="2.2"/>
+  <path d="M 60 38 L 78 41 L 78 51 L 60 54 Z" fill="#082f49" stroke="#38bdf8" stroke-width="2"/>
+  <!-- 下喷腔 -->
+  <ellipse cx="40" cy="82" rx="24" ry="14" fill="url(#jetSac2)" stroke="#00f0ff" stroke-width="2.2"/>
+  <path d="M 60 74 L 78 77 L 78 87 L 60 90 Z" fill="#082f49" stroke="#38bdf8" stroke-width="2"/>
+  <!-- 中央均压阀 -->
+  <rect x="28" y="54" width="22" height="20" rx="5" fill="#0c4a6e" stroke="#7dd3fc" stroke-width="2"/>
+  <circle cx="39" cy="64" r="5" fill="#ffffff"/>
+  <!-- 双联脉冲水柱 -->
+  <path d="M 78 42 L 122 36 L 114 46 L 122 54 L 78 50 Z" fill="url(#plume2)"/>
+  <path d="M 78 78 L 122 74 L 114 82 L 122 92 L 78 86 Z" fill="url(#plume2)"/>
+  <!-- 激波水环 -->
+  <ellipse cx="94" cy="46" rx="4" ry="10" fill="none" stroke="#ffffff" stroke-width="2"/>
+  <ellipse cx="94" cy="82" rx="4" ry="10" fill="none" stroke="#ffffff" stroke-width="2"/>
+</svg>

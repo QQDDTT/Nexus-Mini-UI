@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="t2-body" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.82"/>
+      <stop offset="50%" stop-color="#0284c7" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.92"/>
+    </linearGradient>
+    <radialGradient id="t2-node" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a5f3fc"/>
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0.15"/>
+    </radialGradient>
+  </defs>
+  <!-- 3-Somite Streamlined Envelope -->
+  <path d="M64 10 C86 10 98 28 94 48 C100 62 98 80 88 92 C84 106 75 118 64 118 C53 118 44 106 40 92 C30 80 28 62 34 48 C30 28 42 10 64 10 Z" fill="url(#t2-body)" stroke="#00f0ff" stroke-width="2.5"/>
+  <!-- Somite Segment Grooves -->
+  <path d="M35 48 Q64 56 93 48" fill="none" stroke="#67e8f9" stroke-width="1.8" opacity="0.65"/>
+  <path d="M40 88 Q64 95 88 88" fill="none" stroke="#67e8f9" stroke-width="1.8" opacity="0.65"/>
+  <!-- Tri-Somite Nuclei Chain -->
+  <circle cx="64" cy="32" r="10" fill="url(#t2-node)" stroke="#00f0ff" stroke-width="1.2"/>
+  <circle cx="64" cy="66" r="13" fill="url(#t2-node)" stroke="#00f0ff" stroke-width="1.5"/>
+  <circle cx="64" cy="100" r="8" fill="url(#t2-node)" stroke="#00f0ff" stroke-width="1.2"/>
+  <!-- Lateral Hydrodynamic Channels -->
+  <path d="M44 26 Q38 64 48 104" fill="none" stroke="#e0f2fe" stroke-width="1.5" opacity="0.5"/>
+  <path d="M84 26 Q90 64 80 104" fill="none" stroke="#e0f2fe" stroke-width="1.5" opacity="0.5"/>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="t3-body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" stop-opacity="0.92"/>
+      <stop offset="50%" stop-color="#0e7490" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#090d16" stop-opacity="0.95"/>
+    </linearGradient>
+    <radialGradient id="t3-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="60%" stop-color="#a855f7" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Broad 5-Somite Predator Carapace -->
+  <path d="M64 8 L94 22 L108 46 L104 74 L92 98 L76 118 L52 118 L36 98 L24 74 L20 46 L34 22 Z" fill="url(#t3-body)" stroke="#00f0ff" stroke-width="2.6"/>
+  <!-- 5 Segment Chitin Ribs -->
+  <path d="M34 28 Q64 36 94 28" fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.7"/>
+  <path d="M24 48 Q64 58 104 48" fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.7"/>
+  <path d="M26 72 Q64 82 102 72" fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.7"/>
+  <path d="M36 96 Q64 104 92 96" fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.7"/>
+  <!-- Predator Muscular Core & Lateral Mount Sockets -->
+  <ellipse cx="64" cy="60" rx="20" ry="32" fill="url(#t3-core)"/>
+  <circle cx="38" cy="40" r="4" fill="#00f0ff"/>
+  <circle cx="90" cy="40" r="4" fill="#00f0ff"/>
+  <circle cx="34" cy="62" r="4" fill="#f43f5e"/>
+  <circle cx="94" cy="62" r="4" fill="#f43f5e"/>
+  <circle cx="42" cy="84" r="4" fill="#00f0ff"/>
+  <circle cx="86" cy="84" r="4" fill="#00f0ff"/>
+</svg>

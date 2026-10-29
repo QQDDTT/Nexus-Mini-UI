@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="ink1" cx="45%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="60%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.1 墨汁腺囊：梨形暗紫黑墨囊 + 括约喷口 + 墨滴 -->
+  <path d="M 64 20 L 74 36 L 54 36 Z" fill="#1e1b4b" stroke="#818cf8" stroke-width="2.5"/>
+  <ellipse cx="64" cy="70" rx="32" ry="36" fill="url(#ink1)" stroke="#6366f1" stroke-width="2.5"/>
+  <!-- 内部浓墨高光纹理 -->
+  <ellipse cx="52" cy="60" rx="10" ry="16" fill="#818cf8" opacity="0.25"/>
+  <!-- 喷射墨滴 -->
+  <circle cx="64" cy="12" r="4" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
+  <circle cx="46" cy="18" r="3" fill="#312e81" stroke="#818cf8" stroke-width="1.2"/>
+  <circle cx="82" cy="18" r="3" fill="#312e81" stroke="#818cf8" stroke-width="1.2"/>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="jetSac3" cx="45%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#fbbf24"/>
+      <stop offset="70%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#082f49"/>
+    </radialGradient>
+    <linearGradient id="plume3" x1="0" y1="0.5" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#fbbf24"/>
+      <stop offset="65%" stop-color="#00f0ff"/>
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Lv.3 等离子涡喷推进器：装甲收敛喷管 + 金青马赫环 + 三联尾焰 -->
+  <!-- 辅助侧喷管 -->
+  <path d="M 24 30 L 66 34 L 74 44 L 30 46 Z" fill="#0c4a6e" stroke="#00f0ff" stroke-width="2"/>
+  <path d="M 24 98 L 66 94 L 74 84 L 30 82 Z" fill="#0c4a6e" stroke="#00f0ff" stroke-width="2"/>
+  <!-- 主涡轮增压室 -->
+  <ellipse cx="38" cy="64" rx="26" ry="22" fill="url(#jetSac3)" stroke="#fbbf24" stroke-width="3"/>
+  <!-- 收敛-扩张装甲喷嘴 -->
+  <polygon points="58,46 82,52 86,48 86,80 82,76 58,82" fill="#082f49" stroke="#00f0ff" stroke-width="2.5"/>
+  <!-- 喷流主尾焰与菱形马赫节 -->
+  <polygon points="86,52 126,42 118,64 126,86 86,76" fill="url(#plume3)"/>
+  <polygon points="88,58 102,64 88,70" fill="#ffffff"/>
+  <polygon points="102,59 114,64 102,69" fill="#fbbf24"/>
+  <!-- 双重激波马赫环 -->
+  <ellipse cx="96" cy="64" rx="5" ry="18" fill="none" stroke="#00f0ff" stroke-width="2.5"/>
+  <ellipse cx="110" cy="64" rx="4" ry="14" fill="none" stroke="#fbbf24" stroke-width="2"/>
+</svg>

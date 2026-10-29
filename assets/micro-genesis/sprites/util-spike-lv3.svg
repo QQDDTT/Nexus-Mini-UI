@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="spike3" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#0369a1"/>
+      <stop offset="50%" stop-color="#00f0ff"/>
+      <stop offset="85%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <!-- Lv.3 超音速电磁骨矛阵：三联扇形磁轨发射巢 + 金青棱晶穿甲骨矛 + 音爆环 -->
+  <!-- 扇形左矛 -->
+  <polygon points="24,86 24,18 36,38 32,40 42,86" fill="url(#spike3)" stroke="#00f0ff" stroke-width="2"/>
+  <!-- 扇形右矛 -->
+  <polygon points="86,86 96,40 92,38 104,18 104,86" fill="url(#spike3)" stroke="#00f0ff" stroke-width="2"/>
+  <!-- 中央主电磁骨矛 -->
+  <polygon points="50,86 64,6 78,34 72,36 78,86" fill="url(#spike3)" stroke="#fbbf24" stroke-width="2.5"/>
+  <line x1="64" y1="8" x2="64" y2="86" stroke="#ffffff" stroke-width="3"/>
+  <!-- 超音速激波环 -->
+  <ellipse cx="64" cy="28" rx="18" ry="5" fill="none" stroke="#fbbf24" stroke-width="2"/>
+  <ellipse cx="64" cy="48" rx="28" ry="7" fill="none" stroke="#00f0ff" stroke-width="2"/>
+  <!-- 磁轨三联炮座 -->
+  <polygon points="16,80 112,80 102,110 26,110" fill="#082f49" stroke="#fbbf24" stroke-width="3"/>
+  <circle cx="36" cy="95" r="6" fill="#00f0ff"/>
+  <circle cx="64" cy="95" r="8" fill="#fbbf24"/>
+  <circle cx="92" cy="95" r="6" fill="#00f0ff"/>
+</svg>

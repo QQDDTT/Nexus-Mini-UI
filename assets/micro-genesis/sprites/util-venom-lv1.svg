@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="venom1" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#86efac"/>
+      <stop offset="55%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.1 刺细胞毒囊：绿色球形毒液囊 + 单根中空毒针刺 -->
+  <polygon points="58,52 64,12 70,52" fill="#4ade80" stroke="#bbf7d0" stroke-width="2"/>
+  <circle cx="64" cy="76" r="28" fill="url(#venom1)" stroke="#4ade80" stroke-width="2.5"/>
+  <!-- 毒囊螺旋触发丝 -->
+  <path d="M 52 72 Q 64 58 76 72 Q 64 86 52 72" fill="none" stroke="#dcfce7" stroke-width="2" opacity="0.8"/>
+  <!-- 针尖毒滴 -->
+  <circle cx="64" cy="10" r="4" fill="#86efac"/>
+</svg>

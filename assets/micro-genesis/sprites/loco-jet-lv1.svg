@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="jetSac1" cx="45%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="65%" stop-color="#0369a1"/>
+      <stop offset="100%" stop-color="#082f49"/>
+    </radialGradient>
+    <linearGradient id="plume1" x1="0" y1="0.5" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#00f0ff"/>
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Lv.1 虹吸喷管：单腔肌肉压力囊 + 锥形喷嘴 + 高压水柱 -->
+  <!-- 肌肉蓄水囊 -->
+  <ellipse cx="42" cy="64" rx="26" ry="20" fill="url(#jetSac1)" stroke="#38bdf8" stroke-width="2.5"/>
+  <!-- 环状收缩肌纹 -->
+  <path d="M 32 46 Q 36 64 32 82" fill="none" stroke="#bae6fd" stroke-width="2" opacity="0.7"/>
+  <path d="M 46 45 Q 50 64 46 83" fill="none" stroke="#bae6fd" stroke-width="2" opacity="0.7"/>
+  <!-- 锥形喷口 -->
+  <path d="M 64 52 L 82 56 L 82 72 L 64 76 Z" fill="#0c4a6e" stroke="#00f0ff" stroke-width="2.5"/>
+  <!-- 脉冲水柱尾焰 -->
+  <path d="M 82 58 L 122 50 L 114 64 L 122 78 L 82 70 Z" fill="url(#plume1)"/>
+  <circle cx="94" cy="64" r="3" fill="#ffffff"/>
+</svg>

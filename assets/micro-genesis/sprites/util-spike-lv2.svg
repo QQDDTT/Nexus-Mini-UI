@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="spike2" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="55%" stop-color="#bae6fd"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <!-- Lv.2 穿甲双联棘刺器：双膛气压骨鞘 + 两枚带放血倒钩的穿甲骨矛 -->
+  <!-- 左穿甲骨矛（带倒钩） -->
+  <polygon points="36,84 46,14 56,36 50,38 56,84" fill="url(#spike2)" stroke="#00f0ff" stroke-width="2.2"/>
+  <polygon points="36,36 46,14 42,38" fill="#e0f2fe"/>
+  <!-- 右穿甲骨矛（带倒钩） -->
+  <polygon points="72,84 82,14 92,36 86,38 92,84" fill="url(#spike2)" stroke="#00f0ff" stroke-width="2.2"/>
+  <polygon points="72,36 82,14 78,38" fill="#e0f2fe"/>
+  <!-- 双联气压发射鞘 -->
+  <rect x="24" y="76" width="80" height="30" rx="14" fill="#0c4a6e" stroke="#00f0ff" stroke-width="2.5"/>
+  <circle cx="46" cy="91" r="8" fill="#00f0ff"/>
+  <circle cx="82" cy="91" r="8" fill="#00f0ff"/>
+</svg>

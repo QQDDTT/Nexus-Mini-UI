@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="fin3" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0%" stop-color="#00f0ff"/>
+      <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.7"/>
+    </linearGradient>
+  </defs>
+  <!-- Lv.3 超空泡蝠鲼翼：宽展三角翼 + 金色前缘切水刃 + 空泡流线光栅 -->
+  <!-- 后掠副翼 -->
+  <path d="M 28 68 C 56 96, 86 112, 118 106 C 104 88, 92 78, 34 62 Z" fill="#1e3a8a" stroke="#fbbf24" stroke-width="2"/>
+  <!-- 主三角蝠鲼翼 -->
+  <path d="M 24 42 C 60 8, 104 12, 124 34 C 106 48, 102 64, 120 84 C 88 86, 56 78, 24 76 Z" fill="url(#fin3)" stroke="#00f0ff" stroke-width="2.5"/>
+  <!-- 金色前缘超空泡切水刃 -->
+  <path d="M 24 42 C 60 8, 104 12, 124 34" fill="none" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/>
+  <path d="M 26 42 C 60 10, 102 14, 122 34" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <!-- 发光神经翼脉 -->
+  <path d="M 32 48 Q 76 24 118 36" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+  <path d="M 34 56 Q 76 44 108 54" fill="none" stroke="#e0f2fe" stroke-width="2.2"/>
+  <path d="M 34 64 Q 76 62 112 72" fill="none" stroke="#e0f2fe" stroke-width="2.2"/>
+  <path d="M 32 72 Q 76 80 116 84" fill="none" stroke="#fbbf24" stroke-width="2"/>
+  <!-- 翼尖空泡尾流环 -->
+  <circle cx="120" cy="36" r="4" fill="#ffffff"/>
+  <circle cx="116" cy="84" r="3.5" fill="#fbbf24"/>
+  <!-- 陀螺枢轴座 -->
+  <ellipse cx="22" cy="60" rx="12" ry="22" fill="#082f49" stroke="#fbbf24" stroke-width="3"/>
+  <circle cx="22" cy="60" r="7" fill="#00f0ff"/>
+  <circle cx="22" cy="60" r="3" fill="#ffffff"/>
+</svg>

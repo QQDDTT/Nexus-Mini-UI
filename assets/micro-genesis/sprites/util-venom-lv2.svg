@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="venom2" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#a3e635"/>
+      <stop offset="55%" stop-color="#15803d"/>
+      <stop offset="100%" stop-color="#052e16"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.2 神经麻痹毒腺：双联荧光绿毒腺 + 双倒钩注射长针 -->
+  <!-- 左右注射毒针 -->
+  <polygon points="40,56 46,12 52,24 48,26 54,56" fill="#84cc16" stroke="#ecfccb" stroke-width="2"/>
+  <polygon points="88,56 82,12 76,24 80,26 74,56" fill="#84cc16" stroke="#ecfccb" stroke-width="2"/>
+  <!-- 双联毒液腺体 -->
+  <circle cx="48" cy="78" r="24" fill="url(#venom2)" stroke="#84cc16" stroke-width="2.5"/>
+  <circle cx="80" cy="78" r="24" fill="url(#venom2)" stroke="#84cc16" stroke-width="2.5"/>
+  <!-- 连通毒管与神经毒泡 -->
+  <rect x="48" y="70" width="32" height="16" rx="8" fill="#14532d" stroke="#a3e635" stroke-width="2"/>
+  <circle cx="48" cy="78" r="7" fill="#ecfccb" opacity="0.85"/>
+  <circle cx="80" cy="78" r="7" fill="#ecfccb" opacity="0.85"/>
+  <circle cx="46" cy="10" r="3.5" fill="#bef264"/>
+  <circle cx="82" cy="10" r="3.5" fill="#bef264"/>
+</svg>

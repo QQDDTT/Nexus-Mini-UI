@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <defs>
+    <radialGradient id="cv1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.8"/>
+      <stop offset="70%" stop-color="#059669" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#064e3b" stop-opacity="0.9"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.1 Single-Chamber Digestive Vacuole -->
+  <circle cx="48" cy="48" r="28" fill="url(#cv1)" stroke="#10b981" stroke-width="2.5"/>
+  <circle cx="40" cy="42" r="5" fill="#a7f3d0" opacity="0.85"/>
+  <circle cx="56" cy="46" r="4" fill="#6ee7b7" opacity="0.75"/>
+  <circle cx="46" cy="56" r="3.5" fill="#a7f3d0" opacity="0.75"/>
+</svg>

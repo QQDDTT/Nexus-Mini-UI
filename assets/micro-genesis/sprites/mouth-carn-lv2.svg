@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Lv.2 Barbed Serrated Twin Mandibles (Carnivore Lv.2) -->
+  <path d="M44 6 C14 22 10 58 34 84 L44 70 L34 56 L42 44 L34 30 L44 18 Z" fill="#ef4444" stroke="#fecaca" stroke-width="2.4"/>
+  <path d="M52 6 C82 22 86 58 62 84 L52 70 L62 56 L54 44 L62 30 L52 18 Z" fill="#ef4444" stroke="#fecaca" stroke-width="2.4"/>
+  <circle cx="36" cy="72" r="4" fill="#fbbf24"/>
+  <circle cx="60" cy="72" r="4" fill="#fbbf24"/>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="mimic1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.85"/>
+      <stop offset="60%" stop-color="#06b6d4" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.2"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.1 色素拟态膜：半透明渐变色素斑块膜 + 4颗色素囊泡 -->
+  <path d="M 24 64 C 24 32, 48 20, 66 22 C 92 24, 106 42, 104 66 C 102 92, 82 106, 58 106 C 34 106, 24 88, 24 64 Z" fill="url(#mimic1)" stroke="#c084fc" stroke-width="2.5" stroke-dasharray="8 4"/>
+  <!-- 色素细胞斑点 -->
+  <circle cx="48" cy="48" r="10" fill="#c084fc" opacity="0.75"/>
+  <circle cx="78" cy="52" r="8" fill="#22d3ee" opacity="0.75"/>
+  <circle cx="54" cy="78" r="9" fill="#38bdf8" opacity="0.75"/>
+  <circle cx="78" cy="76" r="7" fill="#e879f9" opacity="0.75"/>
+  <circle cx="64" cy="62" r="4" fill="#ffffff" opacity="0.9"/>
+</svg>

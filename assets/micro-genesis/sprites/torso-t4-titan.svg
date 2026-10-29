@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="t4-titan" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="70%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </radialGradient>
+    <linearGradient id="t4-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="50%" stop-color="#00f0ff"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <!-- Massive 7-Somite Titan Fortress Chassis -->
+  <polygon points="64,6 98,16 116,38 118,66 112,92 94,112 64,122 34,112 16,92 10,66 12,38 30,16" fill="url(#t4-titan)" stroke="url(#t4-gold)" stroke-width="3.2"/>
+  <!-- Heavy Dorsal Armor Plates -->
+  <polygon points="64,16 88,24 98,44 96,70 86,94 64,108 42,94 32,70 30,44 40,24" fill="#0b1325" stroke="#00f0ff" stroke-width="1.8" opacity="0.9"/>
+  <!-- Dual Energy Arteries & 7 Vertebral Nodes -->
+  <path d="M52 22 L52 100 M76 22 L76 100" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 4"/>
+  <circle cx="64" cy="26" r="6" fill="#00f0ff"/>
+  <circle cx="64" cy="42" r="7" fill="#fbbf24"/>
+  <circle cx="64" cy="60" r="9" fill="#00f0ff" stroke="#fbbf24" stroke-width="2"/>
+  <circle cx="64" cy="78" r="7" fill="#fbbf24"/>
+  <circle cx="64" cy="94" r="6" fill="#00f0ff"/>
+  <!-- 12 Socket Hardpoints -->
+  <g fill="#fbbf24">
+    <circle cx="24" cy="36" r="3.5"/><circle cx="104" cy="36" r="3.5"/>
+    <circle cx="20" cy="56" r="3.5"/><circle cx="108" cy="56" r="3.5"/>
+    <circle cx="22" cy="76" r="3.5"/><circle cx="106" cy="76" r="3.5"/>
+    <circle cx="32" cy="96" r="3.5"/><circle cx="96" cy="96" r="3.5"/>
+  </g>
+</svg>

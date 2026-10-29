@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Lv.1 Micropore Filter Siphon (Herbivore Lv.1) -->
+  <path d="M34 18 L62 18 L54 76 L42 76 Z" fill="#065f46" fill-opacity="0.8" stroke="#10b981" stroke-width="2.4"/>
+  <ellipse cx="48" cy="18" rx="14" ry="6" fill="#047857" stroke="#34d399" stroke-width="2"/>
+  <path d="M36 14 L32 6 M44 12 L42 4 M52 12 L54 4 M60 14 L64 6" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"/>
+</svg>

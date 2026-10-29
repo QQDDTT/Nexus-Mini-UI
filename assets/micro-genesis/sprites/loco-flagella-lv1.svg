@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="flag1" x1="0" y1="0.5" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.25"/>
+    </linearGradient>
+    <radialGradient id="base1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="65%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#082f49"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.1 单鞭毛：基体毛囊 + 单根正弦推进丝 -->
+  <ellipse cx="26" cy="64" rx="14" ry="18" fill="url(#base1)" stroke="#38bdf8" stroke-width="2.5"/>
+  <circle cx="26" cy="64" r="6" fill="#00f0ff"/>
+  <!-- 鞭毛主丝 -->
+  <path d="M 38 64 C 54 44, 68 84, 86 64 C 98 50, 108 72, 118 64" fill="none" stroke="#0c4a6e" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 38 64 C 54 44, 68 84, 86 64 C 98 50, 108 72, 118 64" fill="none" stroke="url(#flag1)" stroke-width="4.5" stroke-linecap="round"/>
+  <!-- 尾迹粒子 -->
+  <circle cx="96" cy="48" r="2.5" fill="#7dd3fc" opacity="0.7"/>
+  <circle cx="110" cy="78" r="2" fill="#38bdf8" opacity="0.6"/>
+</svg>

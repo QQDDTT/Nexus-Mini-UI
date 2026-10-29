@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="scale2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <!-- Lv.2 硅化覆瓦鳞甲：六角蜂巢咬合硅化重甲 + 青蓝反伤棱边 -->
+  <!-- 左右翼板 -->
+  <polygon points="16,44 40,28 56,44 56,82 36,98 16,80" fill="url(#scale2)" stroke="#38bdf8" stroke-width="2.5"/>
+  <polygon points="72,44 88,28 112,44 112,80 92,98 72,82" fill="url(#scale2)" stroke="#38bdf8" stroke-width="2.5"/>
+  <!-- 中央主重甲盾 -->
+  <polygon points="36,28 64,12 92,28 92,76 64,112 36,76" fill="url(#scale2)" stroke="#00f0ff" stroke-width="3"/>
+  <!-- 内嵌硅晶反伤纹 -->
+  <polygon points="48,36 64,24 80,36 80,70 64,96 48,70" fill="none" stroke="#bae6fd" stroke-width="2"/>
+  <line x1="64" y1="16" x2="64" y2="106" stroke="#ffffff" stroke-width="3"/>
+  <!-- 铆接能量点 -->
+  <circle cx="34" cy="58" r="3.5" fill="#00f0ff"/>
+  <circle cx="94" cy="58" r="3.5" fill="#00f0ff"/>
+  <circle cx="64" cy="54" r="5" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="fin1" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.85"/>
+      <stop offset="60%" stop-color="#0284c7" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#0c4a6e" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <!-- Lv.1 划水鳍片：单层半透明软骨胸鳍 + 3根鳍条支撑骨 -->
+  <!-- 鳍基关节 -->
+  <ellipse cx="30" cy="64" rx="10" ry="18" fill="#082f49" stroke="#38bdf8" stroke-width="2.5"/>
+  <!-- 扇形鳍膜 -->
+  <path d="M 34 48 C 64 26, 98 34, 112 52 C 98 62, 96 74, 106 86 C 82 96, 54 90, 34 80 Z" fill="url(#fin1)" stroke="#7dd3fc" stroke-width="2"/>
+  <!-- 3根软骨鳍条 -->
+  <path d="M 36 54 Q 72 40 106 52" fill="none" stroke="#bae6fd" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 38 64 Q 70 62 98 68" fill="none" stroke="#bae6fd" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 36 74 Q 68 82 100 84" fill="none" stroke="#bae6fd" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="30" cy="64" r="5" fill="#00f0ff"/>
+</svg>
