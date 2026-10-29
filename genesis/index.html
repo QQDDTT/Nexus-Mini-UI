@@ -307,9 +307,16 @@
       }
 
       function getSomaSpecs(somaKey) {
-        if (somaKey === 'prokaryote') return { hp: 65, size: 30, mass: 1.1, speed: 1.25, fov: 175 };
-        if (somaKey === 'titan') return { hp: 200, size: 50, mass: 3.0, speed: 0.84, fov: 155 };
-        return { hp: 110, size: 38, mass: 1.8, speed: 1.0, fov: 165 };
+        if (somaKey === 'prokaryote') return { hp: 65, size: 30, mass: 1.1, speed: 1.12, turnRate: 0.046, fov: 175 };
+        if (somaKey === 'titan') return { hp: 200, size: 50, mass: 3.0, speed: 0.76, turnRate: 0.024, fov: 155 };
+        return { hp: 110, size: 38, mass: 1.8, speed: 0.94, turnRate: 0.034, fov: 165 };
+      }
+
+      // Smooth Angular Steering with Rotational Inertia (prevents instant snap-turning)
+      function steerAngle(currentAngle, desiredAngle, maxStep, smoothness = 0.14) {
+        const diff = Math.atan2(Math.sin(desiredAngle - currentAngle), Math.cos(desiredAngle - currentAngle));
+        const delta = Math.max(-maxStep, Math.min(maxStep, diff * smoothness));
+        return currentAngle + delta;
       }
 
       function spawnFriendlyCell(x, y, withMitosisFX = true) {
@@ -592,28 +599,34 @@
       function triggerAlphaDashBite() {
         if (atp < 15) return;
         atp -= 15;
-        alpha.dashTimer = 16;
+        alpha.dashTimer = 15;
         alpha.jawSnap = 14;
-        alpha.scaleX = 0.68;
-        alpha.scaleY = 1.42;
+        alpha.scaleX = 0.74;
+        alpha.scaleY = 1.32;
 
         let ang = alpha.angle - Math.PI / 2;
         if (rivalCells.length > 0) {
-          let best = rivalCells[0];
-          let minD = Math.hypot(best.x - alpha.x, best.y - alpha.y);
+          let best = null;
+          let minD = alpha.fov * 1.2;
           for (const rv of rivalCells) {
             const d = Math.hypot(rv.x - alpha.x, rv.y - alpha.y);
-            if (d < minD) { minD = d; best = rv; }
+            const toRv = Math.atan2(rv.y - alpha.y, rv.x - alpha.x);
+            const diff = Math.abs(Math.atan2(Math.sin(toRv - ang), Math.cos(toRv - ang)));
+            if (d < minD && diff < 1.15) {
+              minD = d;
+              best = rv;
+            }
           }
-          if (minD <= alpha.fov * 1.35) {
-            ang = Math.atan2(best.y - alpha.y, best.x - alpha.x);
-            alpha.angle = ang + Math.PI / 2;
+          if (best) {
+            const desiredAng = Math.atan2(best.y - alpha.y, best.x - alpha.x);
+            alpha.angle = steerAngle(alpha.angle, desiredAng + Math.PI / 2, 0.28, 0.65);
+            ang = alpha.angle - Math.PI / 2;
           }
         }
-        alpha.vx = Math.cos(ang) * 12.5;
-        alpha.vy = Math.sin(ang) * 12.5;
-        alpha.tx = alpha.x + Math.cos(ang) * 160;
-        alpha.ty = alpha.y + Math.sin(ang) * 160;
+        alpha.vx = Math.cos(ang) * 7.2;
+        alpha.vy = Math.sin(ang) * 7.2;
+        alpha.tx = alpha.x + Math.cos(ang) * 125;
+        alpha.ty = alpha.y + Math.sin(ang) * 125;
 
         spawnShockwave(alpha.x - Math.cos(ang) * 22, alpha.y - Math.sin(ang) * 22, 42, '#00f0ff', 2.8);
         spawnParticles(alpha.x - Math.cos(ang) * 24, alpha.y - Math.sin(ang) * 24, '#00f0ff', 12, 4.5, 3.5);
@@ -737,7 +750,7 @@
           }
         });
 
-        // Move Alpha Specimen
+        // Move Alpha Specimen (Smooth Rotational Inertia + Forward-Heading Fluid Propulsion)
         if (isPointerDown && alpha.dashTimer <= 0) {
           alpha.tx = Math.max(60, Math.min(WORLD_W - 60, alpha.x + pointerOffsetX));
           alpha.ty = Math.max(60, Math.min(WORLD_H - 60, alpha.y + pointerOffsetY));
@@ -745,15 +758,23 @@
         const dx = alpha.tx - alpha.x;
         const dy = alpha.ty - alpha.y;
         const dist = Math.hypot(dx, dy);
-        const spdBoost = (activeOrgans.has('flagella') ? 1.4 : 1.0) * (alpha.ventBoost > 0 ? 1.35 : 1.0);
-        if (dist > 6 && alpha.dashTimer <= 0) {
+        const alphaSpec = getSomaSpecs(currentSoma);
+        const spdBoost = (activeOrgans.has('flagella') ? 1.22 : 1.0) * (alpha.ventBoost > 0 ? 1.28 : 1.0);
+        if (dist > 14 && alpha.dashTimer <= 0) {
           const targetAng = Math.atan2(dy, dx);
-          alpha.vx = alpha.vx * 0.84 + Math.cos(targetAng) * 0.72 * spdBoost;
-          alpha.vy = alpha.vy * 0.84 + Math.sin(targetAng) * 0.72 * spdBoost;
-          alpha.angle = Math.atan2(alpha.vy, alpha.vx) + Math.PI / 2;
+          // Smoothly rotate body toward target angle bounded by Soma's rotational inertia
+          alpha.angle = steerAngle(alpha.angle, targetAng + Math.PI / 2, alphaSpec.turnRate, 0.14);
+          const currentHeading = alpha.angle - Math.PI / 2;
+          const turnDiff = Math.abs(Math.atan2(Math.sin(targetAng - currentHeading), Math.cos(targetAng - currentHeading)));
+          // Throttle forward thrust slightly during wide turns & smooth arrival braking within 95px
+          const alignFactor = Math.max(0.32, (Math.cos(turnDiff) + 1) * 0.5);
+          const arriveFactor = Math.min(1.0, dist / 95);
+          const thrust = 0.25 * spdBoost * alphaSpec.speed * alignFactor * arriveFactor;
+          alpha.vx = alpha.vx * 0.88 + Math.cos(currentHeading) * thrust;
+          alpha.vy = alpha.vy * 0.88 + Math.sin(currentHeading) * thrust;
         } else {
-          alpha.vx *= 0.88;
-          alpha.vy *= 0.88;
+          alpha.vx *= 0.86;
+          alpha.vy *= 0.86;
         }
         alpha.x = Math.max(60, Math.min(WORLD_W - 60, alpha.x + alpha.vx));
         alpha.y = Math.max(60, Math.min(WORLD_H - 60, alpha.y + alpha.vy));
@@ -876,14 +897,16 @@
 
           const seekAng = Math.atan2(goalY - fc.y, goalX - fc.x);
           const disp = computeAntiClusterForce(fc, [alpha, ...friendlyCells], 112);
+          const desiredVx = Math.cos(seekAng) * 0.21 + disp.fx * 0.32;
+          const desiredVy = Math.sin(seekAng) * 0.21 + disp.fy * 0.32;
+          const desiredHeading = Math.atan2(desiredVy, desiredVx);
 
-          fc.vx = fc.vx * 0.88 + (Math.cos(seekAng) * 0.34 + disp.fx * 0.48) * spdBoost * (fc.speedMult || 1);
-          fc.vy = fc.vy * 0.88 + (Math.sin(seekAng) * 0.34 + disp.fy * 0.48) * spdBoost * (fc.speedMult || 1);
+          fc.angle = steerAngle(fc.angle, desiredHeading + Math.PI / 2, 0.036, 0.14);
+          const fcHeading = fc.angle - Math.PI / 2;
+          fc.vx = fc.vx * 0.89 + (Math.cos(fcHeading) * 0.20 + disp.fx * 0.24) * spdBoost * (fc.speedMult || 1);
+          fc.vy = fc.vy * 0.89 + (Math.sin(fcHeading) * 0.20 + disp.fy * 0.24) * spdBoost * (fc.speedMult || 1);
           fc.x = Math.max(60, Math.min(WORLD_W - 60, fc.x + fc.vx));
           fc.y = Math.max(60, Math.min(WORLD_H - 60, fc.y + fc.vy));
-          if (Math.hypot(fc.vx, fc.vy) > 0.15) {
-            fc.angle = Math.atan2(fc.vy, fc.vx) + Math.PI / 2;
-          }
 
           // Cnidocyte Ranged Toxin Dart only at observed aggroTarget
           if (activeOrgans.has('cnidocyte') && fc.aggroTarget) {
@@ -960,15 +983,15 @@
           const ang = Math.atan2(goalY - rv.y, goalX - rv.x);
           const disp = computeAntiClusterForce(rv, rivalCells, 128);
           const poisonSlow = rv.poisonTimer > 0 ? 0.48 : 1.0;
-          const accel = (rv.aggroTarget ? (rv.isBoss ? 0.25 : 0.31) : 0.18) * poisonSlow;
+          const accel = (rv.aggroTarget ? (rv.isBoss ? 0.16 : 0.20) : 0.12) * poisonSlow;
+          const rvTurnRate = rv.isBoss ? 0.022 : 0.032;
 
-          rv.vx = rv.vx * 0.87 + (Math.cos(ang) * accel + disp.fx * 0.42);
-          rv.vy = rv.vy * 0.87 + (Math.sin(ang) * accel + disp.fy * 0.42);
+          rv.angle = steerAngle(rv.angle, ang + Math.PI / 2, rvTurnRate, 0.13);
+          const rvHeading = rv.angle - Math.PI / 2;
+          rv.vx = rv.vx * 0.89 + (Math.cos(rvHeading) * accel + disp.fx * 0.26);
+          rv.vy = rv.vy * 0.89 + (Math.sin(rvHeading) * accel + disp.fy * 0.26);
           rv.x = Math.max(70, Math.min(WORLD_W - 70, rv.x + rv.vx));
           rv.y = Math.max(70, Math.min(WORLD_H - 70, rv.y + rv.vy));
-          if (Math.hypot(rv.vx, rv.vy) > 0.15) {
-            rv.angle = Math.atan2(rv.vy, rv.vx) + Math.PI / 2;
-          }
 
           // Rival-vs-Rival Soft Separation
           for (let k = i - 1; k >= 0; k--) {
@@ -1179,11 +1202,12 @@
         const sx = entity.scaleX || 1;
         const sy = entity.scaleY || 1;
         const jaw = entity.jawSnap || 0;
-        const swimWave = Math.sin(tick * 0.22 + x * 0.05) * 0.14;
+        const phase = (entity.slotIdx || 0) * 1.3;
+        const swimWave = Math.sin(tick * 0.12 + phase) * 0.045;
 
         ctx.save();
         ctx.translate(x, y);
-        ctx.rotate(angle + swimWave * 0.35);
+        ctx.rotate(angle + swimWave);
         ctx.scale(sx, sy);
 
         if (activeOrgans.has('flagella') && sprites.flagella?.complete) {
