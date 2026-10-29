@@ -1,6 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
-  <!-- Lv.1 Chitin Cleaver Mandible (Carnivore Lv.1) -->
-  <path d="M42 10 C20 26 18 58 38 78 L44 64 C32 50 34 32 44 18 Z" fill="#dc2626" stroke="#fca5a5" stroke-width="2.2"/>
-  <path d="M54 10 C76 26 78 58 58 78 L52 64 C64 50 62 32 52 18 Z" fill="#dc2626" stroke="#fca5a5" stroke-width="2.2"/>
+  <defs>
+    <linearGradient id="carn1Jaw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="35%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <radialGradient id="carn1Base" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.1 Chitin Cleaver Mandible: 暗红与灰白相间的双弧形基础骨质钳口 + 铰链底座 -->
+  <g id="layer-base">
+    <ellipse cx="48" cy="74" rx="18" ry="9" fill="url(#carn1Base)" stroke="#94a3b8" stroke-width="2"/>
+    <path d="M42 8 C18 24 16 58 36 78 L44 64 C30 50 32 30 44 18 Z" fill="url(#carn1Jaw)" stroke="#fca5a5" stroke-width="2.2"/>
+    <path d="M54 8 C78 24 80 58 60 78 L52 64 C66 50 64 30 52 18 Z" fill="url(#carn1Jaw)" stroke="#fca5a5" stroke-width="2.2"/>
+  </g>
+  <g id="layer-material">
+    <!-- 灰白骨质内齿 -->
+    <polygon points="34,36 42,40 35,46" fill="#e2e8f0"/>
+    <polygon points="62,36 54,40 61,46" fill="#e2e8f0"/>
+    <circle cx="40" cy="72" r="3" fill="#cbd5e1"/>
+    <circle cx="56" cy="72" r="3" fill="#cbd5e1"/>
+  </g>
+  <g id="layer-glow">
+    <path d="M27 32 Q24 46 31 58 M69 32 Q72 46 65 58" fill="none" stroke="#fecaca" stroke-width="1.6" stroke-linecap="round" opacity="0.8"/>
+  </g>
 </svg>
-

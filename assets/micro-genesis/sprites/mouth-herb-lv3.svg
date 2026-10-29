@@ -1,9 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
-  <!-- Lv.3 Crystalline Resonance Grinding Disc (Herbivore Lv.3) -->
-  <path d="M16 18 L80 18 L60 82 L36 82 Z" fill="#064e3b" stroke="#fbbf24" stroke-width="2.6"/>
-  <ellipse cx="48" cy="20" rx="32" ry="12" fill="#022c22" stroke="#10b981" stroke-width="2.6"/>
-  <!-- Grinding Star Disc -->
-  <polygon points="48,8 54,18 68,18 56,24 60,34 48,28 36,34 40,24 28,18 42,18" fill="#34d399" stroke="#fbbf24" stroke-width="1.5"/>
-  <circle cx="48" cy="54" r="9" fill="#10b981" stroke="#fbbf24" stroke-width="2"/>
+  <defs>
+    <linearGradient id="herb3Body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#065f46"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+    <radialGradient id="herb3Disc" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="55%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.3 Crystalline Resonance Grinding Disc: 金绿辉光六角星芒研磨口器 + 强力向心引力流线 -->
+  <g id="layer-base">
+    <path d="M14 22 L82 22 L61 84 L35 84 Z" fill="url(#herb3Body)" stroke="#fbbf24" stroke-width="2.6"/>
+    <ellipse cx="48" cy="22" rx="34" ry="12" fill="#022c22" stroke="#10b981" stroke-width="2.6"/>
+  </g>
+  <g id="layer-material">
+    <!-- Grinding Hex-Star Disc -->
+    <polygon points="48,9 54,19 68,19 57,25 61,35 48,29 35,35 39,25 28,19 42,19" fill="url(#herb3Disc)" stroke="#fbbf24" stroke-width="1.8"/>
+    <circle cx="48" cy="56" r="10" fill="#047857" stroke="#fbbf24" stroke-width="2.2"/>
+    <circle cx="48" cy="56" r="4.5" fill="#fbbf24"/>
+  </g>
+  <g id="layer-glow">
+    <!-- Centripetal Inflow Streamlines (强力向心引力流线) -->
+    <path d="M18 6 Q32 14 42 18 M78 6 Q64 14 54 18 M48 2 L48 14" fill="none" stroke="#00f0ff" stroke-width="2" stroke-dasharray="3 2" stroke-linecap="round"/>
+    <circle cx="26" cy="10" r="2.5" fill="#34d399"/>
+    <circle cx="70" cy="10" r="2.5" fill="#34d399"/>
+  </g>
 </svg>
-

@@ -1,7 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
-  <!-- Lv.1 Micropore Filter Siphon (Herbivore Lv.1) -->
-  <path d="M34 18 L62 18 L54 76 L42 76 Z" fill="#065f46" fill-opacity="0.8" stroke="#10b981" stroke-width="2.4"/>
-  <ellipse cx="48" cy="18" rx="14" ry="6" fill="#047857" stroke="#34d399" stroke-width="2"/>
-  <path d="M36 14 L32 6 M44 12 L42 4 M52 12 L54 4 M60 14 L64 6" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="herb1Tube" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.85"/>
+      <stop offset="60%" stop-color="#059669" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#064e3b" stop-opacity="0.95"/>
+    </linearGradient>
+    <radialGradient id="herb1Rim" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#022c22"/>
+      <stop offset="75%" stop-color="#047857"/>
+      <stop offset="100%" stop-color="#6ee7b7"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.1 Micropore Filter Siphon: 翠绿色半透明单管漏斗 + 前端 4 根滤食微纤毛 -->
+  <g id="layer-base">
+    <path d="M32 20 L64 20 L55 78 L41 78 Z" fill="url(#herb1Tube)" stroke="#10b981" stroke-width="2.4"/>
+    <ellipse cx="48" cy="78" rx="7" ry="3.5" fill="#064e3b" stroke="#34d399" stroke-width="1.6"/>
+  </g>
+  <g id="layer-material">
+    <ellipse cx="48" cy="20" rx="16" ry="6.5" fill="url(#herb1Rim)" stroke="#34d399" stroke-width="2.2"/>
+    <path d="M40 36 L56 36 M42 52 L54 52" stroke="#6ee7b7" stroke-width="1.5" opacity="0.6"/>
+  </g>
+  <g id="layer-glow">
+    <path d="M35 15 L30 5 M44 13 L42 3 M52 13 L54 3 M61 15 L66 5" stroke="#a7f3d0" stroke-width="2.2" stroke-linecap="round"/>
+    <circle cx="48" cy="44" r="3.5" fill="#6ee7b7" opacity="0.85"/>
+    <circle cx="48" cy="62" r="2.5" fill="#a7f3d0" opacity="0.75"/>
+  </g>
 </svg>
-

@@ -1,7 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
-  <!-- Lv.2 Pincer-Segmented Chewing Beak (Omnivore Lv.2) -->
-  <path d="M48 8 L68 44 L58 78 L38 78 L28 44 Z" fill="#6b21a8" stroke="#e9d5ff" stroke-width="2.4"/>
-  <polygon points="48,14 60,46 36,46" fill="#a855f7" stroke="#fbbf24" stroke-width="1.8"/>
-  <circle cx="48" cy="60" r="8" fill="#10b981" stroke="#fbbf24" stroke-width="1.8"/>
+  <defs>
+    <linearGradient id="omni2Beak" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="30%" stop-color="#9333ea"/>
+      <stop offset="100%" stop-color="#3b0764"/>
+    </linearGradient>
+    <radialGradient id="omni2Radula" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="70%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </radialGradient>
+  </defs>
+  <!-- Lv.2 Pincer-Segmented Chewing Beak: 紫金双色分节鸟喙状口器 + 内部环形齿舌 -->
+  <g id="layer-base">
+    <path d="M48 8 L70 44 L59 80 L37 80 L26 44 Z" fill="url(#omni2Beak)" stroke="#e9d5ff" stroke-width="2.4"/>
+    <polygon points="48,14 61,46 35,46" fill="#a855f7" stroke="#fbbf24" stroke-width="2"/>
+  </g>
+  <g id="layer-material">
+    <!-- 内部环形齿舌 (Internal Annular Radula Ring) -->
+    <circle cx="48" cy="61" r="10.5" fill="url(#omni2Radula)" stroke="#fbbf24" stroke-width="2"/>
+    <circle cx="48" cy="61" r="6" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="2.5 2.5"/>
+  </g>
+  <g id="layer-glow">
+    <path d="M30 44 L66 44" stroke="#fbbf24" stroke-width="1.8"/>
+    <circle cx="48" cy="61" r="2.5" fill="#6ee7b7"/>
+  </g>
 </svg>
-
