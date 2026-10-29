@@ -1932,9 +1932,9 @@
         ctx.closePath();
 
         if (isSonar) {
-          // 听觉 360° 声呐黑白轮廓视图：深黑底色 + 银白/冷青声呐脉冲线框
+          // 听觉 360° 声呐雷达定格视图：深黑底色 + 银白/冷青声呐脉冲线框 + 定格器官贴图轮廓
           const pulseAlpha = opts.sonarAlpha !== undefined ? opts.sonarAlpha : 0.92;
-          ctx.fillStyle = 'rgba(8, 15, 28, 0.88)';
+          ctx.fillStyle = `rgba(8, 15, 28, ${0.88 * pulseAlpha})`;
           ctx.fill();
           ctx.lineWidth = 1.8 * scale;
           ctx.strokeStyle = org.faction === 'player'
@@ -1962,6 +1962,32 @@
           ctx.lineTo(tail.x - tail.r * 1.55, tail.y + Math.sin(phase * 1.6) * (tail.r * 0.45));
           ctx.strokeStyle = `rgba(248, 250, 252, ${pulseAlpha})`;
           ctx.stroke();
+
+          // 叠加单色高对比声呐滤镜渲染全部定格器官 SVG 贴图 (确保听觉边缘裁剪时完整展现局部器官影像)
+          ctx.save();
+          ctx.filter = 'grayscale(100%) brightness(145%) contrast(135%)';
+          ctx.globalAlpha *= pulseAlpha * 0.85;
+          const locoListSonar = bp.slots.locomotion || [];
+          locoListSonar.forEach((loco, idx) => {
+            const spec = ORGAN_CATALOG[loco.id].levels[loco.level];
+            const wagRot = Math.sin(phase * 1.5 + idx) * 0.26;
+            if (idx === 0) {
+              drawSpriteCentered(ctx, spec.sprite, tail.x - tail.r * 0.95, tail.y, baseR * 1.55, baseR * 1.55, Math.PI + wagRot);
+            } else {
+              const side = idx % 2 === 1 ? 1 : -1;
+              const segAnchor = spine[Math.min(spine.length - 1, 1)];
+              drawSpriteCentered(ctx, spec.sprite, segAnchor.x, segAnchor.y + side * segAnchor.r * 0.95, baseR * 1.35, baseR * 1.35, side * 1.25 + wagRot * 0.5);
+            }
+          });
+          drawSpriteCentered(ctx, torso.sprite, 0, 0, torso.sizePx * 1.15 * scale, torso.sizePx * 1.38 * scale, Math.PI * 0.5);
+          const mouthListSonar = bp.slots.mouth || [];
+          mouthListSonar.forEach((m, idx) => {
+            const mLv = org.suppressedTimer > 0 ? 1 : m.level;
+            const spec = ORGAN_CATALOG[m.id].levels[mLv];
+            const offsetY = mouthListSonar.length === 1 ? 0 : (idx === 0 ? -head.r * 0.36 : head.r * 0.36);
+            drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 0.88, head.y + offsetY, baseR * 1.35, baseR * 1.35, 0);
+          });
+          ctx.restore();
           ctx.restore();
           return;
         }
@@ -2929,6 +2955,8 @@
           phaseOffset: Math.random() * Math.PI * 2,
           sonarLastSeenX: x,
           sonarLastSeenY: y,
+          sonarRelX: null,
+          sonarRelY: null,
           sonarSnapAngle: 0,
           sonarSnapPhase: 0,
           sonarDetectedCycle: -1,
@@ -3020,15 +3048,16 @@
         arenaState.vents.forEach((v) => spawnAlgaeCluster(v.x, v.y, 12));
         spawnAlgaeCluster(alpha.x + 180, alpha.y - 120, 14);
 
-        // 生成野生生态种群与章节首领
+        // 生成野生生态种群与章节首领 (近圈仅分布温和植食微虫供感官探测与捕食，高阶掠食者分布在外圈)
         const wildPool = [
           ...officialFossils,
           ...playerGeneBank.filter((s) => s.wildEnabled && s.speciesId !== chosen.speciesId)
         ];
         for (let i = 0; i < 18; i++) {
-          const wBp = wildPool[i % wildPool.length];
+          const ringIdx = i % 4;
+          const dist = ringIdx === 0 ? 225 : (ringIdx === 1 ? 280 : (440 + (i % 3) * 220));
+          const wBp = ringIdx <= 1 ? officialFossils[0] : wildPool[i % wildPool.length];
           const ang = (i / 18) * Math.PI * 2;
-          const dist = 420 + (i % 3) * 260;
           const wx = WORLD_W * 0.5 + Math.cos(ang) * dist;
           const wy = WORLD_H * 0.5 + Math.sin(ang) * dist;
           arenaState.organisms.push(spawnOrganismEntity(wBp, wx, wy, 'wild', {
@@ -4161,12 +4190,12 @@
         }
 
         // 局域网 20Hz 状态同步广播 (Host 权威状态 / Guest 航向输入)
-        if (lanChannel && alpha && (arenaState.timeSec - (arenaState.lastLanSyncSec || 0) >= 0.05)) {
+        if (lanSession && lanSession.sendFast && alpha && (arenaState.timeSec - (arenaState.lastLanSyncSec || 0) >= 0.05)) {
           arenaState.lastLanSyncSec = arenaState.timeSec;
-          if (arenaState.isLanGuest) {
-            lanChannel.postMessage({ type: 'GUEST_INPUT', angle: alpha.targetAngle });
+          if (isLanGuest) {
+            lanSession.sendFast({ type: 'GUEST_INPUT', angle: alpha.targetAngle });
           } else {
-            lanChannel.postMessage({ type: 'HOST_STATE', hostX: alpha.x, hostY: alpha.y, hostAng: alpha.angle, hostHp: alpha.hp });
+            lanSession.sendFast({ type: 'HOST_STATE', hostX: alpha.x, hostY: alpha.y, hostAng: alpha.angle, hostHp: alpha.hp });
           }
         }
 
@@ -4340,29 +4369,31 @@
               const effSonarR = targetSpeed < 8 ? Math.max(65, st.staticSenseRange) : st.sonarRange;
               const bodyExtent = org.radius * 2.4;
 
-              // 当雷达扫描脉冲波前扫过目标 (或初始首次捕获) 时，锁定目标的定格影像快照 (坐标、朝向、肢体相位全部定格)
-              if (
-                dist - bodyExtent <= effSonarR &&
-                (
-                  (dist - bodyExtent <= waveR && org.sonarDetectedCycle !== pulseCycle) ||
-                  org.sonarLastPulseSec < 0 ||
-                  (arenaState.timeSec - org.sonarLastPulseSec) >= pulsePeriod
-                )
-              ) {
+              // 当雷达扫描脉冲波前扫过目标 (或初始首次进入听觉圈) 时，锁定目标的雷达定格影像快照 (极坐标相对位置、朝向、肢体相位全部定格)
+              const sweptByWave = (dist - bodyExtent <= waveR) && (org.sonarDetectedCycle !== pulseCycle);
+              const initialCapture = org.sonarLastPulseSec < 0 && (dist - bodyExtent <= effSonarR);
+              if ((dist - bodyExtent <= effSonarR) && (sweptByWave || initialCapture)) {
                 org.sonarLastSeenX = org.x;
                 org.sonarLastSeenY = org.y;
+                org.sonarRelX = org.x - alpha.x;
+                org.sonarRelY = org.y - alpha.y;
                 org.sonarSnapAngle = org.angle;
                 org.sonarSnapPhase = arenaState.timeSec * 6.5 + (org.phaseOffset || 0);
                 org.sonarLastPulseSec = arenaState.timeSec;
-                org.sonarDetectedCycle = pulseCycle;
+                if (sweptByWave) {
+                  org.sonarDetectedCycle = pulseCycle;
+                }
               }
 
-              const snapDist = Math.hypot(org.sonarLastSeenX - alpha.x, org.sonarLastSeenY - alpha.y);
+              if (org.sonarRelX === null || org.sonarRelY === null) return;
+              const snapX = alpha.x + org.sonarRelX;
+              const snapY = alpha.y + org.sonarRelY;
+              const snapDist = Math.hypot(org.sonarRelX, org.sonarRelY);
               const ageSec = arenaState.timeSec - org.sonarLastPulseSec;
               if (snapDist - bodyExtent > effSonarR || ageSec > pulsePeriod * 1.45) return;
 
               // 雷达荧光余晖衰减透明度
-              const echoAlpha = Math.max(0.32, 1.0 - 0.62 * Math.min(1.0, ageSec / pulsePeriod));
+              const echoAlpha = Math.max(0.35, 1.0 - 0.58 * Math.min(1.0, Math.max(0, ageSec) / pulsePeriod));
 
               // 严格圆形边界裁剪：若个体位于听觉边缘，仅显示落在 effSonarR 听觉范围内的影像！
               ctx.save();
@@ -4373,8 +4404,8 @@
               const savedX = org.x;
               const savedY = org.y;
               const savedAng = org.angle;
-              org.x = org.sonarLastSeenX;
-              org.y = org.sonarLastSeenY;
+              org.x = snapX;
+              org.y = snapY;
               org.angle = org.sonarSnapAngle || org.angle;
               drawOrganism(ctx, org, {
                 freezePhase: org.sonarSnapPhase,
@@ -4385,11 +4416,26 @@
               org.y = savedY;
               org.angle = savedAng;
               ctx.restore();
+
+              // 若个体跨越听觉边缘 (半身在圈内、半身被裁剪)，在听觉边界圆弧上绘制声呐截面回波高亮弧
+              if (Math.abs(snapDist - effSonarR) < bodyExtent) {
+                const edgeAng = Math.atan2(org.sonarRelY, org.sonarRelX);
+                const arcSpan = Math.min(0.32, bodyExtent / Math.max(80, effSonarR));
+                ctx.beginPath();
+                ctx.arc(alpha.x, alpha.y, effSonarR, edgeAng - arcSpan, edgeAng + arcSpan);
+                ctx.strokeStyle = `rgba(0, 240, 255, ${echoAlpha * 0.85})`;
+                ctx.lineWidth = 2.4;
+                ctx.stroke();
+              }
               return;
             } else {
-              // 彩色视觉通道：拟态皮肤在 >90px 外隐匿
-              const senseCheck = canEntitySenseTarget(alpha, org, isNight, false);
-              if (!senseCheck.sensed && dist > 65) return;
+              // 彩色视觉通道：仅当目标开启拟态皮肤且等级不低于观察者眼点时在 >90px 外隐匿；几何扇形边界交由外层 ctx.clip() 连续裁剪
+              if (org.mimicTimer > 0 && dist > 90) {
+                const targetMimic = (org.blueprint?.slots?.utility || []).find((u) => u.id === 'util-mimic');
+                if (targetMimic && targetMimic.level >= st.maxEyeLv) {
+                  return;
+                }
+              }
             }
           }
           const alphaSnapTick = Math.floor(arenaState.timeSec / pulsePeriod) * pulsePeriod;
@@ -4457,18 +4503,22 @@
           ctx.filter = 'none';
           ctx.restore();
         } else if (hasEye && hasEar) {
-          // 模式 C：视听双感官混装 (T03/T04) —— 360° 声呐雷达定格裁剪底图 + 前向扇形全彩叠加
+          // 模式 C：视听双感官混装 (T03/T04) —— 扇区外 360° 声呐雷达定格裁剪底图 + 前向扇形全彩实时叠加
+          const effRange = alpha.blindTimer > 0 ? 90 : (isNight ? st.nightEyeRange : st.dayEyeRange);
+          const halfRad = ((isNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
+
           ctx.fillStyle = '#02040a';
           ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
           ctx.save();
           ctx.beginPath();
           ctx.arc(alpha.x, alpha.y, st.sonarRange, 0, Math.PI * 2);
-          ctx.clip();
+          ctx.moveTo(alpha.x, alpha.y);
+          ctx.arc(alpha.x, alpha.y, effRange, alpha.angle - halfRad, alpha.angle + halfRad);
+          ctx.closePath();
+          ctx.clip('evenodd');
           renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, true);
           ctx.restore();
 
-          const effRange = alpha.blindTimer > 0 ? 90 : (isNight ? st.nightEyeRange : st.dayEyeRange);
-          const halfRad = ((isNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
           ctx.save();
           ctx.beginPath();
           ctx.arc(alpha.x, alpha.y, 65, 0, Math.PI * 2);
