@@ -784,9 +784,9 @@
             <span>③ 感官视界与昼夜平衡</span>
           </h3>
           <ul>
-            <li><strong>视觉器官 (眼)</strong>：渲染前向彩色扇形画面，等级越高扇角/视距越大、色彩越清晰；<strong>受黑夜（视距-45%）及敌方拟态皮肤、墨囊克制</strong>。</li>
-            <li><strong>听觉器官 (耳)</strong>：渲染 <strong>360° 黑白轮廓声呐画面</strong>，不受黑夜影响，按脉冲刷新运动目标，但对静止微藻感知弱。</li>
-            <li><strong>动态承载力</strong>：环境定时在局部区域刷新食物（能量注入），全体生物自然消耗能量，自动抑制无脑过量繁殖。</li>
+            <li><strong>视觉器官 (眼)</strong>：渲染前向彩色扇形画面，具备高基础预警视距（<code>260~360px</code>，每级平滑递增 <code>+50px/+35°</code>）；<strong>受黑夜（视距-45%）及敌方拟态皮肤、墨囊克制</strong>。</li>
+            <li><strong>听觉器官 (耳)</strong>：渲染 <strong>360° 声呐雷达定格画面</strong>（基础半径 <code>280~380px</code>），脉冲扫过时锁定目标<strong>定格影像</strong>；若个体位于听觉边缘，则<strong>仅显示听觉范围内的局部影像</strong>。</li>
+            <li><strong>广角微缩与动态平衡</strong>：缩小个体占屏尺寸并配合广角镜头展示更多环境信息；局部定时刷新食物与全员代谢耗散形成动态平衡。</li>
           </ul>
         </div>
         <div class="intro-card">
@@ -1229,28 +1229,28 @@
           sprite: 'torso-t1-micro.svg', volume: 1.0, baseHp: 70, bmr: 0.8, kv: 1.25, kw: 1.30,
           transitionGp: 0, totalSlots: 5,
           slots: { core: 1, sensory: 1, mouth: 1, locomotion: 1, utility: 1 },
-          sizePx: 34, segments: [1.0]
+          sizePx: 24, segments: [1.0]
         },
         'torso-t2-stream': {
           id: 'torso-t2-stream', code: 'T02', name: '流线三节真核体', shortName: 'T02 流线',
           sprite: 'torso-t2-stream.svg', volume: 2.2, baseHp: 140, bmr: 1.8, kv: 1.00, kw: 1.00,
           transitionGp: 150, totalSlots: 7,
           slots: { core: 1, sensory: 1, mouth: 1, locomotion: 2, utility: 2 },
-          sizePx: 44, segments: [0.95, 1.05, 0.78]
+          sizePx: 30, segments: [0.95, 1.05, 0.78]
         },
         'torso-t3-predator': {
           id: 'torso-t3-predator', code: 'T03', name: '宽幅五节掠食体', shortName: 'T03 掠食',
           sprite: 'torso-t3-predator.svg', volume: 4.0, baseHp: 240, bmr: 3.6, kv: 0.72, kw: 0.68,
           transitionGp: 320, totalSlots: 9,
           slots: { core: 1, sensory: 2, mouth: 1, locomotion: 2, utility: 3 },
-          sizePx: 54, segments: [0.92, 1.15, 1.08, 0.88, 0.68]
+          sizePx: 38, segments: [0.92, 1.15, 1.08, 0.88, 0.68]
         },
         'torso-t4-titan': {
           id: 'torso-t4-titan', code: 'T04', name: '巨型多节深渊泰坦', shortName: 'T04 泰坦',
           sprite: 'torso-t4-titan.svg', volume: 7.5, baseHp: 420, bmr: 7.2, kv: 0.48, kw: 0.42,
           transitionGp: 600, totalSlots: 12,
           slots: { core: 1, sensory: 2, mouth: 2, locomotion: 3, utility: 4 },
-          sizePx: 68, segments: [0.95, 1.20, 1.22, 1.12, 0.98, 0.82, 0.65]
+          sizePx: 48, segments: [0.95, 1.20, 1.22, 1.12, 0.98, 0.82, 0.65]
         }
       };
 
@@ -1273,21 +1273,21 @@
           }
         },
 
-        /* 2. 感官插槽 (Sensory) */
+        /* 2. 感官插槽 (Sensory —— 大幅提升 Lv.1 基础预警范围，减少等级提升带来的级差增益) */
         'sensory-eye': {
           id: 'sensory-eye', category: 'sensory', senseType: 'eye', branchName: '光学视觉眼 (扇形彩色)',
           levels: {
-            1: { name: '原始感光眼点', sprite: 'sensory-eye-lv1.svg', gp: 0, bmr: 0.15, dayAngle: 95, nightAngle: 65, dayRange: 160, nightRange: 90, sat: 0.35 },
-            2: { name: '晶状体折光单眼', sprite: 'sensory-eye-lv2.svg', gp: 100, bmr: 0.30, dayAngle: 155, nightAngle: 110, dayRange: 250, nightRange: 140, sat: 0.85 },
-            3: { name: '全光谱棱镜复眼', sprite: 'sensory-eye-lv3.svg', gp: 280, bmr: 0.55, dayAngle: 220, nightAngle: 160, dayRange: 360, nightRange: 200, sat: 1.25 }
+            1: { name: '原始感光眼点', sprite: 'sensory-eye-lv1.svg', gp: 0, bmr: 0.15, dayAngle: 130, nightAngle: 90, dayRange: 260, nightRange: 145, sat: 0.35 },
+            2: { name: '晶状体折光单眼', sprite: 'sensory-eye-lv2.svg', gp: 100, bmr: 0.30, dayAngle: 165, nightAngle: 115, dayRange: 310, nightRange: 170, sat: 0.85 },
+            3: { name: '全光谱棱镜复眼', sprite: 'sensory-eye-lv3.svg', gp: 280, bmr: 0.55, dayAngle: 200, nightAngle: 140, dayRange: 360, nightRange: 200, sat: 1.25 }
           }
         },
         'sensory-ear': {
-          id: 'sensory-ear', category: 'sensory', senseType: 'ear', branchName: '声呐听觉耳 (360°黑白轮廓)',
+          id: 'sensory-ear', category: 'sensory', senseType: 'ear', branchName: '声呐听觉耳 (360°雷达定格)',
           levels: {
-            1: { name: '初级震动膜耳', sprite: 'sensory-ear-lv1.svg', gp: 0, bmr: 0.15, sonarRange: 190, pulseSec: 1.40, staticRange: 0 },
-            2: { name: '环状微流侧线', sprite: 'sensory-ear-lv2.svg', gp: 110, bmr: 0.30, sonarRange: 280, pulseSec: 0.80, staticRange: 90 },
-            3: { name: '深渊高频回声耳', sprite: 'sensory-ear-lv3.svg', gp: 290, bmr: 0.55, sonarRange: 400, pulseSec: 0.35, staticRange: 160 }
+            1: { name: '初级震动膜耳', sprite: 'sensory-ear-lv1.svg', gp: 0, bmr: 0.15, sonarRange: 280, pulseSec: 0.95, staticRange: 85 },
+            2: { name: '环状微流侧线', sprite: 'sensory-ear-lv2.svg', gp: 110, bmr: 0.30, sonarRange: 330, pulseSec: 0.65, staticRange: 120 },
+            3: { name: '深渊高频回声耳', sprite: 'sensory-ear-lv3.svg', gp: 290, bmr: 0.55, sonarRange: 380, pulseSec: 0.35, staticRange: 155 }
           }
         },
 
@@ -1655,6 +1655,9 @@
         let sumThrust = 0;
         let sumTorque = 0;
         let activeSkill = null;
+        let hasFin = false;
+        let hasJet = false;
+        let maxFlagellaLv = 0;
         bp.slots.locomotion.forEach((l) => {
           const lv = effLv(l.level);
           const spec = ORGAN_CATALOG[l.id].levels[lv];
@@ -1662,6 +1665,9 @@
           totalGpCost += spec.gp;
           sumThrust += spec.thrust;
           sumTorque += spec.torque;
+          if (l.id === 'loco-fin') hasFin = true;
+          if (l.id === 'loco-jet') hasJet = true;
+          if (l.id === 'loco-flagella') maxFlagellaLv = Math.max(maxFlagellaLv, lv);
           if (spec.skill && !activeSkill) {
             activeSkill = { type: spec.skill, organId: l.id, level: lv, sprite: spec.sprite, cost: spec.skillCost, cd: spec.skillCd, spec };
           }
@@ -1685,8 +1691,8 @@
           }
         });
         const damageReduction = Math.min(0.70, +(1 - scaleProd).toFixed(3));
-        const maxSpeed = Math.round((40 + sumThrust) * torso.kv);
-        const maxTurnRate = +((1.2 + 0.035 * sumTorque) * torso.kw).toFixed(2);
+        const maxSpeed = Math.round((45 + sumThrust) * torso.kv);
+        const maxTurnRate = +((1.6 + 0.040 * sumTorque) * torso.kw).toFixed(2);
         bmr = +bmr.toFixed(2);
 
         return {
@@ -1697,6 +1703,9 @@
             bmr,
             maxSpeed,
             maxTurnRate,
+            hasFin,
+            hasJet,
+            maxFlagellaLv,
             totalGpCost,
             damageReduction,
             reflectRatio,
@@ -1874,7 +1883,9 @@
         const bp = org.blueprint;
         const torso = TORSOS[bp.torsoId] || TORSOS['torso-t2-stream'];
         const isSonar = Boolean(opts.sonarWireframe);
-        const phase = (opts.timeSec || 0) * 6.5 + (org.phaseOffset || 0);
+        const phase = opts.freezePhase !== undefined
+          ? opts.freezePhase
+          : ((opts.timeSec || 0) * 6.5 + (org.phaseOffset || 0));
         const scale = opts.scale || 1.0;
         const baseR = (torso.sizePx * 0.44) * scale;
         const segMultipliers = torso.segments || [1.0];
@@ -2579,22 +2590,52 @@
               ctx.restore();
             }
 
-            // 绘制听觉 360° 声呐脉冲环预览
+            // 绘制听觉 360° 声呐雷达定格与边缘裁剪预览
             if (st.maxEarLv > 0) {
-              const maxR = st.sonarRange * 0.28;
+              const maxR = st.sonarRange * 0.25;
               const pulseFrac = (tSec % st.sonarPulseSec) / st.sonarPulseSec;
+              const snapTick = Math.floor(tSec / st.sonarPulseSec) * st.sonarPulseSec;
+              // 雷达距离环与十字刻度线
+              [0.35, 0.7, 1.0].forEach((ratio) => {
+                ctx.beginPath();
+                ctx.arc(cx, cy, maxR * ratio, 0, Math.PI * 2);
+                ctx.strokeStyle = ratio === 1.0 ? 'rgba(148, 163, 184, 0.42)' : 'rgba(148, 163, 184, 0.16)';
+                ctx.setLineDash(ratio === 1.0 ? [4, 4] : []);
+                ctx.stroke();
+                ctx.setLineDash([]);
+              });
               ctx.beginPath();
-              ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
-              ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
-              ctx.setLineDash([4, 4]);
+              ctx.moveTo(cx - maxR, cy); ctx.lineTo(cx + maxR, cy);
+              ctx.moveTo(cx, cy - maxR); ctx.lineTo(cx, cy + maxR);
+              ctx.strokeStyle = 'rgba(56, 189, 248, 0.14)';
               ctx.stroke();
-              ctx.setLineDash([]);
 
+              // 雷达扫描脉冲波前
               ctx.beginPath();
               ctx.arc(cx, cy, maxR * pulseFrac, 0, Math.PI * 2);
-              ctx.strokeStyle = `rgba(56, 189, 248, ${1 - pulseFrac})`;
+              ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - pulseFrac) * 0.85})`;
               ctx.lineWidth = 1.8;
               ctx.stroke();
+
+              // 演示听觉边缘定格影像与严格圆形边界裁剪 (半身在听觉圈内，仅显影圈内部分)
+              ctx.save();
+              ctx.beginPath();
+              ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
+              ctx.clip();
+              drawOrganism(ctx, {
+                x: cx + maxR - 4,
+                y: cy - 18,
+                angle: Math.PI * 0.82,
+                faction: 'enemy',
+                isAlpha: false,
+                blueprint: officialFossils[1]
+              }, {
+                freezePhase: snapTick * 6.5,
+                scale: 1.05,
+                sonarWireframe: true,
+                sonarAlpha: Math.max(0.32, 1.0 - pulseFrac * 0.65)
+              });
+              ctx.restore();
             }
 
             // 绘制预览物种有机体 (应用视觉饱和度滤镜 35%/85%/125%)
@@ -2602,16 +2643,18 @@
             if (!isSonarOnly && st.maxEyeLv > 0) {
               ctx.filter = `saturate(${Math.round(st.eyeSat * 100)}%)`;
             }
+            const edSnapTick = Math.floor(tSec / (st.sonarPulseSec || 0.95)) * (st.sonarPulseSec || 0.95);
             drawOrganism(ctx, {
               x: cx,
               y: cy,
-              angle: swimAng,
+              angle: isSonarOnly ? Math.sin(edSnapTick * 1.4) * 0.16 : swimAng,
               faction: 'player',
               isAlpha: true,
               blueprint: editorDraft
             }, {
               timeSec: tSec,
-              scale: 1.05,
+              freezePhase: isSonarOnly ? edSnapTick * 6.5 : undefined,
+              scale: 1.38,
               sonarWireframe: isSonarOnly
             });
             ctx.restore();
@@ -2886,6 +2929,9 @@
           phaseOffset: Math.random() * Math.PI * 2,
           sonarLastSeenX: x,
           sonarLastSeenY: y,
+          sonarSnapAngle: 0,
+          sonarSnapPhase: 0,
+          sonarDetectedCycle: -1,
           sonarLastPulseSec: -10
         };
       }
@@ -2901,7 +2947,7 @@
             x: Math.max(40, Math.min(WORLD_W - 40, cx + Math.cos(ang) * dist)),
             y: Math.max(40, Math.min(WORLD_H - 40, cy + Math.sin(ang) * dist)),
             energy: 14.3,
-            radius: 11,
+            radius: 8,
             sourceColonyId: null,
             ttl: 95
           });
@@ -2946,7 +2992,7 @@
           arenaState.vents.push({
             x: 320 + (i % 4) * 720 + (Math.random() - 0.5) * 140,
             y: 380 + Math.floor(i / 4) * 980 + (Math.random() - 0.5) * 140,
-            radius: 72
+            radius: 56
           });
         }
 
@@ -3603,7 +3649,7 @@
           x: victim.x,
           y: victim.y,
           energy: meatEnergy,
-          radius: 14,
+          radius: 10,
           sourceColonyId: victim.colonyId, // 同族禁食校验标记
           ttl: 85
         });
@@ -3859,7 +3905,7 @@
             }
           });
 
-          // 2. 确定目标航向角 targetAngle (玩家始祖 vs 同族/野生 AI)
+          // 2. 确定目标航向角 targetAngle 与感官前置预警规避算法 (玩家始祖 vs 同族/野生 AI)
           if (org === alpha) {
             if (arenaState.pointerDown) {
               org.targetAngle = Math.atan2(arenaState.pointerWorldY - org.y, arenaState.pointerWorldX - org.x);
@@ -3867,9 +3913,9 @@
               org.targetAngle = org.angle;
             }
           } else {
-            // 电脑 NPC 感官驱动效用 AI 决策
+            // 电脑 NPC 感官驱动效用 AI 决策 (含感官前置天敌预警与反比平方逃逸向量合成)
             const w = org.blueprint.aiWeights;
-            if (org.energy >= org.maxEnergy * 0.80 && Math.random() < dt * w.w_repro) {
+            if (org.energy >= org.maxEnergy * (0.95 - 0.15 * w.w_repro) && Math.random() < dt * w.w_repro) {
               tryMitosisReproduce(org);
             }
 
@@ -3888,6 +3934,12 @@
             let nearestEnemy = null;
             let nearestEnemyDist = 9999;
             let bestEnemyScore = 9999;
+            let nearestThreat = null;
+            let nearestThreatDist = 9999;
+            let evadeX = 0;
+            let evadeY = 0;
+            const myPower = org.maxHp * Math.max(8, st.biteDmg);
+
             arenaState.organisms.forEach((other) => {
               if (other.hp <= 0 || other.colonyId === org.colonyId) return;
               const d = Math.hypot(other.x - org.x, other.y - org.y);
@@ -3901,43 +3953,86 @@
                   nearestEnemyDist = d;
                   nearestEnemy = other;
                 }
+
+                // 判定是否为高危捕食者天敌：一旦进入感官预警圈即刻触发前置斥力合成，无需等残血才逃跑
+                const otherSt = getEffectiveStats(other);
+                const otherPower = other.maxHp * Math.max(8, otherSt.biteDmg);
+                const isPredatorThreat = otherSt.carnEff > 0 && (
+                  org.blueprint.dietType === 'herbivore' ||
+                  other.isBoss ||
+                  otherPower > myPower * 1.15 ||
+                  (org.hp / org.maxHp) <= (0.15 + 0.45 * w.w_flee)
+                );
+                if (isPredatorThreat) {
+                  const repWeight = Math.pow(Math.max(40, 420 - d) / 360, 2) * (other.isBoss ? 2.4 : 1.45);
+                  evadeX += ((org.x - other.x) / Math.max(1, d)) * repWeight;
+                  evadeY += ((org.y - other.y) / Math.max(1, d)) * repWeight;
+                  if (d < nearestThreatDist) {
+                    nearestThreatDist = d;
+                    nearestThreat = other;
+                  }
+                }
               }
             });
 
-            if (org.colonyId === 'player_colony' && !org.formerKin && alpha) {
-              // 同族电脑 NPC 响应三态信息素信标 + 防扎堆排斥力
-              if (pheromoneMode === 'guard') {
-                const orbitAng = arenaState.timeSec * 0.9 + (org.phaseOffset || 0);
-                const gx = alpha.x + Math.cos(orbitAng) * 115;
-                const gy = alpha.y + Math.sin(orbitAng) * 115;
-                org.targetAngle = nearestEnemy && nearestEnemyDist < 190
-                  ? Math.atan2(nearestEnemy.y - org.y, nearestEnemy.x - org.x)
-                  : Math.atan2(gy - org.y, gx - org.x);
-              } else if (pheromoneMode === 'hunt' && nearestEnemy) {
-                org.targetAngle = Math.atan2(nearestEnemy.y - org.y, nearestEnemy.x - org.x);
-                if (nearestEnemyDist < 220 && org.skillCd <= 0) triggerEntityActiveSkill(org);
-              } else if (bestFood) {
-                org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
-              } else {
-                org.targetAngle = org.angle + Math.sin(arenaState.timeSec + org.phaseOffset) * 0.3;
-              }
-            } else {
-              // 野生种群与首领 AI
-              if (org.hp < org.maxHp * 0.35 && nearestEnemy && w.w_flee > 0.5) {
-                org.targetAngle = Math.atan2(org.y - nearestEnemy.y, org.x - nearestEnemy.x);
-              } else if (nearestEnemy && st.carnEff > 0 && (w.w_aggr > 0.55 || org.isBoss)) {
-                org.targetAngle = Math.atan2(nearestEnemy.y - org.y, nearestEnemy.x - org.x);
-                if (nearestEnemyDist < 230 && org.skillCd <= 0 && Math.random() < dt * 1.5) {
+            // 培养皿边界防卡死切向引导分量 (防止弱小个体逃跑时被逼入死角)
+            const wallMargin = 140;
+            if (org.x < wallMargin) evadeX += ((wallMargin - org.x) / wallMargin) * 1.4;
+            if (org.x > WORLD_W - wallMargin) evadeX -= ((org.x - (WORLD_W - wallMargin)) / wallMargin) * 1.4;
+            if (org.y < wallMargin) evadeY += ((wallMargin - org.y) / wallMargin) * 1.4;
+            if (org.y > WORLD_H - wallMargin) evadeY -= ((org.y - (WORLD_H - wallMargin)) / wallMargin) * 1.4;
+
+            const shouldPreemptiveEvade = nearestThreat && nearestThreatDist < 310 && (
+              org.blueprint.dietType === 'herbivore' ||
+              (org.hp / org.maxHp) <= (0.22 + 0.45 * w.w_flee) ||
+              (org.colonyId === 'player_colony' && pheromoneMode === 'forage')
+            );
+
+            if (shouldPreemptiveEvade) {
+              // 感官前置预警规避：优先沿着合成斥力向量远离天敌，并在天敌逼近时自动释放逃生技能
+              org.targetAngle = Math.atan2(evadeY, evadeX);
+              org.isEvading = true;
+              if (nearestThreatDist < 175 && org.skillCd <= 0 && st.activeSkill) {
+                const skType = st.activeSkill.type;
+                if (skType === 'sidestep' || skType === 'jetdash' || skType === 'ink' || skType === 'mimic' || skType === 'electric') {
                   triggerEntityActiveSkill(org);
                 }
-              } else if (bestFood) {
-                org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
+              }
+            } else {
+              org.isEvading = false;
+              if (org.colonyId === 'player_colony' && !org.formerKin && alpha) {
+                // 同族电脑 NPC 响应三态信息素信标 + 防扎堆排斥力
+                if (pheromoneMode === 'guard') {
+                  const orbitAng = arenaState.timeSec * 0.9 + (org.phaseOffset || 0);
+                  const gx = alpha.x + Math.cos(orbitAng) * 95;
+                  const gy = alpha.y + Math.sin(orbitAng) * 95;
+                  org.targetAngle = nearestEnemy && nearestEnemyDist < 210
+                    ? Math.atan2(nearestEnemy.y - org.y, nearestEnemy.x - org.x)
+                    : Math.atan2(gy - org.y, gx - org.x);
+                } else if (pheromoneMode === 'hunt' && nearestEnemy) {
+                  org.targetAngle = Math.atan2(nearestEnemy.y - org.y, nearestEnemy.x - org.x);
+                  if (nearestEnemyDist < 230 && org.skillCd <= 0) triggerEntityActiveSkill(org);
+                } else if (bestFood) {
+                  org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
+                } else {
+                  org.targetAngle = org.angle + Math.sin(arenaState.timeSec + org.phaseOffset) * 0.3;
+                }
               } else {
-                org.targetAngle = org.angle + Math.sin(arenaState.timeSec * 0.7 + org.phaseOffset) * 0.25;
+                // 野生种群与首领 AI
+                if (nearestEnemy && st.carnEff > 0 && (w.w_aggr > 0.50 || org.isBoss)) {
+                  org.targetAngle = Math.atan2(nearestEnemy.y - org.y, nearestEnemy.x - org.x);
+                  if (nearestEnemyDist < 240 && org.skillCd <= 0 && Math.random() < dt * 1.5) {
+                    triggerEntityActiveSkill(org);
+                  }
+                } else if (bestFood) {
+                  org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
+                } else {
+                  org.targetAngle = org.angle + Math.sin(arenaState.timeSec * 0.7 + org.phaseOffset) * 0.25;
+                }
               }
             }
 
-            // 同族电脑 NPC 防扎堆分离向量 (d < 55px 时施加排斥分量)
+            // 同族电脑 NPC 防扎堆分离向量 (d < 46px 时施加排斥分量)
             let sepX = 0;
             let sepY = 0;
             arenaState.organisms.forEach((kin) => {
@@ -3945,8 +4040,8 @@
               const kx = org.x - kin.x;
               const ky = org.y - kin.y;
               const kd = Math.hypot(kx, ky);
-              if (kd > 0.1 && kd < 55) {
-                const push = ((55 - kd) / 55) * 0.85;
+              if (kd > 0.1 && kd < 46) {
+                const push = ((46 - kd) / 46) * 0.85;
                 sepX += (kx / kd) * push;
                 sepY += (ky / kd) * push;
               }
@@ -3958,20 +4053,57 @@
             }
           }
 
-          // 3. 转向角速度阻尼与移动推进物理 (重度饥饿 Energy <= 0 时移动速度下降 35%；受寒潮减速时下降 60%)
+          // 3. 物种运动动力学算法：急转力矩增益 + 转向-航速余弦耦合 + 各向异性微流体阻尼 + 器官专属运动步态
           if (org.stunTimer <= 0) {
             const angDiff = Math.atan2(Math.sin(org.targetAngle - org.angle), Math.cos(org.targetAngle - org.angle));
-            const maxTurnStep = st.maxTurnRate * dt;
-            org.angle += Math.max(-maxTurnStep, Math.min(maxTurnStep, angDiff));
+            const absDiff = Math.abs(angDiff);
+            // 急转辅助：大角度调头时自动提升转向角速度 (最高 +35%，装备侧鳍额外 +25%)
+            const finPivotBonus = st.hasFin ? 0.25 : 0;
+            const pivotBoost = 1.0 + (0.35 + finPivotBonus) * Math.min(1.0, absDiff / (Math.PI * 0.5));
+            const maxTurnStep = st.maxTurnRate * pivotBoost * dt;
+            const flagellumWave = st.maxFlagellaLv > 0 ? Math.sin(arenaState.timeSec * 7.5 + org.phaseOffset) * 0.018 : 0;
+            org.angle += Math.max(-maxTurnStep, Math.min(maxTurnStep, angDiff)) + flagellumWave;
 
             const starvationMult = org.energy <= 0 ? 0.65 : 1.0;
             const slowMult = org.slowTimer > 0 ? 0.40 : 1.0;
-            const cruiseSpd = (st.maxSpeed * starvationMult * slowMult) / arenaState.biome.dragMult;
-            org.vx = org.vx * 0.86 + Math.cos(org.angle) * cruiseSpd * 0.14;
-            org.vy = org.vy * 0.86 + Math.sin(org.angle) * cruiseSpd * 0.14;
+            // 高阶鞭毛 (Lv.2/Lv.3) 减免环境流体黏滞阻力 30% / 45%
+            const rawDragExcuse = st.maxFlagellaLv >= 3 ? 0.45 : (st.maxFlagellaLv === 2 ? 0.30 : 0);
+            const effDragMult = 1.0 + Math.max(0, arenaState.biome.dragMult - 1.0) * (1.0 - rawDragExcuse);
+
+            // 转向-航速耦合制动因子 [0.52, 1.00]：大角度急转时自动微降轴向航速以大幅缩小转弯半径
+            const turnSpeedCoupling = Math.max(0.52, Math.cos(Math.min(Math.PI / 3, absDiff)));
+            // 喷水囊脉动节律与规避危机肾上腺素加速
+            const jetPulse = st.hasJet ? (1.0 + 0.14 * Math.sin(arenaState.timeSec * 6.0 + org.phaseOffset)) : 1.0;
+            const evadeBurst = org.isEvading ? 1.12 : 1.0;
+
+            let throttle = 1.0;
+            if (org === alpha) {
+              if (arenaState.pointerDown) {
+                const ptrDist = Math.hypot(arenaState.pointerWorldX - org.x, arenaState.pointerWorldY - org.y);
+                throttle = Math.min(1.0, Math.max(0.22, ptrDist / 38));
+              } else {
+                throttle = 0.32; // 松手时平缓低速滑行
+              }
+            }
+
+            const targetSpd = ((st.maxSpeed * starvationMult * slowMult * turnSpeedCoupling * jetPulse * evadeBurst * throttle) / effDragMult);
+
+            // 各向异性微流体速度分解：轴向平滑推进 + 法向高阻尼抑制侧滑漂移
+            const fwdX = Math.cos(org.angle);
+            const fwdY = Math.sin(org.angle);
+            const latX = -fwdY;
+            const latY = fwdX;
+            const vFwd = org.vx * fwdX + org.vy * fwdY;
+            const vLat = org.vx * latX + org.vy * latY;
+            const axialBlend = 1.0 - Math.exp(-8.5 * dt);
+            const lateralDamp = Math.exp(-(st.hasFin ? 14.5 : 9.5) * dt);
+            const newVFwd = vFwd + (targetSpd - vFwd) * axialBlend;
+            const newVLat = vLat * lateralDamp;
+            org.vx = fwdX * newVFwd + latX * newVLat;
+            org.vy = fwdY * newVFwd + latY * newVLat;
           } else {
-            org.vx *= 0.9;
-            org.vy *= 0.9;
+            org.vx *= Math.exp(-6.0 * dt);
+            org.vy *= Math.exp(-6.0 * dt);
           }
 
           org.x = Math.max(org.radius, Math.min(WORLD_W - org.radius, org.x + org.vx * dt));
@@ -4052,8 +4184,10 @@
       }
 
       /* =====================================================================
-       * 12. 感官驱动视口渲染器 (Sensory-Driven Viewport Shader: 视觉扇形彩色 vs 听觉360°声呐黑白轮廓)
+       * 12. 感官驱动广角视口渲染器 (VIEWPORT_ZOOM = 0.68 · 视觉扇形彩色 vs 听觉360°声呐雷达定格与边缘裁剪)
        * ===================================================================== */
+      const VIEWPORT_ZOOM = 0.68;
+
       function resizeArenaCanvas() {
         const canvas = document.getElementById('petri-canvas');
         if (!canvas) return;
@@ -4073,8 +4207,8 @@
           if (!alpha) return;
           const sx = clientX - rect.left;
           const sy = clientY - rect.top;
-          arenaState.pointerWorldX = alpha.x + (sx - petriCanvas.width * 0.5);
-          arenaState.pointerWorldY = alpha.y + (sy - petriCanvas.height * 0.5);
+          arenaState.pointerWorldX = alpha.x + (sx - petriCanvas.width * 0.5) / VIEWPORT_ZOOM;
+          arenaState.pointerWorldY = alpha.y + (sy - petriCanvas.height * 0.5) / VIEWPORT_ZOOM;
         };
         petriCanvas.addEventListener('pointerdown', (e) => {
           arenaState.pointerDown = true;
@@ -4089,6 +4223,10 @@
       function renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, sonarWireframeMode) {
         const alpha = arenaState.alpha;
         const st = getEffectiveStats(alpha);
+        const pulsePeriod = st.sonarPulseSec || 0.95;
+        const pulseCycle = Math.floor(arenaState.timeSec / pulsePeriod);
+        const pulseFrac = (arenaState.timeSec % pulsePeriod) / pulsePeriod;
+        const waveR = pulseFrac * st.sonarRange;
 
         // 1. 背景底色与培养皿坐标网格
         ctx.fillStyle = sonarWireframeMode ? '#030712' : (isNight ? '#020612' : arenaState.biome.bgTint);
@@ -4105,14 +4243,41 @@
           ctx.beginPath(); ctx.moveTo(camX - viewW * 0.5, y); ctx.lineTo(camX + viewW * 0.5, y); ctx.stroke();
         }
 
+        // 声呐雷达模式下绘制同心雷达距离刻度环、十字准星与扩散扫描波前
+        if (sonarWireframeMode && st.maxEarLv > 0) {
+          [0.33, 0.66, 1.0].forEach((ratio) => {
+            ctx.beginPath();
+            ctx.arc(alpha.x, alpha.y, st.sonarRange * ratio, 0, Math.PI * 2);
+            ctx.strokeStyle = ratio === 1.0 ? 'rgba(56, 189, 248, 0.36)' : 'rgba(148, 163, 184, 0.14)';
+            ctx.lineWidth = ratio === 1.0 ? 1.5 : 1.0;
+            ctx.stroke();
+          });
+          ctx.beginPath();
+          ctx.moveTo(alpha.x - st.sonarRange, alpha.y);
+          ctx.lineTo(alpha.x + st.sonarRange, alpha.y);
+          ctx.moveTo(alpha.x, alpha.y - st.sonarRange);
+          ctx.lineTo(alpha.x, alpha.y + st.sonarRange);
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.12)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(alpha.x, alpha.y, waveR, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - pulseFrac) * 0.72})`;
+          ctx.lineWidth = 2.0;
+          ctx.stroke();
+        }
+
         // 2. 绘制海底热泉喷口 (env-vent.svg)
         arenaState.vents.forEach((v) => {
           if (Math.abs(v.x - camX) > viewW * 0.6 || Math.abs(v.y - camY) > viewH * 0.6) return;
           if (sonarWireframeMode) {
+            const dist = Math.hypot(v.x - alpha.x, v.y - alpha.y);
+            if (dist - v.radius > st.sonarRange) return;
             ctx.beginPath();
             ctx.arc(v.x, v.y, v.radius, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
-            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.42)';
+            ctx.lineWidth = 1.4;
             ctx.stroke();
           } else {
             drawSpriteCentered(ctx, 'env-vent.svg', v.x, v.y, v.radius * 1.8, v.radius * 1.8, 0, 0.85);
@@ -4124,14 +4289,18 @@
           if (Math.abs(f.x - camX) > viewW * 0.55 || Math.abs(f.y - camY) > viewH * 0.55) return;
           const dist = Math.hypot(f.x - alpha.x, f.y - alpha.y);
           if (sonarWireframeMode) {
-            // 听觉声呐对静止微藻感知受限：仅在 staticSenseRange 或 65px 触觉圈内显影微弱点线轮廓
-            if (f.type === 'algae' && dist > Math.max(65, st.staticSenseRange)) return;
-            if (f.type === 'meat' && dist > st.sonarRange) return;
+            const foodSonarCap = f.type === 'algae' ? Math.max(65, st.staticSenseRange) : st.sonarRange;
+            if (dist - f.radius > foodSonarCap) return;
+            ctx.save();
             ctx.beginPath();
-            ctx.arc(f.x, f.y, f.radius * 0.85, 0, Math.PI * 2);
-            ctx.strokeStyle = f.type === 'meat' ? 'rgba(248, 250, 252, 0.85)' : 'rgba(148, 163, 184, 0.52)';
+            ctx.arc(alpha.x, alpha.y, foodSonarCap, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.radius * 0.9, 0, Math.PI * 2);
+            ctx.strokeStyle = f.type === 'meat' ? 'rgba(248, 250, 252, 0.85)' : 'rgba(148, 163, 184, 0.55)';
             ctx.lineWidth = 1.2;
             ctx.stroke();
+            ctx.restore();
           } else {
             const spKey = f.type === 'meat' ? 'env-meat.svg' : 'env-algae.svg';
             drawSpriteCentered(ctx, spKey, f.x, f.y, f.radius * 2.3, f.radius * 2.3, 0);
@@ -4156,35 +4325,66 @@
         // 5. 绘制骨刺投射物
         arenaState.projectiles.forEach((p) => {
           ctx.beginPath();
-          ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, 4.0, 0, Math.PI * 2);
           ctx.fillStyle = sonarWireframeMode ? '#f8fafc' : '#fbbf24';
           ctx.fill();
         });
 
-        // 6. 绘制所有生物实体
+        // 6. 绘制所有生物实体 (声音感知下呈现雷达定格影像，且处于听觉边缘的个体严格裁剪仅显影听觉范围内的部分)
         arenaState.organisms.forEach((org) => {
-          if (Math.abs(org.x - camX) > viewW * 0.6 || Math.abs(org.y - camY) > viewH * 0.6) return;
+          if (Math.abs(org.x - camX) > viewW * 0.65 || Math.abs(org.y - camY) > viewH * 0.65) return;
           const dist = Math.hypot(org.x - alpha.x, org.y - alpha.y);
           if (org !== alpha) {
             if (sonarWireframeMode) {
               const targetSpeed = Math.hypot(org.vx || 0, org.vy || 0);
               const effSonarR = targetSpeed < 8 ? Math.max(65, st.staticSenseRange) : st.sonarRange;
-              if (dist > effSonarR) return;
-              if (dist <= 65 || (arenaState.timeSec - org.sonarLastPulseSec) >= st.sonarPulseSec) {
+              const bodyExtent = org.radius * 2.4;
+
+              // 当雷达扫描脉冲波前扫过目标 (或初始首次捕获) 时，锁定目标的定格影像快照 (坐标、朝向、肢体相位全部定格)
+              if (
+                dist - bodyExtent <= effSonarR &&
+                (
+                  (dist - bodyExtent <= waveR && org.sonarDetectedCycle !== pulseCycle) ||
+                  org.sonarLastPulseSec < 0 ||
+                  (arenaState.timeSec - org.sonarLastPulseSec) >= pulsePeriod
+                )
+              ) {
                 org.sonarLastSeenX = org.x;
                 org.sonarLastSeenY = org.y;
+                org.sonarSnapAngle = org.angle;
+                org.sonarSnapPhase = arenaState.timeSec * 6.5 + (org.phaseOffset || 0);
                 org.sonarLastPulseSec = arenaState.timeSec;
+                org.sonarDetectedCycle = pulseCycle;
               }
+
+              const snapDist = Math.hypot(org.sonarLastSeenX - alpha.x, org.sonarLastSeenY - alpha.y);
+              const ageSec = arenaState.timeSec - org.sonarLastPulseSec;
+              if (snapDist - bodyExtent > effSonarR || ageSec > pulsePeriod * 1.45) return;
+
+              // 雷达荧光余晖衰减透明度
+              const echoAlpha = Math.max(0.32, 1.0 - 0.62 * Math.min(1.0, ageSec / pulsePeriod));
+
+              // 严格圆形边界裁剪：若个体位于听觉边缘，仅显示落在 effSonarR 听觉范围内的影像！
+              ctx.save();
+              ctx.beginPath();
+              ctx.arc(alpha.x, alpha.y, effSonarR, 0, Math.PI * 2);
+              ctx.clip();
+
               const savedX = org.x;
               const savedY = org.y;
+              const savedAng = org.angle;
               org.x = org.sonarLastSeenX;
               org.y = org.sonarLastSeenY;
+              org.angle = org.sonarSnapAngle || org.angle;
               drawOrganism(ctx, org, {
-                timeSec: arenaState.timeSec,
-                sonarWireframe: true
+                freezePhase: org.sonarSnapPhase,
+                sonarWireframe: true,
+                sonarAlpha: echoAlpha
               });
               org.x = savedX;
               org.y = savedY;
+              org.angle = savedAng;
+              ctx.restore();
               return;
             } else {
               // 彩色视觉通道：拟态皮肤在 >90px 外隐匿
@@ -4192,8 +4392,10 @@
               if (!senseCheck.sensed && dist > 65) return;
             }
           }
+          const alphaSnapTick = Math.floor(arenaState.timeSec / pulsePeriod) * pulsePeriod;
           drawOrganism(ctx, org, {
             timeSec: arenaState.timeSec,
+            freezePhase: sonarWireframeMode ? (alphaSnapTick * 6.5 + (org.phaseOffset || 0)) : undefined,
             sonarWireframe: sonarWireframeMode
           });
         });
@@ -4206,6 +4408,8 @@
         const ctx = canvas.getContext('2d');
         const w = canvas.width;
         const h = canvas.height;
+        const viewW = w / VIEWPORT_ZOOM;
+        const viewH = h / VIEWPORT_ZOOM;
         const camX = alpha.x;
         const camY = alpha.y;
         const st = getEffectiveStats(alpha);
@@ -4217,17 +4421,26 @@
 
         ctx.clearRect(0, 0, w, h);
 
-        // 镜头严格锁定玩家当前控制的个体为中心
+        // 广角冷冻物镜缩放 (VIEWPORT_ZOOM = 0.68) + 镜头严格锁定玩家当前控制的个体为中心
         ctx.save();
-        ctx.translate(w * 0.5 - camX, h * 0.5 - camY);
+        ctx.translate(w * 0.5, h * 0.5);
+        ctx.scale(VIEWPORT_ZOOM, VIEWPORT_ZOOM);
+        ctx.translate(-camX, -camY);
 
         if (hasEar && !hasEye) {
-          // 模式 B：纯听觉器官 —— 全屏 360° 声呐黑白轮廓画面
-          renderWorldPass(ctx, camX, camY, w, h, isNight, true);
+          // 模式 B：纯听觉器官 —— 360° 声呐雷达定格画面 + 听觉边界严格圆形裁剪 (圈外深空迷雾)
+          ctx.fillStyle = '#02040a';
+          ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(alpha.x, alpha.y, st.sonarRange, 0, Math.PI * 2);
+          ctx.clip();
+          renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, true);
+          ctx.restore();
         } else if (hasEye && !hasEar) {
           // 模式 A：纯视觉器官 —— 扇形前向彩色视野 + 扇区外深空暗角遮蔽
           ctx.fillStyle = '#02050d';
-          ctx.fillRect(camX - w * 0.5, camY - h * 0.5, w, h);
+          ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
 
           const effRange = alpha.blindTimer > 0 ? 90 : (isNight ? st.nightEyeRange : st.dayEyeRange);
           const halfRad = ((isNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
@@ -4240,12 +4453,19 @@
           ctx.closePath();
           ctx.clip();
           ctx.filter = `saturate(${Math.round(st.eyeSat * 100)}%)`;
-          renderWorldPass(ctx, camX, camY, w, h, isNight, false);
+          renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, false);
           ctx.filter = 'none';
           ctx.restore();
         } else if (hasEye && hasEar) {
-          // 模式 C：视听双感官混装 (T03/T04) —— 360° 声呐黑白轮廓底图 + 前向扇形全彩叠加
-          renderWorldPass(ctx, camX, camY, w, h, isNight, true);
+          // 模式 C：视听双感官混装 (T03/T04) —— 360° 声呐雷达定格裁剪底图 + 前向扇形全彩叠加
+          ctx.fillStyle = '#02040a';
+          ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(alpha.x, alpha.y, st.sonarRange, 0, Math.PI * 2);
+          ctx.clip();
+          renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, true);
+          ctx.restore();
 
           const effRange = alpha.blindTimer > 0 ? 90 : (isNight ? st.nightEyeRange : st.dayEyeRange);
           const halfRad = ((isNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
@@ -4257,22 +4477,22 @@
           ctx.closePath();
           ctx.clip();
           ctx.filter = `saturate(${Math.round(st.eyeSat * 100)}%)`;
-          renderWorldPass(ctx, camX, camY, w, h, isNight, false);
+          renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, false);
           ctx.filter = 'none';
           ctx.restore();
         } else {
           // 无感官盲视 65px 触觉圈
           ctx.fillStyle = '#02040a';
-          ctx.fillRect(camX - w * 0.5, camY - h * 0.5, w, h);
+          ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
           ctx.save();
           ctx.beginPath();
           ctx.arc(alpha.x, alpha.y, 65, 0, Math.PI * 2);
           ctx.clip();
-          renderWorldPass(ctx, camX, camY, w, h, isNight, false);
+          renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, false);
           ctx.restore();
         }
 
-        // 感官辅助叠加层：视觉扇形边界、听觉 360° 声呐脉冲波纹环、仇恨连线
+        // 感官辅助叠加层：视觉扇形边界、听觉 360° 声呐脉冲波纹环
         if (arenaState.showSensoryOverlay) {
           if (hasEye) {
             const effRange = alpha.blindTimer > 0 ? 90 : (isNight ? st.nightEyeRange : st.dayEyeRange);
@@ -4282,7 +4502,7 @@
             ctx.arc(alpha.x, alpha.y, effRange, alpha.angle - halfRad, alpha.angle + halfRad);
             ctx.closePath();
             ctx.strokeStyle = 'rgba(0, 240, 255, 0.35)';
-            ctx.lineWidth = 1.3;
+            ctx.lineWidth = 1.4;
             ctx.stroke();
           }
           if (hasEar) {
@@ -4295,7 +4515,7 @@
 
             ctx.beginPath();
             ctx.arc(alpha.x, alpha.y, st.sonarRange, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(148, 163, 184, 0.28)';
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.38)';
             ctx.setLineDash([5, 5]);
             ctx.stroke();
             ctx.setLineDash([]);
