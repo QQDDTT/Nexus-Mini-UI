@@ -97,7 +97,7 @@
     }
     .nav-tabs::-webkit-scrollbar { display: none; }
     .nav-tab-btn {
-      min-height: 34px;
+      min-height: 38px;
       padding: 0 10px;
       border-radius: 8px;
       border: 1px solid rgba(148, 163, 184, 0.2);
@@ -516,7 +516,7 @@
       gap: 4px;
     }
     .numpad-btn {
-      min-height: 36px;
+      min-height: 40px;
       border-radius: 7px;
       border: 1px solid rgba(0, 240, 255, 0.25);
       background: rgba(15, 23, 42, 0.9);
@@ -1493,6 +1493,15 @@
         return (cleaned || '未命名物种').slice(0, 12);
       }
 
+      function escapeHtml(rawStr) {
+        return String(rawStr ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
       function clampAiWeight(val) {
         const num = Number(val);
         return Number.isFinite(num) ? Math.min(1.0, Math.max(0.0, num)) : 0.50;
@@ -1981,8 +1990,8 @@
         const coreNode = spine[Math.min(spine.length - 1, Math.floor(spine.length * 0.4))];
         drawSpriteCentered(ctx, coreSpec.sprite, coreNode.x, coreNode.y, baseR * 1.35 * pulseScale, baseR * 1.35 * pulseScale, 0);
 
-        // ⑤ 绘制腹部与背侧功能器官多层 SVG (Utility)
-        const utilList = bp.slots.utility || [];
+        // ⑤ 绘制腹部与背侧功能器官多层 SVG (Utility + 第四章首领双槽 FIFO 12.0s 同化器官)
+        const utilList = [...(bp.slots.utility || []), ...((org.assimilatedOrgans || []).map((a) => ({ id: a.id, level: a.level })))];
         utilList.forEach((u, idx) => {
           const uLv = org.suppressedTimer > 0 ? 1 : u.level;
           const spec = ORGAN_CATALOG[u.id].levels[uLv];
@@ -2094,7 +2103,7 @@
             <div class="sp-card-top">
               <div class="sp-thumb"><img src="../assets/micro-genesis/sprites/${torso.sprite}" alt="" /></div>
               <div style="flex:1;min-width:0;">
-                <div class="sp-title">${sp.speciesName}</div>
+                <div class="sp-title">${escapeHtml(sp.speciesName)}</div>
                 <div class="sp-meta">${torso.code} ${torso.shortName} · ${sp.statsSummary.totalGpCost} GP</div>
               </div>
               <span class="badge-tag ${dietCls}">${dietName}</span>
@@ -2130,7 +2139,7 @@
 
         detailEl.innerHTML = `
           <div class="sec-title">
-            <span>物种档案：${cur.speciesName} (${torso.name})</span>
+            <span>物种档案：${escapeHtml(cur.speciesName)} (${torso.name})</span>
             <span class="badge-tag gold">总估值 ${st.totalGpCost} GP</span>
           </div>
           <div class="stat-mini-grid">
@@ -2240,12 +2249,12 @@
             <div class="sp-card-top">
               <div class="sp-thumb"><img src="../assets/micro-genesis/sprites/${torso.sprite}" alt="" /></div>
               <div style="flex:1;min-width:0;">
-                <div class="sp-title">${f.speciesName}</div>
+                <div class="sp-title">${escapeHtml(f.speciesName)}</div>
                 <div class="sp-meta">${torso.code} · 估值 ${f.statsSummary.totalGpCost} GP</div>
               </div>
               <span class="badge-tag">官方化石</span>
             </div>
-            <div style="font-size:0.61rem;color:var(--mg-text-secondary);line-height:1.35;">${f.desc || ''}</div>
+            <div style="font-size:0.61rem;color:var(--mg-text-secondary);line-height:1.35;">${escapeHtml(f.desc || '')}</div>
           `;
           card.addEventListener('click', () => {
             selectedFossilSpeciesId = f.speciesId;
@@ -2569,7 +2578,11 @@
               ctx.stroke();
             }
 
-            // 绘制预览物种有机体
+            // 绘制预览物种有机体 (应用视觉饱和度滤镜 35%/85%/125%)
+            ctx.save();
+            if (!isSonarOnly && st.maxEyeLv > 0) {
+              ctx.filter = `saturate(${Math.round(st.eyeSat * 100)}%)`;
+            }
             drawOrganism(ctx, {
               x: cx,
               y: cy,
@@ -2582,6 +2595,7 @@
               scale: 1.05,
               sonarWireframe: isSonarOnly
             });
+            ctx.restore();
           }
         }
         requestAnimationFrame(renderEditorPreviewLoop);
@@ -2808,7 +2822,7 @@
             type: 'algae',
             x: Math.max(40, Math.min(WORLD_W - 40, cx + Math.cos(ang) * dist)),
             y: Math.max(40, Math.min(WORLD_H - 40, cy + Math.sin(ang) * dist)),
-            energy: 18,
+            energy: 14.3,
             radius: 11,
             sourceColonyId: null,
             ttl: 95
@@ -2951,7 +2965,23 @@
        * ===================================================================== */
       function triggerEntityActiveSkill(ent) {
         if (!ent || ent.hp <= 0 || ent.stunTimer > 0) return;
-        const sk = ent.blueprint.statsSummary.activeSkill;
+        let sk = ent.blueprint.statsSummary.activeSkill;
+        // 第四章首领【千目原质母体】优先或交替使用已同化器官的主动技能
+        if (ent.assimilatedOrgans && ent.assimilatedOrgans.length > 0) {
+          const latestAssim = ent.assimilatedOrgans[ent.assimilatedOrgans.length - 1];
+          const assimSpec = ORGAN_CATALOG[latestAssim.id]?.levels?.[latestAssim.level];
+          if (assimSpec && assimSpec.skill) {
+            sk = {
+              type: assimSpec.skill,
+              organId: latestAssim.id,
+              level: latestAssim.level,
+              sprite: assimSpec.sprite,
+              cost: assimSpec.skillCost,
+              cd: assimSpec.skillCd,
+              spec: assimSpec
+            };
+          }
+        }
         if (!sk) {
           if (ent === arenaState.alpha) showToast('当前物种未装配主动技能器官');
           return;
@@ -3117,22 +3147,47 @@
           globalGpReserve -= deltaGp;
           arenaState.intraSpeciesCd = 8.0;
 
-          // 对玩家始祖与全场存活的同族电脑 NPC 同步应用能量/生命守恒方程
+          // 对玩家始祖与全场存活的同族电脑 NPC 同步应用能量/生命守恒方程 (05 第 5.3.A 节)
           const newSt = targetBp.statsSummary;
+          const oldSkillId = currentBp.statsSummary.activeSkill?.organId || null;
+          const newSkillId = newSt.activeSkill?.organId || null;
+
           arenaState.organisms.forEach((org) => {
             if (org.colonyId === 'player_colony' && !org.formerKin && org.hp > 0) {
               const oldMaxE = org.maxEnergy;
               const oldMaxHp = org.maxHp;
-              const newE = Math.min(newSt.maxEnergy, Math.max(1, org.energy - 0.40 * oldMaxE));
-              const newHp = Math.max(1, Math.round(org.hp * (newSt.maxHp / oldMaxHp)));
-              org.blueprint = targetBp;
-              org.maxEnergy = newSt.maxEnergy;
-              org.energy = newE;
-              org.maxHp = newSt.maxHp;
-              org.hp = newHp;
-              org.radius = TORSOS[targetBp.torsoId].sizePx * 0.44;
-              if (org.skillCd > 0 && newSt.activeSkill) {
-                org.skillCd = Math.max(org.skillCd, newSt.activeSkill.cd * 0.5);
+              if (org === alpha) {
+                // 玩家始祖：扣除 40% MaxE_old 并以 MaxE_new 封顶，等比例折算生命值，继承或置入战备适应冷却
+                const newE = Math.min(newSt.maxEnergy, Math.max(0, org.energy - 0.40 * oldMaxE));
+                const newHp = Math.max(1, Math.round(org.hp * (newSt.maxHp / oldMaxHp)));
+                org.blueprint = targetBp;
+                org.maxEnergy = newSt.maxEnergy;
+                org.energy = newE;
+                org.maxHp = newSt.maxHp;
+                org.hp = newHp;
+                org.radius = TORSOS[targetBp.torsoId].sizePx * 0.44;
+                if (newSt.activeSkill) {
+                  if (oldSkillId !== newSkillId) {
+                    org.skillCd = Math.max(org.skillCd, Math.min(2.0, newSt.activeSkill.cd));
+                  }
+                }
+              } else if (org.energy >= 0.60 * oldMaxE) {
+                // 同族电脑 NPC (能量 >= 60% MaxE_old)：立即自动蜕皮同步，保持绝对能量值不变并以 MaxE_new 封顶
+                const newE = Math.min(newSt.maxEnergy, org.energy);
+                const newHp = Math.max(1, Math.round(org.hp * (newSt.maxHp / oldMaxHp)));
+                org.blueprint = targetBp;
+                org.maxEnergy = newSt.maxEnergy;
+                org.energy = newE;
+                org.maxHp = newSt.maxHp;
+                org.hp = newHp;
+                org.radius = TORSOS[targetBp.torsoId].sizePx * 0.44;
+                org.pendingBlueprint = null;
+                if (newSt.activeSkill && oldSkillId !== newSkillId) {
+                  org.skillCd = Math.max(org.skillCd, Math.min(2.0, newSt.activeSkill.cd));
+                }
+              } else {
+                // 能量暂低于 60% MaxE_old 的同族 NPC：挂载待蜕皮蓝图，待进食恢复至 >= 60% MaxE 时自动蜕皮
+                org.pendingBlueprint = targetBp;
               }
             }
           });
@@ -3175,18 +3230,23 @@
         globalGpReserve -= totalNeedGp;
         arenaState.crossTorsoCd = 30.0;
 
-        // 1. 处置旧躯干同族电脑 NPC：单人/PVE 脱离控制转为野生种群并打上 formerKin:true (0 GP 反刷分)；局域网 PVP 化为微藻
+        // 1. 处置旧躯干同族电脑 NPC：单人/PVE 最多保留 1 支剥离种群 (更早剥离的旧种群无肉块消散) 并打上 formerKin:true；局域网 PVP 直接无肉块/无微藻耗散消亡
         const isLanPvp = arenaState.matchMode === 'lan_1v1' || arenaState.matchMode === 'lan_2v2';
         arenaState.organisms = arenaState.organisms.filter((org) => {
           if (org === alpha) return false;
-          if (org.colonyId === 'player_colony' && !org.formerKin) {
+          if (org.formerKin) {
+            // 再次跨躯干时，更早剥离的上一代旧种群无肉块直接消散，确保单局最多保留 1 支剥离种群
+            return false;
+          }
+          if (org.colonyId === 'player_colony') {
             if (isLanPvp) {
-              spawnAlgaeCluster(org.x, org.y, 2);
+              // 局域网 PVP：旧躯干残余同族个体直接无肉块/无食物耗散消亡
               return false;
             } else {
               org.faction = 'wild';
               org.colonyId = 'former_kin_' + Date.now();
               org.formerKin = true;
+              org.pendingBlueprint = null;
               return true;
             }
           }
@@ -3278,7 +3338,7 @@
               <div class="sp-card-top">
                 <div class="sp-thumb"><img src="../assets/micro-genesis/sprites/${t.sprite}" alt="" /></div>
                 <div style="flex:1;min-width:0;">
-                  <div class="sp-title">${sp.speciesName}</div>
+                  <div class="sp-title">${escapeHtml(sp.speciesName)}</div>
                   <div class="sp-meta">${t.code} · 差额消耗 ${deltaGp} GP</div>
                 </div>
                 <span class="badge-tag ${isSame ? 'green' : 'gold'}">${isSame ? '同躯干进化' : '不同躯干·新种群'}</span>
@@ -3413,8 +3473,9 @@
       function handleEntityDeath(victim, killer) {
         victim.hp = 0;
         const torso = TORSOS[victim.blueprint.torsoId];
-        // 热力学守恒肉块能量公式: E_meat = round(8 * V^0.6 + 0.22 * E_remaining)
-        const meatEnergy = Math.round(8 * Math.pow(torso.volume, 0.6) + 0.22 * Math.max(0, victim.energy));
+        // 热力学守恒肉块能量公式: E_meat = round(8 * V^0.6 + 0.22 * E_remaining); 跨躯干剥离旧种群 (formerKin) 肉块能量减半
+        const rawMeatEnergy = Math.round(8 * Math.pow(torso.volume, 0.6) + 0.22 * Math.max(0, victim.energy));
+        const meatEnergy = victim.formerKin ? Math.max(1, Math.round(rawMeatEnergy * 0.5)) : rawMeatEnergy;
         arenaState.foods.push({
           id: 'meat_' + Date.now() + '_' + Math.random(),
           type: 'meat',
@@ -3525,12 +3586,12 @@
         const cyc = arenaState.timeSec % 180;
         const isNight = arenaState.biome.forceNight || (cyc >= 82 && cyc <= 170);
 
-        // 环境定时局部刷新微藻 (每 3.5s 在热泉与随机生态点注入能量)
+        // 环境定时局部刷新微藻 (每 3.5s 在热泉与随机生态点注入能量；黑夜微藻刷新率减半)
         if (arenaState.timeSec - arenaState.lastAlgaeSpawnSec >= 3.5) {
           arenaState.lastAlgaeSpawnSec = arenaState.timeSec;
           const v = arenaState.vents[Math.floor(Math.random() * arenaState.vents.length)];
-          if (v) spawnAlgaeCluster(v.x, v.y, 4);
-          spawnAlgaeCluster(200 + Math.random() * (WORLD_W - 400), 200 + Math.random() * (WORLD_H - 400), 5);
+          if (v) spawnAlgaeCluster(v.x, v.y, isNight ? 2 : 4);
+          spawnAlgaeCluster(200 + Math.random() * (WORLD_W - 400), 200 + Math.random() * (WORLD_H - 400), isNight ? 3 : 6);
         }
 
         // 补充野生生态种群维持沙盘活力
@@ -3599,6 +3660,25 @@
           if (org.blindTimer > 0) org.blindTimer = Math.max(0, org.blindTimer - dt);
           if (org.stunTimer > 0) org.stunTimer = Math.max(0, org.stunTimer - dt);
           if (org.suppressedTimer > 0) org.suppressedTimer = Math.max(0, org.suppressedTimer - dt);
+
+          // 清理第四章首领【千目原质母体】已到期的 12.0s FIFO 同化器官槽位
+          if (org.assimilatedOrgans && org.assimilatedOrgans.length > 0) {
+            org.assimilatedOrgans = org.assimilatedOrgans.filter((a) => a.expireAt > arenaState.timeSec);
+          }
+
+          // 检查同族电脑 NPC 待蜕皮队列：当能量恢复至 >= 60% MaxE_old 时自动蜕皮同步最新同躯干配置
+          if (org.pendingBlueprint && org.energy >= 0.60 * org.maxEnergy) {
+            const pBp = org.pendingBlueprint;
+            const pSt = pBp.statsSummary;
+            const oldMaxHp = org.maxHp;
+            org.blueprint = pBp;
+            org.energy = Math.min(pSt.maxEnergy, org.energy);
+            org.maxEnergy = pSt.maxEnergy;
+            org.hp = Math.max(1, Math.round(org.hp * (pSt.maxHp / oldMaxHp)));
+            org.maxHp = pSt.maxHp;
+            org.radius = TORSOS[pBp.torsoId].sizePx * 0.44;
+            org.pendingBlueprint = null;
+          }
 
           // 毒伤结算
           if (org.poisonTimer > 0) {
@@ -3957,7 +4037,9 @@
           ctx.arc(alpha.x, alpha.y, effRange, alpha.angle - halfRad, alpha.angle + halfRad);
           ctx.closePath();
           ctx.clip();
+          ctx.filter = `saturate(${Math.round(st.eyeSat * 100)}%)`;
           renderWorldPass(ctx, camX, camY, w, h, isNight, false);
+          ctx.filter = 'none';
           ctx.restore();
         } else if (hasEye && hasEar) {
           // 模式 C：视听双感官混装 (T03/T04) —— 360° 声呐黑白轮廓底图 + 前向扇形全彩叠加
@@ -3972,7 +4054,9 @@
           ctx.arc(alpha.x, alpha.y, effRange, alpha.angle - halfRad, alpha.angle + halfRad);
           ctx.closePath();
           ctx.clip();
+          ctx.filter = `saturate(${Math.round(st.eyeSat * 100)}%)`;
           renderWorldPass(ctx, camX, camY, w, h, isNight, false);
+          ctx.filter = 'none';
           ctx.restore();
         } else {
           // 无感官盲视 65px 触觉圈
@@ -4053,10 +4137,10 @@
       requestAnimationFrame(renderEditorPreviewLoop);
       requestAnimationFrame(mainArenaLoop);
 
-      // 检查 URL 参数是否携带 ?challenger=MG3_... 基因挑战码
+      // 检查 URL 参数是否携带 ?challenger=MG3_... 或 ?challenge=MG3_... 基因挑战码
       try {
         const params = new URLSearchParams(window.location.search);
-        const challengerCode = params.get('challenger');
+        const challengerCode = params.get('challenger') || params.get('challenge');
         if (challengerCode) {
           const rivalBp = decodeGeneCode(challengerCode);
           if (rivalBp) {
