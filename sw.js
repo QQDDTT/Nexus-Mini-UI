@@ -1,10 +1,17 @@
-const CACHE_NAME = 'nexus-mini-portal-v6.0-three-tier';
+const CACHE_NAME = 'nexus-mini-portal-v7.0-style57x39';
 const CORE_ASSETS = [
   './',
   './index.html',
   './style.css',
   './manifest.json',
   './icon.svg',
+  './rigs/icon.anim.js',
+  './sprites/badge-roster.svg',
+  './sprites/badge-rules.svg',
+  './sprites/badge-screenshots.svg',
+  './sprites/badge-pwa.svg',
+  './sprites/badge-fullscreen.svg',
+  './sprites/badge-launch.svg',
   './shared/nexus-sdk.js',
   './tank/index.html',
   './star/index.html',

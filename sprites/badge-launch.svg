@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" data-asset-id="portal-badge-launch">
+  <!-- 零模糊纯黑硬偏移阴影 -->
+  <polygon points="76,14 30,74 64,74 54,118 106,54 70,54" fill="#000000" transform="translate(5,5)"/>
+  <!-- 波普爆炸背景星芒 -->
+  <polygon points="64,18 78,40 104,32 90,56 112,72 86,80 92,106 66,92 42,108 46,80 20,74 42,56 26,32 52,40" fill="#ff5500" stroke="#111111" stroke-width="4.5" stroke-linejoin="round"/>
+  <!-- 酸柠荧光绿主闪电冲锋标 -->
+  <polygon points="74,12 28,72 62,72 52,116 104,52 68,52" fill="#a3e635" stroke="#111111" stroke-width="5" stroke-linejoin="round"/>
+  <!-- 孔版错位纯白高光折线 -->
+  <polyline points="68,24 38,66 60,66" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

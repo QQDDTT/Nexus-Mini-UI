@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" data-asset-id="portal-badge-screenshots">
+  <!-- 零模糊纯黑硬偏移阴影 -->
+  <rect x="18" y="28" width="98" height="78" rx="14" fill="#000000"/>
+  <!-- 顶部胶片快门凸起 -->
+  <rect x="34" y="14" width="32" height="14" rx="4" fill="#ff5500" stroke="#111111" stroke-width="4"/>
+  <!-- 主街机取景框外壳 -->
+  <rect x="12" y="22" width="98" height="78" rx="14" fill="#f4efe6" stroke="#111111" stroke-width="5" stroke-linejoin="round"/>
+  <!-- 左侧酸柠绿防滑握柄条 -->
+  <rect x="20" y="30" width="14" height="62" rx="4" fill="#a3e635" stroke="#111111" stroke-width="3.5"/>
+  <!-- 中央镜头双层纯黑框与高光折射 -->
+  <circle cx="71" cy="61" r="24" fill="#171513" stroke="#111111" stroke-width="5"/>
+  <circle cx="71" cy="61" r="15" fill="#38bdf8" stroke="#111111" stroke-width="3.5"/>
+  <circle cx="66" cy="56" r="5" fill="#ffffff"/>
+  <!-- 右上角波普闪光星 -->
+  <polygon points="98,28 101,35 108,38 101,41 98,48 95,41 88,38 95,35" fill="#facc15" stroke="#111111" stroke-width="2.5"/>
+</svg>

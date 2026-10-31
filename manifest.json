@@ -1,13 +1,13 @@
 {
   "name": "Nexus-Mini · 枢纽微游矩阵",
   "short_name": "Nexus-Mini",
-  "description": "硬核科幻电竞黑曜横屏微游门户：提供微游设计蓝图展示、即点即玩全屏内联容器、PWA 离线桌面安装与一人一机无服务器 P2P 联机。",
+  "description": "STYLE-57×39 新粗野孔版街机微游门户：提供微游规则与画面展示、全屏横屏容器、PWA 离线桌面安装与一人一机局域网 1~5ms 联机。",
   "start_url": "./index.html",
   "scope": "./",
   "display": "fullscreen",
   "orientation": "landscape",
-  "background_color": "#030712",
-  "theme_color": "#030712",
+  "background_color": "#171513",
+  "theme_color": "#171513",
   "icons": [
     {
       "src": "./icon.svg",

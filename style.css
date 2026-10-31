@@ -1,43 +1,70 @@
 /* ============================================================================
- * Nexus-Mini Portal — Global Theme & 5:3:1 Visual Architecture
- * Style Anchor: Optic-Resonance + Chroma-Muse (STYLE-20 / STYLE-92)
- * Palette: Deep Void Obsidian (#030712) + Glass Slate + Electric Cyan (#00f0ff)
+ * Nexus-Mini Portal — Global Theme & 5:3:1 Visual Architecture (v5.0)
+ * Style Anchor: Chroma-Muse STYLE-57 (Neo-Brutalism Hard Shadow) × STYLE-39 (Risograph Zine)
+ * Three-Tier Mandate: Tier-1 Portal Homepage (70% Rules & Screenshots + 30% Roster)
  * ============================================================================ */
 
 :root {
-  /* [5] 50% Base Void Surfaces */
-  --nexus-bg-void: #030712;
-  --nexus-bg-deep: #050811;
-  --nexus-bg-surface: #0a101d;
-  --nexus-grid-line: rgba(0, 240, 255, 0.04);
+  /* ===== [5] 50% 孔版碳粉暗底与微噪点点阵舞台 (Base Foundation) ===== */
+  --nexus-bg-void: #171513;
+  --nexus-bg-deep: #211e1b;
+  --nexus-bg-surface: #292524;
+  --nexus-dot-ink: rgba(244, 239, 230, 0.08);
+  --nexus-dot-riso: rgba(255, 85, 0, 0.07);
 
-  /* [3] 30% Structural Panels & Typography */
-  --nexus-card-bg: rgba(13, 20, 36, 0.80);
-  --nexus-card-hover: rgba(19, 29, 51, 0.90);
-  --nexus-border-subtle: rgba(148, 163, 184, 0.16);
-  --nexus-border-cyan: rgba(0, 240, 255, 0.22);
-  --nexus-text-primary: #f8fafc;
-  --nexus-text-secondary: #94a3b8;
-  --nexus-text-muted: #64748b;
+  /* ===== [3] 30% 孔版暖白纸卡与新粗野纯黑线框 (Structural Paper Cards) ===== */
+  --nexus-card-bg: #f4efe6;
+  --nexus-card-bg-elevated: #fdfbf7;
+  --nexus-card-hover: #ffffff;
+  --nexus-card-dark-well: #1c1917;
+  --nexus-border-ink: #111111;
+  --nexus-border-width: 3px;
+  --nexus-hard-shadow-sm: 3px 3px 0px #000000;
+  --nexus-hard-shadow-md: 5px 5px 0px #000000;
+  --nexus-hard-shadow-lg: 8px 8px 0px #000000;
 
-  /* [1] 10% Focal Accent & Semantic Tokens */
-  --nexus-accent-cyan: #00f0ff;
-  --nexus-accent-cyan-glow: rgba(0, 240, 255, 0.35);
-  --nexus-accent-gold: #fbbf24;
-  --nexus-accent-gold-glow: rgba(251, 191, 36, 0.35);
-  --nexus-status-online: #10b981;
-  --nexus-status-warn: #f59e0b;
-  --nexus-status-danger: #ef4444;
+  /* 印刷油墨字色阶梯 (WCAG AAA 级高反差可读性) */
+  --nexus-text-primary: #111111;
+  --nexus-text-secondary: #3f3f46;
+  --nexus-text-muted: #52525b;
+  --nexus-text-on-dark: #f4efe6;
+  --nexus-text-muted-on-dark: #a8a29e;
 
-  /* Layout & Safe Area Tokens */
-  --nexus-radius-lg: 16px;
-  --nexus-radius-md: 12px;
+  /* ===== [1] 10% 酸柠荧光绿与大豆荧光橙焦点点睛 (Focal Accents) ===== */
+  --nexus-accent-lime: #a3e635;
+  --nexus-accent-lime-hover: #bef264;
+  --nexus-accent-orange: #ff5500;
+  --nexus-accent-yellow: #facc15;
+  --nexus-accent-cyan: #38bdf8;
+  --nexus-accent-pink: #f472b6;
+
+  /* 状态语义色 */
+  --nexus-status-online: #16a34a;
+  --nexus-status-warn: #ea580c;
+  --nexus-status-danger: #dc2626;
+
+  /* 兼容旧变量别名映射 */
+  --nexus-border-subtle: #111111;
+  --nexus-border-cyan: #111111;
+  --nexus-accent-gold: #facc15;
+
+  /* 圆角、安全区与排版令牌 */
+  --nexus-radius-lg: 12px;
+  --nexus-radius-md: 8px;
+  --nexus-radius-sm: 6px;
   --nexus-radius-pill: 9999px;
-  --nexus-font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --nexus-safe-top: max(10px, env(safe-area-inset-top));
+  --nexus-safe-right: max(16px, env(safe-area-inset-right));
+  --nexus-safe-bottom: max(10px, env(safe-area-inset-bottom));
+  --nexus-safe-left: max(16px, env(safe-area-inset-left));
+  --nexus-font-sans: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --nexus-font-display: 'Orbitron', 'Inter', 'Noto Sans SC', sans-serif;
   --nexus-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -45,25 +72,30 @@
   user-select: none;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
+html,
+body {
+  width: 100vw;
+  height: 100dvh;
+  max-width: 100vw;
+  max-height: 100dvh;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
   background-color: var(--nexus-bg-void);
   color: var(--nexus-text-primary);
   font-family: var(--nexus-font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-/* [5] 50% Deep Void Astrolabe Scenography */
+/* ============================================================================
+ * [5] 50% 孔版碳粉暗底与波普半调圆点网屏舞台 (Risograph Halftone Backdrop)
+ * ============================================================================ */
 .portal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(circle at 50% 18%, rgba(0, 240, 255, 0.10) 0%, rgba(15, 23, 42, 0.45) 42%, var(--nexus-bg-void) 80%),
-    linear-gradient(180deg, var(--nexus-bg-void) 0%, var(--nexus-bg-deep) 100%);
+    radial-gradient(circle at 28% 24%, #292524 0%, var(--nexus-bg-void) 72%),
+    linear-gradient(180deg, var(--nexus-bg-deep) 0%, var(--nexus-bg-void) 100%);
 }
 
 .portal-backdrop::before {
@@ -71,14 +103,16 @@ html, body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to right, var(--nexus-grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--nexus-grid-line) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse at 50% 45%, #000 35%, transparent 85%);
+    radial-gradient(var(--nexus-dot-ink) 1.5px, transparent 1.5px),
+    radial-gradient(var(--nexus-dot-riso) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
   pointer-events: none;
 }
 
-/* [3] 30% Structural Navigation & Game Matrix Cards */
+/* ============================================================================
+ * [3] 30% 第一层平台主页壳层与 70:30 展厅布局 (Tier-1 70:30 Showcase Shell)
+ * ============================================================================ */
 .portal-shell {
   position: relative;
   z-index: 1;
@@ -86,124 +120,314 @@ html, body {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding: max(12px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
-  gap: 14px;
+  padding: var(--nexus-safe-top) var(--nexus-safe-right) var(--nexus-safe-bottom) var(--nexus-safe-left);
+  gap: 10px;
 }
 
+/* 顶部新粗野画报刊头栏 (Top Zine Masthead Bar) */
 .portal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 18px;
+  min-height: 50px;
+  padding: 6px 14px;
   background: var(--nexus-card-bg);
-  border: 1px solid var(--nexus-border-cyan);
-  border-radius: var(--nexus-radius-lg);
-  backdrop-filter: blur(16px);
+  color: var(--nexus-text-primary);
+  border: var(--nexus-border-width) solid var(--nexus-border-ink);
+  border-radius: var(--nexus-radius-md);
+  box-shadow: var(--nexus-hard-shadow-md);
+  flex-shrink: 0;
 }
 
 .portal-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .portal-brand-icon {
   width: 36px;
   height: 36px;
-  filter: drop-shadow(0 0 10px var(--nexus-accent-cyan-glow));
+  flex-shrink: 0;
 }
 
 .portal-brand-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-family: var(--nexus-font-display);
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
   color: var(--nexus-text-primary);
+  text-transform: uppercase;
 }
 
 .portal-brand-subtitle {
-  font-size: 0.75rem;
+  display: inline-block;
+  padding: 1px 7px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: var(--nexus-accent-orange);
+  border: 2px solid var(--nexus-border-ink);
+  border-radius: var(--nexus-radius-sm);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.portal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.portal-util-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 12px;
+  background: var(--nexus-card-bg-elevated);
+  color: var(--nexus-text-primary);
+  font-size: 0.76rem;
+  font-weight: 800;
+  border: 2.5px solid var(--nexus-border-ink);
+  border-radius: var(--nexus-radius-sm);
+  box-shadow: var(--nexus-hard-shadow-sm);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+}
+
+.portal-util-btn:hover {
+  background: var(--nexus-accent-yellow);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.portal-util-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+/* 第一层 70:30 主展台双栏网格 (Left 70% Stage + Right 30% Roster) */
+.portal-tier1-stage {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(240px, 3fr);
+  gap: 12px;
+}
+
+/* 左侧 70%：游戏规则简介 + 游戏画面截图 + 唯一主按钮展台 */
+.portal-showcase-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--nexus-card-bg);
+  color: var(--nexus-text-primary);
+  border: var(--nexus-border-width) solid var(--nexus-border-ink);
+  border-radius: var(--nexus-radius-lg);
+  box-shadow: var(--nexus-hard-shadow-md);
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 2. 游戏规则简介区块 (Game Rules Overview Box) */
+.portal-rules-box {
+  padding: 10px 12px;
+  background: var(--nexus-card-bg-elevated);
+  border: 2.5px solid var(--nexus-border-ink);
+  border-left: 6px solid var(--nexus-accent-orange);
+  border-radius: var(--nexus-radius-sm);
+  box-shadow: var(--nexus-hard-shadow-sm);
+}
+
+.portal-rules-title {
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--nexus-accent-orange);
+  margin-bottom: 4px;
+}
+
+.portal-rules-desc {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  font-weight: 600;
   color: var(--nexus-text-secondary);
 }
 
+/* 3. 游戏画面截图画廊 (Gameplay Screenshots Dual Frame) */
+.portal-screenshots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.portal-screenshot-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--nexus-card-dark-well);
+  color: var(--nexus-text-on-dark);
+  border: 2.5px solid var(--nexus-border-ink);
+  border-radius: var(--nexus-radius-sm);
+  box-shadow: var(--nexus-hard-shadow-sm);
+}
+
+/* 右侧 30%：1. 游戏清单 (Game Catalog Roster - 5 Games) */
+.portal-roster-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  background: var(--nexus-card-bg);
+  border: var(--nexus-border-width) solid var(--nexus-border-ink);
+  border-radius: var(--nexus-radius-lg);
+  box-shadow: var(--nexus-hard-shadow-md);
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* 兼容现有网格与列表卡片 */
 .portal-game-grid {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 14px;
+  gap: 12px;
   align-content: center;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 4px;
 }
 
-.game-card {
+.game-card,
+.portal-game-card {
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 16px;
-  background: var(--nexus-card-bg);
-  border: 1px solid var(--nexus-border-subtle);
-  border-radius: var(--nexus-radius-lg);
-  backdrop-filter: blur(14px);
-  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.22s ease, box-shadow 0.22s ease;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 12px;
+  background: var(--nexus-card-bg-elevated);
+  color: var(--nexus-text-primary);
+  border: 2.5px solid var(--nexus-border-ink);
+  border-left: 7px solid var(--card-theme-accent, var(--nexus-accent-orange));
+  border-radius: var(--nexus-radius-md);
+  box-shadow: var(--nexus-hard-shadow-sm);
+  transition: transform 0.14s ease, box-shadow 0.14s ease, background-color 0.14s ease;
   cursor: pointer;
 }
 
 .game-card:hover,
-.game-card:focus-visible {
-  transform: translateY(-4px);
-  background: var(--nexus-card-hover);
-  border-color: var(--nexus-accent-cyan);
-  box-shadow: 0 12px 28px -8px rgba(0, 240, 255, 0.24);
+.game-card:focus-visible,
+.portal-game-card:hover,
+.portal-game-card:focus-visible {
+  transform: translate(-2px, -2px);
+  background: #ffffff;
+  box-shadow: var(--nexus-hard-shadow-md);
 }
 
-/* Per-Game Chroma-Muse Card Accent Badges */
-.game-card[data-game="pudding-defense"] { --card-theme-accent: #f472b6; }
-.game-card[data-game="tank-battle"]     { --card-theme-accent: #22c55e; }
-.game-card[data-game="gold-miner"]      { --card-theme-accent: #fbbf24; }
-.game-card[data-game="micro-genesis"]   { --card-theme-accent: #2dd4bf; }
-.game-card[data-game="star-defender"]   { --card-theme-accent: #00f0ff; }
+.game-card.is-active,
+.portal-game-card.is-active,
+.portal-game-card.is-active:hover {
+  background: var(--nexus-accent-yellow);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--nexus-hard-shadow-md);
+}
+
+.game-card:active,
+.portal-game-card:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+/* 五款微游 Chroma-Muse 专属流派色带绑定 */
+.game-card[data-game="pudding-defense"],
+.portal-game-card[data-game="pudding-defense"] {
+  --card-theme-accent: #f472b6;
+}
+
+.game-card[data-game="tank-battle"],
+.portal-game-card[data-game="tank-battle"] {
+  --card-theme-accent: #22c55e;
+}
+
+.game-card[data-game="gold-miner"],
+.portal-game-card[data-game="gold-miner"] {
+  --card-theme-accent: #f59e0b;
+}
+
+.game-card[data-game="micro-genesis"],
+.portal-game-card[data-game="micro-genesis"] {
+  --card-theme-accent: #14b8a6;
+}
+
+.game-card[data-game="star-defender"],
+.portal-game-card[data-game="star-defender"] {
+  --card-theme-accent: #0284c7;
+}
 
 .game-card-tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 10px;
-  border-radius: var(--nexus-radius-pill);
+  padding: 2px 9px;
+  border-radius: var(--nexus-radius-sm);
   font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--card-theme-accent, var(--nexus-accent-cyan));
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid currentColor;
+  font-weight: 800;
+  color: var(--nexus-text-primary);
+  background: var(--card-theme-accent, var(--nexus-accent-yellow));
+  border: 2px solid var(--nexus-border-ink);
+  box-shadow: 2px 2px 0px #000000;
 }
 
-/* [1] 10% Focal Accent CTA Button */
-.btn-primary-cta {
+/* ============================================================================
+ * [1] 10% 唯一视觉重心主按钮：进入游戏菜单 (Primary CTA - Acid Lime Sticker)
+ * ============================================================================ */
+.btn-primary-cta,
+.portal-launch-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-width: 44px;
   min-height: 44px;
   padding: 10px 22px;
   border-radius: var(--nexus-radius-pill);
-  border: 1px solid var(--nexus-accent-cyan);
-  background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
-  color: #030712;
-  font-weight: 800;
-  font-size: 0.9rem;
-  letter-spacing: 0.03em;
-  box-shadow: 0 0 20px var(--nexus-accent-cyan-glow);
+  border: 3px solid var(--nexus-border-ink);
+  background: var(--nexus-accent-lime);
+  color: var(--nexus-text-primary);
+  font-weight: 900;
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+  box-shadow: var(--nexus-hard-shadow-md);
   cursor: pointer;
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
 }
 
-.btn-primary-cta:active {
-  transform: scale(0.96);
+.btn-primary-cta:hover,
+.portal-launch-btn:hover {
+  background: var(--nexus-accent-lime-hover);
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px #000000;
 }
 
-/* Platform Screen Guard & Arcade Fullscreen Frame */
-body.guard-locked > *:not(.screen-guard-overlay) {
+.btn-primary-cta:active,
+.portal-launch-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* ============================================================================
+ * 移动端全屏横屏强守护与内联微游容器 (Screen Guard & Arcade Frame)
+ * ============================================================================ */
+body.guard-locked>*:not(.screen-guard-overlay):not(#screen-guard) {
   visibility: hidden !important;
   pointer-events: none !important;
 }
@@ -216,11 +440,22 @@ body.guard-locked > *:not(.screen-guard-overlay) {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: radial-gradient(circle at 50% 40%, #0a1329 0%, #030712 85%);
+  background: var(--nexus-bg-void);
 }
 
 body.guard-locked .screen-guard-overlay {
   display: flex;
+}
+
+.screen-guard-card {
+  max-width: 420px;
+  padding: 22px;
+  background: var(--nexus-card-bg);
+  color: var(--nexus-text-primary);
+  border: 4px solid var(--nexus-border-ink);
+  border-radius: var(--nexus-radius-lg);
+  box-shadow: var(--nexus-hard-shadow-lg);
+  text-align: center;
 }
 
 .arcade-iframe-container {
@@ -230,39 +465,61 @@ body.guard-locked .screen-guard-overlay {
   background: var(--nexus-bg-void);
 }
 
-.arcade-return-pill {
+.arcade-return-pill,
+.arcade-back-pill {
   position: fixed;
-  top: max(10px, env(safe-area-inset-top));
-  right: max(14px, env(safe-area-inset-right));
+  top: var(--nexus-safe-top);
+  right: var(--nexus-safe-right);
   z-index: 950;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 36px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0 14px;
   border-radius: var(--nexus-radius-pill);
-  background: rgba(3, 7, 18, 0.72);
-  border: 1px solid var(--nexus-border-cyan);
+  background: var(--nexus-card-bg);
+  border: 2.5px solid var(--nexus-border-ink);
   color: var(--nexus-text-primary);
-  font-size: 0.8rem;
-  font-weight: 600;
-  backdrop-filter: blur(10px);
+  font-size: 0.78rem;
+  font-weight: 800;
+  box-shadow: var(--nexus-hard-shadow-sm);
   cursor: pointer;
 }
 
-/* ==========================================================================
-   [Momus-Audit Terminal Adaptation Hardening: 852x393 Mobile Landscape]
-   ========================================================================== */
-html, body {
-  width: 100vw;
-  height: 100dvh;
-  max-width: 100vw;
-  max-height: 100dvh;
-  overflow: hidden !important;
-  overscroll-behavior: none !important;
+/* ============================================================================
+ * 紧凑横屏终端适配加固 (852x393 & 667x375 Mobile Landscape Hardening)
+ * ============================================================================ */
+@media (max-height: 450px) and (orientation: landscape) {
+  .portal-shell {
+    gap: 8px;
+  }
+
+  .portal-header {
+    min-height: 44px;
+    padding: 4px 12px;
+  }
+
+  .portal-showcase-panel {
+    padding: 10px 14px;
+  }
+
+  .portal-rules-box {
+    padding: 6px 10px;
+  }
+
+  .game-card,
+  .portal-game-card {
+    min-height: 44px;
+    padding: 3px 8px;
+  }
 }
 
-button, [role="button"], .btn, .cta-btn, .arcade-back-pill {
+button,
+[role="button"],
+.btn,
+.cta-btn,
+.arcade-back-pill {
   min-width: 44px;
   min-height: 44px;
   white-space: nowrap;

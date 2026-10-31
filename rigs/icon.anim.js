@@ -15,18 +15,18 @@ export const RIG_SPEC = Object.freeze({
   rootAnchor: [128, 128],
   hasAura: true,
   parts: [
-    { id: 'part-shadow-cast', pivot: [128, 128], parent: 'root', zIndex: 1, blend: 'multiply', role: 'shadow', motion: 'shadow', side: 0, dirY: 1, order: 1 },
-    { id: 'part-aura-ring-outer', pivot: [128, 128], parent: 'root', zIndex: 4, blend: 'screen', role: 'aura-outer', motion: 'spin-cw', side: 0, dirY: -1, order: 1 },
-    { id: 'part-aura-ring-inner', pivot: [128, 128], parent: 'root', zIndex: 5, blend: 'screen', role: 'aura-inner', motion: 'spin-ccw', side: 1, dirY: -1, order: 1 },
-    { id: 'part-light-cone-main', pivot: [128, 128], parent: 'root', zIndex: 8, blend: 'screen', role: 'light-cone', motion: 'light-cone', side: 0, dirY: -1, order: 1 },
+    { id: 'part-shadow-cast', pivot: [128, 128], parent: 'root', zIndex: 1, blend: 'normal', role: 'shadow', motion: 'shadow', side: 0, dirY: 1, order: 1 },
+    { id: 'part-aura-ring-outer', pivot: [128, 128], parent: 'root', zIndex: 4, blend: 'normal', role: 'aura-outer', motion: 'spin-cw', side: 0, dirY: -1, order: 1 },
+    { id: 'part-aura-ring-inner', pivot: [128, 128], parent: 'root', zIndex: 5, blend: 'normal', role: 'aura-inner', motion: 'spin-ccw', side: 1, dirY: -1, order: 1 },
+    { id: 'part-light-cone-main', pivot: [128, 128], parent: 'root', zIndex: 8, blend: 'normal', role: 'light-cone', motion: 'light-cone', side: 0, dirY: -1, order: 1 },
     { id: 'part-chassis-hex', pivot: [128, 128], parent: 'root', zIndex: 15, blend: 'normal', role: 'chassis', motion: 'chassis', side: 0, dirY: -1, order: 1 },
     { id: 'part-wing-shield-L', pivot: [72, 128], parent: 'part-chassis-hex', zIndex: 22, blend: 'normal', role: 'wing', motion: 'wing', side: -1, dirY: -1, order: 2 },
     { id: 'part-wing-shield-R', pivot: [184, 128], parent: 'part-chassis-hex', zIndex: 22, blend: 'normal', role: 'wing', motion: 'wing', side: 1, dirY: -1, order: 2 },
     { id: 'part-sensor-crest-top', pivot: [128, 62], parent: 'part-chassis-hex', zIndex: 26, blend: 'normal', role: 'eye', motion: 'eye', side: 0, dirY: -1, order: 2 },
     { id: 'part-thruster-tail', pivot: [128, 194], parent: 'part-chassis-hex', zIndex: 26, blend: 'normal', role: 'thruster', motion: 'thruster', side: 0, dirY: 1, order: 2 },
     { id: 'part-reactor-rotor', pivot: [128, 128], parent: 'part-chassis-hex', zIndex: 34, blend: 'normal', role: 'rotor-cw', motion: 'rotor-cw', side: 0, dirY: -1, order: 2 },
-    { id: 'part-light-rim-chassis', pivot: [128, 128], parent: 'part-chassis-hex', zIndex: 45, blend: 'plus-lighter', role: 'rim-light', motion: 'rim-light', side: 0, dirY: -1, order: 2 },
-    { id: 'part-aura-corona-top', pivot: [128, 128], parent: 'root', zIndex: 65, blend: 'screen', role: 'corona-top', motion: 'corona-top', side: 0, dirY: -1, order: 1 }
+    { id: 'part-light-rim-chassis', pivot: [128, 128], parent: 'part-chassis-hex', zIndex: 45, blend: 'normal', role: 'rim-light', motion: 'rim-light', side: 0, dirY: -1, order: 2 },
+    { id: 'part-aura-corona-top', pivot: [128, 128], parent: 'root', zIndex: 65, blend: 'normal', role: 'corona-top', motion: 'corona-top', side: 0, dirY: -1, order: 1 }
   ]
 });
 export const ANIMATIONS = Object.freeze({

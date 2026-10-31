@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#030712" />
+  <meta name="theme-color" content="#171513" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Nexus-Mini" />
@@ -13,42 +14,52 @@
   <link rel="manifest" href="./manifest.json" />
   <style>
     :root {
-      /* ===== [5] 50% 基础底色体系 (Base Void) ===== */
-      --nexus-void: #030712;
-      --nexus-canvas: #050811;
-      --nexus-canvas-alt: #080d1a;
+      /* ===== [5] 50% 孔版碳粉暗底与波普半调圆点网屏舞台 (STYLE-57 × STYLE-39) ===== */
+      --nexus-void: #171513;
+      --nexus-canvas: #211e1b;
+      --nexus-canvas-alt: #292524;
+      --nexus-dot-ink: rgba(244, 239, 230, 0.08);
+      --nexus-dot-riso: rgba(255, 85, 0, 0.07);
 
-      /* ===== [3] 30% 结构层与卡片表面 (Structural Panels) ===== */
-      --nexus-surface-card: rgba(13, 20, 36, 0.80);
-      --nexus-surface-card-hover: rgba(22, 35, 62, 0.90);
-      --nexus-surface-modal: rgba(9, 14, 26, 0.96);
-      --nexus-surface-pill: rgba(15, 23, 42, 0.78);
+      /* ===== [3] 30% 孔版暖白纸卡与新粗野纯黑线框 (Structural Paper Cards) ===== */
+      --nexus-surface-card: #f4efe6;
+      --nexus-surface-card-elevated: #fdfbf7;
+      --nexus-surface-card-hover: #ffffff;
+      --nexus-surface-modal: #f4efe6;
+      --nexus-surface-pill: #fdfbf7;
+      --nexus-surface-dark-well: #1c1917;
 
-      --nexus-border-subtle: rgba(255, 255, 255, 0.08);
-      --nexus-border-card: rgba(0, 240, 255, 0.20);
-      --nexus-border-focus: rgba(0, 240, 255, 0.55);
+      --nexus-border-ink: #111111;
+      --nexus-border-subtle: #111111;
+      --nexus-border-card: #111111;
+      --nexus-border-focus: #ff5500;
 
-      --nexus-text-main: #f8fafc;
-      --nexus-text-secondary: #94a3b8;
-      --nexus-text-muted: #64748b;
+      --nexus-hard-shadow-xs: 2px 2px 0px #000000;
+      --nexus-hard-shadow-sm: 3px 3px 0px #000000;
+      --nexus-hard-shadow-md: 5px 5px 0px #000000;
+      --nexus-hard-shadow-lg: 8px 8px 0px #000000;
 
-      /* ===== [1] 10% 焦点点睛与高光 (Accent Focus) ===== */
-      --nexus-accent-cyan: #00f0ff;
-      --nexus-accent-cyan-hover: #38bdf8;
-      --nexus-accent-cyan-glow: rgba(0, 240, 255, 0.38);
+      --nexus-text-main: #111111;
+      --nexus-text-secondary: #3f3f46;
+      --nexus-text-muted: #52525b;
+      --nexus-text-on-dark: #f4efe6;
 
-      --nexus-accent-gold: #fbbf24;
-      --nexus-accent-gold-glow: rgba(251, 191, 36, 0.35);
-
-      --nexus-accent-red: #ef4444;
-      --nexus-accent-green: #10b981;
+      /* ===== [1] 10% 酸柠荧光绿与大豆荧光橙焦点点睛 (Accent Focus) ===== */
+      --nexus-accent-lime: #a3e635;
+      --nexus-accent-lime-hover: #bef264;
+      --nexus-accent-orange: #ff5500;
+      --nexus-accent-yellow: #facc15;
+      --nexus-accent-cyan: #0284c7;
+      --nexus-accent-gold: #d97706;
+      --nexus-accent-red: #dc2626;
+      --nexus-accent-green: #16a34a;
 
       --nexus-radius-sm: 6px;
-      --nexus-radius-md: 10px;
-      --nexus-radius-lg: 16px;
+      --nexus-radius-md: 8px;
+      --nexus-radius-lg: 12px;
       --nexus-radius-pill: 9999px;
 
-      --nexus-font-display: 'Orbitron', 'Segoe UI', Roboto, monospace;
+      --nexus-font-display: 'Orbitron', 'Inter', 'Noto Sans SC', sans-serif;
       --nexus-font-body: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
     }
 
@@ -63,19 +74,22 @@
     html, body {
       width: 100vw;
       height: 100dvh;
-      overflow: hidden;
-      overscroll-behavior: none;
+      max-width: 100vw;
+      max-height: 100dvh;
+      overflow: hidden !important;
+      overscroll-behavior: none !important;
       background-color: var(--nexus-void);
       background-image:
-        radial-gradient(ellipse at 45% 28%, rgba(13, 28, 56, 0.85) 0%, rgba(3, 7, 18, 0.98) 80%),
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 100% 100%, 40px 40px, 40px 40px;
+        radial-gradient(var(--nexus-dot-ink) 1.5px, transparent 1.5px),
+        radial-gradient(var(--nexus-dot-riso) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 28% 24%, #292524 0%, #171513 78%);
+      background-size: 20px 20px, 20px 20px, 100% 100%;
+      background-position: 0 0, 10px 10px, 0 0;
       color: var(--nexus-text-main);
       font-family: var(--nexus-font-body);
     }
 
-    /* 统一内联 SVG 矢量图标规范 (严禁 Emoji 替代美术) */
+    /* 统一内联 SVG 矢量与贴纸图标规范 (严禁 Emoji 替代美术) */
     .nx-ico {
       width: 16px;
       height: 16px;
@@ -83,25 +97,37 @@
       vertical-align: middle;
       fill: none;
       stroke: currentColor;
-      stroke-width: 2;
+      stroke-width: 2.4;
       stroke-linecap: round;
       stroke-linejoin: round;
+    }
+
+    .nx-badge-img {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
     }
 
     /* 黑屏阻断原则：竖屏锁定状态下彻底遮蔽主界面 */
     body.guard-locked #portal-shell,
     body.guard-locked #arcade-frame-overlay {
-      filter: blur(18px);
-      pointer-events: none;
-      opacity: 0.05;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
     }
 
-    /* ===== 全屏横屏强守护弹窗 (Screen Guard) ===== */
+    /* ===== 全屏横屏强守护弹窗 (Screen Guard - STYLE-57×39) ===== */
     #screen-guard {
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: radial-gradient(circle at 50% 40%, rgba(12, 22, 44, 0.97) 0%, rgba(3, 7, 18, 0.99) 85%);
+      background:
+        radial-gradient(var(--nexus-dot-ink) 1.5px, transparent 1.5px),
+        var(--nexus-void);
+      background-size: 20px 20px, 100% 100%;
       display: none;
       align-items: center;
       justify-content: center;
@@ -113,24 +139,26 @@
     .guard-dialog {
       max-width: 420px;
       width: 100%;
-      background: var(--nexus-surface-modal);
-      border: 1px solid var(--nexus-border-focus);
+      background: var(--nexus-surface-card);
+      color: var(--nexus-text-main);
+      border: 4px solid var(--nexus-border-ink);
       border-radius: var(--nexus-radius-lg);
-      padding: 28px 24px;
+      padding: 26px 22px;
       text-align: center;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+      box-shadow: var(--nexus-hard-shadow-lg);
     }
     .guard-icon {
-      width: 64px;
-      height: 64px;
+      width: 68px;
+      height: 68px;
       margin: 0 auto 14px;
-      border-radius: 16px;
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px solid var(--nexus-border-card);
+      border-radius: 14px;
+      background: var(--nexus-accent-yellow);
+      border: 3px solid var(--nexus-border-ink);
+      box-shadow: var(--nexus-hard-shadow-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--nexus-accent-cyan);
+      color: var(--nexus-text-main);
       animation: rotatePhone 2.4s infinite ease-in-out;
     }
     @keyframes rotatePhone {
@@ -138,14 +166,15 @@
       50% { transform: rotate(-90deg); }
     }
     .guard-title {
-      font-size: 1.2rem;
-      font-weight: 700;
+      font-size: 1.18rem;
+      font-weight: 900;
       margin-bottom: 8px;
       color: var(--nexus-text-main);
     }
     .guard-desc {
-      font-size: 0.86rem;
-      line-height: 1.6;
+      font-size: 0.84rem;
+      font-weight: 600;
+      line-height: 1.55;
       color: var(--nexus-text-secondary);
       margin-bottom: 18px;
     }
@@ -167,23 +196,21 @@
         max(10px, env(safe-area-inset-bottom))
         max(14px, env(safe-area-inset-left));
       gap: 10px;
-      transition: opacity 0.2s ease;
     }
 
-    /* ===== 顶栏 (Top Command Bar) ===== */
+    /* ===== 顶栏：新粗野画报刊头栏 (Top Zine Masthead Bar) ===== */
     .topbar {
-      height: 52px;
+      min-height: 52px;
       flex-shrink: 0;
       background: var(--nexus-surface-card);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--nexus-border-card);
+      border: 3px solid var(--nexus-border-ink);
       border-radius: var(--nexus-radius-md);
-      padding: 0 14px;
+      box-shadow: var(--nexus-hard-shadow-md);
+      padding: 4px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
     }
     .brand {
       display: flex;
@@ -192,24 +219,27 @@
       min-width: 0;
     }
     .brand-logo {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
+      width: 36px;
+      height: 36px;
       flex-shrink: 0;
     }
     .brand-title {
       font-family: var(--nexus-font-display);
-      font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
+      font-size: 1.05rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
       color: var(--nexus-text-main);
       white-space: nowrap;
     }
     .brand-sub {
       font-size: 0.72rem;
-      color: var(--nexus-text-secondary);
-      padding-left: 8px;
-      border-left: 1px solid var(--nexus-border-subtle);
+      font-weight: 800;
+      color: #ffffff;
+      background: var(--nexus-accent-orange);
+      border: 2px solid var(--nexus-border-ink);
+      border-radius: 4px;
+      padding: 2px 8px;
+      box-shadow: var(--nexus-hard-shadow-xs);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -220,18 +250,20 @@
       gap: 6px;
       padding: 3px 10px;
       border-radius: var(--nexus-radius-pill);
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.32);
+      background: var(--nexus-surface-card-elevated);
+      border: 2px solid var(--nexus-border-ink);
+      box-shadow: var(--nexus-hard-shadow-xs);
       font-size: 0.7rem;
-      color: var(--nexus-accent-green);
+      font-weight: 800;
+      color: var(--nexus-text-main);
       white-space: nowrap;
     }
     .status-dot {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: var(--nexus-accent-green);
-      box-shadow: 0 0 8px var(--nexus-accent-green);
+      background: var(--nexus-accent-lime);
+      border: 1.5px solid var(--nexus-border-ink);
     }
 
     .topbar-controls {
@@ -243,29 +275,29 @@
     .pill-btn {
       min-height: 44px;
       min-width: 44px;
-      padding: 0 14px;
-      border-radius: var(--nexus-radius-pill);
-      background: var(--nexus-surface-pill);
-      border: 1px solid var(--nexus-border-card);
+      padding: 0 12px;
+      border-radius: var(--nexus-radius-sm);
+      background: var(--nexus-surface-card-elevated);
+      border: 2.5px solid var(--nexus-border-ink);
+      box-shadow: var(--nexus-hard-shadow-sm);
       color: var(--nexus-text-main);
-      font-size: 0.78rem;
-      font-weight: 500;
+      font-size: 0.76rem;
+      font-weight: 800;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       cursor: pointer;
-      transition: all 0.15s ease;
+      white-space: nowrap;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
     }
     .pill-btn:hover {
-      background: var(--nexus-surface-card-hover);
-      border-color: var(--nexus-border-focus);
+      background: var(--nexus-accent-yellow);
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0px #000000;
     }
     .pill-btn:active {
-      transform: scale(0.97);
-    }
-    .pill-btn.gold-badge {
-      border-color: rgba(251, 191, 36, 0.45);
-      color: var(--nexus-accent-gold);
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000000;
     }
 
     /* ===== 70:30 主从内容区 (Master-Detail Grid) ===== */
@@ -277,18 +309,18 @@
       gap: 12px;
     }
 
-    /* ===== 左侧 70% 精品游戏资源展台 (Hero Stage) ===== */
+    /* ===== 左侧 70%：孔版暖白纸卡游戏规则与实机截图展台 (Hero Stage) ===== */
     .hero-stage {
       background: var(--nexus-surface-card);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--nexus-border-card);
+      color: var(--nexus-text-main);
+      border: 3px solid var(--nexus-border-ink);
       border-radius: var(--nexus-radius-lg);
-      padding: 14px 18px;
+      box-shadow: var(--nexus-hard-shadow-md);
+      padding: 12px 16px;
       display: flex;
       flex-direction: column;
       min-height: 0;
-      gap: 10px;
+      gap: 8px;
       position: relative;
       overflow: hidden;
     }
@@ -297,53 +329,67 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 14px;
+      gap: 12px;
       flex-shrink: 0;
     }
     .hero-title-group {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       min-width: 0;
     }
     .hero-game-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      padding: 5px;
-      background: rgba(0, 240, 255, 0.06);
-      border: 1px solid var(--nexus-border-card);
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      padding: 4px;
+      background: var(--nexus-surface-dark-well);
+      border: 2.5px solid var(--nexus-border-ink);
+      box-shadow: var(--nexus-hard-shadow-sm);
       flex-shrink: 0;
       object-fit: contain;
     }
     .hero-meta-top {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
+      gap: 6px;
+      margin-bottom: 3px;
       flex-wrap: wrap;
     }
     .code-tag {
       font-family: var(--nexus-font-display);
       font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--nexus-accent-cyan);
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      padding: 2px 8px;
+      font-weight: 900;
+      color: #ffffff;
+      background: var(--nexus-accent-orange);
+      border: 2px solid var(--nexus-border-ink);
+      box-shadow: var(--nexus-hard-shadow-xs);
+      padding: 1px 7px;
       border-radius: 4px;
     }
     .mode-tag {
       font-size: 0.7rem;
-      color: var(--nexus-accent-gold);
-      background: rgba(251, 191, 36, 0.1);
-      border: 1px solid rgba(251, 191, 36, 0.3);
-      padding: 2px 8px;
+      font-weight: 800;
+      color: var(--nexus-text-main);
+      background: var(--nexus-accent-yellow);
+      border: 2px solid var(--nexus-border-ink);
+      box-shadow: var(--nexus-hard-shadow-xs);
+      padding: 1px 7px;
+      border-radius: 4px;
+    }
+    .genre-tag {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--nexus-text-main);
+      background: var(--nexus-surface-card-elevated);
+      border: 2px solid var(--nexus-border-ink);
+      box-shadow: var(--nexus-hard-shadow-xs);
+      padding: 1px 7px;
       border-radius: 4px;
     }
     .hero-game-name {
-      font-size: 1.3rem;
-      font-weight: 800;
+      font-size: 1.22rem;
+      font-weight: 900;
       color: var(--nexus-text-main);
       line-height: 1.2;
     }
@@ -352,47 +398,52 @@
       font-size: 0.76rem;
       color: var(--nexus-text-secondary);
       margin-left: 8px;
-      font-weight: 600;
+      font-weight: 800;
     }
     .hero-tagline {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
+      font-weight: 600;
       color: var(--nexus-text-secondary);
-      margin-top: 3px;
+      margin-top: 2px;
     }
 
-    /* 4-Tab 导航栏 (严格满足 >=44px 触控热区) */
+    /* 2-Tab 导航栏 (严格锁定 >=44px 触控热区，绝不在矮视口降级) */
     .inspector-tabs {
       display: flex;
-      gap: 6px;
-      border-bottom: 1px solid var(--nexus-border-subtle);
+      gap: 8px;
+      border-bottom: 2.5px solid var(--nexus-border-ink);
       padding-bottom: 8px;
       flex-shrink: 0;
       overflow-x: auto;
     }
     .tab-btn {
       min-height: 44px;
+      min-width: 44px;
       padding: 0 14px;
       border-radius: var(--nexus-radius-sm);
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--nexus-border-subtle);
+      background: var(--nexus-surface-card-elevated);
+      border: 2.5px solid var(--nexus-border-ink);
+      box-shadow: var(--nexus-hard-shadow-xs);
       color: var(--nexus-text-secondary);
       font-size: 0.78rem;
-      font-weight: 600;
+      font-weight: 800;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.15s ease;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
     }
     .tab-btn:hover {
       color: var(--nexus-text-main);
-      border-color: var(--nexus-border-card);
+      background: #ffffff;
+      transform: translate(-1px, -1px);
+      box-shadow: var(--nexus-hard-shadow-sm);
     }
     .tab-btn.active {
-      background: rgba(0, 240, 255, 0.12);
-      border-color: var(--nexus-border-focus);
+      background: var(--nexus-accent-yellow);
       color: var(--nexus-text-main);
+      box-shadow: var(--nexus-hard-shadow-sm);
     }
 
     /* Tab 内容滚动视区 */
@@ -404,10 +455,10 @@
       padding-right: 4px;
     }
     .inspector-body::-webkit-scrollbar {
-      width: 5px;
+      width: 6px;
     }
     .inspector-body::-webkit-scrollbar-thumb {
-      background: rgba(0, 240, 255, 0.22);
+      background: #111111;
       border-radius: 4px;
     }
 
@@ -415,27 +466,25 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .stat-box {
-      background: rgba(5, 8, 17, 0.55);
-      border: 1px solid var(--nexus-border-subtle);
+      background: var(--nexus-surface-card-elevated);
+      border: 2px solid var(--nexus-border-ink);
       border-radius: var(--nexus-radius-sm);
-      padding: 8px 10px;
+      box-shadow: var(--nexus-hard-shadow-xs);
+      padding: 7px 10px;
     }
     .stat-label {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
+      font-weight: 700;
       color: var(--nexus-text-muted);
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
     .stat-val {
-      font-size: 0.86rem;
-      font-weight: 700;
+      font-size: 0.82rem;
+      font-weight: 900;
       color: var(--nexus-text-main);
-    }
-    .stat-val.gold {
-      color: var(--nexus-accent-gold);
-      font-family: var(--nexus-font-display);
     }
 
     .feature-list {
@@ -444,62 +493,27 @@
       gap: 8px;
     }
     .feature-item {
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid var(--nexus-border-subtle);
+      background: var(--nexus-surface-card-elevated);
+      border: 2px solid var(--nexus-border-ink);
+      border-left: 5px solid var(--nexus-accent-orange);
       border-radius: var(--nexus-radius-sm);
-      padding: 9px 11px;
+      box-shadow: var(--nexus-hard-shadow-xs);
+      padding: 8px 10px;
     }
     .feature-item h4 {
-      font-size: 0.82rem;
-      color: var(--nexus-accent-cyan);
-      margin-bottom: 4px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      color: var(--nexus-text-main);
+      margin-bottom: 3px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .feature-item p {
-      font-size: 0.76rem;
+      font-size: 0.73rem;
+      font-weight: 600;
       color: var(--nexus-text-secondary);
-      line-height: 1.5;
-    }
-
-    /* 精灵贴图矩阵与蓝图画廊 */
-    .sprite-showcase-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .sprite-cell {
-      background: rgba(5, 8, 17, 0.7);
-      border: 1px solid var(--nexus-border-subtle);
-      border-radius: var(--nexus-radius-sm);
-      padding: 8px 6px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .sprite-cell:hover {
-      border-color: var(--nexus-accent-cyan);
-      background: rgba(0, 240, 255, 0.08);
-      transform: translateY(-2px);
-    }
-    .sprite-cell img {
-      width: 48px;
-      height: 48px;
-      object-fit: contain;
-    }
-    .sprite-cell span {
-      font-size: 0.68rem;
-      color: var(--nexus-text-secondary);
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
+      line-height: 1.45;
     }
 
     .gallery-grid {
@@ -508,162 +522,112 @@
       gap: 10px;
     }
     .gallery-card {
-      background: rgba(5, 8, 17, 0.65);
-      border: 1px solid var(--nexus-border-card);
+      background: var(--nexus-surface-dark-well);
+      color: var(--nexus-text-on-dark);
+      border: 2.5px solid var(--nexus-border-ink);
       border-radius: var(--nexus-radius-md);
+      box-shadow: var(--nexus-hard-shadow-sm);
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
     }
     .gallery-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--nexus-border-focus);
+      transform: translate(-2px, -2px);
+      box-shadow: var(--nexus-hard-shadow-md);
     }
     .gallery-card img {
       width: 100%;
       height: 100px;
       object-fit: cover;
       display: block;
-      background: #050811;
+      background: #171513;
     }
     .gallery-caption {
       padding: 6px 10px;
       font-size: 0.74rem;
-      color: var(--nexus-text-secondary);
+      font-weight: 700;
+      color: var(--nexus-text-on-dark);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    /* 一人一机联机面板 */
-    .p2p-panel {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .p2p-box {
-      background: rgba(5, 8, 17, 0.6);
-      border: 1px solid var(--nexus-border-card);
-      border-radius: var(--nexus-radius-md);
-      padding: 12px;
-    }
-    .p2p-box h4 {
-      font-size: 0.84rem;
-      color: var(--nexus-text-main);
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .p2p-box p {
-      font-size: 0.75rem;
-      color: var(--nexus-text-secondary);
-      line-height: 1.5;
-      margin-bottom: 10px;
-    }
-    .room-code-display {
-      font-family: var(--nexus-font-display);
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      color: var(--nexus-accent-cyan);
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px dashed rgba(0, 240, 255, 0.4);
-      padding: 6px 12px;
-      border-radius: var(--nexus-radius-sm);
-      text-align: center;
-      margin-bottom: 8px;
-      user-select: text;
-    }
-    .inline-input-row {
-      display: flex;
-      gap: 6px;
-    }
-    .nexus-input {
-      flex: 1;
-      min-width: 0;
-      height: 44px;
-      background: rgba(0, 0, 0, 0.55);
-      border: 1px solid var(--nexus-border-card);
-      border-radius: var(--nexus-radius-sm);
-      padding: 0 10px;
-      color: var(--nexus-text-main);
-      font-size: 0.8rem;
-      outline: none;
-      user-select: text;
-    }
-    .nexus-input:focus {
-      border-color: var(--nexus-accent-cyan);
-    }
-
-    /* 底部双通道操作栏：唯一 10% 电光青视觉焦点 */
+    /* 底部操作栏：唯一 10% 酸柠荧光绿贴纸视觉焦点 */
     .hero-actions {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
       padding-top: 8px;
-      border-top: 1px solid var(--nexus-border-subtle);
+      border-top: 2.5px solid var(--nexus-border-ink);
       flex-shrink: 0;
     }
     .primary-cta {
-      flex: 1.3;
+      flex: 1.4;
       min-height: 44px;
-      border-radius: var(--nexus-radius-md);
-      background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
-      border: 1px solid #67e8f9;
-      color: #030712;
-      font-size: 0.92rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
+      min-width: 44px;
+      padding: 0 18px;
+      border-radius: var(--nexus-radius-pill);
+      background: var(--nexus-accent-lime);
+      border: 3px solid var(--nexus-border-ink);
+      box-shadow: var(--nexus-hard-shadow-md);
+      color: var(--nexus-text-main);
+      font-size: 0.9rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       cursor: pointer;
-      box-shadow: 0 0 18px var(--nexus-accent-cyan-glow);
-      transition: all 0.15s ease;
+      white-space: nowrap;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
     }
     .primary-cta:hover {
-      filter: brightness(1.08);
-      box-shadow: 0 0 24px rgba(0, 240, 255, 0.55);
+      background: var(--nexus-accent-lime-hover);
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0px #000000;
     }
     .primary-cta:active {
-      transform: scale(0.98);
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0px #000000;
     }
     .secondary-cta {
       min-height: 44px;
+      min-width: 44px;
       padding: 0 14px;
       border-radius: var(--nexus-radius-md);
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid var(--nexus-border-card);
+      background: var(--nexus-surface-card-elevated);
+      border: 2.5px solid var(--nexus-border-ink);
+      box-shadow: var(--nexus-hard-shadow-sm);
       color: var(--nexus-text-main);
-      font-size: 0.8rem;
-      font-weight: 600;
+      font-size: 0.78rem;
+      font-weight: 800;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.15s ease;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
     }
     .secondary-cta:hover {
-      background: var(--nexus-surface-card-hover);
-      border-color: var(--nexus-border-focus);
+      background: var(--nexus-accent-yellow);
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0px #000000;
     }
     .secondary-cta:active {
-      transform: scale(0.97);
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000000;
     }
 
-    /* ===== 右侧 30% 微游矩阵列表 (Matrix Roster) ===== */
+    /* ===== 右侧 30%：微游清单画报卡槽 (Matrix Roster) ===== */
     .matrix-roster {
       background: var(--nexus-surface-card);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--nexus-border-card);
+      border: 3px solid var(--nexus-border-ink);
       border-radius: var(--nexus-radius-lg);
-      padding: 12px;
+      box-shadow: var(--nexus-hard-shadow-md);
+      padding: 10px;
       display: flex;
       flex-direction: column;
       min-height: 0;
@@ -674,22 +638,27 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 4px 6px;
-      border-bottom: 1px solid var(--nexus-border-subtle);
+      border-bottom: 2.5px solid var(--nexus-border-ink);
       flex-shrink: 0;
     }
     .roster-title {
       font-size: 0.82rem;
-      font-weight: 700;
+      font-weight: 900;
       color: var(--nexus-text-main);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.03em;
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .roster-count {
       font-family: var(--nexus-font-display);
-      font-size: 0.7rem;
-      color: var(--nexus-accent-cyan);
+      font-size: 0.68rem;
+      font-weight: 900;
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #ffffff;
+      background: var(--nexus-accent-orange);
+      border: 2px solid var(--nexus-border-ink);
     }
     .roster-list {
       flex: 1;
@@ -702,40 +671,43 @@
       padding-right: 2px;
     }
     .roster-list::-webkit-scrollbar {
-      width: 4px;
+      width: 5px;
     }
     .roster-list::-webkit-scrollbar-thumb {
-      background: rgba(0, 240, 255, 0.2);
+      background: #111111;
       border-radius: 4px;
     }
     .game-card-item {
-      min-height: 58px;
+      min-height: 54px;
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 9px 10px;
+      padding: 8px 10px;
       border-radius: var(--nexus-radius-md);
-      background: rgba(5, 8, 17, 0.55);
-      border: 1px solid var(--nexus-border-subtle);
+      background: var(--nexus-surface-card-elevated);
+      border: 2.5px solid var(--nexus-border-ink);
+      border-left: 7px solid var(--card-theme-accent, var(--nexus-accent-orange));
+      box-shadow: var(--nexus-hard-shadow-sm);
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
     }
     .game-card-item:hover {
-      background: var(--nexus-surface-card-hover);
-      border-color: var(--nexus-border-card);
+      background: #ffffff;
+      transform: translate(-2px, -2px);
+      box-shadow: var(--nexus-hard-shadow-md);
     }
     .game-card-item.active {
-      background: rgba(0, 240, 255, 0.10);
-      border-color: var(--nexus-accent-cyan);
-      box-shadow: inset 3px 0 0 var(--nexus-accent-cyan);
+      background: var(--nexus-accent-yellow);
+      transform: translate(-2px, -2px);
+      box-shadow: var(--nexus-hard-shadow-md);
     }
     .card-thumb {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      padding: 4px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--nexus-border-subtle);
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      padding: 3px;
+      background: var(--nexus-surface-dark-well);
+      border: 2px solid var(--nexus-border-ink);
       flex-shrink: 0;
       object-fit: contain;
     }
@@ -750,8 +722,8 @@
       gap: 4px;
     }
     .card-name {
-      font-size: 0.86rem;
-      font-weight: 700;
+      font-size: 0.84rem;
+      font-weight: 900;
       color: var(--nexus-text-main);
       white-space: nowrap;
       overflow: hidden;
@@ -760,10 +732,12 @@
     .card-seq {
       font-family: var(--nexus-font-display);
       font-size: 0.65rem;
-      color: var(--nexus-text-muted);
+      font-weight: 900;
+      color: var(--nexus-text-secondary);
     }
     .card-sub {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
+      font-weight: 700;
       color: var(--nexus-text-secondary);
       white-space: nowrap;
       overflow: hidden;
@@ -783,62 +757,13 @@
     #arcade-frame-overlay.active {
       display: flex;
     }
-    .floating-return-pill {
-      position: fixed;
-      top: max(12px, env(safe-area-inset-top));
-      right: max(16px, env(safe-area-inset-right));
-      z-index: 5010;
-      min-height: 44px;
-      padding: 0 16px;
-      border-radius: var(--nexus-radius-pill);
-      background: rgba(9, 14, 26, 0.86);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--nexus-border-focus);
-      color: var(--nexus-text-main);
-      font-size: 0.8rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-    .floating-return-pill:hover {
-      background: rgba(22, 35, 62, 0.95);
-    }
-    #sandbox-canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      touch-action: none;
-    }
-    .sandbox-hud {
-      position: fixed;
-      top: max(12px, env(safe-area-inset-top));
-      left: max(16px, env(safe-area-inset-left));
-      z-index: 5005;
-      background: rgba(9, 14, 26, 0.82);
-      border: 1px solid var(--nexus-border-card);
-      border-radius: var(--nexus-radius-md);
-      padding: 8px 14px;
-      pointer-events: none;
-    }
-    .sandbox-hud h3 {
-      font-size: 0.88rem;
-      color: var(--nexus-accent-cyan);
-      margin-bottom: 2px;
-    }
-    .sandbox-hud p {
-      font-size: 0.74rem;
-      color: var(--nexus-text-secondary);
-    }
 
-    /* ===== 全息模态弹窗 ===== */
+    /* ===== 新粗野画报模态弹窗 ===== */
     .modal-backdrop {
       position: fixed;
       inset: 0;
       z-index: 8000;
-      background: rgba(3, 7, 18, 0.82);
-      backdrop-filter: blur(8px);
+      background: rgba(23, 21, 19, 0.85);
       display: none;
       align-items: center;
       justify-content: center;
@@ -850,21 +775,22 @@
     .modal-card {
       max-width: 460px;
       width: 100%;
-      background: var(--nexus-surface-modal);
-      border: 1px solid var(--nexus-border-focus);
+      background: var(--nexus-surface-card);
+      color: var(--nexus-text-main);
+      border: 4px solid var(--nexus-border-ink);
       border-radius: var(--nexus-radius-lg);
-      padding: 22px 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.88);
+      padding: 20px 22px;
+      box-shadow: var(--nexus-hard-shadow-lg);
     }
     .modal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .modal-title {
-      font-size: 1rem;
-      font-weight: 700;
+      font-size: 0.98rem;
+      font-weight: 900;
       color: var(--nexus-text-main);
       display: flex;
       align-items: center;
@@ -873,23 +799,15 @@
     .close-btn {
       min-width: 44px;
       min-height: 44px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--nexus-border-subtle);
+      background: var(--nexus-surface-card-elevated);
+      border: 2.5px solid var(--nexus-border-ink);
       border-radius: var(--nexus-radius-sm);
-      color: var(--nexus-text-secondary);
+      box-shadow: var(--nexus-hard-shadow-xs);
+      color: var(--nexus-text-main);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-    }
-    .form-group {
-      margin-bottom: 12px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 0.76rem;
-      color: var(--nexus-text-secondary);
-      margin-bottom: 4px;
     }
 
     /* Toast 提示 */
@@ -899,13 +817,14 @@
       left: 50%;
       transform: translateX(-50%) translateY(20px);
       z-index: 9500;
-      background: var(--nexus-surface-modal);
-      border: 1px solid var(--nexus-accent-cyan);
+      background: var(--nexus-accent-yellow);
+      border: 3px solid var(--nexus-border-ink);
       border-radius: var(--nexus-radius-pill);
       padding: 8px 18px;
       font-size: 0.8rem;
+      font-weight: 900;
       color: var(--nexus-text-main);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75);
+      box-shadow: var(--nexus-hard-shadow-md);
       opacity: 0;
       pointer-events: none;
       transition: all 0.2s ease;
@@ -923,53 +842,53 @@
     }
     @media (max-height: 460px) {
       #portal-shell { padding: 6px 10px; gap: 6px; }
-      .topbar { height: 44px; padding: 0 10px; }
+      .topbar { min-height: 44px; padding: 2px 10px; }
       .hero-stage { padding: 8px 12px; gap: 6px; }
-      .hero-game-icon { width: 42px; height: 42px; border-radius: 10px; }
+      .hero-game-icon { width: 42px; height: 42px; border-radius: 8px; }
       .hero-game-name { font-size: 1.05rem; }
       .hero-tagline { display: none; }
-      .inspector-tabs { gap: 4px; padding-bottom: 5px; }
-      .tab-btn { min-height: 36px; padding: 0 7px; font-size: 0.68rem; gap: 4px; }
+      .inspector-tabs { gap: 6px; padding-bottom: 5px; }
+      /* 铁律：即便是 max-height: 460px 的手机横屏，.tab-btn 最小触控高度依然强制 >= 44px */
+      .tab-btn { min-height: 44px; padding: 0 10px; font-size: 0.74rem; gap: 5px; }
       .info-grid { gap: 6px; margin-bottom: 6px; }
       .stat-box { padding: 5px 8px; }
-      .stat-val { font-size: 0.78rem; }
+      .stat-val { font-size: 0.76rem; }
       .feature-item { padding: 6px 8px; }
-      .feature-item h4 { font-size: 0.76rem; margin-bottom: 2px; }
-      .feature-item p { font-size: 0.7rem; line-height: 1.35; }
+      .feature-item h4 { font-size: 0.74rem; margin-bottom: 2px; }
+      .feature-item p { font-size: 0.68rem; line-height: 1.35; }
       .hero-actions { padding-top: 6px; gap: 8px; }
-      .matrix-roster { padding: 8px; gap: 5px; }
-      .game-card-item { min-height: 46px; padding: 6px 8px; gap: 8px; }
-      .card-thumb { width: 34px; height: 34px; }
-      .card-name { font-size: 0.8rem; }
-      .card-sub { font-size: 0.68rem; }
+      .matrix-roster { padding: 6px 8px; gap: 4px; }
+      .roster-header { padding: 0 2px 4px; }
+      .roster-list { gap: 4px; }
+      .game-card-item { min-height: 44px; padding: 3px 8px; gap: 8px; }
+      .card-thumb { width: 28px; height: 28px; padding: 2px; }
+      .card-name { font-size: 0.76rem; line-height: 1.15; }
+      .card-sub { font-size: 0.62rem; margin-top: 1px; line-height: 1.1; }
     }
     @media (max-width: 760px) {
       .brand-sub { display: none; }
       .workspace-grid { grid-template-columns: 64fr 36fr; }
       .info-grid { grid-template-columns: repeat(2, 1fr); }
-      .feature-list, .p2p-panel { grid-template-columns: 1fr; }
+      .feature-list { grid-template-columns: 1fr; }
     }
   </style>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
 
-  <!-- 移动端全屏横屏强守护弹窗 (纯 SVG 矢量图标) -->
-  <div id="screen-guard" role="dialog" aria-modal="true">
+  <!-- 移动端全屏横屏强守护弹窗 (STYLE-57×39 新粗野孔版画报贴纸风) -->
+  <div id="screen-guard" role="dialog" aria-modal="true" aria-labelledby="guard-dialog-title">
     <div class="guard-dialog">
       <div class="guard-icon">
-        <svg class="nx-ico" style="width:32px; height:32px;" viewBox="0 0 24 24">
-          <rect x="6" y="2" width="12" height="20" rx="2"/>
-          <line x1="12" y1="18" x2="12.01" y2="18"/>
-        </svg>
+        <img src="./sprites/badge-fullscreen.svg" alt="Landscape Guard" style="width:42px; height:42px;" />
       </div>
-      <div class="guard-title">请横置设备以启动全屏矩阵</div>
+      <div class="guard-title" id="guard-dialog-title">请横置设备以启动全屏矩阵</div>
       <p class="guard-desc">
         Nexus-Mini 采用掌机级 70:30 横屏操控布局。请将手机物理横置，或点击下方按钮一键锁定全屏横屏视野。
       </p>
       <div class="guard-actions">
         <button class="primary-cta" id="btn-guard-lock" style="width:100%;">
-          <svg class="nx-ico" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>
+          <img src="./sprites/badge-launch.svg" alt="" class="nx-badge-img" />
           <span>开启全屏横屏模式</span>
         </button>
         <button class="secondary-cta" id="btn-guard-bypass" style="width:100%;">
@@ -979,14 +898,14 @@
     </div>
   </div>
 
-  <!-- 平台门户主界面 -->
+  <!-- 第一层：平台主页 (Tier 1: Portal Homepage — 仅含游戏清单、规则简介、画面截图) -->
   <div id="portal-shell">
-    <!-- 顶部指挥栏 (第 1 层 · 平台主页：仅展示游戏清单、游戏规则介绍与游戏画面截图) -->
+    <!-- 顶部新粗野画报刊头栏 -->
     <header class="topbar">
       <div class="brand">
         <img src="./icon.svg" alt="Nexus-Mini" class="brand-logo" />
         <span class="brand-title">NEXUS-MINI</span>
-        <span class="brand-sub">第 1 层 · 平台主页 (游戏清单 · 规则介绍 · 画面截图)</span>
+        <span class="brand-sub">STAGE 1 · 潮玩街机微游总集画报</span>
         <span class="status-pill">
           <span class="status-dot"></span>
           <span>零远端通信 · 本地单机 &amp; 局域网 1~5ms</span>
@@ -994,17 +913,17 @@
       </div>
       <div class="topbar-controls">
         <button class="pill-btn" id="btn-pwa-install" title="安装到手机桌面 (支持离线启动)">
-          <svg class="nx-ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <img src="./sprites/badge-pwa.svg" alt="" class="nx-badge-img" />
           <span>安装桌面版</span>
         </button>
         <button class="pill-btn" id="btn-fullscreen-toggle" title="切换全屏">
-          <svg class="nx-ico" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-          <span>全屏</span>
+          <img src="./sprites/badge-fullscreen.svg" alt="" class="nx-badge-img" />
+          <span>全屏横屏</span>
         </button>
       </div>
     </header>
 
-    <!-- 70:30 掌机主从工作区 -->
+    <!-- 70:30 掌机主从展厅工作区 -->
     <main class="workspace-grid">
       <!-- 左侧 70%：当前选中微游规则介绍与画面截图展台 -->
       <section class="hero-stage">
@@ -1015,7 +934,7 @@
               <div class="hero-meta-top">
                 <span class="code-tag" id="hero-code">GAME-02</span>
                 <span class="mode-tag" id="hero-multiplayer-badge">客户端单机 + 局域网 1~5ms 双环境</span>
-                <span class="code-tag" id="hero-genre" style="color:#94a3b8; border-color:rgba(255,255,255,0.12); background:rgba(255,255,255,0.04);">深空战术射击</span>
+                <span class="genre-tag" id="hero-genre">深空战术射击</span>
               </div>
               <div>
                 <span class="hero-game-name" id="hero-name">星轨防线</span>
@@ -1026,14 +945,14 @@
           </div>
         </div>
 
-        <!-- 2-Tab 详情导航 (第 1 层主页严格限定：游戏规则介绍 & 游戏画面截图) -->
+        <!-- 2-Tab 详情导航 (第 1 层主页严格限定：游戏规则介绍 & 游戏画面截图，触控热区 >= 44px) -->
         <nav class="inspector-tabs" id="inspector-tabs">
           <button class="tab-btn active" data-tab="overview">
-            <svg class="nx-ico" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            <span>游戏规则介绍</span>
+            <img src="./sprites/badge-rules.svg" alt="" class="nx-badge-img" />
+            <span>游戏规则简介</span>
           </button>
           <button class="tab-btn" data-tab="screenshots">
-            <svg class="nx-ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <img src="./sprites/badge-screenshots.svg" alt="" class="nx-badge-img" />
             <span>游戏画面截图</span>
           </button>
         </nav>
@@ -1041,24 +960,24 @@
         <!-- 动态详情内容区 -->
         <div class="inspector-body" id="inspector-content"></div>
 
-        <!-- 底部操作栏 (唯一 10% 电光青视觉重心：进入第 2 层游戏菜单) -->
+        <!-- 底部操作栏 (唯一 10% 酸柠荧光绿贴纸主焦点：进入第 2 层游戏菜单) -->
         <footer class="hero-actions">
-          <button class="primary-cta" id="btn-launch-game" style="white-space:nowrap;">
-            <svg class="nx-ico" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>
+          <button class="primary-cta" id="btn-launch-game">
+            <img src="./sprites/badge-launch.svg" alt="" class="nx-badge-img" />
             <span id="btn-launch-label">进入「星轨防线」游戏菜单</span>
           </button>
           <button class="secondary-cta" id="btn-open-pwa-guide">
-            <svg class="nx-ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <img src="./sprites/badge-pwa.svg" alt="" class="nx-badge-img" />
             <span>安装桌面/离线包</span>
           </button>
         </footer>
       </section>
 
-      <!-- 右侧 30%：平台游戏清单 -->
+      <!-- 右侧 30%：平台游戏清单 (5 款微游流派色带卡片) -->
       <aside class="matrix-roster">
         <div class="roster-header">
           <span class="roster-title">
-            <svg class="nx-ico" style="color:var(--nexus-accent-cyan);" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4m-2-2v4m7-2h.01m2.99 0h.01"/></svg>
+            <img src="./sprites/badge-roster.svg" alt="" class="nx-badge-img" />
             <span>平台游戏清单</span>
           </span>
           <span class="roster-count">5 GAMES</span>
@@ -1070,62 +989,28 @@
 
   <!-- 全屏内联微游容器 (Arcade Fullscreen Frame) -->
   <div id="arcade-frame-overlay">
-    <iframe id="game-iframe" title="Nexus-Mini Fullscreen Game Frame" allow="fullscreen; autoplay" style="width:100%;height:100%;border:none;display:block;background:#030712;"></iframe>
-  </div>
-
-  <!-- 统帅身份登录与切换模态弹窗 -->
-  <div class="modal-backdrop" id="auth-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <span class="modal-title">
-          <svg class="nx-ico" style="color:var(--nexus-accent-cyan);" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>统帅身份鉴权与数据隔离中心</span>
-        </span>
-        <button class="close-btn" data-close="auth-modal" aria-label="Close">
-          <svg class="nx-ico" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <p style="font-size:0.78rem; color:var(--nexus-text-secondary); margin-bottom:12px; line-height:1.5;">
-        所有微游资产按 <code style="color:var(--nexus-accent-cyan);">${userId}#${gameId}</code> 独立命名空间保存在您的设备本地。内置最高统帅账号：<strong style="color:var(--nexus-accent-gold);">admin</strong> / 密码：<strong style="color:var(--nexus-accent-gold);">nexus2026</strong>（预置满级测试货币）。
-      </p>
-      <div class="form-group">
-        <label>登录账号 (Username)</label>
-        <input type="text" id="input-username" class="nexus-input" style="width:100%;" placeholder="输入 admin 或自定义账号" value="admin" />
-      </div>
-      <div class="form-group">
-        <label>访问密码 (Password)</label>
-        <input type="password" id="input-password" class="nexus-input" style="width:100%;" placeholder="输入密码 (admin 默认为 nexus2026)" value="nexus2026" />
-      </div>
-      <div class="form-group">
-        <label>显示昵称 (注册新账号时生效)</label>
-        <input type="text" id="input-nickname" class="nexus-input" style="width:100%;" placeholder="例如：星轨先锋号" />
-      </div>
-      <div style="display:flex; gap:8px; margin-top:16px;">
-        <button class="primary-cta" id="btn-do-login" style="font-size:0.84rem;">登录 / 注册账号</button>
-        <button class="secondary-cta" id="btn-do-guest" style="font-size:0.78rem;">切换免密游客</button>
-      </div>
-    </div>
+    <iframe id="game-iframe" title="Nexus-Mini Fullscreen Game Frame" allow="fullscreen; autoplay" style="width:100%;height:100%;border:none;display:block;background:#171513;"></iframe>
   </div>
 
   <!-- PWA 桌面安装与离线包引导模态弹窗 -->
-  <div class="modal-backdrop" id="pwa-modal">
+  <div class="modal-backdrop" id="pwa-modal" role="dialog" aria-modal="true" aria-labelledby="pwa-modal-title">
     <div class="modal-card">
       <div class="modal-header">
-        <span class="modal-title">
-          <svg class="nx-ico" style="color:var(--nexus-accent-cyan);" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span class="modal-title" id="pwa-modal-title">
+          <img src="./sprites/badge-pwa.svg" alt="" class="nx-badge-img" />
           <span>安装到手机桌面 / 离线畅玩指南</span>
         </span>
-        <button class="close-btn" data-close="pwa-modal" aria-label="Close">
+        <button class="close-btn" data-close="pwa-modal" aria-label="关闭窗口">
           <svg class="nx-ico" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
-      <div style="font-size:0.8rem; color:var(--nexus-text-secondary); line-height:1.65; display:flex; flex-direction:column; gap:10px;">
+      <div style="font-size:0.8rem; color:var(--nexus-text-secondary); line-height:1.6; display:flex; flex-direction:column; gap:10px;">
         <div class="stat-box">
-          <div style="color:var(--nexus-accent-cyan); font-weight:700; margin-bottom:4px;">Android / 桌面 Chrome / Edge 用户</div>
+          <div style="color:var(--nexus-accent-orange); font-weight:900; margin-bottom:4px;">Android / 桌面 Chrome / Edge 用户</div>
           <p>点击下方「立即触发系统安装」，或点击浏览器右上角菜单选择<strong>「安装应用 / 添加到主屏幕」</strong>，即可生成独立桌面图标并支持断网开启手机热点局域网游玩。</p>
         </div>
         <div class="stat-box">
-          <div style="color:var(--nexus-accent-gold); font-weight:700; margin-bottom:4px;">Apple iOS (iPhone / iPad Safari) 用户</div>
+          <div style="color:var(--nexus-text-main); font-weight:900; margin-bottom:4px;">Apple iOS (iPhone / iPad Safari) 用户</div>
           <p>1. 点击 Safari 工具栏的 <strong>「分享按钮」</strong>；<br/>2. 在菜单中选择 <strong>「添加到主屏幕」</strong>；<br/>3. 从桌面图标启动即可获得 100% 纯正无地址栏全屏横屏 App 体验。</p>
         </div>
       </div>
@@ -1136,16 +1021,16 @@
     </div>
   </div>
 
-  <!-- 贴图与蓝图大图预览弹窗 -->
-  <div class="modal-backdrop" id="img-modal">
+  <!-- 实机画面截图大图预览弹窗 -->
+  <div class="modal-backdrop" id="img-modal" role="dialog" aria-modal="true" aria-labelledby="img-modal-title">
     <div class="modal-card" style="max-width: 680px; padding: 14px;">
       <div class="modal-header" style="margin-bottom:8px;">
-        <span class="modal-title" id="img-modal-title">贴图与蓝图预览</span>
-        <button class="close-btn" data-close="img-modal" aria-label="Close">
+        <span class="modal-title" id="img-modal-title">实机游戏画面截图预览</span>
+        <button class="close-btn" data-close="img-modal" aria-label="关闭预览">
           <svg class="nx-ico" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
-      <img id="img-modal-target" src="./icon.svg" alt="Preview" style="width:100%; max-height:68dvh; object-fit:contain; border-radius:8px; background:#030712; padding:12px;" />
+      <img id="img-modal-target" src="./icon.svg" alt="Preview" style="width:100%; max-height:68dvh; object-fit:contain; border-radius:8px; border:3px solid #111111; background:#171513; padding:8px;" />
     </div>
   </div>
 
@@ -1206,44 +1091,61 @@
     })();
 
     /* =========================================================================
-     * 2. 5 大收录微游完整数据清单与 60 项三层 SVG 精灵贴图索引
+     * 2. 5 大收录微游目录、规则简介与实机画面截图清单 (第一层纯粹橱窗数据)
      * ========================================================================= */
     const GAMES_CATALOG = [
+      {
+        id: 'tank-battle',
+        seq: 'GAME-01',
+        name: '钢铁防线',
+        en: 'TANK BATTLE',
+        genre: '基地合作守卫 · STYLE-19+43',
+        entryUrl: './tank/index.html',
+        icon: './assets/tank-battle/icon.svg',
+        storageKeyPrefix: 'NEXUS_MINI_TANK_',
+        multiplayerMode: '本地单机 / 局域网 1~5ms 双坦协同',
+        tagline: '经典坦克大战现代化重构 · 局域网双通道跨手机实时协同守卫鹰标总部',
+        metrics: [
+          { label: '核心玩法', val: '26×26 网格基地守卫' },
+          { label: '美术流派', val: 'STYLE-19 复合反应装甲' },
+          { label: '运行环境', val: '本地单机 + 局域网双通道' }
+        ],
+        features: [
+          { title: '一人一机局域网协同', desc: '摒弃拥挤的手机同屏双摇杆，两名指挥官各自使用手机在同一 Wi-Fi/热点下以 1~5ms 延迟并肩守卫鹰标总部。' },
+          { title: '复合反应装甲与掩体破坏', desc: '红砖墙支持四象限逐块击碎，钛合金钢墙抵御常规炮火，光学迷彩林提供战术隐蔽伏击。' },
+          { title: '6 模块独立游戏菜单中枢', desc: '点击下方按钮进入第 2 层游戏菜单，即可查看动态骨骼图鉴、修改触控设置、整备坦克硬币或创建局域网房间。' },
+          { title: '双向断线 AI 僚机自愈', desc: '无论单人游玩还是局域网任一方来电切后台，3.0 秒内自动切换 AI 战术僚机无缝接管防线。' }
+        ],
+        gallery: [
+          { src: './assets/tank-battle/preview.png', title: '钢铁防线 · 26×26 战地橄榄防滑钢板游玩界面截图' }
+        ],
+        defaultSave: (isAdmin) => ({
+          currency: { tankCoins: isAdmin ? 999999 : 500 },
+          stats: { wins: isAdmin ? 999 : 5, highScore: isAdmin ? 99999 : 6800 },
+          rank: isAdmin ? 4 : 1
+        })
+      },
       {
         id: 'star-defender',
         seq: 'GAME-02',
         name: '星轨防线',
         en: 'STAR DEFENDER',
-        genre: '深空战术射击',
+        genre: '深空战术射击 · STYLE-20+64',
         entryUrl: './star/index.html',
         icon: './assets/star-defender/icon.svg',
         storageKeyPrefix: 'NEXUS_MINI_SD_',
-        multiplayerMode: '一人一机 · 局域网 1~5ms 护航 / URL 星域挑战',
+        multiplayerMode: '本地单机 / 局域网 1~5ms 护航编队',
         tagline: '俯视角太空生存拦截射击 · 360° 船坞模块化改装与百波战役数值体系',
         metrics: [
           { label: '物理引擎', val: '牛顿惯性 + 推重比矢量' },
-          { label: '专属精灵贴图', val: '12 套多层 SVG 星舰与异虫' },
-          { label: '联机模式', val: '局域网双通道一人一机' }
+          { label: '美术流派', val: 'STYLE-20 航宇全息遥测' },
+          { label: '运行环境', val: '本地单机 + 局域网双通道' }
         ],
         features: [
-          { title: '四大主力战舰底盘贴图', desc: '涵盖 Delta 先锋舰、Wing 巡洋舰、Ring 环轨舰与 Cross 歼星舰，均配备三层矢量装甲贴图。' },
-          { title: '自动火控与边界投射', desc: '内置离屏威胁边界交点投射雷达，左手矢量推进摇杆 + 右手战术武器组，专为手机横屏防遮挡打造。' },
-          { title: '国际单位制百波经济', desc: '严格对账的百波战役血量与战功/残骸经济模型，10 大星域关底 Boss 具备独立部位破坏机制。' },
+          { title: '飞控与 360° 火控解耦', desc: '左手矢量推进摇杆控制星舰漂移走位，右手独立控制 360° 炮塔瞄准与过载技能释放，守护轨道母核。' },
+          { title: '四大主力战舰船坞改装', desc: '在第 2 层游戏菜单「资材管理」中自由装配 Delta 先锋舰、Wing 巡洋舰、Ring 环轨舰与 Cross 歼星舰模块。' },
+          { title: '国际单位制百波星域战役', desc: '涵盖 W1~W100 星域波次与 10 大关底泰坦首领，支持任意已解锁星域检查点自由选关挑战。' },
           { title: '离散瞬态脉冲音效', desc: '全武器采用 <=0.18s 瞬态脉冲合成，激光与电磁炮均为离散触发，彻底杜绝持续嗡鸣听觉疲劳。' }
-        ],
-        sprites: [
-          { src: './assets/star-defender/sprites/hull-delta.svg', name: 'Delta 先锋舰' },
-          { src: './assets/star-defender/sprites/hull-wing.svg', name: 'Wing 巡洋舰' },
-          { src: './assets/star-defender/sprites/hull-ring.svg', name: 'Ring 环轨舰' },
-          { src: './assets/star-defender/sprites/hull-cross.svg', name: 'Cross 歼星舰' },
-          { src: './assets/star-defender/sprites/station-core.svg', name: '星轨空间站' },
-          { src: './assets/star-defender/sprites/weapon-turret.svg', name: '火控炮塔' },
-          { src: './assets/star-defender/sprites/asteroid-iron.svg', name: '铁镍陨石' },
-          { src: './assets/star-defender/sprites/asteroid-crystal.svg', name: '晶簇陨石' },
-          { src: './assets/star-defender/sprites/enemy-swarm.svg', name: '异虫飞蝗' },
-          { src: './assets/star-defender/sprites/enemy-lurker.svg', name: '相位潜行者' },
-          { src: './assets/star-defender/sprites/enemy-carrier.svg', name: '腐蚀蜂巢舰' },
-          { src: './assets/star-defender/sprites/boss-leviathan.svg', name: '虚空利维坦' }
         ],
         gallery: [
           { src: './assets/star-defender/preview.png', title: '星轨防线 · 实机深空拦截游玩界面截图' },
@@ -1254,99 +1156,29 @@
           currency: { warMerits: isAdmin ? 999999 : 1200, scraps: isAdmin ? 99999 : 150 },
           unlockedShips: isAdmin ? 4 : 1,
           highestWave: isAdmin ? 100 : 12
-        }),
-        formatSaveMetrics: (data) => [
-          { label: '独立货币 · 战功 (War Merits)', val: (data.currency?.warMerits ?? 0).toLocaleString(), gold: true },
-          { label: '独立货币 · 合金残骸 (Scraps)', val: (data.currency?.scraps ?? 0).toLocaleString(), gold: true },
-          { label: '已解锁星舰 / 最高波次', val: `${data.unlockedShips ?? 1} 艘 / 第 ${data.highestWave ?? 1} 波` }
-        ]
-      },
-      {
-        id: 'tank-battle',
-        seq: 'GAME-01',
-        name: '钢铁防线',
-        en: 'TANK BATTLE',
-        genre: '基地合作守卫',
-        entryUrl: './tank/index.html',
-        icon: './assets/tank-battle/icon.svg',
-        storageKeyPrefix: 'NEXUS_MINI_TANK_',
-        multiplayerMode: '一人一机 · 局域网 1~5ms 双坦协同守基地',
-        tagline: '经典坦克大战现代化重构 · 局域网双通道跨手机实时协同守卫鹰标总部',
-        metrics: [
-          { label: '核心玩法', val: '26×26 网格基地守卫' },
-          { label: '专属精灵贴图', val: '12 套多层装甲与地形贴图' },
-          { label: '联机架构', val: '局域网双通道 + 双向防死锁' }
-        ],
-        features: [
-          { title: '一人一机局域网协同', desc: '摒弃拥挤的手机同屏双摇杆，两名指挥官各自使用自己手机在同一 Wi-Fi/热点下以 1~5ms 延迟并肩守卫基地。' },
-          { title: '全套多层矢量战车与掩体', desc: '1P/2P 主战坦克、灰狼轻坦、重甲猛犸、攻城列车及红砖/钛钢/迷彩林全部采用三层结构 SVG 贴图。' },
-          { title: '独立坦克硬币与军衔', desc: '对局获得的坦克防御硬币独立保存在当前统帅名下，可解锁重型双管主战坦克与基地钢化护盾。' },
-          { title: '双向断线 AI 僚机自愈', desc: '无论单人游玩还是局域网任一方来电切后台，3 秒内自动切换 AI 战术僚机无缝接管防线。' }
-        ],
-        previewImg: './assets/tank-battle/preview.png',
-        sprites: [
-          { src: './assets/tank-battle/sprites/player-tank-p1.svg', name: '1P 先锋主战坦' },
-          { src: './assets/tank-battle/sprites/player-tank-p2.svg', name: '2P 卫戌双管坦' },
-          { src: './assets/tank-battle/sprites/enemy-scout.svg', name: '灰狼轻坦' },
-          { src: './assets/tank-battle/sprites/enemy-raider.svg', name: '疾风猎犬' },
-          { src: './assets/tank-battle/sprites/enemy-shooter.svg', name: '火力射手' },
-          { src: './assets/tank-battle/sprites/enemy-mammoth.svg', name: '重甲猛犸' },
-          { src: './assets/tank-battle/sprites/enemy-boss-train.svg', name: '铁幕攻城列车' },
-          { src: './assets/tank-battle/sprites/base-eagle.svg', name: '鹰标核心总部' },
-          { src: './assets/tank-battle/sprites/tile-brick.svg', name: '纳米红砖墙' },
-          { src: './assets/tank-battle/sprites/tile-steel.svg', name: '钛合金钢墙' },
-          { src: './assets/tank-battle/sprites/tile-bush.svg', name: '光学迷彩林' },
-          { src: './assets/tank-battle/sprites/pickup-crate.svg', name: '战术补给箱' }
-        ],
-        gallery: [
-          { src: './assets/tank-battle/preview.png', title: '钢铁防线 · 26×26 战地橄榄防滑钢板游玩界面截图' }
-        ],
-        defaultSave: (isAdmin) => ({
-          currency: { tankCoins: isAdmin ? 999999 : 500 },
-          stats: { wins: isAdmin ? 999 : 5, highScore: isAdmin ? 99999 : 6800 },
-          rank: isAdmin ? 4 : 1
-        }),
-        formatSaveMetrics: (data) => [
-          { label: '独立货币 · 坦克防御硬币', val: (data.currency?.tankCoins ?? 0).toLocaleString(), gold: true },
-          { label: '历史最高积分', val: (data.stats?.highScore ?? 0).toLocaleString(), gold: true },
-          { label: '当前战车军衔 / 胜场', val: `Rank ${data.rank ?? 1} / ${data.stats?.wins ?? 0} 胜` }
-        ]
+        })
       },
       {
         id: 'gold-miner',
         seq: 'GAME-03',
         name: '掘金先锋',
         en: 'GOLD MINER VANGUARD',
-        genre: '物理动量益智',
+        genre: '物理动量采掘 · STYLE-21',
         entryUrl: './miner/index.html',
         icon: './assets/gold-miner/icon.svg',
         storageKeyPrefix: 'NEXUS_MINI_MINER_',
-        multiplayerMode: '一人一机 · 局域网双钩合力起吊 / URL 残影竞速',
+        multiplayerMode: '本地单机 / 局域网双钩合力起吊',
         tagline: '60Hz 简谐角摆与动量起吊物理 · 局域网跨手机双钩合力起吊 700kg 远古巨金',
         metrics: [
           { label: '物理核心', val: '60Hz 简谐角摆动力学' },
-          { label: '专属精灵贴图', val: '12 套多层机甲与矿藏贴图' },
-          { label: '联机特色', val: '局域网双钩合力 + 残影竞速' }
+          { label: '美术流派', val: 'STYLE-21 黄铜晶洞折光' },
+          { label: '联机特色', val: '局域网双钩合力 + 种子挑战' }
         ],
         features: [
           { title: '真实质量-速度回收方程', desc: '巨型金块、高密钻石、神秘福袋与连锁炸药桶具备精确的质量阻尼与双钩 2.2 倍合力起吊提速。' },
-          { title: '全套精细矿物与机甲贴图', desc: '彻底摒弃简陋圆块与 Emoji，配备多层高光折射钻石、多面体巨金、三爪合金抓钩与采矿机甲贴图。' },
-          { title: '局间杂货铺博弈', desc: '雷管炸药、大力神生力水、幸运四叶草、钻石抛光剂与岩石收藏书构建深度局间资源分配策略。' },
-          { title: 'URL 幽灵矿工异步竞速', desc: '生成带随机种子的挑战链接发给好友，好友在自己手机上点开即可与你的半透明抓钩残影同场抢金。' }
-        ],
-        sprites: [
-          { src: './assets/gold-miner/sprites/miner-rig-p1.svg', name: '1P 掘金机甲' },
-          { src: './assets/gold-miner/sprites/miner-rig-p2.svg', name: '2P 勘探机甲' },
-          { src: './assets/gold-miner/sprites/claw-hook.svg', name: '三爪合金抓钩' },
-          { src: './assets/gold-miner/sprites/gold-nugget.svg', name: '标准高纯金矿' },
-          { src: './assets/gold-miner/sprites/gold-giant.svg', name: '700kg 远古巨金' },
-          { src: './assets/gold-miner/sprites/mineral-rock.svg', name: '深层花岗岩石' },
-          { src: './assets/gold-miner/sprites/mineral-diamond.svg', name: '极光折射钻石' },
-          { src: './assets/gold-miner/sprites/mystery-bag.svg', name: '神秘物资盲盒' },
-          { src: './assets/gold-miner/sprites/hazard-tnt.svg', name: 'TNT 高爆桶' },
-          { src: './assets/gold-miner/sprites/item-dynamite.svg', name: '救险高能雷管' },
-          { src: './assets/gold-miner/sprites/item-tonic.svg', name: '大力神液压剂' },
-          { src: './assets/gold-miner/sprites/item-clover.svg', name: '四叶草芯片' }
+          { title: '地心三层玄武岩与晶洞折光', desc: '配备多层高光 Voronoi 折射钻石、多面体巨金、黑黄警示斜纹机甲与三爪合金抓钩动态骨骼。' },
+          { title: '第 2 层菜单杂货铺整备', desc: '在游戏菜单「资材管理」中预购雷管炸药、大力神生力水、幸运四叶草与钻石抛光剂。' },
+          { title: '离线热点与种子挑战口令', desc: '支持在无外网手机热点下生成 SDP 离线握手码双人同抓，或通过种子口令比拼同矿脉最高产值。' }
         ],
         gallery: [
           { src: './assets/gold-miner/preview.png', title: '掘金先锋 · 地底三段岩层与双钩合力起吊游玩界面截图' }
@@ -1355,151 +1187,86 @@
           currency: { goldBars: isAdmin ? 999999 : 850 },
           maxStage: isAdmin ? 50 : 6,
           bestCash: isAdmin ? 888888 : 14200
-        }),
-        formatSaveMetrics: (data) => [
-          { label: '独立货币 · 储备金条', val: (data.currency?.goldBars ?? 0).toLocaleString(), gold: true },
-          { label: '单局最高掘金纪录', val: '$' + (data.bestCash ?? 0).toLocaleString(), gold: true },
-          { label: '最高突破矿层', val: `第 ${data.maxStage ?? 1} 层矿脉` }
-        ]
+        })
       },
       {
         id: 'pudding-defense',
         seq: 'GAME-04',
         name: '保卫布丁',
         en: 'PUDDING DEFENSE',
-        genre: 'Q萌治愈系塔防',
+        genre: 'Q萌果冻塔防 · STYLE-11+08',
         entryUrl: './pudding/index.html',
         icon: './assets/pudding-defense/icon.svg',
         storageKeyPrefix: 'NEXUS_MINI_PUDDING_',
-        multiplayerMode: '一人一机 · 局域网双人协同建塔与集火',
-        tagline: '16×9 棋盘清障开荒与波波布丁守护 · 甜品卫士多阶进化树与贝塞尔抛物线弹道',
+        multiplayerMode: '本地单机 / 局域网双厨协同建塔',
+        tagline: '12×7 马卡龙棋盘清障开荒与焦糖布丁守护 · 甜品卫士多阶进化树',
         metrics: [
-          { label: '地图规格', val: '16×9 标准战术网格' },
-          { label: '专属精灵贴图', val: '12 套甜品卫士与贪吃怪贴图' },
+          { label: '地图规格', val: '12×7 烘焙甜点网格' },
+          { label: '美术流派', val: 'STYLE-11 果冻次表面散射' },
           { label: '音频引擎', val: 'Web Audio Q弹瞬态合成' }
         ],
         features: [
-          { title: '清障开荒与建塔双轨决策', desc: '利用攻击空档集火清除地图上的方糖与奶油蛋糕路障，腾出黄金炮位并爆出高额糖晶金币。' },
-          { title: '五大甜品卫士专属矢量精灵', desc: '波波连射塔、冰霜小熊塔、太阳蛋黄炮、泡泡糖导弹井与彩虹棱镜塔均配备精细 SVG 矢量贴图。' },
-          { title: '贝塞尔平滑轨迹与零外挂音效', desc: '怪物沿高阶贝塞尔曲线丝滑行进，搭配 <=0.18s 清脆水滴气泡离散音效，绝不刺耳。' },
+          { title: '清障开荒与建塔双轨决策', desc: '利用攻击空档手动锁定集火清除地图上的方糖与奶油蛋糕路障，腾出黄金炮位并爆出高额糖晶金币。' },
+          { title: '甜品卫士多阶进化树', desc: '波波连射塔、冰霜北极熊塔、太阳蛋黄炮与泡泡糖导弹井均配备 100% 圆润三次贝塞尔果冻贴图。' },
+          { title: '贪吃怪兽特殊词缀反制', desc: '针对曲奇护盾怪、果冻分裂怪与发条野猪合理搭配减速场与高爆焦糖炮，守护终点皇家布丁。' },
           { title: '局域网一人一机双防区协同', desc: '两名玩家各自在手机上负责左右防区，支持跨机糖晶互赠、集火标点与全图暴风雪合体技。' }
-        ],
-        sprites: [
-          { src: './assets/pudding-defense/sprites/pudding-core.svg', name: '皇家焦糖布丁' },
-          { src: './assets/pudding-defense/sprites/tower-boba.svg', name: '波波连射塔' },
-          { src: './assets/pudding-defense/sprites/tower-frost.svg', name: '冰霜北极熊塔' },
-          { src: './assets/pudding-defense/sprites/tower-sun.svg', name: '太阳蛋黄炮' },
-          { src: './assets/pudding-defense/sprites/tower-missile.svg', name: '泡泡糖导弹井' },
-          { src: './assets/pudding-defense/sprites/tower-prism.svg', name: '彩虹棱镜塔' },
-          { src: './assets/pudding-defense/sprites/obstacle-sugar.svg', name: '晶莹方糖路障' },
-          { src: './assets/pudding-defense/sprites/obstacle-cake.svg', name: '奶油蛋糕路障' },
-          { src: './assets/pudding-defense/sprites/monster-cookie.svg', name: '暴走曲奇怪' },
-          { src: './assets/pudding-defense/sprites/monster-boar.svg', name: '发条铁皮野猪' },
-          { src: './assets/pudding-defense/sprites/monster-jelly.svg', name: '果冻分裂怪' },
-          { src: './assets/pudding-defense/sprites/boss-glutton.svg', name: '贪吃大魔王' }
         ],
         gallery: [
           { src: './assets/pudding-defense/preview.png', title: '保卫布丁 · 可可烘焙台面与甜品卫士实机画面截图' },
-          { src: './assets/pudding-defense/combat.png', title: '保卫布丁 16×9 实机塔防交战画面' },
+          { src: './assets/pudding-defense/combat.png', title: '保卫布丁实机塔防交战画面' },
           { src: './assets/pudding-defense/levels.png', title: '章节关卡选择与心流难度曲线预览' }
         ],
         defaultSave: (isAdmin) => ({
           currency: { sugarCrystals: isAdmin ? 99999 : 600 },
           goldenPuddings: isAdmin ? 30 : 4,
           clearedChapters: isAdmin ? 5 : 1
-        }),
-        formatSaveMetrics: (data) => [
-          { label: '独立货币 · 皇家糖晶', val: (data.currency?.sugarCrystals ?? 0).toLocaleString(), gold: true },
-          { label: '无伤金布丁奖章', val: `${data.goldenPuddings ?? 0} 枚`, gold: true },
-          { label: '已通关甜品章节', val: `${data.clearedChapters ?? 1} 章` }
-        ]
+        })
       },
       {
         id: 'micro-genesis',
         seq: 'GAME-05',
         name: '微界演化',
         en: 'MICRO-GENESIS',
-        genre: '基因演化沙盘',
+        genre: '深海细胞演化 · STYLE-23+133',
         entryUrl: './genesis/index.html',
         icon: './assets/micro-genesis/icon.svg',
         storageKeyPrefix: 'NEXUS_MINI_GENESIS_',
-        multiplayerMode: '一人一机 · 局域网 1v1/2v2 (房主移动端运行房间) / URL 基因码攻擂',
+        multiplayerMode: '本地单机 / 局域网 1v1·2v2 培养皿博弈',
         tagline: '4 阶躯干与五大器官插槽 · 视觉扇形/听觉声呐视界 · 昼夜动态能量平衡与自定义基因库',
         metrics: [
-          { label: '六大界面架构', val: '介绍 / 基因库 / 化石 / 编辑 / 大厅 / 画面' },
-          { label: '专属多层贴图', val: '55 枚分阶躯干、器官与生态 SVG' },
-          { label: '局域网架构', val: '房间在房主移动端设备上直接运行' }
+          { label: '器官图谱', val: '4 阶躯干 + 五大器官槽' },
+          { label: '美术流派', val: 'STYLE-23 荧光半透细胞器' },
+          { label: '局域网架构', val: '移动端房主承载生态房间' }
         ],
         features: [
-          { title: '躯干与五大器官插槽模块化构建', desc: 'T01~T04 四阶躯干配搭核心、感官、口部、运动、功能五大插槽（16系×3阶）；体积越大基础能耗越高、转向阻尼越大，修改躯干即诞生全新种群。' },
-          { title: '感官驱动画面与昼夜动态能量平衡', desc: '装备视觉器官渲染前向彩色扇形（受黑夜/墨囊/拟态影响），装备听觉器官渲染 360° 黑白声呐脉冲轮廓；局部定时刷新食物与全员耗能构成动态平衡。' },
-          { title: '个人基因库、官方化石记录与局内加载', desc: '基因库记录玩家设计的物种，化石记录收录官方物种与 5 大首领；局内可随时修改设计、存入基因库或加载基因库（自动区分同躯干器官进化与跨躯干新种群诞生）。' },
-          { title: '移动端房主设备承载局域网 1v1/2v2 沙盘', desc: '房间直接运行于房主的移动端设备上，支持 64 活体分模式隔离配额、感官 AOI 权威视野裁剪与 3.0s 断线确定性顺位接管。' }
-        ],
-        sprites: [
-          { src: './assets/micro-genesis/sprites/torso-t1-micro.svg', name: '微型原核体 (T01)' },
-          { src: './assets/micro-genesis/sprites/torso-t2-stream.svg', name: '流线真核体 (T02)' },
-          { src: './assets/micro-genesis/sprites/torso-t3-predator.svg', name: '宽幅掠食体 (T03)' },
-          { src: './assets/micro-genesis/sprites/torso-t4-titan.svg', name: '深渊泰坦 (T04)' },
-          { src: './assets/micro-genesis/sprites/core-vacuole-lv3.svg', name: '多核代谢中枢 (Lv.3)' },
-          { src: './assets/micro-genesis/sprites/sensory-eye-lv3.svg', name: '全光谱棱镜复眼 (Lv.3)' },
-          { src: './assets/micro-genesis/sprites/sensory-ear-lv3.svg', name: '深渊高频回声耳 (Lv.3)' },
-          { src: './assets/micro-genesis/sprites/mouth-carn-lv3.svg', name: '深渊断骨利刃 (Lv.3)' },
-          { src: './assets/micro-genesis/sprites/loco-jet-lv3.svg', name: '等离子推进引擎 (Lv.3)' },
-          { src: './assets/micro-genesis/sprites/util-electric-lv3.svg', name: '雷暴电弧核心 (Lv.3)' },
-          { src: './assets/micro-genesis/sprites/env-algae.svg', name: '星芒微藻晶体' },
-          { src: './assets/micro-genesis/sprites/env-meat.svg', name: '有机肉块晶簇' }
+          { title: '躯干与五大器官插槽模块化构建', desc: 'T01~T04 四阶躯干配搭核心、感官、口部、运动、功能五大插槽；体积越大基础能耗越高，修改躯干即诞生全新种群。' },
+          { title: '感官驱动画面与昼夜能量平衡', desc: '装备视觉器官渲染前向彩色扇形，装备听觉器官渲染 360° 声呐脉冲轮廓；局部定时刷新食物与全员耗能构成动态平衡。' },
+          { title: '第 2 层基因蓝图与化石图鉴', desc: '在第 2 层游戏菜单中随时编辑自定义基因库、检视 55 枚半透明磷脂细胞器动态骨骼或切换统帅满基因点档。' },
+          { title: '局域网培养皿实时生态博弈', desc: '支持同 Wi-Fi 或手机热点下 1v1/2v2 多物种竞争，内置感官 AOI 视野裁剪与 3.0s 断线 AI 顺位接管。' }
         ],
         gallery: [
           { src: './assets/micro-genesis/preview.png', title: '微界演化 · 培养皿生态沙盘与基因工坊实机截图' },
-          { src: './assets/micro-genesis/ui-lab-preview.png', title: '页面 4：物种编辑页面（4阶躯干+五插槽+5维AI倾向）' },
-          { src: './assets/micro-genesis/ui-arena-preview.png', title: '页面 6：游戏画面（视听双感官着色+纯SVG图标HUD）' },
-          { src: './assets/micro-genesis/ui-bestiary-preview.png', title: '页面 3：化石记录（5大官方物种+5大远古首领+分级图鉴）' }
+          { src: './assets/micro-genesis/ui-lab-preview.png', title: '物种编辑界面（4阶躯干+五插槽+AI倾向）' },
+          { src: './assets/micro-genesis/ui-arena-preview.png', title: '游玩界面（视听双感官着色+纯SVG图标HUD）' },
+          { src: './assets/micro-genesis/ui-bestiary-preview.png', title: '化石记录（官方物种+远古首领+分级图鉴）' }
         ],
         defaultSave: (isAdmin) => ({
           currency: { genePoints: isAdmin ? 999999 : 1500, helixShards: isAdmin ? 9999 : 80 },
           arenaTier: isAdmin ? '虚空主宰 (Tier VI)' : '真核纪 (Tier II)',
           winStreak: isAdmin ? 88 : 3
-        }),
-        formatSaveMetrics: (data) => [
-          { label: '独立货币 · 基因值储备 (GP)', val: (data.currency?.genePoints ?? 0).toLocaleString(), gold: true },
-          { label: '自定义基因库物种数', val: `${(data.geneBank?.length ?? 3)} 种`, gold: true },
-          { label: '进化纪元天梯段位', val: `${data.arenaTier ?? '真核纪'} (${data.winStreak ?? 0} 连胜)` }
-        ]
+        })
       }
     ];
 
     /* =========================================================================
-     * 3. 平台级轻量用户鉴权与按游戏隔离存储系统 (遵循 USER_AUTH_AND_DATA_SPEC.md)
+     * 3. 客户端本地默认会话透传 (身份与存档管理收归第 2 层游戏菜单模块④)
      * ========================================================================= */
-    const REGISTRY_KEY = 'NEXUS_MINI_USERS_REGISTRY';
     const SESSION_KEY = 'NEXUS_MINI_AUTH_SESSION';
 
     function randomHex(len = 16) {
       const arr = new Uint8Array(len / 2);
       crypto.getRandomValues(arr);
       return Array.from(arr, (b) => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    function loadRegistry() {
-      try {
-        const raw = localStorage.getItem(REGISTRY_KEY);
-        const reg = raw ? JSON.parse(raw) : {};
-        if (!reg['admin']) {
-          reg['admin'] = {
-            userId: 'u_admin_001',
-            username: 'admin',
-            nickname: '最高统帅 · 管理员',
-            isGuest: false,
-            passPlainCheck: 'nexus2026',
-            createdAt: Date.now()
-          };
-          localStorage.setItem(REGISTRY_KEY, JSON.stringify(reg));
-        }
-        return reg;
-      } catch (_) {
-        return {};
-      }
     }
 
     function ensureGameSavesForUser(user) {
@@ -1513,7 +1280,6 @@
     }
 
     function getCurrentSession() {
-      loadRegistry();
       try {
         const raw = localStorage.getItem(SESSION_KEY);
         if (raw) {
@@ -1524,16 +1290,16 @@
           }
         }
       } catch (_) {}
-      const guestSession = {
-        userId: 'u_guest_' + randomHex(4),
-        username: 'guest',
-        nickname: '先锋指挥官 · 游客',
-        isGuest: true,
+      const defaultSession = {
+        userId: 'u_admin_001',
+        username: 'admin',
+        nickname: '最高统帅 · 管理员',
+        isGuest: false,
         token: randomHex(32)
       };
-      localStorage.setItem(SESSION_KEY, JSON.stringify(guestSession));
-      ensureGameSavesForUser(guestSession);
-      return guestSession;
+      localStorage.setItem(SESSION_KEY, JSON.stringify(defaultSession));
+      ensureGameSavesForUser(defaultSession);
+      return defaultSession;
     }
 
     let currentUser = getCurrentSession();
@@ -1549,25 +1315,20 @@
       showToast._timer = setTimeout(() => el.classList.remove('show'), 2600);
     }
 
-    function updateAuthUI() {
-      const label = document.getElementById('auth-nickname-label');
-      if (label) label.textContent = `${currentUser.nickname} (${currentUser.userId})`;
-    }
-
     /* =========================================================================
-     * 4. 渲染右侧 30% 微游矩阵列表与左侧 70% 详情展台
+     * 4. 渲染右侧 30% 游戏清单与左侧 70% 规则/截图展台
      * ========================================================================= */
     function renderRoster() {
       const listEl = document.getElementById('roster-list');
       listEl.innerHTML = GAMES_CATALOG.map((g) => `
-        <div class="game-card-item portal-game-card ${g.id === currentGame.id ? 'active' : ''}" data-game="${g.id}" data-game-id="${g.id}">
+        <div class="game-card-item portal-game-card ${g.id === currentGame.id ? 'active is-active' : ''}" data-game="${g.id}" data-game-id="${g.id}" role="button" tabindex="0">
           <img src="${g.icon}" alt="${g.name}" class="card-thumb" />
           <div class="card-info">
             <div class="card-title-row">
               <span class="card-name">${g.name}</span>
               <span class="card-seq">${g.seq}</span>
             </div>
-            <div class="card-sub">${g.genre} · 12 SVG 贴图就绪</div>
+            <div class="card-sub">${g.genre}</div>
           </div>
         </div>
       `).join('');
@@ -1584,29 +1345,6 @@
           }
         });
       });
-    }
-
-    function getGameSaveData(game) {
-      const key = `${game.storageKeyPrefix}${currentUser.userId}`;
-      try {
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : game.defaultSave(currentUser.userId === 'u_admin_001');
-      } catch (_) {
-        return game.defaultSave(false);
-      }
-    }
-
-    function buildChallengeUrl(game) {
-      const payload = {
-        g: game.id,
-        u: currentUser.nickname,
-        uid: currentUser.userId,
-        seed: Math.floor(100000 + Math.random() * 900000),
-        ts: Date.now()
-      };
-      const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
-      const base = window.location.origin + window.location.pathname;
-      return `${base}?game=${game.id}&challenge=${encoded}`;
     }
 
     function renderHeroStage() {
@@ -1648,28 +1386,28 @@
             ${currentGame.features.map((f) => `
               <div class="feature-item">
                 <h4>
-                  <svg class="nx-ico" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg class="nx-ico" style="color:#ff5500;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                   <span>${f.title}</span>
                 </h4>
                 <p>${f.desc}</p>
               </div>
             `).join('')}
           </div>
-          <div class="gallery-card" data-img-src="${primaryShot.src}" data-img-title="${primaryShot.title}" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;gap:12px;">
+          <div class="gallery-card" data-img-src="${primaryShot.src}" data-img-title="${primaryShot.title}" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;gap:12px;">
             <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-              <img src="${primaryShot.src}" alt="${primaryShot.title}" style="width:96px;height:46px;object-fit:cover;border-radius:6px;border:1px solid rgba(0,240,255,0.3);flex-shrink:0;" />
+              <img src="${primaryShot.src}" alt="${primaryShot.title}" style="width:96px;height:48px;object-fit:cover;border-radius:6px;border:2px solid #facc15;flex-shrink:0;" />
               <div style="min-width:0;">
-                <div style="font-size:0.76rem;font-weight:700;color:var(--nexus-text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${primaryShot.title}</div>
-                <div style="font-size:0.68rem;color:var(--nexus-text-secondary);">点击放大检视实机画面截图 · 更多角色图鉴、设置、资材与局域网管理请点击下方【进入游戏菜单】</div>
+                <div style="font-size:0.78rem;font-weight:900;color:#f4efe6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${primaryShot.title}</div>
+                <div style="font-size:0.7rem;color:#a8a29e;">点击放大检视实机画面截图 · 角色图鉴、设置、资材与局域网管理请点击下方【进入游戏菜单】</div>
               </div>
             </div>
-            <span style="font-size:0.72rem;color:var(--nexus-accent-cyan);font-weight:700;white-space:nowrap;">放大截图</span>
+            <span style="font-size:0.74rem;color:#a3e635;font-weight:900;white-space:nowrap;">放大截图 ➔</span>
           </div>
         `;
       } else {
         body.innerHTML = `
-          <div style="font-size:0.76rem; color:var(--nexus-accent-cyan); font-weight:700; margin-bottom:8px;">
-            「${currentGame.name}」实机游玩画面与设计蓝图截图 (点击任意截图全屏放大预览)
+          <div style="font-size:0.78rem; color:#111111; font-weight:900; margin-bottom:8px;">
+            「${currentGame.name}」实机游玩画面与关卡预览截图 (点击任意截图放大检视)
           </div>
           <div class="gallery-grid">
             ${(currentGame.gallery || [primaryShot]).map((img) => `
@@ -1677,7 +1415,7 @@
                 <img src="${img.src}" alt="${img.title}" style="height:132px;" />
                 <div class="gallery-caption">
                   <span>${img.title}</span>
-                  <span style="color:var(--nexus-accent-cyan);">放大检视</span>
+                  <span style="color:#a3e635;">放大检视 ➔</span>
                 </div>
               </div>
             `).join('')}
@@ -1694,8 +1432,9 @@
         });
       });
     }
+
     /* =========================================================================
-     * 5. 全屏内联微游容器：Iframe 容器承载完整 5 大微游实机代码 + PostMessage 身份握手
+     * 5. 全屏内联微游容器：加载目标游戏第 2 层 (Game Menu Hub) + 同源安全握手
      * ========================================================================= */
     function launchArcadeSandbox() {
       NexusAudio.launch();
@@ -1722,6 +1461,7 @@
     }
 
     window.addEventListener('message', (e) => {
+      if (e.origin !== window.location.origin) return;
       if (!e.data || !e.data.type) return;
       if (e.data.type === 'NEXUS_GET_AUTH') {
         const iframe = document.getElementById('game-iframe');
@@ -1730,9 +1470,9 @@
           userId: currentUser.userId,
           nickname: currentUser.nickname,
           token: currentUser.token || ''
-        }, '*');
+        }, window.location.origin);
       } else if (e.data.type === 'NEXUS_SAVE_SYNC') {
-        if (currentTab === 'save') renderHeroStage();
+        renderHeroStage();
       } else if (e.data.type === 'NEXUS_EXIT_GAME') {
         exitArcadeFrame();
       }
@@ -1794,78 +1534,6 @@
     });
 
     document.getElementById('btn-launch-game').addEventListener('click', launchArcadeSandbox);
-
-    document.getElementById('btn-quick-p2p')?.addEventListener('click', () => {
-      NexusAudio.tap();
-      currentTab = 'overview';
-      renderHeroStage();
-    });
-
-    document.getElementById('btn-auth-pill')?.addEventListener('click', () => {
-      NexusAudio.tap();
-      document.getElementById('auth-modal').classList.add('active');
-    });
-
-    document.getElementById('btn-do-login').addEventListener('click', () => {
-      const uname = document.getElementById('input-username').value.trim().toLowerCase();
-      const pwd = document.getElementById('input-password').value;
-      const nick = document.getElementById('input-nickname').value.trim();
-      if (!uname) {
-        showToast('请输入登录账号');
-        return;
-      }
-      const reg = loadRegistry();
-      if (reg[uname]) {
-        if (reg[uname].passPlainCheck && reg[uname].passPlainCheck !== pwd) {
-          showToast('访问密码不匹配 (管理员默认密码为 nexus2026)');
-          return;
-        }
-        currentUser = {
-          userId: reg[uname].userId,
-          username: reg[uname].username,
-          nickname: nick || reg[uname].nickname,
-          isGuest: false,
-          token: randomHex(32)
-        };
-      } else {
-        const newUser = {
-          userId: 'u_' + randomHex(8),
-          username: uname,
-          nickname: nick || `指挥官 · ${uname}`,
-          isGuest: false,
-          passPlainCheck: pwd,
-          createdAt: Date.now()
-        };
-        reg[uname] = newUser;
-        localStorage.setItem(REGISTRY_KEY, JSON.stringify(reg));
-        currentUser = { ...newUser, token: randomHex(32) };
-      }
-      localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
-      ensureGameSavesForUser(currentUser);
-      updateAuthUI();
-      renderHeroStage();
-      document.getElementById('auth-modal').classList.remove('active');
-      NexusAudio.success();
-      showToast(`欢迎归队，${currentUser.nickname}！独立存档空间已挂载。`);
-    });
-
-    document.getElementById('btn-do-guest').addEventListener('click', () => {
-      const guestSession = {
-        userId: 'u_guest_' + randomHex(4),
-        username: 'guest',
-        nickname: '先锋指挥官 · 游客',
-        isGuest: true,
-        token: randomHex(32)
-      };
-      currentUser = guestSession;
-      localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
-      ensureGameSavesForUser(currentUser);
-      updateAuthUI();
-      renderHeroStage();
-      document.getElementById('auth-modal').classList.remove('active');
-      NexusAudio.tap();
-      showToast('已切换至全新免密游客身份');
-    });
 
     document.querySelectorAll('[data-close]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -1930,14 +1598,13 @@
           const decoded = JSON.parse(decodeURIComponent(atob(challenge)));
           currentTab = 'overview';
           setTimeout(() => {
-            showToast(`已载入来自 [${decoded.u}] 的一人一机挑战令 (种子 #${decoded.seed})！`);
+            showToast(`已载入来自 [${decoded.u}] 的挑战口令 (种子 #${decoded.seed})！`);
           }, 400);
         } catch (_) {}
       }
     }
 
     handleUrlParams();
-    updateAuthUI();
     renderRoster();
     renderHeroStage();
     checkScreenGuard();
