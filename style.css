@@ -488,20 +488,24 @@ body.guard-locked .screen-guard-overlay {
 }
 
 /* ============================================================================
- * 紧凑横屏终端适配加固 (852x393 & 667x375 Mobile Landscape Hardening)
+ * 紧凑横屏与竖屏临时放行终端适配加固 (852x393, 667x375 & 393x852 Bypass Hardening)
  * ============================================================================ */
 @media (max-height: 450px) and (orientation: landscape) {
-  .portal-shell {
-    gap: 8px;
+  .portal-shell,
+  #portal-shell {
+    padding: var(--nexus-safe-top) var(--nexus-safe-right) var(--nexus-safe-bottom) var(--nexus-safe-left);
+    gap: 6px;
   }
 
-  .portal-header {
+  .portal-header,
+  .topbar {
     min-height: 44px;
     padding: 4px 12px;
   }
 
-  .portal-showcase-panel {
-    padding: 10px 14px;
+  .portal-showcase-panel,
+  .hero-stage {
+    padding: 8px 12px;
   }
 
   .portal-rules-box {
@@ -509,9 +513,19 @@ body.guard-locked .screen-guard-overlay {
   }
 
   .game-card,
-  .portal-game-card {
+  .portal-game-card,
+  .game-card-item {
     min-height: 44px;
     padding: 3px 8px;
+  }
+}
+
+@media (max-width: 600px), (orientation: portrait) {
+  .portal-tier1-stage,
+  .workspace-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 56fr) minmax(0, 44fr);
+    gap: 8px;
   }
 }
 
