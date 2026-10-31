@@ -989,7 +989,7 @@
         <span class="brand-sub">精品微游资源介绍与即玩/安装中枢</span>
         <span class="status-pill">
           <span class="status-dot"></span>
-          <span>LAN 1~5ms · 60 SVG SPRITES</span>
+          <span>LAN 1~5ms · 114 RIGGED SVG SPRITES</span>
         </span>
       </div>
       <div class="topbar-controls">
@@ -1568,7 +1568,7 @@
     function renderRoster() {
       const listEl = document.getElementById('roster-list');
       listEl.innerHTML = GAMES_CATALOG.map((g) => `
-        <div class="game-card-item ${g.id === currentGame.id ? 'active' : ''}" data-game-id="${g.id}">
+        <div class="game-card-item portal-game-card ${g.id === currentGame.id ? 'active' : ''}" data-game="${g.id}" data-game-id="${g.id}">
           <img src="${g.icon}" alt="${g.name}" class="card-thumb" />
           <div class="card-info">
             <div class="card-title-row">
@@ -2055,5 +2055,6 @@
     renderHeroStage();
     checkScreenGuard();
   </script>
+  <script src="./rigs/icon.anim.js"></script>
 </body>
 </html>

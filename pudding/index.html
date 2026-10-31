@@ -125,26 +125,26 @@
     <!-- 顶部状态栏 -->
     <header class="top-bar">
       <div class="hud-group">
-        <div class="hud-pill">
+        <div class="hud-pill pd-frosting-pill">
           <img src="../assets/pudding-defense/icon.svg" alt="" width="18" height="18" />
           <span style="font-weight:800;">保卫布丁</span>
           <span class="hud-val" id="hud-wave">波次 1 / 15</span>
         </div>
-        <div class="hud-pill">
+        <div class="hud-pill pd-frosting-pill">
           <span>糖币</span>
           <span class="hud-val gold" id="hud-gold">360</span>
         </div>
-        <div class="hud-pill">
+        <div class="hud-pill pd-frosting-pill">
           <span>布丁</span>
           <span class="hud-val" id="hud-pudding">10 / 10 HP</span>
         </div>
-        <div class="hud-pill">
+        <div class="hud-pill pd-frosting-pill">
           <span>糖晶</span>
           <span class="hud-val gold" id="hud-crystals">600</span>
         </div>
       </div>
       <div class="hud-group">
-        <button class="hud-pill" id="btn-speed" aria-label="切换战斗倍速" title="切换战斗倍速" style="width:44px;min-width:44px;padding:0;justify-content:center;cursor:pointer;color:var(--cyan);">
+        <button class="hud-pill pd-frosting-pill" id="btn-speed" aria-label="切换战斗倍速" title="切换战斗倍速" style="width:44px;min-width:44px;padding:0;justify-content:center;cursor:pointer;color:var(--cyan);">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg>
         </button>
       </div>
@@ -540,6 +540,31 @@
           }
         }
 
+                // [PD-P3-01] caramel-wafer-flow: Golden Wafer Path Animated Chevrons
+        ctx.save();
+        ctx.strokeStyle = 'rgba(253, 224, 71, 0.42)';
+        ctx.lineWidth = 2;
+        const flowOffset = (Date.now() * 0.03) % 24;
+        for (let w = 0; w < WAYPOINTS.length - 1; w++) {
+          const [c1, r1] = WAYPOINTS[w];
+          const [c2, r2] = WAYPOINTS[w + 1];
+          const x1 = c1 * CELL + 30, y1 = r1 * CELL + 30;
+          const x2 = c2 * CELL + 30, y2 = r2 * CELL + 30;
+          const segLen = Math.hypot(x2 - x1, y2 - y1);
+          const ang = Math.atan2(y2 - y1, x2 - x1);
+          for (let d = flowOffset; d < segLen; d += 28) {
+            const cx = x1 + Math.cos(ang) * d;
+            const cy = y1 + Math.sin(ang) * d;
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(ang);
+            ctx.beginPath();
+            ctx.moveTo(-4, -4); ctx.lineTo(3, 0); ctx.lineTo(-4, 4);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+        ctx.restore();
         // Obstacles (Sugar & Cake SVG Sprites)
         obstacles.forEach((o) => {
           const sp = sprites[o.type];

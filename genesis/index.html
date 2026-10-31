@@ -4398,10 +4398,14 @@
               const echoAlpha = Math.max(0.35, 1.0 - 0.58 * Math.min(1.0, Math.max(0, ageSec) / pulsePeriod));
 
               // 严格圆形边界裁剪：若个体位于听觉边缘，仅显示落在 effSonarR 听觉范围内的影像！
+              // [MG-P3-01] Reuse outer st.sonarRange clip buffer when effSonarR matches st.sonarRange
+              const needsInnerClip = effSonarR < st.sonarRange - 1;
               ctx.save();
-              ctx.beginPath();
-              ctx.arc(alpha.x, alpha.y, effSonarR, 0, Math.PI * 2);
-              ctx.clip();
+              if (needsInnerClip) {
+                ctx.beginPath();
+                ctx.arc(alpha.x, alpha.y, effSonarR, 0, Math.PI * 2);
+                ctx.clip();
+              }
 
               const savedX = org.x;
               const savedY = org.y;

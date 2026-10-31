@@ -158,24 +158,24 @@
 
   <!-- 顶部战术仪表盘 -->
   <header class="top-hud">
-    <div class="hud-pill">
+    <div class="hud-pill sd-reticle-panel">
       <img src="../assets/star-defender/icon.svg" alt="" width="20" height="20" />
       <span style="font-weight:800;">星轨防线</span>
       <span class="hud-val" id="hud-wave">WAVE 1 / 100</span>
     </div>
-    <div class="hud-pill">
+    <div class="hud-pill sd-reticle-panel">
       <span>护盾</span>
       <span class="hud-val" id="hud-station">100%</span>
     </div>
-    <div class="hud-pill">
+    <div class="hud-pill sd-reticle-panel">
       <span>战功</span>
       <span class="hud-val gold" id="hud-merits">1,200</span>
     </div>
-    <div class="hud-pill">
+    <div class="hud-pill sd-reticle-panel">
       <span>残骸</span>
       <span class="hud-val gold" id="hud-scraps">150</span>
     </div>
-    <div class="hud-pill">
+    <div class="hud-pill sd-reticle-panel">
       <span id="hud-lan" style="color:var(--green);">AI 护航中</span>
     </div>
   </header>
@@ -242,6 +242,8 @@
 
       let wave = 1;
       let stationHp = 1000;
+      let stationHitTimer = 0;
+      let lastFramePerfMs = performance.now();
       let stationMaxHp = 1000;
       let orbitAngle = 0;
 
@@ -528,6 +530,7 @@
           // Collide with Station Core
           if (Math.hypot(en.x - cx, en.y - cy) < 48 + en.r * 0.5) {
             stationHp = Math.max(100, stationHp - 35);
+            stationHitTimer = 24;
             NexusSDK.audio.warn();
             enemies.splice(i, 1);
             updateHud();
@@ -578,6 +581,10 @@
           spawnWave(wave);
         }
 
+        const nowPerf = performance.now();
+        const frameDt = nowPerf - lastFramePerfMs;
+        lastFramePerfMs = nowPerf;
+        if (frameDt > 22 && sparks.length > 120) { sparks.splice(0, sparks.length - 120); }
         for (let i = sparks.length - 1; i >= 0; i--) {
           const sp = sparks[i];
           sp.x += sp.vx; sp.y += sp.vy; sp.life--;
@@ -605,6 +612,17 @@
         ctx.beginPath(); ctx.arc(cx, cy, 145, 0, Math.PI * 2); ctx.stroke();
 
         // Central Station Core SVG Sprite
+        if (stationHitTimer > 0) {
+          stationHitTimer--;
+          ctx.save();
+          ctx.strokeStyle = stationHitTimer % 2 === 0 ? '#00f0ff' : '#e879f9';
+          ctx.lineWidth = 2.5;
+          ctx.globalAlpha = stationHitTimer / 24;
+          ctx.beginPath();
+          ctx.arc(cx, cy, 52 + (24 - stationHitTimer) * 0.8, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
         if (sprites.station?.complete) {
           ctx.save();
           ctx.translate(cx, cy);

@@ -384,6 +384,11 @@
             hk.grabbed.y = hy;
           }
           hk.len -= pullSpeed;
+          // [GM-P3-01] Dynamic Ratchet Click SFX based on pullSpeed
+          if (isP1 && hk.grabbed) {
+            const clickPeriod = pullSpeed < 4.5 ? 21 : 10;
+            if (tickCount % clickPeriod === 0) NexusSDK.audio.hook();
+          }
           if (hk.len <= 42) {
             hk.len = 42;
             hk.state = 'swing';
@@ -476,9 +481,15 @@
         const hx = originX + Math.sin(hk.theta) * hk.len;
         const hy = originY + Math.cos(hk.theta) * hk.len;
 
-        // Alloy Cable
+        // [GM-SPEC-4.2] Dual-Layer Anti-Aliased Forged Steel + Searchlight Gold Cable
+        ctx.strokeStyle = '#78716c';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(originX, originY);
+        ctx.lineTo(hx, hy);
+        ctx.stroke();
         ctx.strokeStyle = cableColor;
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 0.9;
         ctx.beginPath();
         ctx.moveTo(originX, originY);
         ctx.lineTo(hx, hy);
