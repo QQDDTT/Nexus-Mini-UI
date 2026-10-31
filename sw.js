@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v7.0-style57x39';
+const CACHE_NAME = 'nexus-mini-portal-v8.0-style57x39-hardened';
 const CORE_ASSETS = [
   './',
   './index.html',

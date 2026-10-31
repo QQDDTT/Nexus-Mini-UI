@@ -578,4 +578,56 @@ export function renderToCanvas(ctx, partImages, animName = 'idle', timeMs = 0, c
   return pose;
 }
 
-export default { RIG_SPEC, ANIMATIONS, evaluatePose, applyToSvgDom, renderToCanvas };
+export function mountPortalIconRig(svgElement) {
+  const target = svgElement || (typeof document !== 'undefined' ? document.querySelector('svg[data-rig-id="nexus-portal-icon-rig"]') : null);
+  if (!target) return null;
+  let currentState = 'idle';
+  let stateStartMs = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  let rafId = 0;
+
+  function step(now) {
+    const elapsed = Math.max(0, now - stateStartMs);
+    const animSpec = ANIMATIONS[currentState] || ANIMATIONS.idle;
+    if (!animSpec.loop && elapsed >= animSpec.durationMs) {
+      currentState = 'idle';
+      stateStartMs = now;
+      applyToSvgDom(target, 'idle', 0);
+    } else {
+      applyToSvgDom(target, currentState, elapsed);
+    }
+    rafId = requestAnimationFrame(step);
+  }
+
+  rafId = requestAnimationFrame(step);
+
+  const controller = {
+    RIG_SPEC,
+    ANIMATIONS,
+    evaluatePose,
+    applyToSvgDom,
+    triggerState(nextState = 'skill') {
+      if (ANIMATIONS[nextState]) {
+        currentState = nextState;
+        stateStartMs = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+      }
+    },
+    stop() {
+      if (rafId) cancelAnimationFrame(rafId);
+    }
+  };
+
+  if (typeof window !== 'undefined') {
+    window.NexusPortalRig = controller;
+  }
+  return controller;
+}
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => mountPortalIconRig());
+  } else {
+    mountPortalIconRig();
+  }
+}
+
+export default { RIG_SPEC, ANIMATIONS, evaluatePose, applyToSvgDom, renderToCanvas, mountPortalIconRig };

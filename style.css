@@ -469,20 +469,20 @@ body.guard-locked .screen-guard-overlay {
 .arcade-back-pill {
   position: fixed;
   top: var(--nexus-safe-top);
-  right: var(--nexus-safe-right);
-  z-index: 950;
+  left: var(--nexus-safe-left);
+  z-index: 5050;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-width: 44px;
   min-height: 44px;
-  padding: 0 14px;
+  padding: 0 12px;
   border-radius: var(--nexus-radius-pill);
   background: var(--nexus-card-bg);
   border: 2.5px solid var(--nexus-border-ink);
   color: var(--nexus-text-primary);
-  font-size: 0.78rem;
-  font-weight: 800;
+  font-size: 0.76rem;
+  font-weight: 900;
   box-shadow: var(--nexus-hard-shadow-sm);
   cursor: pointer;
 }

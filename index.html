@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
+  <meta name="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-src 'self'; connect-src 'self';" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#171513" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -327,20 +328,23 @@
 
     .hero-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
+      padding-bottom: 6px;
+      border-bottom: 2.5px solid var(--nexus-border-ink);
       flex-shrink: 0;
     }
     .hero-title-group {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       min-width: 0;
+      flex: 1;
     }
     .hero-game-icon {
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
       border-radius: 10px;
       padding: 4px;
       background: var(--nexus-surface-dark-well);
@@ -352,69 +356,81 @@
     .hero-meta-top {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 3px;
-      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 2px;
+      flex-wrap: nowrap;
+      overflow: hidden;
     }
     .code-tag {
       font-family: var(--nexus-font-display);
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 900;
       color: #ffffff;
       background: var(--nexus-accent-orange);
       border: 2px solid var(--nexus-border-ink);
       box-shadow: var(--nexus-hard-shadow-xs);
-      padding: 1px 7px;
+      padding: 1px 6px;
       border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .mode-tag {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       color: var(--nexus-text-main);
       background: var(--nexus-accent-yellow);
       border: 2px solid var(--nexus-border-ink);
       box-shadow: var(--nexus-hard-shadow-xs);
-      padding: 1px 7px;
+      padding: 1px 6px;
       border-radius: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .genre-tag {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       color: var(--nexus-text-main);
       background: var(--nexus-surface-card-elevated);
       border: 2px solid var(--nexus-border-ink);
       box-shadow: var(--nexus-hard-shadow-xs);
-      padding: 1px 7px;
+      padding: 1px 6px;
       border-radius: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .hero-game-name {
-      font-size: 1.22rem;
+      font-size: 1.15rem;
       font-weight: 900;
       color: var(--nexus-text-main);
-      line-height: 1.2;
+      line-height: 1.15;
+      white-space: nowrap;
     }
     .hero-game-en {
       font-family: var(--nexus-font-display);
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       color: var(--nexus-text-secondary);
-      margin-left: 8px;
+      margin-left: 6px;
       font-weight: 800;
+      white-space: nowrap;
     }
     .hero-tagline {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 600;
       color: var(--nexus-text-secondary);
       margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* 2-Tab 导航栏 (严格锁定 >=44px 触控热区，绝不在矮视口降级) */
+    /* 2-Tab 导航栏 (内联至 hero-header 右侧同行排布，严格锁定 >=44px 触控热区) */
     .inspector-tabs {
       display: flex;
-      gap: 8px;
-      border-bottom: 2.5px solid var(--nexus-border-ink);
-      padding-bottom: 8px;
+      align-items: center;
+      gap: 6px;
       flex-shrink: 0;
-      overflow-x: auto;
     }
     .tab-btn {
       min-height: 44px;
@@ -451,8 +467,10 @@
       flex: 1;
       min-height: 0;
       overflow-y: auto;
+      overflow-x: hidden;
       overscroll-behavior: contain;
       padding-right: 4px;
+      padding-bottom: 3px;
     }
     .inspector-body::-webkit-scrollbar {
       width: 6px;
@@ -464,7 +482,7 @@
 
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
       margin-bottom: 8px;
     }
@@ -474,6 +492,7 @@
       border-radius: var(--nexus-radius-sm);
       box-shadow: var(--nexus-hard-shadow-xs);
       padding: 7px 10px;
+      min-width: 0;
     }
     .stat-label {
       font-size: 0.68rem;
@@ -489,7 +508,7 @@
 
     .feature-list {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
     }
     .feature-item {
@@ -499,6 +518,7 @@
       border-radius: var(--nexus-radius-sm);
       box-shadow: var(--nexus-hard-shadow-xs);
       padding: 8px 10px;
+      min-width: 0;
     }
     .feature-item h4 {
       font-size: 0.78rem;
@@ -839,23 +859,27 @@
     }
     @media (max-width: 920px) {
       .status-pill { display: none; }
+      .mode-tag { display: none; }
     }
     @media (max-height: 460px) {
       #portal-shell { padding: 6px 10px; gap: 6px; }
       .topbar { min-height: 44px; padding: 2px 10px; }
       .hero-stage { padding: 8px 12px; gap: 6px; }
-      .hero-game-icon { width: 42px; height: 42px; border-radius: 8px; }
-      .hero-game-name { font-size: 1.05rem; }
+      .hero-header { padding-bottom: 5px; gap: 8px; }
+      .hero-game-icon { width: 40px; height: 40px; border-radius: 8px; }
+      .hero-game-name { font-size: 1.02rem; }
       .hero-tagline { display: none; }
-      .inspector-tabs { gap: 6px; padding-bottom: 5px; }
+      .inspector-tabs { gap: 6px; }
       /* 铁律：即便是 max-height: 460px 的手机横屏，.tab-btn 最小触控高度依然强制 >= 44px */
-      .tab-btn { min-height: 44px; padding: 0 10px; font-size: 0.74rem; gap: 5px; }
-      .info-grid { gap: 6px; margin-bottom: 6px; }
-      .stat-box { padding: 5px 8px; }
-      .stat-val { font-size: 0.76rem; }
-      .feature-item { padding: 6px 8px; }
-      .feature-item h4 { font-size: 0.74rem; margin-bottom: 2px; }
-      .feature-item p { font-size: 0.68rem; line-height: 1.35; }
+      .tab-btn { min-height: 44px; padding: 0 9px; font-size: 0.72rem; gap: 4px; }
+      .info-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin-bottom: 5px; }
+      .stat-box { padding: 4px 6px; min-width: 0; }
+      .stat-label { font-size: 0.62rem; margin-bottom: 1px; }
+      .stat-val { font-size: 0.72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .feature-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+      .feature-item { padding: 5px 7px; }
+      .feature-item h4 { font-size: 0.71rem; margin-bottom: 1px; }
+      .feature-item p { font-size: 0.65rem; line-height: 1.28; }
       .hero-actions { padding-top: 6px; gap: 8px; }
       .matrix-roster { padding: 6px 8px; gap: 4px; }
       .roster-header { padding: 0 2px 4px; }
@@ -867,9 +891,11 @@
     }
     @media (max-width: 760px) {
       .brand-sub { display: none; }
-      .workspace-grid { grid-template-columns: 64fr 36fr; }
-      .info-grid { grid-template-columns: repeat(2, 1fr); }
-      .feature-list { grid-template-columns: 1fr; }
+      .hero-game-en { display: none; }
+      .genre-tag { display: none; }
+      .workspace-grid { grid-template-columns: 65fr 35fr; gap: 8px; }
+      .tab-btn { padding: 0 7px; font-size: 0.68rem; }
+      .nx-badge-img { width: 18px; height: 18px; }
     }
   </style>
   <link rel="stylesheet" href="./style.css" />
@@ -903,7 +929,114 @@
     <!-- 顶部新粗野画报刊头栏 -->
     <header class="topbar">
       <div class="brand">
-        <img src="./icon.svg" alt="Nexus-Mini" class="brand-logo" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="36" height="36" class="brand-logo" id="portal-rig-svg" data-rig-id="nexus-portal-icon-rig" data-has-aura="true" data-style="STYLE-57-39-neo-brutal-risograph" role="img" aria-label="Nexus-Mini Rigged Logo" style="cursor:pointer;">
+          <defs>
+            <pattern id="nb-halftone-dots" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(22)">
+              <circle cx="3" cy="3" r="1.6" fill="#111111" fill-opacity="0.22" />
+              <circle cx="8" cy="8" r="1.2" fill="#ff5500" fill-opacity="0.28" />
+            </pattern>
+            <pattern id="nb-stripe-pattern" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="6" height="12" fill="#111111" />
+              <rect x="6" width="6" height="12" fill="#facc15" />
+            </pattern>
+            <linearGradient id="nb-paper-warm" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fdfbf7" />
+              <stop offset="65%" stop-color="#f4efe6" />
+              <stop offset="100%" stop-color="#e5dec9" />
+            </linearGradient>
+            <linearGradient id="nb-acid-lime" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#bef264" />
+              <stop offset="55%" stop-color="#a3e635" />
+              <stop offset="100%" stop-color="#65a30d" />
+            </linearGradient>
+            <linearGradient id="nb-riso-orange" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fb923c" />
+              <stop offset="50%" stop-color="#ff5500" />
+              <stop offset="100%" stop-color="#c2410c" />
+            </linearGradient>
+          </defs>
+          <g id="part-shadow-cast" data-pivot="128,128" data-parent="root" data-z-index="1" data-blend="normal">
+            <rect x="36" y="36" width="194" height="194" rx="26" fill="#000000" />
+            <polygon points="134,14 156,34 120,34" fill="#000000" />
+            <polygon points="134,250 158,226 116,226" fill="#000000" />
+            <rect x="18" y="96" width="38" height="74" rx="10" fill="#000000" />
+            <rect x="210" y="96" width="38" height="74" rx="10" fill="#000000" />
+          </g>
+          <g id="part-aura-ring-outer" data-pivot="128,128" data-parent="root" data-z-index="4" data-blend="normal" data-motion="spin-cw">
+            <rect x="30" y="24" width="192" height="192" rx="26" fill="none" stroke="#ff5500" stroke-width="3.5" opacity="0.85" />
+            <rect x="26" y="26" width="192" height="192" rx="26" fill="url(#nb-paper-warm)" stroke="#111111" stroke-width="5.5" stroke-linejoin="round" />
+            <rect x="34" y="34" width="176" height="176" rx="18" fill="url(#nb-halftone-dots)" />
+            <circle cx="48" cy="48" r="6.5" fill="#111111" stroke="#ff5500" stroke-width="2" />
+            <circle cx="196" cy="48" r="6.5" fill="#111111" stroke="#a3e635" stroke-width="2" />
+            <circle cx="48" cy="196" r="6.5" fill="#111111" stroke="#38bdf8" stroke-width="2" />
+            <circle cx="196" cy="196" r="6.5" fill="#111111" stroke="#f472b6" stroke-width="2" />
+            <path d="M122,26 V38 M122,206 V218 M26,122 H38 M206,122 H218" stroke="#111111" stroke-width="4" stroke-linecap="square" />
+          </g>
+          <g id="part-aura-ring-inner" data-pivot="128,128" data-parent="root" data-z-index="5" data-blend="normal" data-motion="spin-ccw">
+            <polygon points="132,38 152,74 192,58 174,98 214,116 178,140 202,178 160,170 156,212 132,180 104,212 102,170 60,178 84,140 48,116 88,98 70,58 110,74" fill="#000000" />
+            <polygon points="128,34 148,70 188,54 170,94 210,112 174,136 198,174 156,166 152,208 128,176 100,208 98,166 56,174 80,136 44,112 84,94 66,54 106,70" fill="url(#nb-riso-orange)" stroke="#111111" stroke-width="5" stroke-linejoin="round" />
+            <polyline points="106,70 128,39 148,70 183,58" fill="none" stroke="#fdfbf7" stroke-width="2.5" stroke-linecap="round" />
+          </g>
+          <g id="part-light-cone-main" data-pivot="128,128" data-parent="root" data-z-index="8" data-blend="normal">
+            <polygon points="128,128 96,28 112,28" fill="#facc15" stroke="#111111" stroke-width="2.5" />
+            <polygon points="128,128 144,28 160,28" fill="#38bdf8" stroke="#111111" stroke-width="2.5" />
+            <polygon points="128,128 96,228 112,228" fill="#f472b6" stroke="#111111" stroke-width="2.5" />
+            <polygon points="128,128 144,228 160,228" fill="#a3e635" stroke="#111111" stroke-width="2.5" />
+          </g>
+          <g id="part-chassis-hex" data-pivot="128,128" data-parent="root" data-z-index="15" data-blend="normal">
+            <rect x="77" y="77" width="112" height="112" rx="18" fill="#000000" />
+            <rect x="72" y="72" width="112" height="112" rx="18" fill="url(#nb-acid-lime)" stroke="#111111" stroke-width="5.5" stroke-linejoin="round" />
+            <rect x="92" y="82" width="72" height="12" rx="4" fill="url(#nb-stripe-pattern)" stroke="#111111" stroke-width="3" />
+            <circle cx="86" cy="170" r="4.5" fill="#fdfbf7" stroke="#111111" stroke-width="2.5" />
+            <circle cx="170" cy="170" r="4.5" fill="#fdfbf7" stroke="#111111" stroke-width="2.5" />
+          </g>
+          <g id="part-wing-shield-L" data-pivot="72,128" data-parent="part-chassis-hex" data-z-index="22" data-blend="normal">
+            <path d="M72,92 L22,82 L14,128 L22,174 L72,164 Z" fill="#000000" transform="translate(4, 4)" />
+            <path d="M72,92 L22,82 L14,128 L22,174 L72,164 Z" fill="#38bdf8" stroke="#111111" stroke-width="5" stroke-linejoin="round" />
+            <rect x="26" y="106" width="32" height="44" rx="6" fill="#fdfbf7" stroke="#111111" stroke-width="3.5" />
+            <line x1="34" y1="118" x2="50" y2="118" stroke="#111111" stroke-width="3.5" stroke-linecap="round" />
+            <line x1="34" y1="128" x2="50" y2="128" stroke="#ff5500" stroke-width="3.5" stroke-linecap="round" />
+            <line x1="34" y1="138" x2="50" y2="138" stroke="#111111" stroke-width="3.5" stroke-linecap="round" />
+          </g>
+          <g id="part-wing-shield-R" data-pivot="184,128" data-parent="part-chassis-hex" data-z-index="22" data-blend="normal">
+            <path d="M184,92 L234,82 L242,128 L234,174 L184,164 Z" fill="#000000" transform="translate(4, 4)" />
+            <path d="M184,92 L234,82 L242,128 L234,174 L184,164 Z" fill="#f472b6" stroke="#111111" stroke-width="5" stroke-linejoin="round" />
+            <rect x="198" y="106" width="32" height="44" rx="6" fill="#fdfbf7" stroke="#111111" stroke-width="3.5" />
+            <circle cx="214" cy="119" r="5" fill="#ff5500" stroke="#111111" stroke-width="2.5" />
+            <circle cx="214" cy="137" r="5" fill="#a3e635" stroke="#111111" stroke-width="2.5" />
+          </g>
+          <g id="part-sensor-crest-top" data-pivot="128,62" data-parent="part-chassis-hex" data-z-index="26" data-blend="normal">
+            <polygon points="94,68 86,22 114,44 128,14 142,44 170,22 162,68" fill="#000000" transform="translate(4, 4)" />
+            <polygon points="94,68 86,22 114,44 128,14 142,44 170,22 162,68" fill="#facc15" stroke="#111111" stroke-width="4.5" stroke-linejoin="round" />
+            <circle cx="86" cy="20" r="5" fill="#ff5500" stroke="#111111" stroke-width="2.5" />
+            <circle cx="128" cy="12" r="6" fill="#a3e635" stroke="#111111" stroke-width="2.5" />
+            <circle cx="170" cy="20" r="5" fill="#38bdf8" stroke="#111111" stroke-width="2.5" />
+          </g>
+          <g id="part-thruster-tail" data-pivot="128,194" data-parent="part-chassis-hex" data-z-index="26" data-blend="normal">
+            <polygon points="100,188 156,188 146,240 110,240" fill="#000000" transform="translate(4, 4)" />
+            <polygon points="100,188 156,188 146,240 110,240" fill="#ff5500" stroke="#111111" stroke-width="4.5" stroke-linejoin="round" />
+            <polygon points="114,196 142,196 128,232" fill="#facc15" stroke="#111111" stroke-width="3" stroke-linejoin="round" />
+          </g>
+          <g id="part-reactor-rotor" data-pivot="128,128" data-parent="part-chassis-hex" data-z-index="34" data-blend="normal">
+            <circle cx="132" cy="132" r="36" fill="#000000" />
+            <circle cx="128" cy="128" r="36" fill="#fdfbf7" stroke="#111111" stroke-width="5.5" />
+            <circle cx="126" cy="126" r="28" fill="none" stroke="#ff5500" stroke-width="2.5" />
+            <polygon points="116,106 150,128 116,150" fill="#111111" transform="translate(3, 3)" />
+            <polygon points="116,106 150,128 116,150" fill="#ff5500" stroke="#111111" stroke-width="4" stroke-linejoin="round" />
+          </g>
+          <g id="part-light-rim-chassis" data-pivot="128,128" data-parent="part-chassis-hex" data-z-index="45" data-blend="normal">
+            <path d="M78,92 V78 H116" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M22,90 L64,98" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+            <path d="M192,98 L234,90" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+          </g>
+          <g id="part-aura-corona-top" data-pivot="128,128" data-parent="root" data-z-index="65" data-blend="normal">
+            <path d="M56,64 L60,74 L70,78 L60,82 L56,92 L52,82 L42,78 L52,74 Z" fill="#facc15" stroke="#111111" stroke-width="2.5" />
+            <path d="M200,64 L204,74 L214,78 L204,82 L200,92 L196,82 L186,78 L196,74 Z" fill="#a3e635" stroke="#111111" stroke-width="2.5" />
+            <path d="M56,168 L60,178 L70,182 L60,186 L56,196 L52,186 L42,182 L52,178 Z" fill="#38bdf8" stroke="#111111" stroke-width="2.5" />
+            <path d="M200,168 L204,178 L214,182 L204,186 L200,196 L196,186 L186,182 L196,178 Z" fill="#f472b6" stroke="#111111" stroke-width="2.5" />
+            <path d="M36,36 L44,44 M220,36 L212,44 M36,220 L44,212 M220,220 L212,212" stroke="#ff5500" stroke-width="4.5" stroke-linecap="round" />
+          </g>
+        </svg>
         <span class="brand-title">NEXUS-MINI</span>
         <span class="brand-sub">STAGE 1 · 潮玩街机微游总集画报</span>
         <span class="status-pill">
@@ -929,46 +1062,42 @@
       <section class="hero-stage">
         <div class="hero-header">
           <div class="hero-title-group">
-            <img id="hero-icon" src="./assets/star-defender/icon.svg" alt="Game Icon" class="hero-game-icon" />
-            <div>
+            <img id="hero-icon" src="./assets/tank-battle/icon.svg" alt="Game Icon" class="hero-game-icon" />
+            <div style="min-width:0;">
               <div class="hero-meta-top">
-                <span class="code-tag" id="hero-code">GAME-02</span>
-                <span class="mode-tag" id="hero-multiplayer-badge">客户端单机 + 局域网 1~5ms 双环境</span>
-                <span class="genre-tag" id="hero-genre">深空战术射击</span>
+                <span class="code-tag" id="hero-code">GAME-01</span>
+                <span class="mode-tag" id="hero-multiplayer-badge">本地单机 / 局域网 1~5ms 双坦协同</span>
+                <span class="genre-tag" id="hero-genre">基地合作守卫 · STYLE-19+43</span>
               </div>
               <div>
-                <span class="hero-game-name" id="hero-name">星轨防线</span>
-                <span class="hero-game-en" id="hero-en">STAR DEFENDER</span>
+                <span class="hero-game-name" id="hero-name">钢铁防线</span>
+                <span class="hero-game-en" id="hero-en">TANK BATTLE</span>
               </div>
-              <p class="hero-tagline" id="hero-tagline">俯视角太空生存拦截射击 · 360° 模块化船坞改装与百波战役数值体系</p>
+              <p class="hero-tagline" id="hero-tagline">经典坦克大战现代化重构 · 局域网双通道跨手机实时协同守卫鹰标总部</p>
             </div>
           </div>
-        </div>
 
-        <!-- 2-Tab 详情导航 (第 1 层主页严格限定：游戏规则介绍 & 游戏画面截图，触控热区 >= 44px) -->
-        <nav class="inspector-tabs" id="inspector-tabs">
-          <button class="tab-btn active" data-tab="overview">
-            <img src="./sprites/badge-rules.svg" alt="" class="nx-badge-img" />
-            <span>游戏规则简介</span>
-          </button>
-          <button class="tab-btn" data-tab="screenshots">
-            <img src="./sprites/badge-screenshots.svg" alt="" class="nx-badge-img" />
-            <span>游戏画面截图</span>
-          </button>
-        </nav>
+          <!-- 2-Tab 详情导航 (内联于 hero-header 右侧同行排布，触控热区 >= 44px) -->
+          <nav class="inspector-tabs" id="inspector-tabs">
+            <button class="tab-btn active" data-tab="overview">
+              <img src="./sprites/badge-rules.svg" alt="" class="nx-badge-img" />
+              <span>游戏规则简介</span>
+            </button>
+            <button class="tab-btn" data-tab="screenshots">
+              <img src="./sprites/badge-screenshots.svg" alt="" class="nx-badge-img" />
+              <span>游戏画面截图</span>
+            </button>
+          </nav>
+        </div>
 
         <!-- 动态详情内容区 -->
         <div class="inspector-body" id="inspector-content"></div>
 
-        <!-- 底部操作栏 (唯一 10% 酸柠荧光绿贴纸主焦点：进入第 2 层游戏菜单) -->
+        <!-- 底部操作栏 (单一视觉重心原则：唯一 10% 酸柠荧光绿贴纸主焦点按钮) -->
         <footer class="hero-actions">
-          <button class="primary-cta" id="btn-launch-game">
+          <button class="primary-cta" id="btn-launch-game" style="width:100%;">
             <img src="./sprites/badge-launch.svg" alt="" class="nx-badge-img" />
-            <span id="btn-launch-label">进入「星轨防线」游戏菜单</span>
-          </button>
-          <button class="secondary-cta" id="btn-open-pwa-guide">
-            <img src="./sprites/badge-pwa.svg" alt="" class="nx-badge-img" />
-            <span>安装桌面/离线包</span>
+            <span id="btn-launch-label">进入「钢铁防线」游戏菜单</span>
           </button>
         </footer>
       </section>
@@ -987,8 +1116,12 @@
     </main>
   </div>
 
-  <!-- 全屏内联微游容器 (Arcade Fullscreen Frame) -->
+  <!-- 全屏内联微游容器 (Arcade Fullscreen Frame · 配备宿主级防死锁返回胶囊按钮) -->
   <div id="arcade-frame-overlay">
+    <button class="arcade-back-pill" id="btn-arcade-host-back" type="button" title="退回第一层平台主页清单">
+      <svg class="nx-ico" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>◀ 返回主页清单</span>
+    </button>
     <iframe id="game-iframe" title="Nexus-Mini Fullscreen Game Frame" allow="fullscreen; autoplay" style="width:100%;height:100%;border:none;display:block;background:#171513;"></iframe>
   </div>
 
@@ -1307,9 +1440,18 @@
     let currentTab = 'overview';
     let currentRoomCode = 'NX-' + Math.floor(1000 + Math.random() * 9000);
 
+    function escapeHtml(val) {
+      return String(val ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function showToast(msg) {
       const el = document.getElementById('nexus-toast');
-      el.textContent = msg;
+      el.textContent = String(msg ?? '').slice(0, 120);
       el.classList.add('show');
       clearTimeout(showToast._timer);
       showToast._timer = setTimeout(() => el.classList.remove('show'), 2600);
@@ -1321,14 +1463,14 @@
     function renderRoster() {
       const listEl = document.getElementById('roster-list');
       listEl.innerHTML = GAMES_CATALOG.map((g) => `
-        <div class="game-card-item portal-game-card ${g.id === currentGame.id ? 'active is-active' : ''}" data-game="${g.id}" data-game-id="${g.id}" role="button" tabindex="0">
-          <img src="${g.icon}" alt="${g.name}" class="card-thumb" />
+        <div class="game-card-item portal-game-card ${g.id === currentGame.id ? 'active is-active' : ''}" data-game="${escapeHtml(g.id)}" data-game-id="${escapeHtml(g.id)}" role="button" tabindex="0">
+          <img src="${escapeHtml(g.icon)}" alt="${escapeHtml(g.name)}" class="card-thumb" />
           <div class="card-info">
             <div class="card-title-row">
-              <span class="card-name">${g.name}</span>
-              <span class="card-seq">${g.seq}</span>
+              <span class="card-name">${escapeHtml(g.name)}</span>
+              <span class="card-seq">${escapeHtml(g.seq)}</span>
             </div>
-            <div class="card-sub">${g.genre}</div>
+            <div class="card-sub">${escapeHtml(g.genre)}</div>
           </div>
         </div>
       `).join('');
@@ -1339,6 +1481,7 @@
           const found = GAMES_CATALOG.find((x) => x.id === targetId);
           if (found && found.id !== currentGame.id) {
             NexusAudio.tap();
+            window.NexusPortalRig?.triggerState('skill');
             currentGame = found;
             renderRoster();
             renderHeroStage();
@@ -1525,15 +1668,22 @@
     /* =========================================================================
      * 7. 事件绑定、PWA 安装与 URL 挑战码解析
      * ========================================================================= */
+    document.getElementById('portal-rig-svg')?.addEventListener('click', () => {
+      NexusAudio.tap();
+      window.NexusPortalRig?.triggerState('skill');
+    });
+
     document.querySelectorAll('#inspector-tabs .tab-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         NexusAudio.tap();
+        window.NexusPortalRig?.triggerState('attack');
         currentTab = btn.getAttribute('data-tab');
         renderHeroStage();
       });
     });
 
     document.getElementById('btn-launch-game').addEventListener('click', launchArcadeSandbox);
+    document.getElementById('btn-arcade-host-back')?.addEventListener('click', exitArcadeFrame);
 
     document.querySelectorAll('[data-close]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -1567,7 +1717,6 @@
       document.getElementById('pwa-modal').classList.add('active');
     }
     document.getElementById('btn-pwa-install').addEventListener('click', openPwaModal);
-    document.getElementById('btn-open-pwa-guide').addEventListener('click', openPwaModal);
     document.getElementById('btn-trigger-native-pwa').addEventListener('click', async () => {
       NexusAudio.launch();
       if (deferredPwaPrompt) {
@@ -1593,13 +1742,17 @@
         const found = GAMES_CATALOG.find((x) => x.id === gId);
         if (found) currentGame = found;
       }
-      if (challenge) {
+      if (challenge && challenge.length <= 512) {
         try {
           const decoded = JSON.parse(decodeURIComponent(atob(challenge)));
-          currentTab = 'overview';
-          setTimeout(() => {
-            showToast(`已载入来自 [${decoded.u}] 的挑战口令 (种子 #${decoded.seed})！`);
-          }, 400);
+          if (decoded && typeof decoded === 'object') {
+            const safeUser = String(decoded.u || '挑战者').slice(0, 24);
+            const safeSeed = String(decoded.seed || '0000').slice(0, 24);
+            currentTab = 'overview';
+            setTimeout(() => {
+              showToast(`已载入来自 [${safeUser}] 的挑战口令 (种子 #${safeSeed})！`);
+            }, 400);
+          }
         } catch (_) {}
       }
     }
@@ -1608,6 +1761,42 @@
     renderRoster();
     renderHeroStage();
     checkScreenGuard();
+
+    // 同源骨骼动画内联兜底驱动器 (兼容 file:// 与 https:// 环境下的 12 部件矩阵级联微动)
+    setTimeout(() => {
+      if (window.NexusPortalRig) return;
+      const svgEl = document.getElementById('portal-rig-svg');
+      if (!svgEl) return;
+      let animState = 'idle';
+      let stateStart = performance.now();
+      const durations = { idle: 2400, skill: 1200, attack: 520 };
+      function tick(now) {
+        const elapsed = Math.max(0, now - stateStart);
+        const dur = durations[animState] || 2400;
+        if (animState !== 'idle' && elapsed >= dur) {
+          animState = 'idle';
+          stateStart = now;
+        }
+        const p = ((elapsed % dur) / dur) * Math.PI * 2;
+        const speed = animState === 'skill' ? 2.8 : animState === 'attack' ? 1.8 : 1.0;
+        const degCw = ((now / 1000) * 36 * speed) % 360;
+        const degCcw = (-(now / 1000) * 54 * speed) % 360;
+        const bobY = (animState === 'skill' ? 2.8 : 1.2) * Math.sin(p);
+        svgEl.setAttribute('data-anim-state', animState);
+        svgEl.querySelector('#part-aura-ring-outer')?.setAttribute('transform', `rotate(${degCw.toFixed(2)} 128 128)`);
+        svgEl.querySelector('#part-aura-ring-inner')?.setAttribute('transform', `rotate(${degCcw.toFixed(2)} 128 128)`);
+        svgEl.querySelector('#part-chassis-hex')?.setAttribute('transform', `translate(0, ${bobY.toFixed(2)})`);
+        svgEl.querySelector('#part-reactor-rotor')?.setAttribute('transform', `rotate(${(degCw * 1.3).toFixed(2)} 128 128)`);
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      window.NexusPortalRig = {
+        triggerState(next = 'skill') {
+          animState = durations[next] ? next : 'skill';
+          stateStart = performance.now();
+        }
+      };
+    }, 60);
   </script>
   <script type="module" src="./rigs/icon.anim.js"></script>
 </body>
