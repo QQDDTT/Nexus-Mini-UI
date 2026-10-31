@@ -11,7 +11,6 @@
   <link rel="icon" type="image/svg+xml" href="./icon.svg" />
   <link rel="apple-touch-icon" href="./icon.svg" />
   <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./style.css" />
   <style>
     :root {
       /* ===== [5] 50% 基础底色体系 (Base Void) ===== */
@@ -951,6 +950,7 @@
       .feature-list, .p2p-panel { grid-template-columns: 1fr; }
     }
   </style>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
 
@@ -1161,7 +1161,7 @@
           <svg class="nx-ico" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
-      <img id="img-modal-target" src="" alt="Preview" style="width:100%; max-height:68dvh; object-fit:contain; border-radius:8px; background:#030712; padding:12px;" />
+      <img id="img-modal-target" src="./icon.svg" alt="Preview" style="width:100%; max-height:68dvh; object-fit:contain; border-radius:8px; background:#030712; padding:12px;" />
     </div>
   </div>
 
@@ -2055,6 +2055,6 @@
     renderHeroStage();
     checkScreenGuard();
   </script>
-  <script src="./rigs/icon.anim.js"></script>
+  <script type="module" src="./rigs/icon.anim.js"></script>
 </body>
 </html>

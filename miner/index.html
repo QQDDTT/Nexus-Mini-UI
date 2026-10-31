@@ -79,11 +79,11 @@
     .act-btn:active { transform: scale(0.95); }
     .act-btn.primary {
       min-height: 60px; padding: 0 24px;
-      background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
-      border: 2px solid #67e8f9;
+      background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+      border: 2px solid #fde047;
       color: #030712;
       font-size: 0.94rem; font-weight: 900;
-      box-shadow: 0 0 22px rgba(0, 240, 255, 0.42);
+      box-shadow: 0 0 22px rgba(251, 191, 36, 0.45);
     }
     .act-btn.danger {
       border-color: rgba(239, 68, 68, 0.55);
@@ -512,8 +512,9 @@
 
         // Underground Stratum Horizon at y = 112
         const grad = ctx.createLinearGradient(0, 112, 0, canvas.height);
-        grad.addColorStop(0, '#091326');
-        grad.addColorStop(1, '#030712');
+        grad.addColorStop(0, '#3e2723');
+        grad.addColorStop(0.55, '#2c1d11');
+        grad.addColorStop(1, '#181009');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 112, canvas.width, canvas.height - 112);
 
@@ -541,8 +542,8 @@
         });
 
         // Render 1P & 2P Miner Rigs + Claw Hooks
-        drawRigAndHook(sprites.rig1, p1Hook, canvas.width * 0.38, 108, '#00f0ff');
-        drawRigAndHook(sprites.rig2, p2Hook, canvas.width * 0.62, 108, '#fbbf24');
+        drawRigAndHook(sprites.rig1, p1Hook, canvas.width * 0.38, 108, '#fde047');
+        drawRigAndHook(sprites.rig2, p2Hook, canvas.width * 0.62, 108, '#fb923c');
 
         // Explosions
         explosions.forEach((ex) => {
