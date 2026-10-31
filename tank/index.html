@@ -6,14 +6,14 @@
   <meta name="theme-color" content="#1b1f26" />
   <title>钢铁防线 · TANK BATTLE | Nexus-Mini</title>
   <link rel="icon" type="image/svg+xml" href="../assets/tank-battle/icon.svg" />
-  <link rel="stylesheet" href="../assets/tank-battle/style.css?v=20261031b" />
+  <link rel="stylesheet" href="../assets/tank-battle/style.css?v=20261031c" />
   <style>
     :root {
       --void: #1b1f26;
       --panel: #2b313a;
       --border: #4a5462;
       --cyan: #c48f5a;
-      --gold: #e0be99;
+      --gold: #dfc08e;
       --red: #b5604a;
       --green: #7a9a82;
       --text: #d6deea;
@@ -33,13 +33,13 @@
     #app {
       width: 100%; height: 100%;
       display: grid;
-      grid-template-columns: 204px 1fr 204px;
-      gap: 10px;
+      grid-template-columns: 196px 1fr 196px;
+      gap: 8px;
       padding:
-        max(8px, env(safe-area-inset-top))
-        max(12px, env(safe-area-inset-right))
-        max(8px, env(safe-area-inset-bottom))
-        max(12px, env(safe-area-inset-left));
+        max(6px, env(safe-area-inset-top))
+        max(10px, env(safe-area-inset-right))
+        max(6px, env(safe-area-inset-bottom))
+        max(10px, env(safe-area-inset-left));
       align-items: center;
     }
 
@@ -53,11 +53,11 @@
       border-bottom: 4px solid #121519;
       border-radius: 3px;
       box-shadow: 0 5px 14px rgba(0, 0, 0, 0.72), inset 0 0 16px rgba(0, 0, 0, 0.38);
-      padding: 9px 10px;
+      padding: 8px 9px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 6px;
+      gap: 5px;
       min-height: 0;
       overflow: hidden;
       position: relative;
@@ -66,18 +66,19 @@
     .brand-stamp {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding-bottom: 6px;
+      gap: 7px;
+      padding-bottom: 5px;
       border-bottom: 2px solid #181c22;
     }
     .brand-stamp img {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 3px;
       border: 1px solid #566170;
+      flex-shrink: 0;
     }
     .brand-stamp h1 {
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       font-weight: 800;
       color: #d6deea;
       letter-spacing: 0.05em;
@@ -85,7 +86,7 @@
       text-shadow: 0 1px 2px #0e1114;
     }
     .brand-stamp p {
-      font-size: 0.62rem;
+      font-size: 0.58rem;
       font-family: "Consolas", monospace;
       color: #c48f5a;
       white-space: nowrap;
@@ -96,10 +97,10 @@
       background: #1a1e24;
       border: 1px solid #3d4552;
       box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.82);
-      padding: 6px 8px;
+      padding: 5px 7px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
       border-radius: 2px;
     }
     .wing-stat-row {
@@ -107,7 +108,7 @@
       justify-content: space-between;
       align-items: center;
       font-family: "Consolas", "Noto Sans SC", monospace;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: #98a3b0;
       white-space: nowrap;
     }
@@ -116,13 +117,13 @@
       font-weight: 800;
     }
     .wing-stat-row strong.brass {
-      color: #e0be99;
+      color: #dfc08e;
     }
 
-    /* 机械液压十字方向盘总成 (每个方向键满足 >=44x44px 触控热区) */
+    /* 机械液压十字方向盘总成 (每个方向键严格满足 >=44x44px 触控热区) */
     .dpad-housing {
-      width: 148px;
-      height: 148px;
+      width: 144px;
+      height: 144px;
       margin: 0 auto;
       background: #181c22;
       border: 2px solid #444d59;
@@ -131,14 +132,16 @@
       display: grid;
       grid-template-columns: repeat(3, 44px);
       grid-template-rows: repeat(3, 44px);
-      gap: 3px;
-      padding: 3px;
+      gap: 2px;
+      padding: 2px;
       justify-content: center;
       align-content: center;
     }
     .dpad-btn {
       width: 44px;
       height: 44px;
+      min-width: 44px;
+      min-height: 44px;
       background: linear-gradient(180deg, #3a424f 0%, #292f38 100%);
       color: #b6c0cc;
       border-top: 1.5px solid #5b6778;
@@ -156,7 +159,7 @@
     .dpad-btn:active,
     .dpad-btn.pressed {
       background: linear-gradient(180deg, #495363 0%, #363e4a 100%);
-      color: #e0be99;
+      color: #dfc08e;
       border-top-color: #c48f5a;
       transform: translateY(1px);
     }
@@ -166,18 +169,18 @@
       justify-content: center;
     }
 
-    /* 中央 26×26 铸钢防盾战场取景框 */
+    /* 中央 26×26 铸钢防盾战场取景框 (严格 1:1 等比正方形) */
     .stage-wrap {
+      width: 100%;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       min-width: 0;
       min-height: 0;
+      overflow: hidden;
     }
     .battlefield-bezel {
-      height: 100%;
-      max-width: 100%;
       aspect-ratio: 1 / 1;
       background: linear-gradient(135deg, #3a424f 0%, #242932 100%);
       border-top: 2px solid #5c6878;
@@ -185,16 +188,18 @@
       border-right: 3px solid #171b20;
       border-bottom: 4px solid #111418;
       border-radius: 3px;
-      padding: 6px;
+      padding: 5px;
       box-shadow: 0 8px 22px rgba(0, 0, 0, 0.82);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
+      flex-shrink: 0;
     }
-    canvas {
+    #battle-canvas {
       width: 100%;
       height: 100%;
+      aspect-ratio: 1 / 1;
       background: #1d2128;
       border: 2px solid #13161b;
       box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.85);
@@ -202,31 +207,101 @@
       touch-action: none;
     }
 
+    /* 防线失守 / 战役结算克虏伯钢印弹窗 */
+    .battle-modal-overlay {
+      position: absolute;
+      inset: 5px;
+      background: rgba(18, 21, 26, 0.90);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 30;
+      text-align: center;
+      border: 1px solid #4a5462;
+    }
+    .battle-modal-overlay.visible {
+      display: flex;
+    }
+    .battle-modal-card {
+      width: 100%;
+      max-width: 280px;
+      background: linear-gradient(180deg, #323944 0%, #222730 100%);
+      border-top: 2px solid #c48f5a;
+      border-left: 2px solid #566170;
+      border-right: 2px solid #181c21;
+      border-bottom: 4px solid #111418;
+      padding: 14px 12px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .battle-modal-title {
+      font-size: 0.96rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      color: #dfc08e;
+    }
+    .battle-modal-desc {
+      font-size: 0.7rem;
+      color: #b6c0cc;
+      line-height: 1.45;
+    }
+    .battle-modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .battle-modal-btn {
+      min-height: 44px;
+      width: 100%;
+      padding: 0 12px;
+      background: linear-gradient(180deg, #8c633b 0%, #6b4b2b 55%, #543a20 100%);
+      color: #efe5da;
+      border-top: 2px solid #b88758;
+      border-left: 2px solid #9c7046;
+      border-right: 2px solid #362514;
+      border-bottom: 3px solid #24180d;
+      border-radius: 2px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .battle-modal-btn.secondary {
+      background: linear-gradient(180deg, #3c4450 0%, #2b313a 100%);
+      color: #c5ced9;
+      border-color: #5b6778 #1a1e24 #13161b #4b5563;
+    }
+
     /* 右翼：退火紫铜主炮击发栓与防弹钢加固按键 */
     .fire-housing {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       margin: auto 0;
     }
     .fortify-btn {
       width: 100%;
       min-height: 44px;
-      padding: 0 10px;
+      padding: 0 8px;
       background: linear-gradient(180deg, #3c4450 0%, #2b313a 100%);
-      color: #e0be99;
+      color: #dfc08e;
       border-top: 1.5px solid #5b6778;
       border-left: 1.5px solid #4b5563;
       border-right: 1.5px solid #1a1e24;
       border-bottom: 3px solid #13161b;
       border-radius: 2px;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 800;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
       white-space: nowrap;
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
@@ -235,13 +310,13 @@
       transform: translateY(1px);
     }
     .fire-plunger {
-      width: 96px;
-      height: 96px;
-      min-height: 96px;
+      width: 90px;
+      height: 90px;
+      min-height: 90px;
       border-radius: 50%;
       background: radial-gradient(circle at 38% 32%, #9c6f44 0%, #75512f 55%, #52371e 100%);
       color: #f0e4d6;
-      border: 5px solid #3a424f;
+      border: 4px solid #3a424f;
       box-shadow:
         0 6px 16px rgba(0, 0, 0, 0.82),
         inset 0 2px 3px rgba(255, 255, 255, 0.28),
@@ -256,13 +331,13 @@
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.88);
     }
     .fire-plunger strong {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 900;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       white-space: nowrap;
     }
     .fire-plunger span {
-      font-size: 0.56rem;
+      font-size: 0.54rem;
       font-family: "Consolas", monospace;
       color: #e3c598;
       white-space: nowrap;
@@ -275,9 +350,22 @@
     }
 
     @media (max-width: 880px) {
-      #app { grid-template-columns: 176px 1fr 176px; gap: 6px; padding: 6px; }
-      .dpad-housing { width: 142px; height: 142px; }
-      .fire-plunger { width: 84px; height: 84px; min-height: 84px; }
+      #app { grid-template-columns: 168px 1fr 168px; gap: 6px; padding: 6px; }
+      .dpad-housing { width: 140px; height: 140px; }
+      .fire-plunger { width: 82px; height: 82px; min-height: 82px; }
+    }
+
+    /* 紧凑横屏 (667x375) 专项适配：收窄侧翼保证中央战场充裕 1:1 正方形空间且按钮仍 >= 44x44px */
+    @media (max-width: 740px) {
+      #app { grid-template-columns: 144px 1fr 144px; gap: 4px; padding: 4px; }
+      .t3-wing { padding: 6px; gap: 4px; }
+      .brand-stamp img { width: 22px; height: 22px; }
+      .brand-stamp h1 { font-size: 0.72rem; }
+      .wing-stat-box { padding: 4px 5px; gap: 2px; }
+      .wing-stat-row { font-size: 0.6rem; }
+      .dpad-housing { width: 136px; height: 136px; gap: 1px; padding: 0; }
+      .fire-plunger { width: 76px; height: 76px; min-height: 76px; }
+      .fortify-btn { font-size: 0.62rem; padding: 0 4px; }
     }
   </style>
 </head>
@@ -293,15 +381,15 @@
             <p id="hud-lan">AI 战术僚机协同</p>
           </div>
         </div>
-        <div class="wing-stat-box" style="margin-top:6px;">
+        <div class="wing-stat-box" style="margin-top:4px;">
           <div class="wing-stat-row"><span>防区 SECTOR</span><strong class="brass" id="hud-stage">第 1 关</strong></div>
-          <div class="wing-stat-row"><span>敌坦 HOSTILES</span><strong id="hud-enemies">16 辆</strong></div>
+          <div class="wing-stat-row"><span>敌坦 HOSTILES</span><strong id="hud-enemies">14 辆</strong></div>
           <div class="wing-stat-row"><span>军械币 COINS</span><strong class="brass" id="hud-coins">500</strong></div>
           <div class="wing-stat-row"><span>战车军衔 RANK</span><strong id="hud-rank">Rank 1</strong></div>
         </div>
       </div>
 
-      <!-- 机械液压十字方向键 (支持触控 & 键盘 WASD / 方向键) -->
+      <!-- 机械液压十字方向键 (支持触控 & 键盘 WASD / 方向键，严格 >= 44x44px) -->
       <div>
         <div class="dpad-housing">
           <div></div>
@@ -324,24 +412,35 @@
           </button>
           <div></div>
         </div>
-        <div style="font-size:0.58rem;text-align:center;font-family:Consolas,monospace;color:#8592a1;margin-top:4px;">
+        <div style="font-size:0.56rem;text-align:center;font-family:Consolas,monospace;color:#8592a1;margin-top:2px;">
           机械液压转向总成
         </div>
       </div>
     </aside>
 
-    <!-- 中央：26×26 铸钢防盾取景框与主战场画布 -->
-    <main class="stage-wrap">
-      <div class="battlefield-bezel tb-rivets">
+    <!-- 中央：26×26 铸钢防盾取景框与主战场画布 (强制 1:1 正方形) -->
+    <main class="stage-wrap" id="stage-wrap">
+      <div class="battlefield-bezel tb-rivets" id="battlefield-bezel">
         <canvas id="battle-canvas" width="624" height="624"></canvas>
+        <!-- 防线失守 / 战役结算模态框 -->
+        <div class="battle-modal-overlay" id="battle-result-modal">
+          <div class="battle-modal-card tb-rivets">
+            <div class="battle-modal-title" id="modal-result-title">防线失守 · DEFEAT</div>
+            <div class="battle-modal-desc" id="modal-result-desc">统帅鹰标地堡遭到敌军穿甲弹摧毁，当前战区防御宣告失守。</div>
+            <div class="battle-modal-actions">
+              <button class="battle-modal-btn" id="btn-modal-redeploy">重新部署防线 · REDEPLOY</button>
+              <button class="battle-modal-btn secondary" id="btn-modal-armory">返回重装军械库 · ARMORY</button>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
 
     <!-- 右翼：退火紫铜主炮击发栓、地堡钢化加固与装甲状态槽 -->
-    <aside class="t3-wing tb-rivets" style="padding-top:52px;">
+    <aside class="t3-wing tb-rivets" style="padding-top:48px;">
       <div class="fire-housing">
         <button class="fortify-btn" id="btn-fortify-base" aria-label="加固地堡" title="消耗 50 军械币加固统帅地堡">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span>钢墙加固 (-50)</span>
         </button>
 
@@ -353,13 +452,13 @@
 
       <div class="wing-stat-box">
         <div class="wing-stat-row"><span>1P 装甲/地堡</span><strong id="hud-hp">HP3·完好</strong></div>
-        <div class="wing-stat-row"><span>2P 协同僚机</span><strong>120MM 双联</strong></div>
+        <div class="wing-stat-row"><span>备用履带 LIVES</span><strong id="hud-lives">×2 车组</strong></div>
         <div class="wing-stat-row"><span>防线战绩</span><strong class="brass" id="hud-score">0</strong></div>
       </div>
     </aside>
   </div>
 
-  <script src="../shared/nexus-sdk.js?v=4.1"></script>
+  <script src="../shared/nexus-sdk.js?v=4.2"></script>
   <script>
     (() => {
       NexusSDK.initShellUI({ gameId: 'tank-battle', gameTitle: '钢铁防线' });
@@ -388,18 +487,49 @@
 
       const canvas = document.getElementById('battle-canvas');
       const ctx = canvas.getContext('2d');
-      const GRID = 26;
-      const TILE = 24; // 26 * 24 = 624px
+      const stageWrap = document.getElementById('stage-wrap');
+      const bezelEl = document.getElementById('battlefield-bezel');
+      const modalEl = document.getElementById('battle-result-modal');
+      const modalTitleEl = document.getElementById('modal-result-title');
+      const modalDescEl = document.getElementById('modal-result-desc');
 
-      // Tile types: 0 Empty, 1 Brick, 2 Steel, 3 Bush, 4 TrenchWater, 5 BaseEagle
+      const GRID = 26;
+      const TILE = 24; // 逻辑网格 26 * 24 = 624px
+      const LOGICAL_SIZE = GRID * TILE;
+
+      // 严格 1:1 正方形视口几何锁与高清 DPR 适配 (彻底修复 667x375 画布横向挤压问题)
+      function syncSquareViewport() {
+        if (!stageWrap || !bezelEl) return;
+        const rect = stageWrap.getBoundingClientRect();
+        const side = Math.max(180, Math.floor(Math.min(rect.width, rect.height)));
+        bezelEl.style.width = side + 'px';
+        bezelEl.style.height = side + 'px';
+        const dpr = Math.min(3, window.devicePixelRatio || 1);
+        const targetPx = Math.round(LOGICAL_SIZE * dpr);
+        if (canvas.width !== targetPx || canvas.height !== targetPx) {
+          canvas.width = targetPx;
+          canvas.height = targetPx;
+        }
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      window.addEventListener('resize', syncSquareViewport);
+      window.addEventListener('orientationchange', () => setTimeout(syncSquareViewport, 60));
+      syncSquareViewport();
+
+      // Tile types: 0 Empty, 1 Brick (4-quadrant destructible), 2 Steel, 3 Bush, 4 TrenchWater, 5 BaseEagle
       let map = Array.from({ length: GRID }, () => Array(GRID).fill(0));
+      // 四象限独立毁伤位掩码: bit0(1)=TL, bit1(2)=TR, bit2(4)=BL, bit3(8)=BR, 0b1111=15
+      let brickMask = Array.from({ length: GRID }, () => Array(GRID).fill(0));
+
       let stage = 1;
       let score = 0;
-      let remainingSpawns = 16;
+      let remainingSpawns = 14;
       let spawnCooldown = 60;
       let fortifyTimer = 0;
       let empTimer = 0;
       let baseAlive = true;
+      let battleOver = false;
+      let netFrameTick = 0;
 
       const DIRS = [
         { dx: 0, dy: -1, ang: 0 },
@@ -408,13 +538,35 @@
         { dx: -1, dy: 0, ang: -Math.PI / 2 }
       ];
 
-      const p1 = { x: 8 * TILE, y: 22 * TILE, dir: 0, hp: 3, rank: saveData.rank || 1, shield: 120, cd: 0 };
-      const p2 = { x: 16 * TILE, y: 22 * TILE, dir: 0, hp: 3, rank: 2, shield: 120, cd: 0, isRemote: false };
+      // 五大战术空投物资类型 (彻底消除单一空投空头支票)
+      const CRATE_TYPES = [
+        { kind: 'star', label: '★ 火力晋升', color: '#dfc08e' },
+        { kind: 'fortify', label: '🛡 钢墙筑城', color: '#8695ab' },
+        { kind: 'emp', label: '⚡ 电磁静默', color: '#c48f5a' },
+        { kind: 'nuke', label: '☢ 轨道轰炸', color: '#b85440' },
+        { kind: 'shield', label: '❖ 量子护盾', color: '#9aa8bd' }
+      ];
+
+      const p1 = {
+        x: 8 * TILE, y: 22 * TILE, dir: 0, turretAng: 0,
+        hp: 3, lives: 2, rank: saveData.rank || 1, shield: 150, cd: 0,
+        recoil: 0, movePhase: 0, hitShake: 0
+      };
+      const p2 = {
+        x: 16 * TILE, y: 22 * TILE, dir: 0, turretAng: 0,
+        hp: 3, rank: 2, shield: 150, cd: 0, isRemote: false,
+        recoil: 0, movePhase: 0, hitShake: 0
+      };
       let enemies = [];
       let bullets = [];
       let crates = [];
       let particles = [];
       let treadMarks = [];
+      let floatTexts = [];
+
+      function spawnFloatText(x, y, text, color = '#dfc08e') {
+        floatTexts.push({ x, y, text, color, life: 45 });
+      }
 
       function recordTread(tank) {
         if (Math.random() > 0.28) return;
@@ -427,9 +579,29 @@
         if (treadMarks.length > 90) treadMarks.shift();
       }
 
+      function setTileBrick(r, c) {
+        if (r < 0 || r >= GRID || c < 0 || c >= GRID) return;
+        map[r][c] = 1;
+        brickMask[r][c] = 15; // 0b1111 四象限完整
+      }
+
+      function setBaseWall(tileType) {
+        const coords = [
+          [23,11],[23,12],[23,13],[23,14],
+          [24,11],[24,14],
+          [25,11],[25,14]
+        ];
+        coords.forEach(([r, c]) => {
+          map[r][c] = tileType;
+          brickMask[r][c] = tileType === 1 ? 15 : 0;
+        });
+      }
+
       function buildStageMap(stg) {
         map = Array.from({ length: GRID }, () => Array(GRID).fill(0));
+        brickMask = Array.from({ length: GRID }, () => Array(GRID).fill(0));
         treadMarks = [];
+        floatTexts = [];
         const rng = NexusSDK.createSeededRandom(stg * 9137 + 101);
         for (let r = 3; r < 22; r += 2) {
           for (let c = 2; c < 24; c += 2) {
@@ -439,10 +611,12 @@
             else if (roll < 0.48) t = 2; // Steel
             else if (roll < 0.58) t = 3; // Bush
             else if (roll < 0.63 && r > 6 && r < 18) t = 4; // Anti-tank trench channel
-            map[r][c] = t;
-            map[r][c + 1] = t;
-            map[r + 1][c] = t;
-            map[r + 1][c + 1] = t;
+            for (let dr = 0; dr <= 1; dr++) {
+              for (let dc = 0; dc <= 1; dc++) {
+                map[r + dr][c + dc] = t;
+                brickMask[r + dr][c + dc] = t === 1 ? 15 : 0;
+              }
+            }
           }
         }
         // Base Eagle & Perimeter Walls at bottom center (cols 11..14, rows 23..25)
@@ -450,35 +624,57 @@
         map[24][12] = 5; map[24][13] = 5;
         map[25][12] = 5; map[25][13] = 5;
 
-        p1.x = 8 * TILE; p1.y = 22 * TILE; p1.dir = 0; p1.hp = 3; p1.shield = 150;
-        p2.x = 16 * TILE; p2.y = 22 * TILE; p2.dir = 0; p2.hp = 3; p2.shield = 150;
+        p1.x = 8 * TILE; p1.y = 22 * TILE; p1.dir = 0; p1.turretAng = 0;
+        p1.hp = 3; p1.shield = 150; p1.recoil = 0; p1.hitShake = 0;
+        p2.x = 16 * TILE; p2.y = 22 * TILE; p2.dir = 0; p2.turretAng = 0;
+        p2.hp = 3; p2.shield = 150; p2.recoil = 0; p2.hitShake = 0;
+
         enemies = [
-          { type: 'mammoth', x: 12 * TILE, y: 2 * TILE, dir: 2, hp: 4, maxHp: 4, speed: 1.15, cd: 35, size: TILE * 1.85 },
-          { type: 'raider', x: 4 * TILE, y: 4 * TILE, dir: 2, hp: 2, maxHp: 2, speed: 1.8, cd: 40, size: TILE * 1.8 }
+          { type: 'mammoth', x: 12 * TILE, y: 2 * TILE, dir: 2, turretAng: Math.PI, hp: 4, maxHp: 4, speed: 1.15, cd: 35, size: TILE * 1.85, recoil: 0, movePhase: 0, isElite: false },
+          { type: 'raider', x: 4 * TILE, y: 4 * TILE, dir: 2, turretAng: Math.PI, hp: 2, maxHp: 2, speed: 1.8, cd: 40, size: TILE * 1.8, recoil: 0, movePhase: 0, isElite: true }
         ];
         bullets = [];
         crates = [];
         remainingSpawns = 12 + stg * 2;
+        fortifyTimer = 0;
+        empTimer = 0;
         baseAlive = true;
+        battleOver = false;
+        modalEl.classList.remove('visible');
 
         // Every 3rd stage spawns a Siege Boss Train at top
         if (stg % 3 === 0) {
           enemies.push({
-            type: 'boss', x: 12 * TILE, y: 1 * TILE, dir: 2,
-            hp: 16 + stg * 2, maxHp: 16 + stg * 2, speed: 1.0, cd: 50, size: TILE * 2.4
+            type: 'boss', x: 12 * TILE, y: 1 * TILE, dir: 2, turretAng: Math.PI,
+            hp: 16 + stg * 2, maxHp: 16 + stg * 2, speed: 1.0, cd: 50, size: TILE * 2.4, recoil: 0, movePhase: 0, isElite: true
           });
         }
         updateHud();
       }
 
-      function setBaseWall(tileType) {
-        const coords = [
-          [23,11],[23,12],[23,13],[23,14],
-          [24,11],[24,14],
-          [25,11],[25,14]
-        ];
-        coords.forEach(([r, c]) => { map[r][c] = tileType; });
+      function triggerGameOver(reasonTitle, reasonDesc) {
+        if (battleOver) return;
+        battleOver = true;
+        modalTitleEl.textContent = reasonTitle;
+        modalDescEl.textContent = reasonDesc;
+        modalEl.classList.add('visible');
+        NexusSDK.audio.warn();
       }
+
+      document.getElementById('btn-modal-redeploy').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        stage = 1;
+        score = 0;
+        p1.lives = 2;
+        p1.rank = saveData.rank || 1;
+        buildStageMap(1);
+      });
+
+      document.getElementById('btn-modal-armory').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        modalEl.classList.remove('visible');
+        document.querySelector('.nx-return-pill')?.click();
+      });
 
       function spawnEnemy() {
         if (remainingSpawns <= 0 || enemies.length >= 6) return;
@@ -488,41 +684,153 @@
         const type = types[(remainingSpawns + stage) % types.length];
         const hpMap = { scout: 1, raider: 1, shooter: 2, mammoth: 4 };
         const spdMap = { scout: 1.7, raider: 2.2, shooter: 1.6, mammoth: 1.15 };
+        const isElite = (remainingSpawns % 4 === 0);
         enemies.push({
           type,
           x: col * TILE,
           y: 1 * TILE,
           dir: 2,
+          turretAng: Math.PI,
           hp: hpMap[type],
           maxHp: hpMap[type],
           speed: spdMap[type],
           cd: 40,
-          size: TILE * 1.8
+          size: TILE * 1.8,
+          recoil: 0,
+          movePhase: 0,
+          isElite
         });
         remainingSpawns--;
         updateHud();
       }
 
+      // 支持四象限砖墙精确子块碰撞检测
       function canMoveRect(nx, ny, size = TILE * 1.75) {
         if (nx < 0 || ny < 0 || nx + size > GRID * TILE || ny + size > GRID * TILE) return false;
         const c0 = Math.floor(nx / TILE);
         const c1 = Math.floor((nx + size - 1) / TILE);
         const r0 = Math.floor(ny / TILE);
         const r1 = Math.floor((ny + size - 1) / TILE);
+        const half = TILE / 2;
         for (let r = r0; r <= r1; r++) {
           for (let c = c0; c <= c1; c++) {
             const t = map[r]?.[c];
-            if (t === 1 || t === 2 || t === 4 || t === 5) return false;
+            if (t === 2 || t === 4 || t === 5) return false;
+            if (t === 1) {
+              const mask = brickMask[r]?.[c] || 0;
+              if (mask === 0) continue;
+              const tx = c * TILE;
+              const ty = r * TILE;
+              const quadrants = [
+                { bit: 1, x0: tx, y0: ty, x1: tx + half, y1: ty + half },
+                { bit: 2, x0: tx + half, y0: ty, x1: tx + TILE, y1: ty + half },
+                { bit: 4, x0: tx, y0: ty + half, x1: tx + half, y1: ty + TILE },
+                { bit: 8, x0: tx + half, y0: ty + half, x1: tx + TILE, y1: ty + TILE }
+              ];
+              for (const q of quadrants) {
+                if ((mask & q.bit) && nx < q.x1 && nx + size > q.x0 && ny < q.y1 && ny + size > q.y0) {
+                  return false;
+                }
+              }
+            }
           }
         }
         return true;
       }
 
+      // 四象限砖墙局部碎裂判定：普通炮弹仅剥离命中的 1~2 个子象限，Lv.3 重炮整块贯穿
+      function damageBrickTile(r, c, bx, by, vx, vy, breakSteel) {
+        if (map[r]?.[c] !== 1) return false;
+        if (breakSteel) {
+          brickMask[r][c] = 0;
+          map[r][c] = 0;
+          return true;
+        }
+        let mask = brickMask[r][c] || 15;
+        const lx = bx - c * TILE;
+        const ly = by - r * TILE;
+        const half = TILE / 2;
+        let hitBit = 0;
+        if (ly < half) {
+          hitBit = lx < half ? 1 : 2;
+        } else {
+          hitBit = lx < half ? 4 : 8;
+        }
+        // 若命中的子块已碎，则沿弹道方向剥离相邻象限
+        if ((mask & hitBit) === 0) {
+          if (Math.abs(vy) >= Math.abs(vx)) {
+            const rowBits = ly < half ? (1 | 2) : (4 | 8);
+            if (mask & rowBits) hitBit = mask & rowBits;
+            else hitBit = mask & (-mask);
+          } else {
+            const colBits = lx < half ? (1 | 4) : (2 | 8);
+            if (mask & colBits) hitBit = mask & colBits;
+            else hitBit = mask & (-mask);
+          }
+        }
+        brickMask[r][c] = mask & (~hitBit);
+        if (brickMask[r][c] === 0) {
+          map[r][c] = 0;
+        }
+        return true;
+      }
+
+      function spawnRandomCrate(x, y) {
+        const spec = CRATE_TYPES[Math.floor(Math.random() * CRATE_TYPES.length)];
+        crates.push({
+          x: x ?? (2 + Math.floor(Math.random() * 20)) * TILE,
+          y: y ?? (4 + Math.floor(Math.random() * 16)) * TILE,
+          life: 600,
+          kind: spec.kind,
+          label: spec.label,
+          color: spec.color,
+          rot: 0
+        });
+      }
+
+      function applyCrateEffect(cr, collectorTank) {
+        NexusSDK.audio.pickup();
+        saveData.currency.tankCoins += 60;
+        spawnFloatText(cr.x + TILE * 0.8, cr.y, cr.label, cr.color);
+
+        if (cr.kind === 'star') {
+          collectorTank.rank = Math.min(4, (collectorTank.rank || 1) + 1);
+          if (collectorTank === p1) saveData.rank = p1.rank;
+        } else if (cr.kind === 'fortify') {
+          fortifyTimer = 1200;
+          setBaseWall(2);
+        } else if (cr.kind === 'emp') {
+          empTimer = 360; // 6.0 秒全屏敌军电磁静默瘫痪
+          explode(cr.x + TILE * 0.8, cr.y + TILE * 0.8, '#c48f5a', 16);
+        } else if (cr.kind === 'nuke') {
+          // 全屏轨道轰炸
+          for (let j = enemies.length - 1; j >= 0; j--) {
+            const en = enemies[j];
+            en.hp -= 8;
+            explode(en.x + TILE, en.y + TILE, '#dfc08e', 16);
+            if (en.hp <= 0) {
+              score += en.type === 'boss' ? 1500 : 200;
+              saveData.currency.tankCoins += en.type === 'boss' ? 150 : 25;
+              enemies.splice(j, 1);
+            }
+          }
+          NexusSDK.audio.explosion();
+        } else if (cr.kind === 'shield') {
+          collectorTank.shield = 600;
+          collectorTank.hp = Math.min(3, collectorTank.hp + 1);
+        }
+        if (score > (saveData.stats.highScore || 0)) saveData.stats.highScore = score;
+        store.save(saveData);
+        updateHud();
+      }
+
       function fireTank(tank, owner) {
-        if (tank.cd > 0) return;
+        if (battleOver || tank.cd > 0) return;
         const rank = tank.rank || 1;
         tank.cd = rank >= 2 ? 14 : 22;
+        tank.recoil = 1.0; // 触发炮管轴向后坐力骨骼动画 (part-barrel-main recoil-y)
         const d = DIRS[tank.dir];
+        tank.turretAng = d.ang;
         const speed = rank >= 1 ? 6.8 : 5.2;
         bullets.push({
           x: tank.x + TILE * 0.9 + d.dx * 14,
@@ -533,7 +841,12 @@
           breakSteel: rank >= 3,
           dmg: rank >= 2 ? 2 : 1
         });
-        if (owner === 'p1') NexusSDK.audio.shoot();
+        if (owner === 'p1') {
+          NexusSDK.audio.shoot();
+          if (lan.isConnected()) {
+            lan.sendFast({ type: 'p2_state', x: p1.x, y: p1.y, dir: p1.dir, fire: true });
+          }
+        }
       }
 
       function explode(x, y, color = '#d8b584', count = 10) {
@@ -592,14 +905,16 @@
         fireTank(p1, 'p1');
       });
 
-      // LAN Dual-Channel Session
+      // LAN Dual-Channel Session (Host 权威世界快照 + 四象限砖墙同步)
       const lan = NexusSDK.createLanSession('tank-battle', store.getAuth().room);
+      let lanRole = 'host';
 
       lan.onStatus((st) => {
         const el = document.getElementById('hud-lan');
+        lanRole = st.role || 'host';
         if (st.connected) {
-          el.textContent = `LAN 已直连 (${st.peerLatencyMs}ms · ${st.role.toUpperCase()})`;
-          el.style.color = '#e0be99';
+          el.textContent = `LAN 已直连 (${st.peerLatencyMs}ms · ${lanRole.toUpperCase()})`;
+          el.style.color = '#dfc08e';
           p2.isRemote = true;
         } else if (st.failoverActive) {
           el.textContent = '3s 断线自愈 · AI 僚机已接管';
@@ -613,17 +928,37 @@
       });
 
       lan.onFast((msg) => {
+        if (!msg || typeof msg !== 'object') return;
         if (msg.type === 'p2_state') {
-          p2.x = msg.x; p2.y = msg.y; p2.dir = msg.dir;
+          p2.x = Number(msg.x) || p2.x;
+          p2.y = Number(msg.y) || p2.y;
+          p2.dir = Number(msg.dir) || 0;
+          p2.movePhase += 0.35;
           if (msg.fire) fireTank(p2, 'p2');
+        } else if (msg.type === 'world_sync' && lanRole === 'client') {
+          if (Array.isArray(msg.enemies)) enemies = msg.enemies;
+          if (Array.isArray(msg.bullets)) bullets = msg.bullets;
+          if (typeof msg.empTimer === 'number') empTimer = msg.empTimer;
+          if (typeof msg.fortifyTimer === 'number') fortifyTimer = msg.fortifyTimer;
+          if (typeof msg.remainingSpawns === 'number') remainingSpawns = msg.remainingSpawns;
+          updateHud();
         }
       });
 
       lan.onReliable((msg) => {
+        if (!msg || typeof msg !== 'object') return;
         if (msg.type === 'fortify') {
           fortifyTimer = 1200;
           setBaseWall(2);
           NexusSDK.audio.upgrade();
+        } else if (msg.type === 'brick_hit') {
+          const { r, c, mask, tile } = msg;
+          if (map[r] && brickMask[r]) {
+            brickMask[r][c] = mask;
+            map[r][c] = tile;
+          }
+        } else if (msg.type === 'crate_spawn' && msg.crate) {
+          crates.push(msg.crate);
         }
       });
 
@@ -645,6 +980,7 @@
         const ny = p2.y + d.dy * 1.9;
         if (canMoveRect(nx, ny)) {
           p2.x = nx; p2.y = ny;
+          p2.movePhase += 0.32;
           recordTread(p2);
         } else {
           p2.dir = (p2.dir + 1) % 4;
@@ -657,16 +993,23 @@
         document.getElementById('hud-enemies').textContent = `${remainingSpawns + enemies.length} 辆`;
         document.getElementById('hud-coins').textContent = (saveData.currency?.tankCoins ?? 0).toLocaleString();
         document.getElementById('hud-rank').textContent = `Rank ${p1.rank}`;
-        document.getElementById('hud-hp').textContent = `HP${p1.hp}·${baseAlive ? '完好' : '受损'}`;
+        document.getElementById('hud-hp').textContent = `HP${p1.hp}·${baseAlive ? '完好' : '被毁'}`;
+        document.getElementById('hud-lives').textContent = `×${p1.lives} 车组`;
         document.getElementById('hud-score').textContent = score.toLocaleString();
       }
 
       function step() {
         if (window.NexusSDK && !window.NexusSDK.isGameplayActive()) return;
+        if (battleOver) return;
+
         if (p1.cd > 0) p1.cd--;
         if (p2.cd > 0) p2.cd--;
         if (p1.shield > 0) p1.shield--;
         if (p2.shield > 0) p2.shield--;
+        if (p1.recoil > 0) p1.recoil = Math.max(0, p1.recoil - 0.12);
+        if (p2.recoil > 0) p2.recoil = Math.max(0, p2.recoil - 0.12);
+        if (p1.hitShake > 0) p1.hitShake = Math.max(0, p1.hitShake - 0.1);
+        if (p2.hitShake > 0) p2.hitShake = Math.max(0, p2.hitShake - 0.1);
 
         if (fortifyTimer > 0) {
           fortifyTimer--;
@@ -677,12 +1020,14 @@
         // Move P1
         if (activeDir >= 0) {
           p1.dir = activeDir;
+          p1.turretAng = DIRS[activeDir].ang;
           const d = DIRS[activeDir];
           const spd = 2.4 + (p1.rank * 0.2);
           const nx = p1.x + d.dx * spd;
           const ny = p1.y + d.dy * spd;
           if (canMoveRect(nx, ny)) {
             p1.x = nx; p1.y = ny;
+            p1.movePhase += 0.38;
             recordTread(p1);
           } else {
             const perpX = d.dy !== 0 ? 1 : 0;
@@ -691,6 +1036,7 @@
               if (canMoveRect(nx + perpX * snap, ny + perpY * snap)) {
                 p1.x += perpX * Math.sign(snap) * 1.8;
                 p1.y += perpY * Math.sign(snap) * 1.8;
+                p1.movePhase += 0.25;
                 break;
               }
             }
@@ -712,19 +1058,24 @@
 
         // Move Enemies
         enemies.forEach((en) => {
-          if (empTimer > 0) return;
+          if (en.recoil > 0) en.recoil = Math.max(0, en.recoil - 0.1);
+          if (empTimer > 0) return; // EMP 全屏静默期间冻结移动与开火
           if (en.cd > 0) en.cd--;
           const d = DIRS[en.dir];
           const nx = en.x + d.dx * en.speed;
           const ny = en.y + d.dy * en.speed;
           if (canMoveRect(nx, ny, en.size || TILE * 1.75)) {
             en.x = nx; en.y = ny;
+            en.movePhase = (en.movePhase || 0) + 0.32;
             recordTread(en);
           } else {
             en.dir = Math.random() < 0.45 ? 2 : Math.floor(Math.random() * 4);
           }
+          // 独立炮塔微摆索敌角
+          en.turretAng = DIRS[en.dir].ang + Math.sin((en.movePhase || 0) * 0.35) * 0.14;
           if (en.cd <= 0) {
             en.cd = en.type === 'shooter' ? 45 : 75;
+            en.recoil = 1.0;
             const bd = DIRS[en.dir];
             bullets.push({
               x: en.x + TILE * 0.9 + bd.dx * 12,
@@ -751,11 +1102,15 @@
           const r = Math.floor(b.y / TILE);
           const t = map[r]?.[c];
           if (t === 1) {
-            map[r][c] = 0;
-            explode(b.x, b.y, '#b5604a', 6);
-            NexusSDK.audio.hit();
-            bullets.splice(i, 1);
-            continue;
+            if (damageBrickTile(r, c, b.x, b.y, b.vx, b.vy, b.breakSteel)) {
+              explode(b.x, b.y, '#b5604a', 6);
+              NexusSDK.audio.hit();
+              if (lan.isConnected()) {
+                lan.sendReliable({ type: 'brick_hit', r, c, mask: brickMask[r][c], tile: map[r][c] });
+              }
+              bullets.splice(i, 1);
+              continue;
+            }
           } else if (t === 2) {
             if (b.breakSteel) map[r][c] = 0;
             explode(b.x, b.y, '#9eb0c7', 6);
@@ -763,18 +1118,13 @@
             bullets.splice(i, 1);
             continue;
           } else if (t === 5) {
-            if (b.owner === 'enemy') {
-              baseAlive = false;
-              explode(13 * TILE, 24.5 * TILE, '#c97a63', 24);
-              NexusSDK.audio.explosion();
-              setTimeout(() => {
-                baseAlive = true;
-                setBaseWall(2);
-                fortifyTimer = 600;
-                updateHud();
-              }, 2000);
-            }
+            // 鹰标核心地堡被任何敌我炮弹击中即触发防线失守结算 (严禁 2 秒自动复活后门)
+            baseAlive = false;
+            explode(13 * TILE, 24.5 * TILE, '#c97a63', 28);
+            NexusSDK.audio.explosion();
+            updateHud();
             bullets.splice(i, 1);
+            triggerGameOver('防线失守 · 统帅地堡被毁', '八角铸钢统帅鹰标地堡遭穿甲弹击穿，防线作战失利。请重新部署或返回军械库整备。');
             continue;
           }
 
@@ -787,6 +1137,11 @@
               if (b.x > en.x && b.x < en.x + sz && b.y > en.y && b.y < en.y + sz) {
                 en.hp -= b.dmg;
                 hitEnemy = true;
+                // 命中精英红光闪烁敌车或击毁敌车时掉落五类战术空投箱
+                if (en.isElite) {
+                  en.isElite = false;
+                  spawnRandomCrate();
+                }
                 if (en.hp <= 0) {
                   explode(en.x + sz / 2, en.y + sz / 2, '#d8b584', 14);
                   NexusSDK.audio.explosion();
@@ -794,12 +1149,8 @@
                   saveData.currency.tankCoins += en.type === 'boss' ? 150 : 25;
                   if (score > (saveData.stats.highScore || 0)) saveData.stats.highScore = score;
                   store.save(saveData);
-                  if (Math.random() < 0.32) {
-                    crates.push({
-                      x: (2 + Math.floor(Math.random() * 20)) * TILE,
-                      y: (4 + Math.floor(Math.random() * 16)) * TILE,
-                      life: 600
-                    });
+                  if (Math.random() < 0.35) {
+                    spawnRandomCrate();
                   }
                   enemies.splice(j, 1);
                   updateHud();
@@ -815,13 +1166,33 @@
               continue;
             }
           } else {
-            // Enemy bullet vs P1
+            // Enemy bullet vs P1 (真实扣血与车组备用履带重生/战败闭环，彻底废除 Math.max(1) 不死锁血)
             if (b.x > p1.x && b.x < p1.x + TILE * 1.8 && b.y > p1.y && b.y < p1.y + TILE * 1.8) {
               if (p1.shield <= 0) {
-                p1.hp = Math.max(1, p1.hp - 1);
-                p1.shield = 120;
-                explode(p1.x + TILE, p1.y + TILE, '#b5604a', 10);
+                p1.hp -= 1;
+                p1.hitShake = 1.0;
+                explode(p1.x + TILE, p1.y + TILE, '#b5604a', 12);
                 NexusSDK.audio.warn();
+                if (p1.hp <= 0) {
+                  if (p1.lives > 0) {
+                    p1.lives -= 1;
+                    p1.hp = 3;
+                    p1.rank = Math.max(1, p1.rank - 1);
+                    p1.x = 8 * TILE;
+                    p1.y = 22 * TILE;
+                    p1.dir = 0;
+                    p1.shield = 180;
+                    spawnFloatText(p1.x + TILE, p1.y, '备用车组投入 · RESPAWN', '#dfc08e');
+                  } else {
+                    p1.hp = 0;
+                    updateHud();
+                    bullets.splice(i, 1);
+                    triggerGameOver('装甲全灭 · DEFEAT', '1P 主战坦克与备用履带车组已全部阵亡，防线失守。');
+                    continue;
+                  }
+                } else {
+                  p1.shield = 90;
+                }
                 updateHud();
               }
               bullets.splice(i, 1);
@@ -834,17 +1205,14 @@
         for (let i = crates.length - 1; i >= 0; i--) {
           const cr = crates[i];
           cr.life--;
-          const dist1 = Math.hypot((p1.x + TILE) - (cr.x + TILE), (p1.y + TILE) - (cr.y + TILE));
-          const dist2 = Math.hypot((p2.x + TILE) - (cr.x + TILE), (p2.y + TILE) - (cr.y + TILE));
-          if (dist1 < TILE * 1.6 || dist2 < TILE * 1.6) {
-            NexusSDK.audio.pickup();
-            p1.rank = Math.min(4, p1.rank + 1);
-            saveData.rank = p1.rank;
-            saveData.currency.tankCoins += 60;
-            fortifyTimer = 900;
-            setBaseWall(2);
-            store.save(saveData);
-            updateHud();
+          cr.rot = (cr.rot || 0) + 0.05;
+          const dist1 = Math.hypot((p1.x + TILE) - (cr.x + TILE * 0.8), (p1.y + TILE) - (cr.y + TILE * 0.8));
+          const dist2 = Math.hypot((p2.x + TILE) - (cr.x + TILE * 0.8), (p2.y + TILE) - (cr.y + TILE * 0.8));
+          if (dist1 < TILE * 1.55) {
+            applyCrateEffect(cr, p1);
+            crates.splice(i, 1);
+          } else if (dist2 < TILE * 1.55) {
+            applyCrateEffect(cr, p2);
             crates.splice(i, 1);
           } else if (cr.life <= 0) {
             crates.splice(i, 1);
@@ -859,39 +1227,135 @@
           saveData.currency.tankCoins += 120;
           store.save(saveData);
           buildStageMap(stage);
+          spawnFloatText(11 * TILE, 12 * TILE, `第 ${stage} 防区解锁 · STAGE CLEAR`, '#dfc08e');
         }
 
-        // Update particles
+        // Host 定时广播权威世界快照 (Pillar 5 局域网同步完备性)
+        netFrameTick++;
+        if (lan.isConnected() && lanRole === 'host' && netFrameTick % 4 === 0) {
+          lan.sendFast({
+            type: 'world_sync',
+            enemies: enemies.map((e) => ({ type: e.type, x: Math.round(e.x), y: Math.round(e.y), dir: e.dir, hp: e.hp, maxHp: e.maxHp, size: e.size, isElite: e.isElite })),
+            bullets: bullets.map((b) => ({ x: Math.round(b.x), y: Math.round(b.y), vx: b.vx, vy: b.vy, owner: b.owner })),
+            empTimer,
+            fortifyTimer,
+            remainingSpawns
+          });
+        }
+
+        // Update particles & floating texts
         for (let i = particles.length - 1; i >= 0; i--) {
           const pt = particles[i];
           pt.x += pt.vx; pt.y += pt.vy; pt.life--;
           if (pt.life <= 0) particles.splice(i, 1);
         }
+        for (let i = floatTexts.length - 1; i >= 0; i--) {
+          const ft = floatTexts[i];
+          ft.y -= 0.45;
+          ft.life--;
+          if (ft.life <= 0) floatTexts.splice(i, 1);
+        }
       }
 
+      // 多层骨骼运动学解算绘制：支持车体悬挂震颤、炮管轴向后坐回缩 (recoil-y)、炮口制退器闪光与旋转索敌雷达
       function drawTankSprite(img, tank, ringColor) {
         const sz = tank.size || TILE * 1.85;
+        const cx = tank.x + sz / 2;
+        const cy = tank.y + sz / 2;
+        const recoil = tank.recoil || 0;
+        const movePhase = tank.movePhase || 0;
+        const shake = (tank.hitShake || 0) * Math.sin(performance.now() * 0.08) * 2.5;
+
         ctx.save();
-        ctx.translate(tank.x + sz / 2, tank.y + sz / 2);
+        ctx.translate(cx + shake, cy);
         ctx.rotate(DIRS[tank.dir].ang);
+
+        // 1. 履带推进微幅悬挂起伏与开火后坐力车体俯仰
+        const heave = 1 + Math.sin(movePhase) * 0.022;
+        const recoilShiftY = recoil * 4.2; // 朝向 -Y 发射时，后坐力向 +Y 回缩
+        ctx.translate(0, recoilShiftY);
+        ctx.scale(heave, 2 - heave);
+
         if (img && img.complete) {
           ctx.drawImage(img, -sz / 2, -sz / 2, sz, sz);
         }
+
+        // 2. 骨骼级动态叠加：独立旋转索敌雷达扫描线 (part-radar-scanner) 与炮管轴向后坐驻退套筒
+        const radarAng = (performance.now() * 0.0045) % (Math.PI * 2);
+        ctx.save();
+        ctx.translate(sz * 0.12, sz * 0.12);
+        ctx.rotate(radarAng);
+        ctx.strokeStyle = '#dfc08e';
+        ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.moveTo(-3.5, 0);
+        ctx.lineTo(3.5, 0);
+        ctx.stroke();
         ctx.restore();
+
+        // 3. 主炮击发瞬间：炮口制退器侧向导轨扩张闪光与驻退复进机高亮
+        if (recoil > 0.15) {
+          ctx.save();
+          ctx.translate(0, -sz * 0.42 + recoil * 3.5);
+          ctx.fillStyle = 'rgba(223, 192, 142, ' + (recoil * 0.85).toFixed(2) + ')';
+          ctx.beginPath();
+          ctx.arc(0, -3, 4.5 * recoil, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#c48f5a';
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          ctx.moveTo(-6 * recoil, -2);
+          ctx.lineTo(6 * recoil, -2);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // 4. 精英敌车红丹警示脉冲标定框
+        if (tank.isElite && Math.floor(performance.now() / 180) % 2 === 0) {
+          ctx.strokeStyle = '#b85440';
+          ctx.lineWidth = 1.6;
+          ctx.strokeRect(-sz * 0.44, -sz * 0.44, sz * 0.88, sz * 0.88);
+        }
+
+        ctx.restore();
+
+        // 5. 量子护盾环 (Aegis Shield)
         if (tank.shield > 0) {
+          ctx.save();
           ctx.strokeStyle = ringColor || '#c48f5a';
           ctx.lineWidth = 1.8;
+          ctx.setLineDash([5, 3]);
+          ctx.lineDashOffset = -(performance.now() * 0.03);
           ctx.beginPath();
-          ctx.arc(tank.x + sz / 2, tank.y + sz / 2, sz * 0.58, 0, Math.PI * 2);
+          ctx.arc(cx, cy, sz * 0.56, 0, Math.PI * 2);
           ctx.stroke();
+          ctx.restore();
         }
+      }
+
+      // 四象限砖墙独立裁剪渲染 (part-brick-tl / tr / bl / br)
+      function drawQuadBrickTile(r, c) {
+        const mask = brickMask[r][c] || 0;
+        if (mask === 0 || !sprites.brick?.complete) return;
+        const x = c * TILE;
+        const y = r * TILE;
+        const half = TILE / 2;
+        if (mask === 15) {
+          ctx.drawImage(sprites.brick, x, y, TILE, TILE);
+          return;
+        }
+        // 按 4-bit 掩码独立裁剪 128x128 矢量贴图的四个象限
+        if (mask & 1) ctx.drawImage(sprites.brick, 0, 0, 64, 64, x, y, half, half);
+        if (mask & 2) ctx.drawImage(sprites.brick, 64, 0, 64, 64, x + half, y, half, half);
+        if (mask & 4) ctx.drawImage(sprites.brick, 0, 64, 64, 64, x, y + half, half, half);
+        if (mask & 8) ctx.drawImage(sprites.brick, 64, 64, 64, 64, x + half, y + half, half, half);
       }
 
       function render() {
         ctx.shadowBlur = 0;
         // 方案 B 低对比度浸油发蓝炮钢地面
         ctx.fillStyle = '#1d2128';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, LOGICAL_SIZE, LOGICAL_SIZE);
 
         // 微弱拉丝测距网格
         ctx.strokeStyle = 'rgba(170, 185, 205, 0.055)';
@@ -913,14 +1377,14 @@
           }
         });
 
-        // Pass 1: Ground tiles (Brick, Steel, Anti-Tank Trench)
+        // Pass 1: Ground tiles (4-Quadrant Brick, Steel, Anti-Tank Trench)
         for (let r = 0; r < GRID; r++) {
           for (let c = 0; c < GRID; c++) {
             const t = map[r][c];
             const x = c * TILE;
             const y = r * TILE;
-            if (t === 1 && sprites.brick?.complete) {
-              ctx.drawImage(sprites.brick, x, y, TILE, TILE);
+            if (t === 1) {
+              drawQuadBrickTile(r, c);
             } else if (t === 2 && sprites.steel?.complete) {
               ctx.drawImage(sprites.steel, x, y, TILE, TILE);
             } else if (t === 4) {
@@ -937,14 +1401,31 @@
 
         // Base Eagle (2x2 tiles at col 12, row 24)
         if (sprites.eagle?.complete) {
+          ctx.save();
+          if (!baseAlive) ctx.globalAlpha = 0.32;
           ctx.drawImage(sprites.eagle, 12 * TILE, 24 * TILE, TILE * 2, TILE * 2);
+          ctx.restore();
         }
 
-        // Pickup Crates
+        // Pickup Crates (带自转战利品核心与战术类型钢印标签)
         crates.forEach((cr) => {
+          const cx = cr.x + TILE * 0.8;
+          const cy = cr.y + TILE * 0.8;
+          ctx.save();
+          ctx.translate(cx, cy);
           if (sprites.crate?.complete) {
-            ctx.drawImage(sprites.crate, cr.x, cr.y, TILE * 1.6, TILE * 1.6);
+            ctx.drawImage(sprites.crate, -TILE * 0.8, -TILE * 0.8, TILE * 1.6, TILE * 1.6);
           }
+          ctx.strokeStyle = cr.color || '#dfc08e';
+          ctx.lineWidth = 1.4;
+          ctx.strokeRect(-TILE * 0.72, -TILE * 0.72, TILE * 1.44, TILE * 1.44);
+          ctx.fillStyle = '#12151a';
+          ctx.fillRect(-18, TILE * 0.45, 36, 10);
+          ctx.fillStyle = cr.color || '#dfc08e';
+          ctx.font = 'bold 8px Consolas, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText((cr.kind || 'STAR').toUpperCase(), 0, TILE * 0.45 + 8);
+          ctx.restore();
         });
 
         // Tanks
@@ -962,7 +1443,19 @@
           }
         });
 
-        // Bullets (退火黄铜/钨芯穿甲弹体，告别赛博荧光青)
+        // EMP 电磁静默激活状态覆盖指示
+        if (empTimer > 0) {
+          ctx.save();
+          ctx.strokeStyle = 'rgba(196, 143, 90, 0.45)';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(4, 4, LOGICAL_SIZE - 8, LOGICAL_SIZE - 8);
+          ctx.fillStyle = 'rgba(196, 143, 90, 0.9)';
+          ctx.font = 'bold 11px Consolas, monospace';
+          ctx.fillText(`⚡ EMP 电磁静默生效中: ${(empTimer / 60).toFixed(1)}s`, 12, 18);
+          ctx.restore();
+        }
+
+        // Bullets (退火黄铜/钨芯穿甲弹体)
         bullets.forEach((b) => {
           ctx.save();
           ctx.translate(b.x, b.y);
@@ -978,7 +1471,9 @@
           for (let c = 0; c < GRID; c++) {
             if (map[r][c] === 3 && sprites.bush?.complete) {
               const bx = c * TILE, by = r * TILE;
-              const nearAlly = Math.hypot((p1.x + TILE * 0.9) - (bx + TILE * 0.5), (p1.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4 || Math.hypot((p2.x + TILE * 0.9) - (bx + TILE * 0.5), (p2.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4;
+              const nearAlly =
+                Math.hypot((p1.x + TILE * 0.9) - (bx + TILE * 0.5), (p1.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4 ||
+                Math.hypot((p2.x + TILE * 0.9) - (bx + TILE * 0.5), (p2.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4;
               ctx.save();
               ctx.globalAlpha = nearAlly ? 0.62 : 0.90;
               ctx.drawImage(sprites.bush, bx, by, TILE, TILE);
@@ -987,12 +1482,88 @@
           }
         }
 
-        // Particles
+        // Particles & Floating Texts
         particles.forEach((pt) => {
           ctx.fillStyle = pt.color;
           ctx.fillRect(pt.x - 2, pt.y - 2, 3.5, 3.5);
         });
+        floatTexts.forEach((ft) => {
+          ctx.save();
+          ctx.fillStyle = ft.color;
+          ctx.font = 'bold 10px "Noto Sans SC", Consolas, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(ft.text, ft.x, ft.y);
+          ctx.restore();
+        });
       }
+
+      // 第二层军械库检视台 (Tier 2 Inspector) 同源骨骼动画挂载驱动 (rigs/*.anim.js)
+      let activeInspectorRigAnim = null;
+      async function mountInspectorRigAnimation(unitFile) {
+        if (activeInspectorRigAnim) {
+          cancelAnimationFrame(activeInspectorRigAnim);
+          activeInspectorRigAnim = null;
+        }
+        const stageEl = document.getElementById('tb-insp-rig-stage');
+        if (!stageEl || !unitFile) return;
+
+        // 若在 HTTP/HTTPS 环境下，优先动态加载同源 rigs/*.anim.js 与内联 SVG 驱动 28 层骨骼矩阵
+        if (window.location.protocol.startsWith('http')) {
+          try {
+            const baseName = unitFile.replace(/\.svg$/i, '');
+            const [svgResp, rigMod] = await Promise.all([
+              fetch(`../assets/tank-battle/sprites/${unitFile}`),
+              import(`../assets/tank-battle/rigs/${baseName}.anim.js`)
+            ]);
+            if (svgResp.ok && rigMod && typeof rigMod.applyToSvgDom === 'function') {
+              stageEl.innerHTML = await svgResp.text();
+              const svgEl = stageEl.querySelector('svg');
+              if (svgEl) {
+                svgEl.style.width = '60px';
+                svgEl.style.height = '60px';
+                const t0 = performance.now();
+                const states = ['idle', 'move', 'attack'];
+                const tickRig = (now) => {
+                  if (! document.body.contains(svgEl)) return;
+                  const elapsed = now - t0;
+                  const stateIdx = Math.floor(elapsed / 2200) % states.length;
+                  rigMod.applyToSvgDom(svgEl, states[stateIdx], elapsed % 2200, {
+                    aimAngleDeg: Math.sin(elapsed * 0.002) * 18
+                  });
+                  activeInspectorRigAnim = requestAnimationFrame(tickRig);
+                };
+                activeInspectorRigAnim = requestAnimationFrame(tickRig);
+                return;
+              }
+            }
+          } catch (_) {}
+        }
+
+        // 本地 file:// 离线模式同步骨骼运动预览（驱动检视台精灵执行呼吸、转向与后坐力）
+        const imgEl = stageEl.querySelector('img');
+        if (!imgEl) return;
+        const t0 = performance.now();
+        const tickLocal = (now) => {
+          if (!document.body.contains(imgEl)) return;
+          const elapsed = now - t0;
+          const cycle = (elapsed % 2400) / 2400;
+          const recoilY = cycle > 0.72 && cycle < 0.86 ? 3.5 : 0;
+          const rot = Math.sin(cycle * Math.PI * 2) * 6;
+          imgEl.style.transform = `translateY(${recoilY}px) rotate(${rot.toFixed(1)}deg)`;
+          activeInspectorRigAnim = requestAnimationFrame(tickLocal);
+        };
+        activeInspectorRigAnim = requestAnimationFrame(tickLocal);
+      }
+
+      window.addEventListener('nexus:tier2-rendered', (e) => {
+        if (e.detail && e.detail.unitFile) {
+          mountInspectorRigAnimation(e.detail.unitFile);
+        }
+      });
+      setTimeout(() => {
+        const box = document.getElementById('tb-insp-preview-box');
+        if (box) mountInspectorRigAnimation(box.getAttribute('data-unit-file'));
+      }, 60);
 
       function loop() {
         step();

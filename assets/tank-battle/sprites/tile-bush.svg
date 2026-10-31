@@ -1,92 +1,99 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="tile-bush-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <radialGradient id="tb-shadow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#0b0d10" stop-opacity="0.72"/>
-      <stop offset="68%" stop-color="#111419" stop-opacity="0.32"/>
-      <stop offset="100%" stop-color="#111419" stop-opacity="0"/>
+    <radialGradient id="bu-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#12151a" stop-opacity="0.65" />
+      <stop offset="70%" stop-color="#171b22" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#171b22" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="blued-hull" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#5c6878"/>
-      <stop offset="45%" stop-color="#3f4854"/>
-      <stop offset="100%" stop-color="#252b33"/>
-    </linearGradient>
-    <radialGradient id="blued-turret" cx="38%" cy="35%" r="65%">
-      <stop offset="0%" stop-color="#6e7c8f"/>
-      <stop offset="55%" stop-color="#444e5c"/>
-      <stop offset="100%" stop-color="#262c35"/>
+    <radialGradient id="bu-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3d4f41" stop-opacity="0.32" />
+      <stop offset="60%" stop-color="#c48f5a" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#171b22" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="tungsten-plate" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#738294"/>
-      <stop offset="50%" stop-color="#4e5968"/>
-      <stop offset="100%" stop-color="#2c333d"/>
+    <linearGradient id="bu-crystal-leaf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#526957" stop-opacity="0.85" />
+      <stop offset="50%" stop-color="#2f3d32" stop-opacity="0.72" />
+      <stop offset="100%" stop-color="#222b24" stop-opacity="0.8" />
     </linearGradient>
-    <linearGradient id="enemy-cast-hull" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#59524c"/>
-      <stop offset="48%" stop-color="#3d3834"/>
-      <stop offset="100%" stop-color="#24201e"/>
+    <linearGradient id="bu-rim-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d8dee9" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#68826e" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#c48f5a" stop-opacity="0" />
     </linearGradient>
-    <radialGradient id="enemy-cast-turret" cx="38%" cy="35%" r="65%">
-      <stop offset="0%" stop-color="#6b625b"/>
-      <stop offset="55%" stop-color="#47413c"/>
-      <stop offset="100%" stop-color="#292421"/>
-    </radialGradient>
-    <linearGradient id="steel-barrel" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#23282e"/>
-      <stop offset="35%" stop-color="#697480"/>
-      <stop offset="55%" stop-color="#8592a1"/>
-      <stop offset="100%" stop-color="#1e2228"/>
-    </linearGradient>
-    <linearGradient id="steel-tread" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#22262b"/>
-      <stop offset="50%" stop-color="#383e46"/>
-      <stop offset="100%" stop-color="#181b1f"/>
-    </linearGradient>
-    <linearGradient id="brass-trim" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#d8b584"/>
-      <stop offset="50%" stop-color="#b0804c"/>
-      <stop offset="100%" stop-color="#634524"/>
-    </linearGradient>
-    <linearGradient id="primer-trim" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#c97a63"/>
-      <stop offset="50%" stop-color="#994e3b"/>
-      <stop offset="100%" stop-color="#5c2b1f"/>
-    </linearGradient>
-    <radialGradient id="warm-muzzle" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#e3c598" stop-opacity="0.42"/>
-      <stop offset="100%" stop-color="#c48f5a" stop-opacity="0"/>
-    </radialGradient>
   </defs>
-  <g id="part-shadow-cast" data-pivot="64,64" data-blend="multiply">
-    <ellipse cx="64" cy="68" rx="54" ry="52" fill="url(#tb-shadow)"/>
+  <!-- [鍏夊奖灞?1] 绾崇背鏅朵笡搴曢儴鎺ヨЕ杞槾褰辫创鍥?(z=1, multiply) -->
+  <g id="part-shadow-cast" data-pivot="64,66" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="66" rx="58" ry="56" fill="url(#bu-shadow-grad)" />
   </g>
-  <g id="part-aura-ring-outer" data-pivot="64,64" data-blend="normal">
-    <rect x="14" y="14" width="100" height="100" rx="12" fill="none" stroke="#3a473e" stroke-width="1.8" opacity="0.5"/>
+  <!-- [鍏夊奖灞?2A] 鍏夊杩峰僵澶栧眰鎶樺皠鐜?(z=4, screen) -->
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#bu-aura-field)" />
+    <path fill="none" stroke="#c48f5a" stroke-width="1.5" stroke-opacity="0.72" d="M120.04,80.07 A58.3,58.3 0 0,1 80.07,120.04 M47.93,120.04 A58.3,58.3 0 0,1 7.96,80.07 M7.96,47.93 A58.3,58.3 0 0,1 47.93,7.96 M80.07,7.96 A58.3,58.3 0 0,1 120.04,47.93 M64,1.7 L64,10.7 M64,117.3 L64,126.3 M1.7,64 L10.7,64 M117.3,64 L126.3,64" stroke-linejoin="bevel" />
+    <path fill="none" stroke="#dfc08e" stroke-width="0.85" stroke-opacity="0.58" d="M114.66,78.53 A52.7,52.7 0 0,1 78.53,114.66 M49.47,114.66 A52.7,52.7 0 0,1 13.34,78.53 M13.34,49.47 A52.7,52.7 0 0,1 49.47,13.34 M78.53,13.34 A52.7,52.7 0 0,1 114.66,49.47 M64,7.3 L64,16.3 M64,111.7 L64,120.7 M7.3,64 L16.3,64 M111.7,64 L120.7,64" stroke-linejoin="bevel" />
+    <line x1="114.7" y1="64" x2="124.3" y2="64" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="99.9" y1="99.9" x2="106.6" y2="106.6" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="64" y1="114.7" x2="64" y2="124.3" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="28.1" y1="99.9" x2="21.4" y2="106.6" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="13.3" y1="64" x2="3.7" y2="64" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="28.1" y1="28.1" x2="21.4" y2="21.4" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="64" y1="13.3" x2="64" y2="3.7" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="99.9" y1="28.1" x2="106.6" y2="21.4" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
+    <rect x="103" y="103" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
+    <rect x="20.6" y="103" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
+    <rect x="20.6" y="20.6" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
+    <rect x="103" y="20.6" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
   </g>
-  <g id="part-aura-ring-inner" data-pivot="64,64" data-blend="normal">
-    <path d="M20,40 L108,40 M20,64 L108,64 M20,88 L108,88 M40,20 L40,108 M64,20 L64,108 M88,20 L88,108" stroke="#2c362f" stroke-width="1.5" opacity="0.6"/>
+  <!-- [鍏夊奖灞?2B] 鍏夊杩峰僵鍐呭眰鍏ㄦ伅鍏缃?(z=5, screen) -->
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#c48f5a" stroke-width="1.1" stroke-opacity="0.68" d="M106.87,76.29 A44.6,44.6 0 0,1 76.29,106.87 M51.71,106.87 A44.6,44.6 0 0,1 21.13,76.29 M21.13,51.71 A44.6,44.6 0 0,1 51.71,21.13 M76.29,21.13 A44.6,44.6 0 0,1 106.87,51.71 M64,15.4 L64,24.4 M64,103.6 L64,112.6 M15.4,64 L24.4,64 M103.6,64 L112.6,64" stroke-linejoin="bevel" />
+    <circle cx="108.6" cy="64" r="2.0" fill="#c48f5a" stroke="#12151a" stroke-width="0.65" />
+    <circle cx="86.3" cy="102.6" r="2.0" fill="#c48f5a" stroke="#12151a" stroke-width="0.65" />
+    <circle cx="41.7" cy="102.6" r="2.0" fill="#c48f5a" stroke="#12151a" stroke-width="0.65" />
+    <circle cx="19.4" cy="64" r="2.0" fill="#c48f5a" stroke="#12151a" stroke-width="0.65" />
+    <circle cx="41.7" cy="25.4" r="2.0" fill="#c48f5a" stroke="#12151a" stroke-width="0.65" />
+    <circle cx="86.3" cy="25.4" r="2.0" fill="#c48f5a" stroke="#12151a" stroke-width="0.65" />
   </g>
-  <g id="part-frond-tl" data-pivot="40,40" data-blend="normal">
-    <circle cx="38" cy="38" r="26" fill="#324036" stroke="#1b241e" stroke-width="2"/>
-    <circle cx="34" cy="34" r="16" fill="#415246"/>
+  <!-- [楠ㄩ閮ㄤ欢 1] 宸︿笂鍙殢鎴樿溅纰惧帇鎽嗗姩鐨勭撼绫虫櫠鍙剁皣 (z=20) -->
+  <g id="part-frond-tl" data-pivot="38,38" data-parent="root" data-z-index="20" data-blend="normal" data-motion="sway-part-tl">
+    <polygon points="38,12 58,24 54,48 34,54 16,42 20,20" fill="url(#bu-crystal-leaf)" stroke="#68826e" stroke-width="1.8" stroke-linejoin="bevel" />
+    <path d="M38 12 L36 54 M20 20 L54 48 M58 24 L16 42" stroke="#c48f5a" stroke-width="0.75" stroke-opacity="0.7" />
+    <circle cx="38" cy="36" r="3" fill="#8ba390" />
   </g>
-  <g id="part-frond-tr" data-pivot="88,40" data-blend="normal">
-    <circle cx="90" cy="38" r="26" fill="#2e3b32" stroke="#1b241e" stroke-width="2"/>
-    <circle cx="92" cy="34" r="16" fill="#3d4d42"/>
+  <!-- [楠ㄩ閮ㄤ欢 2] 鍙充笂鍙殢鎴樿溅纰惧帇鎽嗗姩鐨勭撼绫虫櫠鍙剁皣 (z=22) -->
+  <g id="part-frond-tr" data-pivot="90,38" data-parent="root" data-z-index="22" data-blend="normal" data-motion="sway-part-tr">
+    <polygon points="90,12 110,20 112,42 94,54 74,48 70,24" fill="url(#bu-crystal-leaf)" stroke="#68826e" stroke-width="1.8" stroke-linejoin="bevel" />
+    <path d="M90 12 L92 54 M110 20 L74 48 M70 24 L112 42" stroke="#c48f5a" stroke-width="0.75" stroke-opacity="0.7" />
+    <circle cx="90" cy="36" r="3" fill="#8ba390" />
   </g>
-  <g id="part-frond-bl" data-pivot="40,88" data-blend="normal">
-    <circle cx="38" cy="90" r="26" fill="#2e3b32" stroke="#1b241e" stroke-width="2"/>
-    <circle cx="34" cy="88" r="16" fill="#3d4d42"/>
+  <!-- [楠ㄩ閮ㄤ欢 3] 宸︿笅鍙殢鎴樿溅纰惧帇鎽嗗姩鐨勭撼绫虫櫠鍙剁皣 (z=24) -->
+  <g id="part-frond-bl" data-pivot="38,90" data-parent="root" data-z-index="24" data-blend="normal" data-motion="sway-part-bl">
+    <polygon points="34,74 54,80 58,104 38,116 20,108 16,86" fill="url(#bu-crystal-leaf)" stroke="#68826e" stroke-width="1.8" stroke-linejoin="bevel" />
+    <path d="M34 74 L38 116 M16 86 L58 104" stroke="#c48f5a" stroke-width="0.75" stroke-opacity="0.7" />
+    <circle cx="38" cy="94" r="3" fill="#8ba390" />
   </g>
-  <g id="part-frond-br" data-pivot="88,88" data-blend="normal">
-    <circle cx="90" cy="90" r="26" fill="#324036" stroke="#1b241e" stroke-width="2"/>
-    <circle cx="88" cy="86" r="16" fill="#415246"/>
+  <!-- [楠ㄩ閮ㄤ欢 4] 鍙充笅鍙殢鎴樿溅纰惧帇鎽嗗姩鐨勭撼绫虫櫠鍙剁皣 (z=26) -->
+  <g id="part-frond-br" data-pivot="90,90" data-parent="root" data-z-index="26" data-blend="normal" data-motion="sway-part-br">
+    <polygon points="94,74 112,86 108,108 90,116 70,104 74,80" fill="url(#bu-crystal-leaf)" stroke="#68826e" stroke-width="1.8" stroke-linejoin="bevel" />
+    <path d="M94 74 L90 116 M112 86 L70 104" stroke="#c48f5a" stroke-width="0.75" stroke-opacity="0.7" />
+    <circle cx="90" cy="94" r="3" fill="#8ba390" />
   </g>
-  <g id="part-frond-center" data-pivot="64,64" data-blend="normal">
-    <circle cx="64" cy="64" r="30" fill="#3b4b40" stroke="#1b241e" stroke-width="2.2"/>
-    <circle cx="60" cy="58" r="18" fill="#4c6152"/>
+  <!-- [楠ㄩ閮ㄤ欢 5] 涓ぎ鏍稿績鍏ㄦ伅杩峰僵鏍戝啝 (z=35) -->
+  <g id="part-frond-center" data-pivot="64,64" data-parent="root" data-z-index="35" data-blend="normal" data-motion="pulse-breathe">
+    <polygon points="64,34 90,48 90,80 64,94 38,80 38,48" fill="url(#bu-crystal-leaf)" stroke="#d8dee9" stroke-width="2.0" stroke-linejoin="bevel" />
+    <polygon points="64,44 80,54 80,74 64,84 48,74 48,54" fill="#222b24" fill-opacity="0.7" stroke="#c48f5a" stroke-width="1.1" />
+    <circle cx="64" cy="64" r="6" fill="#c48f5a" />
+    <circle cx="64" cy="64" r="2.5" fill="#d8dee9" />
   </g>
-  <g id="part-light-rim-bush" data-pivot="64,64" data-blend="plus-lighter">
-    <circle cx="58" cy="56" r="10" fill="#6b8271" opacity="0.45"/>
+  <!-- [鍏夊奖灞?4] 绾崇背鏅跺彾杈圭紭鍙楀厜楂樺厜璐村浘 (z=45, plus-lighter) -->
+  <g id="part-light-rim-bush" data-pivot="64,64" data-parent="part-frond-center" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M20 20 L38 12 L58 24 M70 24 L90 12 L110 20 M38 48 L64 34 L90 48" stroke="url(#bu-rim-glow)" stroke-width="2.4" stroke-linecap="round" />
   </g>
-  <g id="part-aura-corona-top" data-pivot="64,64" data-blend="normal"></g>
+  <!-- [鍏夊奖灞?5] 椤跺眰鎮诞鑽у厜杩峰僵瀛㈠瓙鍐?(z=65, screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="float-motes" style="mix-blend-mode: screen">
+    <circle cx="28" cy="28" r="2.2" fill="#d8dee9" />
+    <circle cx="100" cy="28" r="2.2" fill="#d8dee9" />
+    <circle cx="64" cy="22" r="2.5" fill="#c48f5a" />
+    <circle cx="24" cy="64" r="2.0" fill="#68826e" />
+    <circle cx="104" cy="64" r="2.0" fill="#68826e" />
+  </g>
 </svg>

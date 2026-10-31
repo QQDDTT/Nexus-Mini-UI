@@ -207,12 +207,14 @@
     }
 
     window.addEventListener('message', (e) => {
-      if (e.data && e.data.type === 'NEXUS_AUTH_RESP' && e.data.userId) {
+      if (e.origin && e.origin !== window.location.origin && e.origin !== 'null') return;
+      if (e.data && e.data.type === 'NEXUS_AUTH_RESP' && typeof e.data.userId === 'string') {
+        const cleanId = e.data.userId.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 32) || 'u_commander_01';
         auth = {
-          userId: e.data.userId,
-          nickname: e.data.nickname || auth.nickname,
-          isAdmin: e.data.userId === 'u_admin_001',
-          token: e.data.token || auth.token,
+          userId: cleanId,
+          nickname: String(e.data.nickname || auth.nickname).slice(0, 24),
+          isAdmin: cleanId === 'u_admin_001',
+          token: String(e.data.token || auth.token).slice(0, 64),
           room: auth.room,
           challenge: auth.challenge
         };
@@ -221,7 +223,8 @@
 
     if (window.parent && window.parent !== window) {
       try {
-        window.parent.postMessage({ type: 'NEXUS_GET_AUTH' }, '*');
+        const targetOrigin = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : '*';
+        window.parent.postMessage({ type: 'NEXUS_GET_AUTH' }, targetOrigin);
       } catch (_) {}
     }
 
@@ -1008,12 +1011,12 @@
         .nx-t2-grid2 { grid-template-columns: 1fr; }
       }
 
-      /* ===== 竖屏强守护弹窗 ===== */
+      /* ===== 竖屏强守护弹窗 (继承流派 Design Tokens，严禁硬编码太空黑与赛博青) ===== */
       .nx-guard-overlay {
         position: fixed;
         inset: 0;
         z-index: 99999;
-        background: radial-gradient(circle at 50% 40%, rgba(12, 22, 44, 0.98) 0%, rgba(3, 7, 18, 0.995) 85%);
+        background: radial-gradient(circle at 50% 40%, var(--panel, #292524) 0%, var(--void, #171513) 88%);
         display: none;
         align-items: center;
         justify-content: center;
@@ -1026,30 +1029,30 @@
       .nx-guard-card {
         max-width: 400px;
         width: 100%;
-        background: rgba(9, 14, 26, 0.96);
-        border: 1px solid rgba(0, 240, 255, 0.55);
-        border-radius: 16px;
+        background: var(--panel, #242a34);
+        border: 2px solid var(--cyan, #c48f5a);
+        border-radius: 8px;
         padding: 24px 20px;
         text-align: center;
-        color: #f8fafc;
+        color: var(--text, #f4efe6);
         box-shadow: 0 20px 60px rgba(0,0,0,0.9);
       }
       .nx-guard-btn {
         min-height: 44px;
         width: 100%;
-        border-radius: 10px;
-        border: 1px solid #67e8f9;
-        background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
-        color: #030712;
+        border-radius: 6px;
+        border: 1px solid var(--gold, #dfc08e);
+        background: var(--cyan, #c48f5a);
+        color: var(--void, #171513);
         font-weight: 800;
         font-size: 0.9rem;
         cursor: pointer;
         margin-top: 12px;
       }
       .nx-guard-btn.secondary {
-        background: rgba(15, 23, 42, 0.85);
-        border-color: rgba(0, 240, 255, 0.25);
-        color: #f8fafc;
+        background: rgba(0, 0, 0, 0.38);
+        border-color: var(--border, #4a5462);
+        color: var(--text, #f4efe6);
         font-weight: 600;
       }
     `;
@@ -1179,8 +1182,10 @@
                     <span style="font-size:0.62rem;font-family:Consolas,monospace;color:#c48f5a;font-weight:700;">${u.ammo}</span>
                   </div>
 
-                  <div class="tb-insp-preview-box">
-                    <img src="../assets/${meta.id}/sprites/${u.file}?v=20261031b" alt="${u.name}" />
+                  <div class="tb-insp-preview-box" id="tb-insp-preview-box" data-unit-file="${u.file}">
+                    <div id="tb-insp-rig-stage" style="width:60px;height:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;">
+                      <img src="../assets/${meta.id}/sprites/${u.file}?v=20261031c" alt="${u.name}" />
+                    </div>
                     <div class="tb-insp-specs">
                       <div class="tb-spec-line">
                         <span class="lbl">首上甲</span>
@@ -1231,6 +1236,9 @@
               renderTier2Module();
             });
           });
+          window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
+            detail: { tab: currentMenuTab, unitFile: u.file }
+          }));
           return;
         }
         const metrics = meta.getMetrics(saveData);
@@ -1424,7 +1432,20 @@
           try {
             const rawStr = document.getElementById('nx-asset-save-input')?.value.trim();
             const parsed = JSON.parse(decodeURIComponent(atob(rawStr)));
-            if (parsed && typeof parsed === 'object') {
+            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+              delete parsed.__proto__;
+              delete parsed.constructor;
+              delete parsed.prototype;
+              if (parsed.currency && typeof parsed.currency === 'object') {
+                Object.keys(parsed.currency).forEach((k) => {
+                  const v = Number(parsed.currency[k]);
+                  parsed.currency[k] = Number.isFinite(v) ? Math.max(0, Math.min(9999999, Math.floor(v))) : 0;
+                });
+              }
+              if (parsed.rank !== undefined) {
+                const rk = Number(parsed.rank);
+                parsed.rank = Number.isFinite(rk) ? Math.max(1, Math.min(4, Math.floor(rk))) : 1;
+              }
               if (activeStoreInstance) activeStoreInstance.save(parsed);
               else localStorage.setItem(nsKey, JSON.stringify(parsed));
               AudioEngine.win();
@@ -1570,6 +1591,9 @@
           renderTier2Module();
         });
       }
+      window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
+        detail: { tab: currentMenuTab, unitFile: null }
+      }));
     }
 
     // Bind Tier 2 module tabs
