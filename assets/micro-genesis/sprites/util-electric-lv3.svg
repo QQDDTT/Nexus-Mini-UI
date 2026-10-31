@@ -1,30 +1,156 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="util-electric-lv3-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <radialGradient id="elec3" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="35%" stop-color="#fbbf24"/>
-      <stop offset="70%" stop-color="#00f0ff"/>
-      <stop offset="100%" stop-color="#082f49"/>
+    <radialGradient id="ue3-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.76" />
+      <stop offset="65%" stop-color="#03181c" stop-opacity="0.36" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="ue3-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.42" />
+      <stop offset="40%" stop-color="#2dd4bf" stop-opacity="0.28" />
+      <stop offset="75%" stop-color="#fbbf24" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="ue3-insulator-base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="50%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#021317" />
+    </linearGradient>
+    <linearGradient id="ue3-capacitor-plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="28%" stop-color="#fef08a" />
+      <stop offset="62%" stop-color="#2dd4bf" />
+      <stop offset="100%" stop-color="#0c4a6e" />
+    </linearGradient>
+    <radialGradient id="ue3-tesla-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#fef08a" />
+      <stop offset="68%" stop-color="#2dd4bf" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </radialGradient>
+    <linearGradient id="ue3-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="38%" stop-color="#fef08a" stop-opacity="0.90" />
+      <stop offset="78%" stop-color="#2dd4bf" stop-opacity="0.80" />
+      <stop offset="100%" stop-color="#d946ef" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
     </radialGradient>
   </defs>
-  <!-- Lv.3 雷暴特斯拉电核：金青双色磁暴球 + 三极放电塔尖 + 360度连锁闪电网 -->
-  <!-- 外围电磁脉冲环 -->
-  <circle cx="64" cy="64" r="54" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-dasharray="12 5"/>
-  <circle cx="64" cy="64" r="44" fill="none" stroke="#00f0ff" stroke-width="2" stroke-dasharray="6 4"/>
-  <!-- 三极特斯拉放电线圈 -->
-  <polygon points="56,36 64,8 72,36" fill="#0c4a6e" stroke="#fbbf24" stroke-width="2.5"/>
-  <polygon points="36,72 12,96 44,86" fill="#0c4a6e" stroke="#fbbf24" stroke-width="2.5"/>
-  <polygon points="92,72 116,96 84,86" fill="#0c4a6e" stroke="#fbbf24" stroke-width="2.5"/>
-  <!-- 中央超导磁暴核 -->
-  <circle cx="64" cy="64" r="24" fill="url(#elec3)" stroke="#ffffff" stroke-width="3"/>
-  <circle cx="64" cy="64" r="10" fill="#ffffff"/>
-  <!-- 连锁高压电弧网 -->
-  <polyline points="64,10 38,28 24,52 14,94" fill="none" stroke="#00f0ff" stroke-width="3" stroke-linejoin="round"/>
-  <polyline points="64,10 90,28 104,52 114,94" fill="none" stroke="#00f0ff" stroke-width="3" stroke-linejoin="round"/>
-  <polyline points="14,94 48,108 64,98 80,108 114,94" fill="none" stroke="#fbbf24" stroke-width="3" stroke-linejoin="round"/>
-  <!-- 塔尖电球 -->
-  <circle cx="64" cy="10" r="5" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
-  <circle cx="14" cy="94" r="5" fill="#ffffff" stroke="#00f0ff" stroke-width="2"/>
-  <circle cx="114" cy="94" r="5" fill="#ffffff" stroke="#00f0ff" stroke-width="2"/>
+  <!-- [光影层 1] 环境接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 雷神高压电场正转外环 (z=4, screen) -->
+  <!-- [光影层 2B] 雷神高压电场反转内环 (z=5, screen) -->
+  <!-- [骨骼部件 1] 雷暴超导绝缘底座 (z=10) -->
+  <!-- [骨骼部件 2] 左侧雷暴双极放电电容盘 (z=20) -->
+  <!-- [骨骼部件 3] 右侧雷暴双极放电电容盘 (z=20) -->
+  <!-- [骨骼部件 4] 中央旋转特斯拉超导电枢核 (z=30) -->
+  <!-- [光影层 3] 电极受光高光贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 4] 顶层游走闪电弧 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,68" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="68" rx="60" ry="54" fill="url(#ue3-cast-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#ue3-aura-field)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M122.3,64 Q120.08,87.23 105.22,105.22 Q85.58,116.09 64,122.3 Q40.77,120.08 22.78,105.22 Q11.91,85.58 5.7,64 Q7.92,40.77 22.78,22.78 Q42.42,11.91 64,5.7 Q87.23,7.92 105.22,22.78 Q116.09,42.42 122.3,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M116.7,64 Q114.91,85.09 101.26,101.26 Q83.43,110.91 64,116.7 Q42.91,114.91 26.74,101.26 Q17.09,83.43 11.3,64 Q13.09,42.91 26.74,26.74 Q44.57,17.09 64,11.3 Q85.09,13.09 101.26,26.74 Q110.91,44.57 116.7,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="122.3" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="121.5" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="122.3" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="121.5" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="5.7" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="4.9" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="5.7" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="4.9" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M108.6,64 Q104.7,87.5 86.3,102.62 Q64,106.68 41.7,102.62 Q23.3,87.5 19.4,64 Q27.04,42.66 41.7,25.38 Q64,17 86.3,25.38 Q100.96,42.66 108.6,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="108.6" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="19.4" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="102.62" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="25.38" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="64" cy="19.4" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-electric-insulator-base" data-pivot="64,64" data-parent="root" data-z-index="10" data-blend="normal">
+    <polygon points="64,14 112,38 112,90 64,114 16,90 16,38" fill="url(#ue3-insulator-base)" stroke="#fbbf24" stroke-width="2.3" />
+    <polygon points="64,24 100,44 100,84 64,104 28,84 28,44" fill="#050a18" stroke="#2dd4bf" stroke-width="1.3" />
+    <path d="M28 44 L100 84 M100 44 L28 84 M64 24 L64 104 M16 64 L112 64" stroke="#fbbf24" stroke-width="0.8" stroke-opacity="0.75" />
+  </g>
+  <g id="part-lv3-crown-1" data-pivot="64,64" data-parent="root" data-z-index="19" data-blend="normal">
+    <circle cx="64" cy="64" r="4.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.85" />
+  </g>
+  <g id="part-electric-capacitor-right" data-pivot="98,64" data-parent="part-electric-insulator-base" data-z-index="20" data-blend="normal" data-motion="rotate-sym-right">
+    <polygon points="80,14 114,32 122,64 114,96 80,114 78,92 102,78 102,50 78,36" fill="url(#ue3-capacitor-plate)" stroke="#fef08a" stroke-width="2.2" stroke-linejoin="round" />
+    <polygon points="86,24 108,38 114,64 108,90 86,104 84,90 106,76 106,52 84,38" fill="#042326" stroke="#2dd4bf" stroke-width="1.2" />
+    <path d="M112 44 L84 48 M116 64 L86 64 M112 84 L84 80" stroke="#ffffff" stroke-width="1.4" />
+    <circle cx="98" cy="64" r="8.5" fill="#042326" stroke="#fef08a" stroke-width="2.0" />
+    <circle cx="98" cy="64" r="4.5" fill="#ffffff" />
+  </g>
+  <g id="part-electric-capacitor-left" data-pivot="30,64" data-parent="part-electric-insulator-base" data-z-index="20" data-blend="normal" data-motion="rotate-sym-left">
+    <polygon points="48,14 14,32 6,64 14,96 48,114 50,92 26,78 26,50 50,36" fill="url(#ue3-capacitor-plate)" stroke="#fef08a" stroke-width="2.2" stroke-linejoin="round" />
+    <polygon points="42,24 20,38 14,64 20,90 42,104 44,90 22,76 22,52 44,38" fill="#042326" stroke="#2dd4bf" stroke-width="1.2" />
+    <path d="M16 44 L44 48 M12 64 L42 64 M16 84 L44 80" stroke="#ffffff" stroke-width="1.4" />
+    <circle cx="30" cy="64" r="8.5" fill="#042326" stroke="#fef08a" stroke-width="2.0" />
+    <circle cx="30" cy="64" r="4.5" fill="#ffffff" />
+  </g>
+  <g id="part-electric-tesla-core" data-pivot="64,64" data-parent="part-electric-insulator-base" data-z-index="30" data-blend="normal" data-motion="spin-cw">
+    <circle cx="64" cy="64" r="25" fill="url(#ue3-tesla-core)" stroke="#ffffff" stroke-width="2.6" />
+    <polygon points="64,26 73,52 100,64 73,76 64,102 55,76 28,64 55,52" fill="#fef08a" fill-opacity="0.88" stroke="#ffffff" stroke-width="1.5" />
+    <polygon points="40,40 64,52 88,40 76,64 88,88 64,76 40,88 52,64" fill="#2dd4bf" fill-opacity="0.75" stroke="#ffffff" stroke-width="1.1" />
+    <circle cx="64" cy="64" r="10" fill="#ffffff" stroke="#fbbf24" stroke-width="2.0" />
+    <circle cx="57" cy="59" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="72" cy="68" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-lv3-synapse-node-1" data-pivot="43,85" data-parent="root" data-z-index="44" data-blend="normal">
+    <circle cx="43" cy="85" r="3.2" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="43" cy="85" r="1.3" fill="#fbbf24" />
+  </g>
+  <g id="part-lv3-synapse-node-2" data-pivot="43,43" data-parent="root" data-z-index="44" data-blend="normal">
+    <circle cx="43" cy="43" r="3.2" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="43" cy="43" r="1.3" fill="#fbbf24" />
+  </g>
+  <g id="part-light-rim-electric" data-pivot="64,64" data-parent="part-electric-insulator-base" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <polyline points="48,14 14,32 6,64 14,96 48,114" stroke="url(#ue3-rim-light)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+    <polyline points="80,14 114,32 122,64 114,96 80,114" stroke="url(#ue3-rim-light)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#ffffff" stroke-width="1.8" stroke-opacity="0.72" d="M91,64 Q91.16,75.25 83.09,83.09 Q73.6,87.17 64,91 Q52.75,91.16 44.91,83.09 Q40.83,73.6 37,64 Q36.84,52.75 44.91,44.91 Q54.4,40.83 64,37 Q75.25,36.84 83.09,44.91 Q87.17,54.4 91,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <polyline points="14,32 34,18 46,28 64,6 82,28 94,18 114,32" stroke="#2dd4bf" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    <polyline points="14,96 34,110 46,100 64,122 82,100 94,110 114,96" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    <polyline points="6,64 24,52 38,64 64,64 90,64 104,76 122,64" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="64" cy="6" r="4" fill="#ffffff" stroke="#fbbf24" stroke-width="1.5" />
+    <circle cx="64" cy="122" r="4" fill="#ffffff" stroke="#fbbf24" stroke-width="1.5" />
+    <circle cx="6" cy="64" r="4" fill="#ffffff" stroke="#2dd4bf" stroke-width="1.5" />
+    <circle cx="122" cy="64" r="4" fill="#ffffff" stroke="#2dd4bf" stroke-width="1.5" />
+    <circle cx="115.7" cy="82.8" r="1.5" fill="#d946ef" />
+    <circle cx="94" cy="110.1" r="1.5" fill="#d946ef" />
+    <circle cx="60.2" cy="118.9" r="1.5" fill="#d946ef" />
+    <circle cx="27.9" cy="105.5" r="1.5" fill="#d946ef" />
+    <circle cx="102.9" cy="80.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="93.8" cy="93.8" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="80.1" cy="102.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="64" cy="106.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="47.9" cy="102.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="34.2" cy="93.8" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="25.1" cy="80.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="21.9" cy="64" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="25.1" cy="47.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="34.2" cy="34.2" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="47.9" cy="25.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="64" cy="21.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="80.1" cy="25.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="93.8" cy="34.2" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="102.9" cy="47.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+  </g>
 </svg>
-

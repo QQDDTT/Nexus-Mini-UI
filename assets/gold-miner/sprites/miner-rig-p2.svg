@@ -1,40 +1,175 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="miner-rig-p2-rig" data-root-anchor="64,108" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <!-- 1. 环境接触软阴影 -->
+    <radialGradient id="mp2-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181009" stop-opacity="0.72" />
+      <stop offset="65%" stop-color="#1c1209" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <!-- 2. 战功金作业力场光环 -->
+    <radialGradient id="mp2-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.35" />
+      <stop offset="55%" stop-color="#d97706" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
+    </radialGradient>
+    <!-- 3. 探照灯体积光锥 -->
+    <linearGradient id="mp2-light-cone" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
+      <stop offset="35%" stop-color="#fbbf24" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <!-- 4. STYLE-21 锻造黄铜与玄武岩重型基座 -->
+    <linearGradient id="mp2-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3f2e1e" />
+      <stop offset="50%" stop-color="#271a0c" />
+      <stop offset="100%" stop-color="#120c06" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
+    <!-- 5. 战功金装甲分件材质 -->
+    <linearGradient id="mp2-gold-plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="45%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#92400e" />
     </linearGradient>
-    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#064e3b"/>
+    <!-- 6. 液压钢与滚筒合金材质 -->
+    <linearGradient id="mp2-steel" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#cbd5e1" />
+      <stop offset="50%" stop-color="#5d4037" />
+      <stop offset="100%" stop-color="#271a0c" />
     </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <!-- 7. 受光边缘高光映射材质 -->
+    <linearGradient id="mp2-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#fbbf24" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0" />
     </linearGradient>
+    <!-- 8. 关节轴承核心发光 -->
+    <radialGradient id="mp2-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="45%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
+    </radialGradient>
+    <pattern id="hazard-stripes" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="10" height="10" fill="#1c1917" />
+      <rect width="5" height="10" fill="#f59e0b" />
+    </pattern>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <rect x="20" y="68" width="88" height="36" rx="10" fill="url(#cyanArmor)" stroke="#7dd3fc" stroke-width="2.5"/>
-  <circle cx="64" cy="52" r="24" fill="url(#goldArmor)" stroke="#fef08a" stroke-width="2.5"/>
-  <rect x="46" y="22" width="36" height="14" rx="6" fill="url(#cyanArmor)" stroke="#00f0ff" stroke-width="2"/>
-  <circle cx="64" cy="29" r="5" fill="#fde047"/>
-  <circle cx="36" cy="104" r="12" fill="#1e293b" stroke="#38bdf8" stroke-width="3"/>
-  <circle cx="92" cy="104" r="12" fill="#1e293b" stroke="#38bdf8" stroke-width="3"/>
+  <!-- [光影层 1] 底层环境接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 底层战功金作业力场外环：顺时针自转刻度环 (z=4, screen) -->
+  <!-- [光影层 2B] 底层战功金作业力场内环：逆时针自转相位罗盘 (z=5, screen) -->
+  <!-- [骨骼部件 1] 左重型履带与液压锚固支腿 (z=12) -->
+  <!-- [骨骼部件 2] 右重型履带与液压锚固支腿 (z=12) -->
+  <!-- [骨骼部件 3] 重工平台主底盘与转台基座 (z=18) -->
+  <!-- [骨骼部件 4] 可左右摆动的重工驾驶舱机身 (z=25) -->
+  <!-- [骨骼部件 5] 左液压机械操作臂 (z=30) -->
+  <!-- [骨骼部件 6] 右液压机械操作臂 (z=30) -->
+  <!-- [骨骼部件 7] 独立高速旋转绞盘滚筒 (z=36) -->
+  <!-- [骨骼部件 8] 顶部探照灯塔与体积光锥 (z=40) -->
+  <!-- [光影层 3] 方向性探照体积光锥与机身受光边缘高光映射贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 4] 顶层体积辉光冕与游走高能电弧贴图 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,108" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="108" rx="56" ry="16" fill="url(#mp2-shadow)" />
+    <ellipse cx="64" cy="106" rx="42" ry="10" fill="#181009" fill-opacity="0.5" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,66" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="66" r="60" fill="url(#mp2-aura)" />
+    <ellipse cx="64" cy="66" rx="56.4" ry="49.63" fill="none" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.72" />
+    <ellipse cx="64" cy="66" rx="51" ry="44.88" fill="none" stroke="#f59e0b" stroke-width="0.75" stroke-opacity="0.55" />
+    <polygon points="120.4,62 124.4,66 120.4,70 116.4,66" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="103.9" cy="105.9" r="2.0" fill="#fef08a" />
+    <polygon points="64,118.4 68,122.4 64,126.4 60,122.4" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="24.1" cy="105.9" r="2.0" fill="#fef08a" />
+    <polygon points="7.6,62 11.6,66 7.6,70 3.6,66" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="24.1" cy="26.1" r="2.0" fill="#fef08a" />
+    <polygon points="64,5.6 68,9.6 64,13.6 60,9.6" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="103.9" cy="26.1" r="2.0" fill="#fef08a" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,66" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <ellipse cx="64" cy="66" rx="43.2" ry="38.02" fill="none" stroke="#fef08a" stroke-width="1.0" stroke-opacity="0.68" />
+    <polygon points="107.2,63.4 109.8,66 107.2,68.6 104.6,66" fill="#fef08a" />
+    <polygon points="85.6,100.8 88.2,103.4 85.6,106 83,103.4" fill="#fef08a" />
+    <polygon points="42.4,100.8 45,103.4 42.4,106 39.8,103.4" fill="#fef08a" />
+    <polygon points="20.8,63.4 23.4,66 20.8,68.6 18.2,66" fill="#fef08a" />
+    <polygon points="42.4,26 45,28.6 42.4,31.2 39.8,28.6" fill="#fef08a" />
+    <polygon points="85.6,26 88.2,28.6 85.6,31.2 83,28.6" fill="#fef08a" />
+  </g>
+  <g id="part-track-left" data-pivot="30,96" data-parent="part-rig-platform" data-z-index="12" data-blend="normal">
+    <path d="M10 88 L42 88 L46 108 L6 108 Z" fill="url(#mp2-obsidian)" stroke="#fbbf24" stroke-width="2.0" stroke-linejoin="round" />
+    <rect x="12" y="92" width="28" height="12" rx="4" fill="url(#mp2-steel)" stroke="#fde047" stroke-width="1.1" />
+    <path d="M16 92 L16 104 M22 92 L22 104 M28 92 L28 104 M34 92 L34 104" stroke="#120c06" stroke-width="1.4" />
+    <circle cx="30" cy="96" r="5" fill="#271a0c" stroke="#fbbf24" stroke-width="1.5" />
+    <circle cx="18" cy="98" r="3.5" fill="#271a0c" stroke="#fde047" stroke-width="1.2" />
+  </g>
+  <g id="part-track-right" data-pivot="98,96" data-parent="part-rig-platform" data-z-index="12" data-blend="normal">
+    <path d="M86 88 L118 88 L122 108 L82 108 Z" fill="url(#mp2-obsidian)" stroke="#fbbf24" stroke-width="2.0" stroke-linejoin="round" />
+    <rect x="88" y="92" width="28" height="12" rx="4" fill="url(#mp2-steel)" stroke="#fde047" stroke-width="1.1" />
+    <path d="M94 92 L94 104 M100 92 L100 104 M106 92 L106 104 M112 92 L112 104" stroke="#120c06" stroke-width="1.4" />
+    <circle cx="98" cy="96" r="5" fill="#271a0c" stroke="#fbbf24" stroke-width="1.5" />
+    <circle cx="110" cy="98" r="3.5" fill="#271a0c" stroke="#fde047" stroke-width="1.2" />
+  </g>
+  <g id="part-rig-platform" data-pivot="64,92" data-parent="root" data-z-index="18" data-blend="normal">
+    <path d="M22 80 L106 80 L112 96 L16 96 Z" fill="url(#mp2-obsidian)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M30 83 L98 83 L102 92 L26 92 Z" fill="url(#mp2-gold-plate)" stroke="#fef9c3" stroke-width="1.1" />
+    <path d="M38 86 L90 86 M44 89 L84 89" stroke="#fef08a" stroke-width="0.7" stroke-opacity="0.75" />
+    <!-- 中央旋转轴承座圈 -->
+    <circle cx="64" cy="80" r="14" fill="#120c06" stroke="#fbbf24" stroke-width="2.0" />
+    <ellipse cx="64" cy="80" rx="9" ry="7.92" fill="url(#mp2-steel)" stroke="#fde047" stroke-width="1.2" stroke-opacity="0.72" />
+    <rect x="44" y="86" width="40" height="5" rx="1.5" fill="url(#hazard-stripes)" stroke="#fbbf24" stroke-width="0.7" />
+  </g>
+  <g id="part-cabin-hull" data-pivot="64,80" data-parent="part-rig-platform" data-z-index="25" data-blend="normal" data-motion="rotate-swing">
+    <!-- 根部球头防穿帮轴承盖 -->
+    <circle cx="64" cy="80" r="11" fill="#1c130b" stroke="#fbbf24" stroke-width="1.8" />
+    <!-- 主装甲舱体 -->
+    <path d="M28 40 L42 24 L86 24 L100 40 L92 78 L36 78 Z" fill="url(#mp2-obsidian)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="round" />
+    <!-- 中层战功金胸甲与驾驶舱面窗 -->
+    <path d="M38 44 L48 32 L80 32 L90 44 L84 68 L44 68 Z" fill="url(#mp2-gold-plate)" stroke="#fde047" stroke-width="1.2" />
+    <polygon points="40,35 88,35 90,48 38,48" fill="#120c06" stroke="#f59e0b" stroke-width="1.4" />
+    <!-- 全息工程微刻线与散热格栅 -->
+    <path d="M50 40 L78 40 M54 44 L74 44 M42 54 L86 54 M44 60 L84 60" stroke="#fef08a" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="42" cy="38" r="1.8" fill="#f59e0b" />
+    <circle cx="86" cy="38" r="1.8" fill="#f59e0b" />
+    <polygon points="64,73 69,80 64,87 59,80" fill="none" stroke="#fef08a" stroke-width="0.75" stroke-opacity="0.8" />
+    <circle cx="64" cy="80" r="1.8" fill="#ffffff" />
+  </g>
+  <g id="part-arm-left" data-pivot="34,52" data-parent="part-cabin-hull" data-z-index="30" data-blend="normal" data-motion="rotate-sym-left">
+    <circle cx="34" cy="52" r="7" fill="#1c130b" stroke="#fbbf24" stroke-width="1.8" />
+    <path d="M34 52 L16 60 L14 78 L24 82 L26 66 L36 58 Z" fill="url(#mp2-obsidian)" stroke="#fbbf24" stroke-width="1.9" stroke-linejoin="round" />
+    <path d="M18 62 L24 64 L22 76 L16 74 Z" fill="url(#mp2-gold-plate)" stroke="#fef9c3" stroke-width="1.0" />
+    <path d="M14 78 L10 86 M24 82 L22 88" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="34" cy="52" r="3" fill="url(#mp2-core)" />
+  </g>
+  <g id="part-arm-right" data-pivot="94,52" data-parent="part-cabin-hull" data-z-index="30" data-blend="normal" data-motion="rotate-sym-right">
+    <circle cx="94" cy="52" r="7" fill="#1c130b" stroke="#fbbf24" stroke-width="1.8" />
+    <path d="M94 52 L112 60 L114 78 L104 82 L102 66 L92 58 Z" fill="url(#mp2-obsidian)" stroke="#fbbf24" stroke-width="1.9" stroke-linejoin="round" />
+    <path d="M110 62 L104 64 L106 76 L112 74 Z" fill="url(#mp2-gold-plate)" stroke="#fef9c3" stroke-width="1.0" />
+    <path d="M114 78 L118 86 M104 82 L106 88" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="94" cy="52" r="3" fill="url(#mp2-core)" />
+  </g>
+  <g id="part-winch-drum" data-pivot="64,66" data-parent="part-cabin-hull" data-z-index="36" data-blend="normal" data-motion="spin-cw">
+    <circle cx="64" cy="66" r="16" fill="url(#mp2-obsidian)" stroke="#fbbf24" stroke-width="2.2" />
+    <circle cx="64" cy="66" r="12" fill="url(#mp2-steel)" stroke="#fde047" stroke-width="1.2" />
+    <!-- 钢缆缠绕纹理与辐条 -->
+    <path d="M54 62 L74 62 M52 66 L76 66 M54 70 L74 70 M64 50 L64 82" stroke="#fbbf24" stroke-width="0.8" stroke-opacity="0.85" />
+    <circle cx="64" cy="66" r="6" fill="#120c06" stroke="#f59e0b" stroke-width="1.6" />
+    <circle cx="64" cy="66" r="3" fill="url(#mp2-core)" />
+  </g>
+  <g id="part-searchlight-pod" data-pivot="64,24" data-parent="part-cabin-hull" data-z-index="40" data-blend="normal">
+    <circle cx="64" cy="24" r="6" fill="#1c130b" stroke="#fbbf24" stroke-width="1.6" />
+    <rect x="48" y="14" width="32" height="12" rx="5" fill="url(#mp2-obsidian)" stroke="#fbbf24" stroke-width="2.0" />
+    <rect x="54" y="16" width="20" height="8" rx="3" fill="#fef9c3" stroke="#fde047" stroke-width="1.0" />
+    <circle cx="64" cy="20" r="3.5" fill="#ffffff" />
+  </g>
+  <g id="part-light-cone-main" data-pivot="64,20" data-parent="part-searchlight-pod" data-z-index="44" data-blend="screen" style="mix-blend-mode: screen">
+    <polygon points="56,20 72,20 96,4 32,4" fill="url(#mp2-light-cone)" />
+  </g>
+  <g id="part-light-rim-cabin" data-pivot="64,80" data-parent="part-cabin-hull" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M32 42 L44 26 L84 26 L96 42" stroke="url(#mp2-rim)" stroke-width="2.6" stroke-linecap="round" />
+    <path d="M38 76 L50 76 M78 76 L90 76" stroke="#fbbf24" stroke-width="2.0" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,66" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M24 34 L32 26 L28 18 L38 12 M104 34 L96 26 L100 18 L90 12" stroke="#fbbf24" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="38" cy="12" r="2.2" fill="#ffffff" />
+    <circle cx="90" cy="12" r="2.2" fill="#ffffff" />
+    <circle cx="64" cy="66" r="2.5" fill="#ffffff" />
+    <path d="M103.8 87 L106.9 88.8" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+  </g>
 </svg>

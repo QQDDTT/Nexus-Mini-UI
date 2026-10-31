@@ -1,19 +1,96 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="tank-battle-icon-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ffe066"/>
-      <stop offset="100%" stop-color="#ff7a3d"/>
-    </linearGradient>
-    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#152042"/>
-      <stop offset="100%" stop-color="#050811"/>
+    <radialGradient id="tb-icon-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0b1610" stop-opacity="0.72" />
+      <stop offset="65%" stop-color="#0d1912" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#0d1912" stop-opacity="0" />
     </radialGradient>
+    <radialGradient id="tb-icon-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.28" />
+      <stop offset="55%" stop-color="#fbbf24" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#0d1912" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="tb-icon-hull" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14532d" />
+      <stop offset="55%" stop-color="#14241b" />
+      <stop offset="100%" stop-color="#0d1912" />
+    </linearGradient>
+    <linearGradient id="tb-icon-turret" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80" />
+      <stop offset="45%" stop-color="#166534" />
+      <stop offset="100%" stop-color="#0b1911" />
+    </linearGradient>
+    <linearGradient id="tb-icon-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#22c55e" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
+    </linearGradient>
   </defs>
-  <rect width="192" height="192" rx="42" fill="url(#bg)"/>
-  <rect x="22" y="44" width="28" height="104" rx="8" fill="#3b4256"/>
-  <rect x="142" y="44" width="28" height="104" rx="8" fill="#3b4256"/>
-  <rect x="46" y="58" width="100" height="80" rx="16" fill="url(#g)"/>
-  <circle cx="96" cy="98" r="26" fill="#2a1600" opacity="0.35"/>
-  <circle cx="96" cy="98" r="18" fill="url(#g)"/>
-  <rect x="88" y="16" width="16" height="74" rx="6" fill="url(#g)"/>
+  <g id="part-shadow-cast" data-pivot="64,68" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="70" rx="54" ry="48" fill="url(#tb-icon-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#tb-icon-aura)" />
+    <path fill="none" stroke="#22c55e" stroke-width="1.5" stroke-opacity="0.72" d="M120.04,80.07 A58.3,58.3 0 0,1 80.07,120.04 M47.93,120.04 A58.3,58.3 0 0,1 7.96,80.07 M7.96,47.93 A58.3,58.3 0 0,1 47.93,7.96 M80.07,7.96 A58.3,58.3 0 0,1 120.04,47.93 M64,1.7 L64,10.7 M64,117.3 L64,126.3 M1.7,64 L10.7,64 M117.3,64 L126.3,64" stroke-linejoin="bevel" />
+    <path fill="none" stroke="#4ade80" stroke-width="0.85" stroke-opacity="0.58" d="M114.66,78.53 A52.7,52.7 0 0,1 78.53,114.66 M49.47,114.66 A52.7,52.7 0 0,1 13.34,78.53 M13.34,49.47 A52.7,52.7 0 0,1 49.47,13.34 M78.53,13.34 A52.7,52.7 0 0,1 114.66,49.47 M64,7.3 L64,16.3 M64,111.7 L64,120.7 M7.3,64 L16.3,64 M111.7,64 L120.7,64" stroke-linejoin="bevel" />
+    <line x1="114.7" y1="64" x2="124.3" y2="64" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="99.9" y1="99.9" x2="106.6" y2="106.6" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="64" y1="114.7" x2="64" y2="124.3" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="28.1" y1="99.9" x2="21.4" y2="106.6" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="13.3" y1="64" x2="3.7" y2="64" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="28.1" y1="28.1" x2="21.4" y2="21.4" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="64" y1="13.3" x2="64" y2="3.7" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="99.9" y1="28.1" x2="106.6" y2="21.4" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <rect x="103" y="103" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="20.6" y="103" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="20.6" y="20.6" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="103" y="20.6" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fbbf24" stroke-width="1.1" stroke-opacity="0.68" d="M106.87,76.29 A44.6,44.6 0 0,1 76.29,106.87 M51.71,106.87 A44.6,44.6 0 0,1 21.13,76.29 M21.13,51.71 A44.6,44.6 0 0,1 51.71,21.13 M76.29,21.13 A44.6,44.6 0 0,1 106.87,51.71 M64,15.4 L64,24.4 M64,103.6 L64,112.6 M15.4,64 L24.4,64 M103.6,64 L112.6,64" stroke-linejoin="bevel" />
+    <circle cx="108.6" cy="64" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="86.3" cy="102.6" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="41.7" cy="102.6" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="19.4" cy="64" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="41.7" cy="25.4" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="86.3" cy="25.4" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+  </g>
+  <g id="part-track-left" data-pivot="28,68" data-parent="root" data-z-index="15" data-blend="normal">
+    <rect x="20" y="30" width="16" height="72" rx="4" fill="#0b1911" stroke="#4ade80" stroke-width="1.8" />
+    <path d="M22 40 L34 40 M22 52 L34 52 M22 64 L34 64 M22 76 L34 76 M22 88 L34 88" stroke="#22c55e" stroke-width="0.75" stroke-opacity="0.65" />
+  </g>
+  <g id="part-track-right" data-pivot="100,68" data-parent="root" data-z-index="15" data-blend="normal">
+    <rect x="92" y="30" width="16" height="72" rx="4" fill="#0b1911" stroke="#fbbf24" stroke-width="1.8" />
+    <path d="M94 40 L106 40 M94 52 L106 52 M94 64 L106 64 M94 76 L106 76 M94 88 L106 88" stroke="#fbbf24" stroke-width="0.75" stroke-opacity="0.65" />
+  </g>
+  <g id="part-hull-chassis" data-pivot="64,68" data-parent="root" data-z-index="25" data-blend="normal">
+    <polygon points="34,34 50,24 78,24 94,34 94,98 78,106 50,106 34,98" fill="url(#tb-icon-hull)" stroke="#22c55e" stroke-width="2.2" />
+    <path d="M42 42 L86 42 M42 88 L86 88 M64 26 L64 104" stroke="#4ade80" stroke-width="0.7" stroke-opacity="0.6" />
+    <circle cx="52" cy="58" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="76" cy="58" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="52" cy="78" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="76" cy="78" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+  </g>
+  <g id="part-barrel-main" data-pivot="64,52" data-parent="part-turret-body" data-z-index="35" data-blend="normal">
+    <circle cx="64" cy="52" r="4.0" fill="#06100a" stroke="#22c55e" stroke-width="1.1" />
+    <rect x="58" y="8" width="12" height="44" rx="2" fill="url(#tb-icon-turret)" stroke="#22c55e" stroke-width="1.6" />
+    <rect x="55" y="6" width="18" height="8" rx="1.5" fill="#14241b" stroke="#fbbf24" stroke-width="1.4" />
+    <circle cx="64" cy="52" r="1.6" fill="#fbbf24" />
+  </g>
+  <g id="part-turret-body" data-pivot="64,66" data-parent="part-hull-chassis" data-z-index="40" data-blend="normal">
+    <polygon points="44,52 54,42 74,42 84,52 80,84 48,84" fill="url(#tb-icon-turret)" stroke="#22c55e" stroke-width="2.0" />
+    <circle cx="64" cy="66" r="10" fill="#0b1911" stroke="#fbbf24" stroke-width="1.5" />
+    <circle cx="64" cy="66" r="4" fill="#ffffff" />
+  </g>
+  <g id="part-light-rim-hull" data-pivot="64,66" data-parent="part-turret-body" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M36 34 L50 25 L78 25 L92 34" stroke="url(#tb-icon-rim)" stroke-width="2.2" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <circle cx="64" cy="10" r="2.5" fill="#ffffff" />
+    <path d="M46 20 L54 14 M82 20 L74 14" stroke="#22c55e" stroke-width="1.1" stroke-linecap="round" />
+    <circle cx="81" cy="93.4" r="1.4" fill="#ffffff" />
+    <circle cx="47" cy="93.4" r="1.4" fill="#ffffff" />
+    <circle cx="47" cy="34.6" r="1.4" fill="#ffffff" />
+    <circle cx="81" cy="34.6" r="1.4" fill="#ffffff" />
+  </g>
 </svg>

@@ -1,37 +1,106 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="mineral-rock-rig" data-root-anchor="64,72" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="mr-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181009" stop-opacity="0.78" />
+      <stop offset="65%" stop-color="#1c1209" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <radialGradient id="mr-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#5d4037" stop-opacity="0.35" />
+      <stop offset="60%" stop-color="#3f2e1e" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="mr-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4e342e" />
+      <stop offset="55%" stop-color="#271a0c" />
+      <stop offset="100%" stop-color="#120c06" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <linearGradient id="mr-basalt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="45%" stop-color="#5d4037" />
+      <stop offset="100%" stop-color="#3f2e1e" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
+    <linearGradient id="mr-vein" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#b45309" />
     </linearGradient>
-    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#064e3b"/>
-    </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <linearGradient id="mr-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" stop-opacity="0.88" />
+      <stop offset="50%" stop-color="#94a3b8" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <polygon points="58,24 98,34 108,74 84,104 36,104 20,68 32,34" fill="url(#steelGrad)" stroke="#94a3b8" stroke-width="3" stroke-linejoin="round"/>
-  <path d="M40 54 L66 64 L82 48" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
-  <polygon points="44,38 72,42 60,58" fill="#cbd5e1" fill-opacity="0.35"/>
+  <!-- [光影层 1] 底层沉重软阴影贴图 (z=1, multiply) -->
+  <g id="part-shadow-cast" data-pivot="64,92" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="92" rx="54" ry="24" fill="url(#mr-shadow)" />
+  </g>
+  <!-- [光影层 2A] 底层重力地磁波外环 (z=4, screen) -->
+  <g id="part-aura-ring-outer" data-pivot="64,66" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="66" r="60" fill="url(#mr-aura)" />
+    <ellipse cx="64" cy="66" rx="56.4" ry="49.63" fill="none" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.72" />
+    <ellipse cx="64" cy="66" rx="51" ry="44.88" fill="none" stroke="#f59e0b" stroke-width="0.75" stroke-opacity="0.55" />
+    <polygon points="120.4,62 124.4,66 120.4,70 116.4,66" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="103.9" cy="105.9" r="2.0" fill="#fef08a" />
+    <polygon points="64,118.4 68,122.4 64,126.4 60,122.4" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="24.1" cy="105.9" r="2.0" fill="#fef08a" />
+    <polygon points="7.6,62 11.6,66 7.6,70 3.6,66" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="24.1" cy="26.1" r="2.0" fill="#fef08a" />
+    <polygon points="64,5.6 68,9.6 64,13.6 60,9.6" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="103.9" cy="26.1" r="2.0" fill="#fef08a" />
+  </g>
+  <!-- [光影层 2B] 底层地层应力内环 (z=5, screen) -->
+  <g id="part-aura-ring-inner" data-pivot="64,66" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <ellipse cx="64" cy="66" rx="43.2" ry="38.02" fill="none" stroke="#fef08a" stroke-width="1.0" stroke-opacity="0.68" />
+    <polygon points="107.2,63.4 109.8,66 107.2,68.6 104.6,66" fill="#fef08a" />
+    <polygon points="85.6,100.8 88.2,103.4 85.6,106 83,103.4" fill="#fef08a" />
+    <polygon points="42.4,100.8 45,103.4 42.4,106 39.8,103.4" fill="#fef08a" />
+    <polygon points="20.8,63.4 23.4,66 20.8,68.6 18.2,66" fill="#fef08a" />
+    <polygon points="42.4,26 45,28.6 42.4,31.2 39.8,28.6" fill="#fef08a" />
+    <polygon points="85.6,26 88.2,28.6 85.6,31.2 83,28.6" fill="#fef08a" />
+  </g>
+  <!-- [骨骼部件 1] 底层玄武岩断层基座 (z=15) -->
+  <g id="part-rock-base" data-pivot="64,78" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="16,76 30,50 98,52 112,78 96,102 32,102" fill="url(#mr-obsidian)" stroke="#8d6e63" stroke-width="2.2" stroke-linejoin="round" />
+  </g>
+  <!-- [骨骼部件 2] 左上可碎裂花岗岩块 (z=24) -->
+  <g id="part-rock-shard-left" data-pivot="42,58" data-parent="part-rock-base" data-z-index="24" data-blend="normal">
+    <circle cx="42" cy="58" r="8" fill="#271a0c" stroke="#8d6e63" stroke-width="1.4" />
+    <polygon points="18,64 32,34 62,32 64,66 34,82" fill="url(#mr-basalt)" stroke="#94a3b8" stroke-width="2.0" stroke-linejoin="round" />
+    <path d="M32 34 L48 58 L34 82 M18 64 L48 58" stroke="#3f2e1e" stroke-width="1.3" />
+    <path d="M36 46 L52 44 M28 60 L42 66" stroke="#cbd5e1" stroke-width="0.65" stroke-opacity="0.6" />
+  </g>
+  <!-- [骨骼部件 3] 右上可碎裂玄武岩块 (z=26) -->
+  <g id="part-rock-shard-right" data-pivot="84,60" data-parent="part-rock-base" data-z-index="26" data-blend="normal">
+    <circle cx="84" cy="60" r="8" fill="#271a0c" stroke="#8d6e63" stroke-width="1.4" />
+    <polygon points="60,34 94,38 110,66 94,90 58,76" fill="url(#mr-obsidian)" stroke="#94a3b8" stroke-width="2.0" stroke-linejoin="round" />
+    <polygon points="64,38 90,42 100,62 76,68" fill="url(#mr-basalt)" stroke="#cbd5e1" stroke-width="1.0" />
+    <path d="M94 38 L76 68 L94 90" stroke="#271a0c" stroke-width="1.2" />
+  </g>
+  <!-- [骨骼部件 4] 中央致密岩芯与微光石英裂隙 (z=34) -->
+  <g id="part-rock-core-slab" data-pivot="64,72" data-parent="part-rock-base" data-z-index="34" data-blend="normal">
+    <polygon points="34,72 52,48 80,50 92,76 76,98 44,96" fill="url(#mr-basalt)" stroke="#cbd5e1" stroke-width="2.2" stroke-linejoin="round" />
+    <!-- 内部石英微光裂纹 -->
+    <path d="M52 48 L64 72 L76 98 M34 72 L64 72 L92 76" stroke="url(#mr-vein)" stroke-width="1.1" stroke-opacity="0.8" />
+    <circle cx="64" cy="72" r="2.5" fill="#fbbf24" />
+    <polygon points="64,65 69,72 64,79 59,72" fill="none" stroke="#fef08a" stroke-width="0.75" stroke-opacity="0.8" />
+    <circle cx="64" cy="72" r="1.8" fill="#ffffff" />
+  </g>
+  <!-- [光影层 3] 岩石断口受光边缘高光映射贴图 (z=45, plus-lighter) -->
+  <g id="part-light-rim-rock" data-pivot="64,58" data-parent="part-rock-core-slab" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M18 64 L32 34 L62 32 L94 38" stroke="url(#mr-rim)" stroke-width="2.6" stroke-linecap="round" />
+    <path d="M34 72 L52 48 L80 50" stroke="#e2e8f0" stroke-width="1.8" stroke-linecap="round" />
+  </g>
+  <!-- [光影层 4] 顶层悬浮岩尘与微光石英粒子 (z=65, screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,66" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <polygon points="26,30 30,26 32,32" fill="#94a3b8" />
+    <polygon points="100,32 106,30 104,36" fill="#cbd5e1" />
+    <circle cx="64" cy="42" r="1.8" fill="#fbbf24" />
+    <circle cx="48" cy="30" r="1.5" fill="#e2e8f0" />
+    <circle cx="38" cy="76" r="1.6" fill="#fbbf24" />
+    <circle cx="86" cy="74" r="1.6" fill="#fbbf24" />
+    <circle cx="52" cy="86" r="1.4" fill="#94a3b8" />
+    <circle cx="78" cy="34" r="1.5" fill="#cbd5e1" />
+    <circle cx="22" cy="52" r="1.5" fill="#8d6e63" />
+    <circle cx="106" cy="54" r="1.5" fill="#8d6e63" />
+  </g>
 </svg>

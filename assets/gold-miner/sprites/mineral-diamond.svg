@@ -1,38 +1,97 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="mineral-diamond-rig" data-root-anchor="64,68" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="md-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181009" stop-opacity="0.65" />
+      <stop offset="65%" stop-color="#1c1209" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <radialGradient id="md-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.48" />
+      <stop offset="55%" stop-color="#fef08a" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="md-pavilion" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="50%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#120c06" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <linearGradient id="md-crown" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#bae6fd" />
+      <stop offset="75%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#d97706" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
-    </linearGradient>
-    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#064e3b"/>
-    </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <linearGradient id="md-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="50%" stop-color="#fbbf24" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#d946ef" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <polygon points="40,24 88,24 114,52 64,112 14,52" fill="url(#cyanArmor)" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/>
-  <polygon points="40,24 88,24 76,52 52,52" fill="#e0f2fe" fill-opacity="0.8"/>
-  <polygon points="52,52 76,52 64,112" fill="#00f0ff" fill-opacity="0.65"/>
-  <line x1="14" y1="52" x2="114" y2="52" stroke="#bae6fd" stroke-width="2"/>
+  <!-- [光影层 1] 底层环境软阴影贴图 (z=1, multiply) -->
+  <g id="part-shadow-cast" data-pivot="64,98" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="98" rx="40" ry="18" fill="url(#md-shadow)" />
+  </g>
+  <!-- [光影层 2A] 底层极光折射外光环 (z=4, screen) -->
+  <g id="part-aura-ring-outer" data-pivot="64,60" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="60" r="58" fill="url(#md-aura)" />
+    <ellipse cx="64" cy="60" rx="54.5" ry="47.96" fill="none" stroke="#fef08a" stroke-width="1.4" stroke-opacity="0.72" />
+    <ellipse cx="64" cy="60" rx="49.3" ry="43.38" fill="none" stroke="#bae6fd" stroke-width="0.75" stroke-opacity="0.55" />
+    <polygon points="118.5,56 122.5,60 118.5,64 114.5,60" fill="#fef08a" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="102.5" cy="98.5" r="2.0" fill="#fbbf24" />
+    <polygon points="64,110.5 68,114.5 64,118.5 60,114.5" fill="#fef08a" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="25.5" cy="98.5" r="2.0" fill="#fbbf24" />
+    <polygon points="9.5,56 13.5,60 9.5,64 5.5,60" fill="#fef08a" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="25.5" cy="21.5" r="2.0" fill="#fbbf24" />
+    <polygon points="64,1.5 68,5.5 64,9.5 60,5.5" fill="#fef08a" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="102.5" cy="21.5" r="2.0" fill="#fbbf24" />
+  </g>
+  <!-- [光影层 2B] 底层逆时针星芒内环 (z=5, screen) -->
+  <g id="part-aura-ring-inner" data-pivot="64,60" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <ellipse cx="64" cy="60" rx="41.8" ry="36.78" fill="none" stroke="#fbbf24" stroke-width="1.0" stroke-opacity="0.68" />
+    <polygon points="105.8,57.4 108.4,60 105.8,62.6 103.2,60" fill="#fef08a" />
+    <polygon points="84.9,93.6 87.5,96.2 84.9,98.8 82.3,96.2" fill="#fef08a" />
+    <polygon points="43.1,93.6 45.7,96.2 43.1,98.8 40.5,96.2" fill="#fef08a" />
+    <polygon points="22.2,57.4 24.8,60 22.2,62.6 19.6,60" fill="#fef08a" />
+    <polygon points="43.1,21.2 45.7,23.8 43.1,26.4 40.5,23.8" fill="#fef08a" />
+    <polygon points="84.9,21.2 87.5,23.8 84.9,26.4 82.3,23.8" fill="#fef08a" />
+  </g>
+  <!-- [骨骼部件 1] 左伴生极光副晶柱 (z=18) -->
+  <g id="part-crystal-wing-left" data-pivot="38,66" data-parent="part-diamond-pavilion" data-z-index="18" data-blend="normal">
+    <circle cx="38" cy="66" r="6" fill="#0c4a6e" stroke="#fbbf24" stroke-width="1.2" />
+    <polygon points="16,52 28,36 44,50 40,76 24,72" fill="url(#md-pavilion)" stroke="#fef08a" stroke-width="1.8" stroke-linejoin="round" />
+    <polygon points="20,50 28,40 40,50 32,62" fill="url(#md-crown)" stroke="#ffffff" stroke-width="0.8" />
+  </g>
+  <!-- [骨骼部件 2] 右伴生极光副晶柱 (z=20) -->
+  <g id="part-crystal-wing-right" data-pivot="90,66" data-parent="part-diamond-pavilion" data-z-index="20" data-blend="normal">
+    <circle cx="90" cy="66" r="6" fill="#0c4a6e" stroke="#fbbf24" stroke-width="1.2" />
+    <polygon points="84,50 100,36 112,52 104,72 88,76" fill="url(#md-pavilion)" stroke="#fef08a" stroke-width="1.8" stroke-linejoin="round" />
+    <polygon points="88,50 100,40 108,50 96,62" fill="url(#md-crown)" stroke="#ffffff" stroke-width="0.8" />
+  </g>
+  <!-- [骨骼部件 3] 钻石下部锥形亭部 (Pavilion) (z=28) -->
+  <g id="part-diamond-pavilion" data-pivot="64,60" data-parent="root" data-z-index="28" data-blend="normal">
+    <polygon points="26,50 102,50 64,104" fill="url(#md-pavilion)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="round" />
+    <polygon points="44,50 84,50 64,104" fill="url(#md-crown)" fill-opacity="0.65" stroke="#bae6fd" stroke-width="1.1" />
+    <path d="M26 50 L64 72 L102 50 M44 50 L64 72 L84 50 M64 50 L64 104" stroke="#ffffff" stroke-width="0.75" stroke-opacity="0.8" />
+    <polygon points="64,53 69,60 64,67 59,60" fill="none" stroke="#fef08a" stroke-width="0.75" stroke-opacity="0.8" />
+    <circle cx="64" cy="60" r="1.8" fill="#ffffff" />
+  </g>
+  <!-- [骨骼部件 4] 钻石上部八角冠部与台面 (Crown & Table) (z=36) -->
+  <g id="part-diamond-crown" data-pivot="64,40" data-parent="part-diamond-pavilion" data-z-index="36" data-blend="normal">
+    <polygon points="42,26 86,26 102,50 26,50" fill="url(#md-crown)" stroke="#ffffff" stroke-width="2.2" stroke-linejoin="round" />
+    <polygon points="48,26 80,26 84,50 44,50" fill="#ffffff" fill-opacity="0.55" stroke="#fbbf24" stroke-width="1.0" />
+    <path d="M42 26 L44 50 M86 26 L84 50 M48 26 L26 50 M80 26 L102 50 M46 38 L82 38" stroke="#ffffff" stroke-width="0.75" />
+  </g>
+  <!-- [光影层 3] 钻石棱线全反射高光映射贴图 (z=45, plus-lighter) -->
+  <g id="part-light-rim-diamond" data-pivot="64,50" data-parent="part-diamond-pavilion" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M26 50 L42 26 L86 26 L102 50" stroke="url(#md-rim)" stroke-width="3.0" stroke-linecap="round" />
+    <path d="M44 50 L64 104 L84 50" stroke="#ffffff" stroke-width="2.0" stroke-linecap="round" />
+  </g>
+  <!-- [光影层 4] 顶层耀眼极光十字星芒冕 (z=65, screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,38" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M64 10 L64 30 M54 20 L74 20" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+    <path d="M26 24 L26 36 M20 30 L32 30 M102 24 L102 36 M96 30 L108 30" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="64" cy="38" r="3.0" fill="#ffffff" />
+    <circle cx="44" cy="70" r="2.0" fill="#bae6fd" />
+    <circle cx="84" cy="70" r="2.0" fill="#bae6fd" />
+  </g>
 </svg>

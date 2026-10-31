@@ -1,20 +1,150 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" data-rig-id="sensory-eye-lv3-rig" data-root-anchor="48,54" data-has-aura="true">
   <defs>
-    <radialGradient id="eye3" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fbbf24"/>
-      <stop offset="45%" stop-color="#00f0ff"/>
-      <stop offset="80%" stop-color="#a855f7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <radialGradient id="se3-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.78" />
+      <stop offset="68%" stop-color="#03181c" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="se3-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.38" />
+      <stop offset="50%" stop-color="#2dd4bf" stop-opacity="0.22" />
+      <stop offset="80%" stop-color="#d946ef" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="se3-cone" x1="50%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.6" />
+      <stop offset="45%" stop-color="#2dd4bf" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#d946ef" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="se3-socket" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#311042" />
+      <stop offset="50%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#03181c" />
+    </linearGradient>
+    <radialGradient id="se3-prism" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#fbbf24" />
+      <stop offset="65%" stop-color="#2dd4bf" />
+      <stop offset="100%" stop-color="#701a75" />
+    </radialGradient>
+    <linearGradient id="se3-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+      <stop offset="45%" stop-color="#fbbf24" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
     </radialGradient>
   </defs>
-  <!-- Lv.3 Full-Spectrum Prismatic Compound Eye (Eye Lv.3) -->
-  <circle cx="48" cy="46" r="34" fill="none" stroke="#fbbf24" stroke-width="1.6" stroke-dasharray="4 3"/>
-  <polygon points="48,14 76,30 76,62 48,78 20,62 20,30" fill="url(#eye3)" stroke="#fbbf24" stroke-width="2.8"/>
-  <!-- Hexagonal Ommatidia Facets -->
-  <polygon points="48,26 62,34 62,50 48,58 34,50 34,34" fill="#030712" stroke="#00f0ff" stroke-width="1.8"/>
-  <circle cx="48" cy="42" r="7" fill="#fbbf24"/>
-  <circle cx="45" cy="39" r="3" fill="#ffffff"/>
-  <circle cx="28" cy="38" r="3.5" fill="#00f0ff"/>
-  <circle cx="68" cy="38" r="3.5" fill="#00f0ff"/>
+  <!-- 全光谱棱镜广角体积光锥贴图 -->
+  <!-- 六角棱镜眼眶底座与量子视神经 -->
+  <!-- 独立可旋转偏移锁定的蜂窝复眼棱镜簇核 -->
+  <!-- 上下棱镜瞬膜甲片 -->
+  <g id="part-shadow-cast" data-pivot="48,54" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="48" cy="56" rx="42" ry="38" fill="url(#se3-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="48,50" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="48" cy="50" r="44" fill="url(#se3-aura)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M89.4,50 Q88.47,66.76 77.27,79.27 Q63.11,86.47 48,91.4 Q31.24,90.47 18.73,79.27 Q11.53,65.11 6.6,50 Q7.53,33.24 18.73,20.73 Q32.89,13.53 48,8.6 Q64.76,9.53 77.27,20.73 Q84.47,34.89 89.4,50 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M85.4,50 Q84.77,65.23 74.45,76.45 Q61.58,82.78 48,87.4 Q32.77,86.77 21.55,76.45 Q15.22,63.58 10.6,50 Q11.23,34.77 21.55,23.55 Q34.42,17.22 48,12.6 Q63.23,13.23 74.45,23.55 Q80.78,36.42 85.4,50 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="89.4" cy="50" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="88.6" cy="49.2" r="0.9" fill="#ffffff" />
+    <circle cx="77.3" cy="79.3" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="48" cy="91.4" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="47.2" cy="90.6" r="0.9" fill="#ffffff" />
+    <circle cx="18.7" cy="79.3" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="6.6" cy="50" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="5.8" cy="49.2" r="0.9" fill="#ffffff" />
+    <circle cx="18.7" cy="20.7" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="48" cy="8.6" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="47.2" cy="7.8" r="0.9" fill="#ffffff" />
+    <circle cx="77.3" cy="20.7" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="48,50" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M79.7,50 Q77.53,67.05 63.85,77.45 Q48,79.78 32.15,77.45 Q18.47,67.05 16.3,50 Q22.21,35.11 32.15,22.55 Q48,15.9 63.85,22.55 Q73.79,35.11 79.7,50 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="79.7" cy="50" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="63.8" cy="77.5" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="32.2" cy="77.5" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="16.3" cy="50" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="32.1" cy="22.5" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="63.8" cy="22.5" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="75.45" cy="65.85" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="20.55" cy="65.85" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="48" cy="18.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-light-cone-vision" data-pivot="48,46" data-parent="part-eye-iris-pupil" data-z-index="9" data-blend="screen" style="mix-blend-mode: screen">
+    <polygon points="48,46 2,2 94,2" fill="url(#se3-cone)" />
+    <line x1="48" y1="42" x2="10" y2="2" stroke="#fbbf24" stroke-width="1.0" stroke-opacity="0.7" />
+    <line x1="48" y1="42" x2="30" y2="2" stroke="#2dd4bf" stroke-width="0.8" stroke-opacity="0.6" />
+    <line x1="48" y1="42" x2="66" y2="2" stroke="#2dd4bf" stroke-width="0.8" stroke-opacity="0.6" />
+    <line x1="48" y1="42" x2="86" y2="2" stroke="#fbbf24" stroke-width="1.0" stroke-opacity="0.7" />
+  </g>
+  <g id="part-eye-socket" data-pivot="48,52" data-parent="root" data-z-index="15" data-blend="normal">
+    <circle cx="48" cy="52" r="4.0" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <path d="M30 68 L22 90 M42 74 L38 92 M54 74 L58 92 M66 68 L74 90" stroke="#fbbf24" stroke-width="2.0" stroke-linecap="round" />
+    <polygon points="48,18 78,34 78,66 48,82 18,66 18,34" fill="url(#se3-socket)" stroke="#fbbf24" stroke-width="2.4" />
+    <polygon points="48,24 72,37 72,63 48,76 24,63 24,37" fill="#090d16" stroke="#2dd4bf" stroke-width="1.3" />
+    <circle cx="48" cy="52" r="1.6" fill="#fbbf24" />
+  </g>
+  <g id="part-lv3-crown-1" data-pivot="48,48" data-parent="root" data-z-index="19" data-blend="normal">
+    <circle cx="48" cy="48" r="4.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.85" />
+  </g>
+  <g id="part-eye-iris-pupil" data-pivot="48,48" data-parent="part-eye-socket" data-z-index="25" data-blend="normal" data-motion="track-target">
+    <polygon points="48,26 68,37 68,57 48,68 28,57 28,37" fill="url(#se3-prism)" stroke="#ffffff" stroke-width="1.5" />
+    <polygon points="48,34 60,41 60,53 48,60 36,53 36,41" fill="#03181c" stroke="#2dd4bf" stroke-width="1.4" />
+    <path d="M48 26 L48 68 M28 37 L68 57 M68 37 L28 57" stroke="#fbbf24" stroke-width="0.7" stroke-opacity="0.8" />
+    <circle cx="48" cy="46" r="7" fill="#fbbf24" stroke="#ffffff" stroke-width="1.2" />
+    <circle cx="45" cy="43" r="3.2" fill="#ffffff" />
+    <circle cx="32" cy="44" r="3.0" fill="#2dd4bf" />
+    <circle cx="64" cy="44" r="3.0" fill="#2dd4bf" />
+    <circle cx="41" cy="43" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="56" cy="52" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-eyelid-lower" data-pivot="48,54" data-parent="part-eye-socket" data-z-index="35" data-blend="normal" data-motion="blink-lower">
+    <circle cx="48" cy="54" r="4.0" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <polygon points="18,58 48,82 78,58 66,66 48,74 30,66" fill="url(#se3-socket)" stroke="#2dd4bf" stroke-width="1.6" />
+    <circle cx="48" cy="54" r="1.6" fill="#fbbf24" />
+  </g>
+  <g id="part-eyelid-upper" data-pivot="48,48" data-parent="part-eye-socket" data-z-index="35" data-blend="normal" data-motion="blink-upper">
+    <circle cx="48" cy="48" r="4.0" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <polygon points="18,42 48,18 78,42 66,34 48,26 30,34" fill="url(#se3-socket)" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="48" cy="48" r="1.6" fill="#fbbf24" />
+  </g>
+  <g id="part-lv3-synapse-node-1" data-pivot="33.2,62.8" data-parent="root" data-z-index="44" data-blend="normal">
+    <circle cx="33.2" cy="62.8" r="3.2" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="33.2" cy="62.8" r="1.3" fill="#fbbf24" />
+  </g>
+  <g id="part-light-rim-eye" data-pivot="48,50" data-parent="part-eye-socket" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M18 34 L48 18 L78 34" stroke="url(#se3-rim)" stroke-width="2.8" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="48,48" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M20 24 L14 14 L26 10 M76 24 L82 14 L70 10" stroke="#2dd4bf" stroke-width="1.1" stroke-linecap="round" />
+    <circle cx="26" cy="14" r="2.2" fill="#ffffff" />
+    <circle cx="70" cy="14" r="2.2" fill="#ffffff" />
+    <circle cx="48" cy="8" r="2.5" fill="#fbbf24" />
+    <circle cx="69.7" cy="60.5" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="26.3" cy="60.5" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="26.3" cy="35.5" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="69.7" cy="35.5" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="63.2" cy="83.9" r="1.5" fill="#d946ef" />
+    <circle cx="38.6" cy="85.8" r="1.5" fill="#d946ef" />
+    <circle cx="17.7" cy="72.5" r="1.5" fill="#d946ef" />
+    <circle cx="75.4" cy="59.3" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="69" cy="69" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="59.3" cy="75.4" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="48" cy="77.6" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="36.7" cy="75.4" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="27" cy="69" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="20.6" cy="59.3" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="18.4" cy="48" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="20.6" cy="36.7" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="27" cy="27" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="36.7" cy="20.6" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="48" cy="18.4" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="59.3" cy="20.6" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="69" cy="27" r="1.1" fill="#2dd4bf" opacity="0.75" />
+  </g>
 </svg>
-

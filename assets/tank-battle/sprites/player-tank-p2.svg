@@ -1,36 +1,179 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="player-tank-p2-rig" data-root-anchor="64,68" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#0f2442" stop-opacity="0.75"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="p2-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0b1610" stop-opacity="0.72" />
+      <stop offset="62%" stop-color="#0d1912" stop-opacity="0.34" />
+      <stop offset="100%" stop-color="#0d1912" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <radialGradient id="p2-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.28" />
+      <stop offset="58%" stop-color="#f97316" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#0d1912" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="p2-hull-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e2f23" />
+      <stop offset="50%" stop-color="#14241b" />
+      <stop offset="100%" stop-color="#120b04" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fde047"/>
-      <stop offset="50%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#451a03"/>
+    <linearGradient id="p2-turret-armor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#451a03" />
+      <stop offset="55%" stop-color="#14241b" />
+      <stop offset="100%" stop-color="#0d1912" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f87171"/>
-      <stop offset="50%" stop-color="#dc2626"/>
-      <stop offset="100%" stop-color="#450a0a"/>
+    <linearGradient id="p2-gold-edge" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#ea580c" />
     </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e2e8f0"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <linearGradient id="p2-rim-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#fbbf24" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#ea580c" stop-opacity="0" />
     </linearGradient>
+    <radialGradient id="p2-core-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="45%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#ea580c" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <rect x="22" y="28" width="18" height="76" rx="5" fill="#1c1917" stroke="#fbbf24" stroke-width="2"/>
-  <rect x="88" y="28" width="18" height="76" rx="5" fill="#1c1917" stroke="#fbbf24" stroke-width="2"/>
-  <rect x="34" y="34" width="60" height="64" rx="10" fill="url(#goldArmor)" stroke="#fef08a" stroke-width="2"/>
-  <rect x="51" y="10" width="10" height="44" rx="3" fill="url(#steelGrad)" stroke="#fbbf24" stroke-width="1.5"/>
-  <rect x="67" y="10" width="10" height="44" rx="3" fill="url(#steelGrad)" stroke="#fbbf24" stroke-width="1.5"/>
-  <circle cx="64" cy="64" r="18" fill="#451a03" stroke="#fbbf24" stroke-width="2.5"/>
-  <circle cx="64" cy="64" r="7" fill="#fde047"/>
+  <!-- [光影层 1] 车底环境接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 战功金护盾外环：顺时针自转战术刻度环 (z=4, screen) -->
+  <!-- [光影层 2B] 战功金护盾内环：逆时针自转相位叶轮环 (z=5, screen) -->
+  <!-- [光影层 3] 前向热能火控扫描光锥 (z=8, screen) -->
+  <!-- [骨骼部件 1] 左尾气赤焰喷流 (z=10) -->
+  <!-- [骨骼部件 2] 右尾气赤焰喷流 (z=10) -->
+  <!-- [骨骼部件 3] 左独立重装履带总成 (z=15) -->
+  <!-- [骨骼部件 4] 右独立重装履带总成 (z=15) -->
+  <!-- [骨骼部件 5] 楔形复合装甲主底盘 (z=25) -->
+  <!-- [骨骼部件 6] 360° 旋转炮塔轴承座圈 (z=30) -->
+  <!-- [骨骼部件 7A] 左联装后坐力加农主炮管 (z=35) -->
+  <!-- [骨骼部件 7B] 右联装后坐力加农主炮管 (z=35) -->
+  <!-- [骨骼部件 8] 左炮口稳定护翼片 (z=38) -->
+  <!-- [骨骼部件 9] 右炮口稳定护翼片 (z=38) -->
+  <!-- [骨骼部件 10] 360° 独立旋转重装双联炮塔 (z=40) -->
+  <!-- [光影层 4A] 车体受光边缘高光映射贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 4B] 炮塔受光边缘高光映射贴图 (z=46, plus-lighter) -->
+  <!-- [骨骼部件 11] 顶部独立自转火控雷达 (z=50) -->
+  <!-- [光影层 5] 顶层战功电弧冕与高能余烬粒子 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,70" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="70" rx="54" ry="50" fill="url(#p2-shadow-grad)" />
+    <ellipse cx="64" cy="68" rx="40" ry="42" fill="#0b1610" fill-opacity="0.45" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,68" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="68" r="58" fill="url(#p2-aura-field)" />
+    <path fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-opacity="0.72" d="M116.39,83.02 A54.5,54.5 0 0,1 79.02,120.39 M48.98,120.39 A54.5,54.5 0 0,1 11.61,83.02 M11.61,52.98 A54.5,54.5 0 0,1 48.98,15.61 M79.02,15.61 A54.5,54.5 0 0,1 116.39,52.98 M64,9.5 L64,18.5 M64,117.5 L64,126.5 M5.5,68 L14.5,68 M113.5,68 L122.5,68" stroke-linejoin="bevel" />
+    <path fill="none" stroke="#f97316" stroke-width="0.85" stroke-opacity="0.58" d="M111.39,81.59 A49.3,49.3 0 0,1 77.59,115.39 M50.41,115.39 A49.3,49.3 0 0,1 16.61,81.59 M16.61,54.41 A49.3,49.3 0 0,1 50.41,20.61 M77.59,20.61 A49.3,49.3 0 0,1 111.39,54.41 M64,14.7 L64,23.7 M64,112.3 L64,121.3 M10.7,68 L19.7,68 M108.3,68 L117.3,68" stroke-linejoin="bevel" />
+    <line x1="111.3" y1="68" x2="120.5" y2="68" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="97.4" y1="101.4" x2="104" y2="108" stroke="#fef08a" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="64" y1="115.3" x2="64" y2="124.5" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="30.6" y1="101.4" x2="24" y2="108" stroke="#fef08a" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="16.7" y1="68" x2="7.5" y2="68" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="30.6" y1="34.6" x2="24" y2="28" stroke="#fef08a" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="64" y1="20.7" x2="64" y2="11.5" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="97.4" y1="34.6" x2="104" y2="28" stroke="#fef08a" stroke-width="1.4" stroke-opacity="0.8" />
+    <rect x="100.3" y="104.3" width="4.4" height="4.4" fill="#fef08a" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="23.3" y="104.3" width="4.4" height="4.4" fill="#fef08a" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="23.3" y="27.3" width="4.4" height="4.4" fill="#fef08a" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="100.3" y="27.3" width="4.4" height="4.4" fill="#fef08a" stroke="#0b1610" stroke-width="0.7" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,68" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fef08a" stroke-width="1.1" stroke-opacity="0.68" d="M104.18,79.52 A41.8,41.8 0 0,1 75.52,108.18 M52.48,108.18 A41.8,41.8 0 0,1 23.82,79.52 M23.82,56.48 A41.8,41.8 0 0,1 52.48,27.82 M75.52,27.82 A41.8,41.8 0 0,1 104.18,56.48 M64,22.2 L64,31.2 M64,104.8 L64,113.8 M18.2,68 L27.2,68 M100.8,68 L109.8,68" stroke-linejoin="bevel" />
+    <circle cx="105.8" cy="68" r="2.0" fill="#fbbf24" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="84.9" cy="104.2" r="2.0" fill="#fbbf24" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="43.1" cy="104.2" r="2.0" fill="#fbbf24" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="22.2" cy="68" r="2.0" fill="#fbbf24" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="43.1" cy="31.8" r="2.0" fill="#fbbf24" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="84.9" cy="31.8" r="2.0" fill="#fbbf24" stroke="#0b1610" stroke-width="0.65" />
+  </g>
+  <g id="part-light-cone-main" data-pivot="64,50" data-parent="part-turret-body" data-z-index="8" data-blend="screen" style="mix-blend-mode: screen">
+    <polygon points="64,50 38,4 90,4" fill="url(#p2-aura-field)" opacity="0.65" />
+    <line x1="64" y1="48" x2="64" y2="4" stroke="#fbbf24" stroke-width="0.7" stroke-opacity="0.6" />
+  </g>
+  <g id="part-exhaust-plume-L" data-pivot="46,108" data-parent="part-hull-chassis" data-z-index="10" data-blend="screen" data-motion="scale-pulse" style="mix-blend-mode: screen">
+    <polygon points="41,106 51,106 49,124 46,126 43,124" fill="#f97316" fill-opacity="0.8" />
+    <polygon points="43,106 49,106 46,120" fill="#fef08a" />
+  </g>
+  <g id="part-exhaust-plume-R" data-pivot="82,108" data-parent="part-hull-chassis" data-z-index="10" data-blend="screen" data-motion="scale-pulse" style="mix-blend-mode: screen">
+    <polygon points="77,106 87,106 85,124 82,126 79,124" fill="#f97316" fill-opacity="0.8" />
+    <polygon points="79,106 85,106 82,120" fill="#fef08a" />
+  </g>
+  <g id="part-track-left" data-pivot="26,68" data-parent="part-hull-chassis" data-z-index="15" data-blend="normal" data-motion="scroll-uv-left">
+    <rect x="16" y="24" width="18" height="86" rx="5" fill="#120b04" stroke="#fbbf24" stroke-width="2.0" />
+    <rect x="18" y="28" width="14" height="78" rx="3" fill="#14241b" stroke="#78350f" stroke-width="1.0" />
+    <path d="M17 34 H33 M17 44 H33 M17 54 H33 M17 64 H33 M17 74 H33 M17 84 H33 M17 94 H33 M17 102 H33" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.75" />
+    <circle cx="25" cy="32" r="3" fill="#1c1208" stroke="#fbbf24" stroke-width="1.0" />
+    <circle cx="25" cy="68" r="3" fill="#1c1208" stroke="#fbbf24" stroke-width="1.0" />
+    <circle cx="25" cy="102" r="3" fill="#1c1208" stroke="#fbbf24" stroke-width="1.0" />
+  </g>
+  <g id="part-track-right" data-pivot="102,68" data-parent="part-hull-chassis" data-z-index="15" data-blend="normal" data-motion="scroll-uv-right">
+    <rect x="94" y="24" width="18" height="86" rx="5" fill="#120b04" stroke="#fbbf24" stroke-width="2.0" />
+    <rect x="96" y="28" width="14" height="78" rx="3" fill="#14241b" stroke="#78350f" stroke-width="1.0" />
+    <path d="M95 34 H111 M95 44 H111 M95 54 H111 M95 64 H111 M95 74 H111 M95 84 H111 M95 94 H111 M95 102 H111" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.75" />
+    <circle cx="103" cy="32" r="3" fill="#1c1208" stroke="#fbbf24" stroke-width="1.0" />
+    <circle cx="103" cy="68" r="3" fill="#1c1208" stroke="#fbbf24" stroke-width="1.0" />
+    <circle cx="103" cy="102" r="3" fill="#1c1208" stroke="#fbbf24" stroke-width="1.0" />
+  </g>
+  <g id="part-hull-chassis" data-pivot="64,68" data-parent="root" data-z-index="25" data-blend="normal">
+    <polygon points="36,22 92,22 98,36 98,100 88,108 40,108 30,100 30,36" fill="url(#p2-hull-obsidian)" stroke="url(#p2-gold-edge)" stroke-width="2.2" stroke-linejoin="bevel" />
+    <polygon points="42,26 86,26 92,38 92,96 84,102 44,102 36,96 36,38" fill="#14241b" stroke="#78350f" stroke-width="1.2" />
+    <polygon points="44,26 84,26 78,40 50,40" fill="#451a03" stroke="#fbbf24" stroke-width="1.0" />
+    <path d="M36 48 H92 M36 88 H92 M44 92 V102 M54 92 V102 M74 92 V102 M84 92 V102" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.65" />
+    <rect x="42" y="104" width="10" height="4" rx="1" fill="#1e2f23" stroke="#fbbf24" stroke-width="0.9" />
+    <rect x="76" y="104" width="10" height="4" rx="1" fill="#1e2f23" stroke="#fbbf24" stroke-width="0.9" />
+    <circle cx="52" cy="58" r="1.5" fill="#fef08a" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="76" cy="58" r="1.5" fill="#fef08a" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="52" cy="78" r="1.5" fill="#fef08a" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="76" cy="78" r="1.5" fill="#fef08a" stroke="#06100a" stroke-width="0.6" />
+  </g>
+  <g id="part-turret-ring" data-pivot="64,68" data-parent="part-hull-chassis" data-z-index="30" data-blend="normal">
+    <circle cx="64" cy="68" r="24" fill="#120b04" stroke="#fbbf24" stroke-width="1.6" />
+    <path fill="#1c1208" stroke="#f97316" stroke-width="0.9" stroke-opacity="0.72" d="M84.19,73.79 A21,21 0 0,1 69.79,88.19 M58.21,88.19 A21,21 0 0,1 43.81,73.79 M43.81,62.21 A21,21 0 0,1 58.21,47.81 M69.79,47.81 A21,21 0 0,1 84.19,62.21 M64,43 L64,52 M64,84 L64,93 M39,68 L48,68 M80,68 L89,68" stroke-linejoin="bevel" />
+  </g>
+  <g id="part-barrel-left" data-pivot="56,50" data-parent="part-turret-body" data-z-index="35" data-blend="normal" data-motion="recoil-y-alt-L">
+    <circle cx="56" cy="50" r="6" fill="#1c1208" stroke="#fbbf24" stroke-width="1.5" />
+    <rect x="52" y="8" width="8" height="42" rx="1.5" fill="url(#p2-hull-obsidian)" stroke="url(#p2-gold-edge)" stroke-width="1.8" />
+    <rect x="51" y="6" width="10" height="6" rx="1" fill="#451a03" stroke="#fef08a" stroke-width="1.2" />
+    <line x1="56" y1="12" x2="56" y2="44" stroke="#fef08a" stroke-width="0.9" />
+  </g>
+  <g id="part-barrel-right" data-pivot="72,50" data-parent="part-turret-body" data-z-index="35" data-blend="normal" data-motion="recoil-y-alt-R">
+    <circle cx="72" cy="50" r="6" fill="#1c1208" stroke="#fbbf24" stroke-width="1.5" />
+    <rect x="68" y="8" width="8" height="42" rx="1.5" fill="url(#p2-hull-obsidian)" stroke="url(#p2-gold-edge)" stroke-width="1.8" />
+    <rect x="67" y="6" width="10" height="6" rx="1" fill="#451a03" stroke="#fef08a" stroke-width="1.2" />
+    <line x1="72" y1="12" x2="72" y2="44" stroke="#fef08a" stroke-width="0.9" />
+  </g>
+  <g id="part-rail-jaw-L" data-pivot="50,22" data-parent="part-barrel-left" data-z-index="38" data-blend="normal" data-motion="rotate-jaw-left">
+    <circle cx="50" cy="22" r="2.8" fill="#1c1208" stroke="#fbbf24" stroke-width="1.1" />
+    <polygon points="50,22 45,18 46,8 50,10" fill="#78350f" stroke="#fbbf24" stroke-width="1.3" />
+  </g>
+  <g id="part-rail-jaw-R" data-pivot="78,22" data-parent="part-barrel-right" data-z-index="38" data-blend="normal" data-motion="rotate-jaw-right">
+    <circle cx="78" cy="22" r="2.8" fill="#1c1208" stroke="#fbbf24" stroke-width="1.1" />
+    <polygon points="78,22 83,18 82,8 78,10" fill="#78350f" stroke="#fbbf24" stroke-width="1.3" />
+  </g>
+  <g id="part-turret-body" data-pivot="64,68" data-parent="part-turret-ring" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <polygon points="48,44 80,44 88,58 84,84 72,92 56,92 44,84 40,58" fill="url(#p2-turret-armor)" stroke="url(#p2-gold-edge)" stroke-width="2.2" stroke-linejoin="bevel" />
+    <polygon points="52,48 76,48 82,60 78,80 68,86 60,86 50,80 46,60" fill="#1c1208" stroke="#f97316" stroke-width="1.1" />
+    <path d="M46 60 L64 54 L82 60 M50 80 L64 74 L78 80" stroke="#fbbf24" stroke-width="0.7" stroke-opacity="0.7" />
+    <circle cx="64" cy="68" r="10" fill="#120b04" stroke="#fbbf24" stroke-width="1.5" />
+    <circle cx="64" cy="68" r="6" fill="url(#p2-core-glow)" />
+    <circle cx="64" cy="68" r="2.2" fill="#ffffff" />
+  </g>
+  <g id="part-light-rim-hull" data-pivot="64,68" data-parent="part-hull-chassis" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M36 22 H92 L98 36 M30 36 L36 22" stroke="url(#p2-rim-glow)" stroke-width="2.4" stroke-linecap="round" />
+    <path d="M30 88 L30 100 L40 108 M98 88 L98 100 L88 108" stroke="#fbbf24" stroke-width="1.6" stroke-opacity="0.75" />
+  </g>
+  <g id="part-light-rim-turret" data-pivot="64,68" data-parent="part-turret-body" data-z-index="46" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M48 44 H80 L88 58 M40 58 L48 44" stroke="url(#p2-rim-glow)" stroke-width="2.5" stroke-linecap="round" />
+  </g>
+  <g id="part-radar-scanner" data-pivot="74,78" data-parent="part-turret-body" data-z-index="50" data-blend="normal" data-motion="spin-cw">
+    <circle cx="74" cy="78" r="5" fill="#1c1208" stroke="#fbbf24" stroke-width="1.4" />
+    <path d="M68 76 C71 71 77 71 80 76" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+    <line x1="74" y1="78" x2="74" y2="71" stroke="#f59e0b" stroke-width="1.2" />
+    <circle cx="74" cy="78" r="1.8" fill="#f59e0b" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,68" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M26 30 L34 22 L30 14 L42 10 M102 30 L94 22 L98 14 L86 10" stroke="#fbbf24" stroke-width="1.1" stroke-linecap="round" />
+    <circle cx="42" cy="10" r="2.0" fill="#ffffff" />
+    <circle cx="86" cy="10" r="2.0" fill="#ffffff" />
+    <circle cx="64" cy="6" r="2.2" fill="#fbbf24" />
+  </g>
 </svg>

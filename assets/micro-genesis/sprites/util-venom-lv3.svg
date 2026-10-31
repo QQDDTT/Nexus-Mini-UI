@@ -1,29 +1,160 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="util-venom-lv3-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <radialGradient id="venom3" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#d9f99d"/>
-      <stop offset="45%" stop-color="#65a30d"/>
-      <stop offset="80%" stop-color="#3b0764"/>
-      <stop offset="100%" stop-color="#052e16"/>
+    <radialGradient id="uv3-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.76" />
+      <stop offset="65%" stop-color="#03181c" stop-opacity="0.36" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="uv3-aura-venom" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4ade80" stop-opacity="0.40" />
+      <stop offset="48%" stop-color="#d946ef" stop-opacity="0.26" />
+      <stop offset="80%" stop-color="#fbbf24" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="uv3-base-chitin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b0764" />
+      <stop offset="50%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#03181c" />
+    </linearGradient>
+    <radialGradient id="uv3-sac-necrotic" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="35%" stop-color="#4ade80" />
+      <stop offset="72%" stop-color="#d946ef" />
+      <stop offset="100%" stop-color="#2e1065" />
+    </radialGradient>
+    <linearGradient id="uv3-needle-blade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="25%" stop-color="#fef08a" />
+      <stop offset="58%" stop-color="#4ade80" />
+      <stop offset="100%" stop-color="#7e22ce" />
+    </linearGradient>
+    <radialGradient id="uv3-joint-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="42%" stop-color="#4ade80" />
+      <stop offset="78%" stop-color="#d946ef" />
+      <stop offset="100%" stop-color="#d946ef" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="uv3-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+      <stop offset="38%" stop-color="#4ade80" stop-opacity="0.88" />
+      <stop offset="75%" stop-color="#d946ef" stop-opacity="0.76" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
     </radialGradient>
   </defs>
-  <!-- Lv.3 噬生剧毒母巢：三腔翠绿紫黑毒巢 + 三联高压注射鳌针 + 传染孢子环 -->
-  <!-- 剧毒孢子扩散环 -->
-  <circle cx="64" cy="72" r="48" fill="none" stroke="#84cc16" stroke-width="2" stroke-dasharray="6 4"/>
-  <!-- 三联注射毒刺 -->
-  <polygon points="30,58 34,18 44,58" fill="#a855f7" stroke="#bef264" stroke-width="2"/>
-  <polygon points="84,58 94,18 98,58" fill="#a855f7" stroke="#bef264" stroke-width="2"/>
-  <polygon points="54,54 64,6 74,54" fill="#84cc16" stroke="#fbbf24" stroke-width="2.5"/>
-  <!-- 三腔母巢毒囊 -->
-  <circle cx="38" cy="80" r="20" fill="url(#venom3)" stroke="#a3e635" stroke-width="2.2"/>
-  <circle cx="90" cy="80" r="20" fill="url(#venom3)" stroke="#a3e635" stroke-width="2.2"/>
-  <circle cx="64" cy="76" r="26" fill="url(#venom3)" stroke="#fbbf24" stroke-width="3"/>
-  <!-- 剧毒母核 -->
-  <circle cx="64" cy="76" r="10" fill="#ecfccb"/>
-  <circle cx="64" cy="76" r="5" fill="#a855f7"/>
-  <!-- 针尖剧毒液滴 -->
-  <circle cx="64" cy="6" r="4" fill="#fbbf24"/>
-  <circle cx="34" cy="16" r="3.5" fill="#bef264"/>
-  <circle cx="94" cy="16" r="3.5" fill="#bef264"/>
+  <!-- [光影层 1] 环境接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 翠绿/紫红剧毒腐蚀外环：顺时针自转坏死融骨毒冕环 (z=4, screen) -->
+  <!-- [光影层 2B] 翠绿/紫红剧毒腐蚀内环：逆时针自转生化凋亡矩阵 (z=5, screen) -->
+  <!-- [骨骼部件 1] 坏死融骨毒腺重甲基座 (z=10) -->
+  <!-- [骨骼部件 2] 三核脉冲融骨储毒母囊 (z=18) -->
+  <!-- [骨骼部件 3] 可旋转晶化瞄准刺鞘 (z=25) -->
+  <!-- [骨骼部件 4] 可沿轴线高速突刺伸缩的三重倒钩毒针部件 (z=35) -->
+  <!-- [光影层 3] 毒针受光边缘高光贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 4] 顶层剧毒孢子星环与腐蚀电弧冕 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,72" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="72" rx="58" ry="52" fill="url(#uv3-cast-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#uv3-aura-venom)" />
+    <path fill="none" stroke="#a855f7" stroke-width="1.2" stroke-opacity="0.65" d="M122.3,64 Q120.08,87.23 105.22,105.22 Q85.58,116.09 64,122.3 Q40.77,120.08 22.78,105.22 Q11.91,85.58 5.7,64 Q7.92,40.77 22.78,22.78 Q42.42,11.91 64,5.7 Q87.23,7.92 105.22,22.78 Q116.09,42.42 122.3,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M116.7,64 Q114.91,85.09 101.26,101.26 Q83.43,110.91 64,116.7 Q42.91,114.91 26.74,101.26 Q17.09,83.43 11.3,64 Q13.09,42.91 26.74,26.74 Q44.57,17.09 64,11.3 Q85.09,13.09 101.26,26.74 Q110.91,44.57 116.7,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="122.3" cy="64" r="3.0" fill="#a855f7" fill-opacity="0.35" stroke="#e879f9" stroke-width="0.85" />
+    <circle cx="121.5" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="122.3" r="3.0" fill="#a855f7" fill-opacity="0.35" stroke="#e879f9" stroke-width="0.85" />
+    <circle cx="63.2" cy="121.5" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="5.7" cy="64" r="3.0" fill="#a855f7" fill-opacity="0.35" stroke="#e879f9" stroke-width="0.85" />
+    <circle cx="4.9" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="5.7" r="3.0" fill="#a855f7" fill-opacity="0.35" stroke="#e879f9" stroke-width="0.85" />
+    <circle cx="63.2" cy="4.9" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#e879f9" stroke-width="0.85" stroke-opacity="0.62" d="M108.6,64 Q104.7,87.5 86.3,102.62 Q64,106.68 41.7,102.62 Q23.3,87.5 19.4,64 Q27.04,42.66 41.7,25.38 Q64,17 86.3,25.38 Q100.96,42.66 108.6,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="108.6" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="19.4" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="102.62" cy="86.3" r="2.8" fill="#e879f9" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="25.38" cy="86.3" r="2.8" fill="#e879f9" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="64" cy="19.4" r="2.8" fill="#e879f9" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-venom-gland-base" data-pivot="64,90" data-parent="root" data-z-index="10" data-blend="normal">
+    <polygon points="64,54 110,70 100,108 64,120 28,108 18,70" fill="url(#uv3-base-chitin)" stroke="#fbbf24" stroke-width="2.2" />
+    <polygon points="64,62 98,74 90,102 64,112 38,102 30,74" fill="#060c18" stroke="#4ade80" stroke-width="1.2" />
+    <path d="M30 74 L98 74 M36 88 L92 88 M64 62 L64 112" stroke="#d946ef" stroke-width="0.75" stroke-opacity="0.8" />
+    <circle cx="64" cy="90" r="8.5" fill="#042326" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="64" cy="90" r="4.2" fill="url(#uv3-joint-glow)" />
+  </g>
+  <g id="part-venom-sac-chamber" data-pivot="64,76" data-parent="part-venom-gland-base" data-z-index="18" data-blend="normal" data-motion="pulse-breathe">
+    <circle cx="38" cy="76" r="22" fill="url(#uv3-sac-necrotic)" stroke="#4ade80" stroke-width="2.1" />
+    <circle cx="90" cy="76" r="22" fill="url(#uv3-sac-necrotic)" stroke="#4ade80" stroke-width="2.1" />
+    <circle cx="64" cy="84" r="20" fill="url(#uv3-sac-necrotic)" stroke="#fbbf24" stroke-width="2.1" />
+    <path d="M26 70 L50 82 M102 70 L78 82 M52 84 L76 84" stroke="#ffffff" stroke-width="0.85" stroke-opacity="0.8" />
+    <circle cx="36" cy="72" r="4.5" fill="#ffffff" />
+    <circle cx="92" cy="72" r="4.5" fill="#ffffff" />
+    <circle cx="64" cy="84" r="5" fill="#fef08a" />
+  </g>
+  <g id="part-lv3-crown-1" data-pivot="64,64" data-parent="root" data-z-index="19" data-blend="normal">
+    <circle cx="64" cy="64" r="4.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.85" />
+  </g>
+  <g id="part-venom-sheath" data-pivot="64,58" data-parent="part-venom-gland-base" data-z-index="25" data-blend="normal" data-motion="rotate-aim">
+    <polygon points="38,64 48,28 80,28 90,64 64,76" fill="url(#uv3-base-chitin)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="round" />
+    <polygon points="44,60 52,32 76,32 84,60" fill="#07131e" stroke="#4ade80" stroke-width="1.3" />
+    <path d="M48 42 L80 42 M46 52 L82 52 M64 32 L64 68" stroke="#d946ef" stroke-width="0.8" stroke-opacity="0.85" />
+    <circle cx="64" cy="58" r="9" fill="#042326" stroke="#fef08a" stroke-width="2.0" />
+    <circle cx="64" cy="58" r="4.8" fill="url(#uv3-joint-glow)" />
+    <circle cx="57" cy="53" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="72" cy="62" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-venom-needle" data-pivot="64,52" data-parent="part-venom-sheath" data-z-index="35" data-blend="normal" data-motion="translate-y">
+    <polygon points="64,4 78,24 70,22 77,36 69,34 75,48 69,46 72,56 56,56 59,46 53,48 59,34 51,36 58,22 50,24" fill="url(#uv3-needle-blade)" stroke="#fef08a" stroke-width="2.0" stroke-linejoin="round" />
+    <line x1="64" y1="6" x2="64" y2="54" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
+    <path d="M56 20 L64 12 L72 20 M56 32 L64 24 L72 32 M56 44 L64 36 L72 44" stroke="#d946ef" stroke-width="0.9" />
+    <circle cx="64" cy="52" r="6.5" fill="#1e1b4b" stroke="#fef08a" stroke-width="1.8" />
+    <circle cx="64" cy="52" r="3.2" fill="#ffffff" />
+  </g>
+  <g id="part-lv3-synapse-node-1" data-pivot="43,85" data-parent="root" data-z-index="44" data-blend="normal">
+    <circle cx="43" cy="85" r="3.2" fill="#021619" stroke="#34d399" stroke-width="1.1" />
+    <circle cx="43" cy="85" r="1.3" fill="#fbbf24" />
+  </g>
+  <g id="part-lv3-synapse-node-2" data-pivot="43,43" data-parent="root" data-z-index="44" data-blend="normal">
+    <circle cx="43" cy="43" r="3.2" fill="#021619" stroke="#34d399" stroke-width="1.1" />
+    <circle cx="43" cy="43" r="1.3" fill="#fbbf24" />
+  </g>
+  <g id="part-light-rim-venom" data-pivot="64,52" data-parent="part-venom-needle" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <polyline points="51,36 58,22 50,24 64,4 78,24 70,22 77,36" stroke="url(#uv3-rim-light)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M18 76 C18 54 44 50 54 64 M110 76 C110 54 84 50 74 64" stroke="#4ade80" stroke-width="2.2" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <path d="M36 18 L52 8 L64 4 L76 8 L92 18" stroke="#4ade80" stroke-width="1.4" stroke-linecap="round" />
+    <circle cx="64" cy="5" r="3" fill="#ffffff" />
+    <circle cx="34" cy="22" r="3.2" fill="#4ade80" />
+    <circle cx="94" cy="22" r="3.2" fill="#d946ef" />
+    <circle cx="18" cy="48" r="2.5" fill="#fbbf24" />
+    <circle cx="110" cy="48" r="2.5" fill="#4ade80" />
+    <circle cx="118.6" cy="57.3" r="1.5" fill="#d946ef" />
+    <circle cx="111.6" cy="91.5" r="1.5" fill="#d946ef" />
+    <circle cx="85.5" cy="114.6" r="1.5" fill="#d946ef" />
+    <circle cx="50.7" cy="117.4" r="1.5" fill="#d946ef" />
+    <circle cx="21.3" cy="98.6" r="1.5" fill="#d946ef" />
+    <circle cx="102.9" cy="80.1" r="1.1" fill="#34d399" opacity="0.75" />
+    <circle cx="93.8" cy="93.8" r="1.1" fill="#34d399" opacity="0.75" />
+    <circle cx="80.1" cy="102.9" r="1.1" fill="#34d399" opacity="0.75" />
+    <circle cx="64" cy="106.1" r="1.1" fill="#34d399" opacity="0.75" />
+    <circle cx="47.9" cy="102.9" r="1.1" fill="#34d399" opacity="0.75" />
+    <circle cx="34.2" cy="93.8" r="1.1" fill="#34d399" opacity="0.75" />
+    <circle cx="25.1" cy="80.1" r="1.1" fill="#34d399" opacity="0.75" />
+    <circle cx="21.9" cy="64" r="1.1" fill="#34d399" opacity="0.75" />
+    <circle cx="25.1" cy="47.9" r="1.1" fill="#34d399" opacity="0.75" />
+  </g>
 </svg>
-

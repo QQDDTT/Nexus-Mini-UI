@@ -1,0 +1,281 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none" data-rig-id="boss-ch1-hydra-rig" data-root-anchor="128,136" data-has-aura="true">
+  <defs>
+    <radialGradient id="bh1-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.80" />
+      <stop offset="65%" stop-color="#03181c" stop-opacity="0.38" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="bh1-aura-vortex" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.38" />
+      <stop offset="50%" stop-color="#2dd4bf" stop-opacity="0.22" />
+      <stop offset="82%" stop-color="#064e3b" stop-opacity="0.10" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="bh1-light-cone" x1="50%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.50" />
+      <stop offset="50%" stop-color="#10b981" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="bh1-chitin-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="52%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#03181c" />
+    </linearGradient>
+    <linearGradient id="bh1-hydra-plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="38%" stop-color="#059669" />
+      <stop offset="78%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#021619" />
+    </linearGradient>
+    <linearGradient id="bh1-fang-gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="35%" stop-color="#fbbf24" />
+      <stop offset="80%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#064e3b" />
+    </linearGradient>
+    <radialGradient id="bh1-joint-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="45%" stop-color="#2dd4bf" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="bh1-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+      <stop offset="42%" stop-color="#2dd4bf" stop-opacity="0.85" />
+      <stop offset="85%" stop-color="#34d399" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <!-- [1] 底层接触软阴影贴图 (z=1, multiply) -->
+  <!-- [2] 旋涡引力场外环 (z=4, screen) -->
+  <!-- [3] 旋涡引力场内环 (z=5, screen) -->
+  <!-- [4] 吞噬涡流体积光锥 (z=8, screen) -->
+  <!-- [5] 尾椎吸盘底座节 (z=12) -->
+  <!-- [6] 腹腔再生母核节 (z=15) -->
+  <!-- [7] 胸腔主水螅腔体 (z=20) -->
+  <!-- [8] 左一触手根节 (z=22) -->
+  <!-- [9] 左一触手中节 (z=23) -->
+  <!-- [10] 左一触手毒刺副头 (z=24) -->
+  <!-- [11] 右一触手根节 (z=22) -->
+  <!-- [12] 右一触手中节 (z=23) -->
+  <!-- [13] 右一触手毒刺副头 (z=24) -->
+  <!-- [14] 左二下侧触手链 (z=21) -->
+  <!-- [15] 右二下侧触手链 (z=21) -->
+  <!-- [16] 漩涡吞噬口器基座与涡流齿盘 (z=28) -->
+  <!-- [17] 左主捕食巨颚 (z=34) -->
+  <!-- [18] 右主捕食巨颚 (z=34) -->
+  <!-- [19] 索敌复眼簇底座 (z=38) -->
+  <!-- [20] 独立锁定追踪瞳孔组 (z=40) -->
+  <!-- [21] 全身受光边缘高光贴图 (z=45, plus-lighter) -->
+  <!-- [22] 顶层电弧与旋涡粒子冕 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="128,144" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="128" cy="144" rx="116" ry="104" fill="url(#bh1-cast-shadow)" />
+    <ellipse cx="128" cy="148" rx="82" ry="72" fill="#021317" fill-opacity="0.52" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="128,128" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="128" cy="128" r="126" fill="url(#bh1-aura-vortex)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M246.4,128 Q239.6,174.23 211.72,211.72 Q172.57,235.61 128,246.4 Q81.77,239.6 44.28,211.72 Q20.39,172.57 9.6,128 Q16.4,81.77 44.28,44.28 Q83.43,20.39 128,9.6 Q174.23,16.4 211.72,44.28 Q235.61,83.43 246.4,128 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M235.1,128 Q229.16,169.9 203.73,203.73 Q168.25,225.17 128,235.1 Q86.1,229.16 52.27,203.73 Q30.83,168.25 20.9,128 Q26.84,86.1 52.27,52.27 Q87.75,30.83 128,20.9 Q169.9,26.84 203.73,52.27 Q225.17,87.75 235.1,128 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="246.4" cy="128" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="245.6" cy="127.2" r="0.9" fill="#ffffff" />
+    <circle cx="211.7" cy="211.7" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="128" cy="246.4" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="127.2" cy="245.6" r="0.9" fill="#ffffff" />
+    <circle cx="44.3" cy="211.7" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="9.6" cy="128" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="8.8" cy="127.2" r="0.9" fill="#ffffff" />
+    <circle cx="44.3" cy="44.3" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="128" cy="9.6" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="127.2" cy="8.8" r="0.9" fill="#ffffff" />
+    <circle cx="211.7" cy="44.3" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="128,128" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M218.7,128 Q208.63,174.55 173.35,206.55 Q128,216.78 82.65,206.55 Q47.37,174.55 37.3,128 Q51.11,83.61 82.65,49.45 Q128,34.9 173.35,49.45 Q204.89,83.61 218.7,128 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="218.7" cy="128" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="173.4" cy="206.5" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="82.7" cy="206.5" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="37.3" cy="128" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="82.6" cy="49.5" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="173.4" cy="49.5" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="206.55" cy="173.35" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="49.45" cy="173.35" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="128" cy="37.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-light-cone-main" data-pivot="128,84" data-parent="root" data-z-index="8" data-blend="screen" style="mix-blend-mode: screen">
+    <polygon points="128,88 56,6 200,6" fill="url(#bh1-light-cone)" />
+    <path d="M128 84 L84 12 M128 84 L128 6 M128 84 L172 12" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.55" />
+  </g>
+  <g id="part-torso-tail" data-pivot="128,196" data-parent="root" data-z-index="12" data-blend="normal" data-motion="sway-tail">
+    <polygon points="128,246 92,216 98,184 158,184 164,216" fill="url(#bh1-chitin-dark)" stroke="#34d399" stroke-width="2.2" />
+    <polygon points="128,236 102,212 106,190 150,190 154,212" fill="url(#bh1-hydra-plate)" stroke="#2dd4bf" stroke-width="1.3" />
+    <path d="M106 204 L150 204 M112 218 L144 218 M128 186 L128 238" stroke="#2dd4bf" stroke-width="0.8" />
+    <circle cx="128" cy="196" r="9" fill="#042326" stroke="#34d399" stroke-width="2.0" />
+    <circle cx="128" cy="196" r="4.5" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-torso-abdomen" data-pivot="128,162" data-parent="part-torso-tail" data-z-index="15" data-blend="normal">
+    <polygon points="128,136 178,154 170,196 128,208 86,196 78,154" fill="url(#bh1-chitin-dark)" stroke="#34d399" stroke-width="2.4" />
+    <polygon points="128,144 166,158 160,190 128,200 96,190 90,158" fill="url(#bh1-hydra-plate)" stroke="#2dd4bf" stroke-width="1.4" />
+    <path d="M90 168 L166 168 M96 182 L160 182 M128 144 L128 200" stroke="#fbbf24" stroke-width="0.9" stroke-opacity="0.8" />
+    <circle cx="128" cy="172" r="12" fill="#064e3b" stroke="#fbbf24" stroke-width="2.2" />
+    <circle cx="128" cy="172" r="6" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-torso-thorax" data-pivot="128,124" data-parent="part-torso-abdomen" data-z-index="20" data-blend="normal">
+    <polygon points="128,82 192,108 184,158 128,174 72,158 64,108" fill="url(#bh1-chitin-dark)" stroke="#2dd4bf" stroke-width="2.6" />
+    <polygon points="128,92 178,114 172,150 128,164 84,150 78,114" fill="url(#bh1-hydra-plate)" stroke="#fbbf24" stroke-width="1.5" />
+    <path d="M78 114 L178 150 M178 114 L78 150 M128 92 L128 164" stroke="#2dd4bf" stroke-width="0.85" stroke-opacity="0.75" />
+    <circle cx="128" cy="128" r="16" fill="#052e16" stroke="#2dd4bf" stroke-width="2.4" />
+    <circle cx="128" cy="128" r="8" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-tentacle-R2-whip" data-pivot="180,148" data-parent="part-torso-thorax" data-z-index="21" data-blend="normal" data-motion="rotate-sym-right">
+    <path d="M180 148 C214 154 238 134 246 100 L230 98 C222 124 204 138 178 134 Z" fill="url(#bh1-hydra-plate)" stroke="#2dd4bf" stroke-width="1.9" />
+    <polygon points="246,100 252,80 234,86 230,98" fill="url(#bh1-fang-gold)" stroke="#fef08a" stroke-width="1.5" />
+    <circle cx="180" cy="148" r="7.5" fill="#042326" stroke="#34d399" stroke-width="1.7" />
+    <circle cx="180" cy="148" r="3.8" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-tentacle-L2-whip" data-pivot="76,148" data-parent="part-torso-thorax" data-z-index="21" data-blend="normal" data-motion="rotate-sym-left">
+    <path d="M76 148 C42 154 18 134 10 100 L26 98 C34 124 52 138 78 134 Z" fill="url(#bh1-hydra-plate)" stroke="#2dd4bf" stroke-width="1.9" />
+    <polygon points="10,100 4,80 22,86 26,98" fill="url(#bh1-fang-gold)" stroke="#fef08a" stroke-width="1.5" />
+    <circle cx="76" cy="148" r="7.5" fill="#042326" stroke="#34d399" stroke-width="1.7" />
+    <circle cx="76" cy="148" r="3.8" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-tentacle-L1-upper" data-pivot="74,116" data-parent="part-torso-thorax" data-z-index="22" data-blend="normal" data-motion="ik-upper-L1">
+    <path d="M74 116 C48 106 32 90 26 68 L44 64 C52 82 64 96 80 104 Z" fill="url(#bh1-hydra-plate)" stroke="#34d399" stroke-width="2.0" />
+    <path d="M70 110 L34 68" stroke="#2dd4bf" stroke-width="0.85" />
+    <circle cx="74" cy="116" r="8" fill="#042326" stroke="#34d399" stroke-width="1.8" />
+    <circle cx="74" cy="116" r="4" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-tentacle-R1-upper" data-pivot="182,116" data-parent="part-torso-thorax" data-z-index="22" data-blend="normal" data-motion="ik-upper-R1">
+    <path d="M182 116 C208 106 224 90 230 68 L212 64 C204 82 192 96 176 104 Z" fill="url(#bh1-hydra-plate)" stroke="#34d399" stroke-width="2.0" />
+    <path d="M186 110 L222 68" stroke="#2dd4bf" stroke-width="0.85" />
+    <circle cx="182" cy="116" r="8" fill="#042326" stroke="#34d399" stroke-width="1.8" />
+    <circle cx="182" cy="116" r="4" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-tentacle-R1-lower" data-pivot="221,66" data-parent="part-tentacle-R1-upper" data-z-index="23" data-blend="normal" data-motion="ik-lower-R1">
+    <path d="M230 68 C240 48 238 28 226 14 L214 22 C222 34 222 50 212 64 Z" fill="url(#bh1-chitin-dark)" stroke="#2dd4bf" stroke-width="1.9" />
+    <circle cx="221" cy="66" r="7" fill="#042326" stroke="#2dd4bf" stroke-width="1.6" />
+    <circle cx="221" cy="66" r="3.5" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-tentacle-L1-lower" data-pivot="35,66" data-parent="part-tentacle-L1-upper" data-z-index="23" data-blend="normal" data-motion="ik-lower-L1">
+    <path d="M26 68 C16 48 18 28 30 14 L42 22 C34 34 34 50 44 64 Z" fill="url(#bh1-chitin-dark)" stroke="#2dd4bf" stroke-width="1.9" />
+    <circle cx="35" cy="66" r="7" fill="#042326" stroke="#2dd4bf" stroke-width="1.6" />
+    <circle cx="35" cy="66" r="3.5" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-tentacle-R1-head" data-pivot="220,18" data-parent="part-tentacle-R1-lower" data-z-index="24" data-blend="normal" data-motion="ik-tip-R1">
+    <polygon points="208,4 234,12 228,28 210,24" fill="url(#bh1-fang-gold)" stroke="#fef08a" stroke-width="1.8" />
+    <circle cx="220" cy="18" r="6" fill="#042326" stroke="#fbbf24" stroke-width="1.5" />
+    <circle cx="220" cy="18" r="3" fill="#ffffff" />
+  </g>
+  <g id="part-tentacle-L1-head" data-pivot="36,18" data-parent="part-tentacle-L1-lower" data-z-index="24" data-blend="normal" data-motion="ik-tip-L1">
+    <polygon points="48,4 22,12 28,28 46,24" fill="url(#bh1-fang-gold)" stroke="#fef08a" stroke-width="1.8" />
+    <circle cx="36" cy="18" r="6" fill="#042326" stroke="#fbbf24" stroke-width="1.5" />
+    <circle cx="36" cy="18" r="3" fill="#ffffff" />
+  </g>
+  <g id="part-mouth-vortex-maw" data-pivot="128,84" data-parent="part-torso-thorax" data-z-index="28" data-blend="normal" data-motion="spin-ccw">
+    <circle cx="128" cy="84" r="30" fill="url(#bh1-chitin-dark)" stroke="#fbbf24" stroke-width="2.4" />
+    <path fill="#021317" stroke="#2dd4bf" stroke-width="1.6" stroke-opacity="0.72" d="M148,84 Q148.69,92.57 142.14,98.14 Q134.92,100.7 128,104 Q119.43,104.69 113.86,98.14 Q111.3,90.92 108,84 Q107.31,75.43 113.86,69.86 Q121.08,67.3 128,64 Q136.57,63.31 142.14,69.86 Q144.7,77.08 148,84 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <polygon points="128,56 133,68 123,68" fill="#fef08a" />
+    <polygon points="128,112 133,100 123,100" fill="#fef08a" />
+    <polygon points="100,84 112,89 112,79" fill="#fef08a" />
+    <polygon points="156,84 144,89 144,79" fill="#fef08a" />
+    <circle cx="128" cy="84" r="8" fill="url(#bh1-joint-glow)" />
+    <circle cx="121" cy="79" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="136" cy="88" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-mandible-left" data-pivot="96,84" data-parent="part-torso-thorax" data-z-index="34" data-blend="normal" data-motion="rotate-sym-left">
+    <path d="M96 84 C64 68 58 32 88 8 L102 24 L88 38 L102 52 L90 66 Z" fill="url(#bh1-fang-gold)" stroke="#fef08a" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M88 8 L76 36 L86 68" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="96" cy="84" r="8.5" fill="#042326" stroke="#fbbf24" stroke-width="1.9" />
+    <circle cx="96" cy="84" r="4.2" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-mandible-right" data-pivot="160,84" data-parent="part-torso-thorax" data-z-index="34" data-blend="normal" data-motion="rotate-sym-right">
+    <path d="M160 84 C192 68 198 32 168 8 L154 24 L168 38 L154 52 L166 66 Z" fill="url(#bh1-fang-gold)" stroke="#fef08a" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M168 8 L180 36 L170 68" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="160" cy="84" r="8.5" fill="#042326" stroke="#fbbf24" stroke-width="1.9" />
+    <circle cx="160" cy="84" r="4.2" fill="url(#bh1-joint-glow)" />
+  </g>
+  <g id="part-eye-cluster-socket" data-pivot="128,112" data-parent="part-torso-thorax" data-z-index="38" data-blend="normal">
+    <ellipse cx="102" cy="112" rx="12" ry="9" fill="#021317" stroke="#2dd4bf" stroke-width="1.8" />
+    <ellipse cx="154" cy="112" rx="12" ry="9" fill="#021317" stroke="#2dd4bf" stroke-width="1.8" />
+    <ellipse cx="128" cy="108" rx="10" ry="8" fill="#021317" stroke="#fbbf24" stroke-width="1.8" />
+  </g>
+  <g id="part-eye-iris-pupil" data-pivot="128,110" data-parent="part-eye-cluster-socket" data-z-index="40" data-blend="normal" data-motion="eye-track">
+    <circle cx="102" cy="111" r="5" fill="#2dd4bf" />
+    <circle cx="102" cy="109" r="2" fill="#ffffff" />
+    <circle cx="154" cy="111" r="5" fill="#2dd4bf" />
+    <circle cx="154" cy="109" r="2" fill="#ffffff" />
+    <circle cx="128" cy="107" r="4.5" fill="#fbbf24" />
+    <circle cx="128" cy="105" r="2" fill="#ffffff" />
+  </g>
+  <g id="part-light-rim-body" data-pivot="128,128" data-parent="part-torso-thorax" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M88 8 C62 32 66 66 92 80 M168 8 C194 32 190 66 164 80" stroke="url(#bh1-rim-light)" stroke-width="3.0" stroke-linecap="round" />
+    <polyline points="64,108 128,82 192,108" stroke="url(#bh1-rim-light)" stroke-width="2.6" stroke-linecap="round" />
+    <path d="M26 68 C18 46 20 28 30 14 M230 68 C238 46 236 28 226 14" stroke="#2dd4bf" stroke-width="2.2" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="128,128" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <polyline points="48,18 76,34 92,16 128,36 164,16 180,34 208,18" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    <polyline points="32,128 54,116 68,132 88,120 128,138 168,120 188,132 202,116 224,128" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.75" stroke-linecap="round" />
+    <path d="M96 42 L128 24 L160 42 M82 64 L128 48 L174 64 M84 152 L128 168 L172 152 M92 184 L128 198 L164 184" stroke="#2dd4bf" stroke-width="0.9" stroke-opacity="0.65" />
+    <circle cx="88" cy="8" r="3.5" fill="#ffffff" />
+    <circle cx="168" cy="8" r="3.5" fill="#ffffff" />
+    <circle cx="36" cy="14" r="3" fill="#34d399" />
+    <circle cx="220" cy="14" r="3" fill="#34d399" />
+    <circle cx="128" cy="52" r="3" fill="#fef08a" />
+    <circle cx="52" cy="44" r="2.2" fill="#2dd4bf" />
+    <circle cx="204" cy="44" r="2.2" fill="#2dd4bf" />
+    <circle cx="24" cy="84" r="2.2" fill="#34d399" />
+    <circle cx="232" cy="84" r="2.2" fill="#34d399" />
+    <circle cx="42" cy="142" r="2.2" fill="#2dd4bf" />
+    <circle cx="214" cy="142" r="2.2" fill="#2dd4bf" />
+    <circle cx="64" cy="184" r="2.2" fill="#fef08a" />
+    <circle cx="192" cy="184" r="2.2" fill="#fef08a" />
+    <circle cx="86" cy="222" r="2.2" fill="#34d399" />
+    <circle cx="170" cy="222" r="2.2" fill="#34d399" />
+    <circle cx="128" cy="24" r="2.5" fill="#ffffff" />
+    <circle cx="128" cy="148" r="2.5" fill="#ffffff" />
+    <circle cx="104" cy="72" r="1.8" fill="#2dd4bf" />
+    <circle cx="152" cy="72" r="1.8" fill="#2dd4bf" />
+    <circle cx="104" cy="96" r="1.8" fill="#34d399" />
+    <circle cx="152" cy="96" r="1.8" fill="#34d399" />
+    <circle cx="96" cy="136" r="1.8" fill="#fef08a" />
+    <circle cx="160" cy="136" r="1.8" fill="#fef08a" />
+    <circle cx="108" cy="168" r="1.8" fill="#2dd4bf" />
+    <circle cx="148" cy="168" r="1.8" fill="#2dd4bf" />
+    <circle cx="114" cy="204" r="1.8" fill="#34d399" />
+    <circle cx="142" cy="204" r="1.8" fill="#34d399" />
+    <line x1="74" y1="116" x2="102" y2="112" stroke="#2dd4bf" stroke-width="0.7" stroke-opacity="0.7" />
+    <line x1="182" y1="116" x2="154" y2="112" stroke="#2dd4bf" stroke-width="0.7" stroke-opacity="0.7" />
+    <line x1="96" y1="84" x2="128" y2="84" stroke="#fbbf24" stroke-width="0.7" stroke-opacity="0.7" />
+    <line x1="160" y1="84" x2="128" y2="84" stroke="#fbbf24" stroke-width="0.7" stroke-opacity="0.7" />
+    <line x1="76" y1="148" x2="128" y2="172" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.7" />
+    <line x1="180" y1="148" x2="128" y2="172" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.7" />
+    <line x1="35" y1="66" x2="36" y2="18" stroke="#2dd4bf" stroke-width="0.7" stroke-opacity="0.7" />
+    <line x1="221" y1="66" x2="220" y2="18" stroke="#2dd4bf" stroke-width="0.7" stroke-opacity="0.7" />
+    <circle cx="60" cy="96" r="2" fill="#2dd4bf" />
+    <circle cx="196" cy="96" r="2" fill="#2dd4bf" />
+    <circle cx="60" cy="128" r="2" fill="#34d399" />
+    <circle cx="196" cy="128" r="2" fill="#34d399" />
+    <circle cx="80" cy="164" r="2" fill="#2dd4bf" />
+    <circle cx="176" cy="164" r="2" fill="#2dd4bf" />
+    <circle cx="96" cy="196" r="2" fill="#34d399" />
+    <circle cx="160" cy="196" r="2" fill="#34d399" />
+    <circle cx="112" cy="224" r="2" fill="#2dd4bf" />
+    <circle cx="144" cy="224" r="2" fill="#2dd4bf" />
+    <circle cx="48" cy="64" r="2" fill="#fef08a" />
+    <circle cx="208" cy="64" r="2" fill="#fef08a" />
+    <circle cx="44" cy="34" r="2" fill="#2dd4bf" />
+    <circle cx="212" cy="34" r="2" fill="#2dd4bf" />
+    <circle cx="22" cy="96" r="2" fill="#fef08a" />
+    <circle cx="234" cy="96" r="2" fill="#fef08a" />
+    <circle cx="44" cy="122" r="2" fill="#2dd4bf" />
+    <circle cx="212" cy="122" r="2" fill="#2dd4bf" />
+    <circle cx="128" cy="68" r="2" fill="#ffffff" />
+    <circle cx="128" cy="100" r="2" fill="#ffffff" />
+    <circle cx="112" cy="84" r="2" fill="#2dd4bf" />
+    <circle cx="144" cy="84" r="2" fill="#2dd4bf" />
+  </g>
+</svg>

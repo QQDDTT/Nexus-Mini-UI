@@ -1,33 +1,216 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="torso-t4-titan-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <radialGradient id="t4-titan" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#1e293b"/>
-      <stop offset="70%" stop-color="#0f172a"/>
-      <stop offset="100%" stop-color="#030712"/>
+    <radialGradient id="t4-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.82" />
+      <stop offset="68%" stop-color="#03181c" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="t4-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fbbf24"/>
-      <stop offset="50%" stop-color="#00f0ff"/>
-      <stop offset="100%" stop-color="#f59e0b"/>
+    <radialGradient id="t4-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.32" />
+      <stop offset="50%" stop-color="#ef4444" stop-opacity="0.18" />
+      <stop offset="80%" stop-color="#2dd4bf" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="t4-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#27272a" />
+      <stop offset="45%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#03181c" />
     </linearGradient>
+    <linearGradient id="t4-gold-plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.85" />
+      <stop offset="35%" stop-color="#b45309" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0.95" />
+    </linearGradient>
+    <radialGradient id="t4-reactor" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#fbbf24" />
+      <stop offset="70%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#450a0a" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="t4-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+      <stop offset="45%" stop-color="#fbbf24" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <!-- Massive 7-Somite Titan Fortress Chassis -->
-  <polygon points="64,6 98,16 116,38 118,66 112,92 94,112 64,122 34,112 16,92 10,66 12,38 30,16" fill="url(#t4-titan)" stroke="url(#t4-gold)" stroke-width="3.2"/>
-  <!-- Heavy Dorsal Armor Plates -->
-  <polygon points="64,16 88,24 98,44 96,70 86,94 64,108 42,94 32,70 30,44 40,24" fill="#0b1325" stroke="#00f0ff" stroke-width="1.8" opacity="0.9"/>
-  <!-- Dual Energy Arteries & 7 Vertebral Nodes -->
-  <path d="M52 22 L52 100 M76 22 L76 100" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 4"/>
-  <circle cx="64" cy="26" r="6" fill="#00f0ff"/>
-  <circle cx="64" cy="42" r="7" fill="#fbbf24"/>
-  <circle cx="64" cy="60" r="9" fill="#00f0ff" stroke="#fbbf24" stroke-width="2"/>
-  <circle cx="64" cy="78" r="7" fill="#fbbf24"/>
-  <circle cx="64" cy="94" r="6" fill="#00f0ff"/>
-  <!-- 12 Socket Hardpoints -->
-  <g fill="#fbbf24">
-    <circle cx="24" cy="36" r="3.5"/><circle cx="104" cy="36" r="3.5"/>
-    <circle cx="20" cy="56" r="3.5"/><circle cx="108" cy="56" r="3.5"/>
-    <circle cx="22" cy="76" r="3.5"/><circle cx="106" cy="76" r="3.5"/>
-    <circle cx="32" cy="96" r="3.5"/><circle cx="96" cy="96" r="3.5"/>
+  <!-- [z=1] 泰坦巨兽深渊重投影贴图 -->
+  <!-- [z=4] 顺时针泰坦黄金威压法阵外环 -->
+  <!-- [z=5] 逆时针深渊聚能叶轮内环 -->
+  <!-- [z=10] 第7节：重装尾锤节 (part-torso-tail) -->
+  <!-- [z=14] 第5~6节：后腹龙骨节 (part-torso-thorax-4) -->
+  <!-- [z=18] 第4节：中腹重甲节 (part-torso-thorax-3) -->
+  <!-- [z=20] 左泰坦重装肩翼甲 (part-flank-L) -->
+  <!-- [z=20] 右泰坦重装肩翼甲 (part-flank-R) -->
+  <!-- [z=24] 第3节：中胸动力节 (part-torso-thorax-2) -->
+  <!-- [z=28] 第2节：前胸重甲座 (part-torso-thorax-1) -->
+  <!-- [z=32] 第1节：泰坦双口器王冠头节 (part-torso-head) -->
+  <!-- [z=36] 内部双排发光能量龙骨脉络与反应堆核 (part-neural-core) -->
+  <!-- [z=45] 泰坦本体与肩翼受光边缘高光映射贴图 -->
+  <!-- [z=65] 顶层深渊电弧与王冠粒子冕贴图 -->
+  <g id="part-shadow-cast" data-pivot="64,68" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="68" rx="60" ry="60" fill="url(#t4-shadow)" />
+    <ellipse cx="64" cy="68" rx="48" ry="50" fill="url(#t4-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#t4-aura)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M122.3,64 Q120.08,87.23 105.22,105.22 Q85.58,116.09 64,122.3 Q40.77,120.08 22.78,105.22 Q11.91,85.58 5.7,64 Q7.92,40.77 22.78,22.78 Q42.42,11.91 64,5.7 Q87.23,7.92 105.22,22.78 Q116.09,42.42 122.3,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M116.7,64 Q114.91,85.09 101.26,101.26 Q83.43,110.91 64,116.7 Q42.91,114.91 26.74,101.26 Q17.09,83.43 11.3,64 Q13.09,42.91 26.74,26.74 Q44.57,17.09 64,11.3 Q85.09,13.09 101.26,26.74 Q110.91,44.57 116.7,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="122.3" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="121.5" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="122.3" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="121.5" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="5.7" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="4.9" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="5.7" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="4.9" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M108.6,64 Q104.7,87.5 86.3,102.62 Q64,106.68 41.7,102.62 Q23.3,87.5 19.4,64 Q27.04,42.66 41.7,25.38 Q64,17 86.3,25.38 Q100.96,42.66 108.6,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="108.6" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="19.4" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="102.62" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="25.38" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="64" cy="19.4" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-torso-tail" data-pivot="64,102" data-parent="part-torso-thorax-4" data-z-index="10" data-blend="normal" data-motion="wave-tail">
+    <circle cx="64" cy="102" r="9" fill="#090d16" stroke="#fbbf24" stroke-width="1.6" />
+    <polygon points="42,100 86,100 78,116 64,124 50,116" fill="url(#t4-obsidian)" stroke="#fbbf24" stroke-width="2.2" />
+    <polygon points="48,102 80,102 64,119" fill="url(#t4-gold-plate)" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="64" cy="102" r="4" fill="url(#t4-reactor)" />
+  </g>
+  <g id="part-torso-thorax-4" data-pivot="64,86" data-parent="part-torso-thorax-3" data-z-index="14" data-blend="normal" data-motion="wave-spine-4">
+    <circle cx="64" cy="86" r="11" fill="#090d16" stroke="#fbbf24" stroke-width="1.6" />
+    <polygon points="30,82 98,82 90,102 38,102" fill="url(#t4-obsidian)" stroke="#fbbf24" stroke-width="2.2" />
+    <polygon points="38,85 90,85 84,98 44,98" fill="url(#t4-gold-plate)" stroke="#2dd4bf" stroke-width="1.1" />
+    <line x1="42" y1="92" x2="86" y2="92" stroke="#fbbf24" stroke-width="0.7" stroke-opacity="0.8" />
+    <circle cx="52" cy="91" r="2.2" fill="#2dd4bf" />
+    <circle cx="76" cy="91" r="2.2" fill="#2dd4bf" />
+  </g>
+  <g id="part-aux-stabilizer-1" data-pivot="83.8,83.8" data-parent="root" data-z-index="17" data-blend="normal">
+    <circle cx="83.8" cy="83.8" r="3.5" fill="#042326" stroke="#2dd4bf" stroke-width="1.2" />
+    <path d="M79.8 83.8 L83.8 77.8 L87.8 83.8 L83.8 89.8 Z" fill="#063136" stroke="#5eead4" stroke-width="0.85" />
+  </g>
+  <g id="part-aux-stabilizer-2" data-pivot="64,92" data-parent="root" data-z-index="18" data-blend="normal">
+    <circle cx="64" cy="92" r="3.5" fill="#042326" stroke="#2dd4bf" stroke-width="1.2" />
+    <path d="M60 92 L64 86 L68 92 L64 98 Z" fill="#063136" stroke="#5eead4" stroke-width="0.85" />
+  </g>
+  <g id="part-torso-thorax-3" data-pivot="64,68" data-parent="part-torso-thorax-2" data-z-index="18" data-blend="normal" data-motion="wave-spine-3">
+    <circle cx="64" cy="68" r="12" fill="#090d16" stroke="#fbbf24" stroke-width="1.6" />
+    <polygon points="22,64 106,64 100,84 28,84" fill="url(#t4-obsidian)" stroke="#fbbf24" stroke-width="2.3" />
+    <polygon points="30,68 98,68 92,80 36,80" fill="url(#t4-gold-plate)" stroke="#2dd4bf" stroke-width="1.2" />
+    <line x1="36" y1="74" x2="92" y2="74" stroke="#2dd4bf" stroke-width="0.75" stroke-opacity="0.8" />
+    <circle cx="48" cy="74" r="2.5" fill="#fbbf24" />
+    <circle cx="80" cy="74" r="2.5" fill="#fbbf24" />
+  </g>
+  <g id="part-aux-stabilizer-3" data-pivot="44.2,83.8" data-parent="root" data-z-index="19" data-blend="normal">
+    <circle cx="44.2" cy="83.8" r="3.5" fill="#042326" stroke="#2dd4bf" stroke-width="1.2" />
+    <path d="M40.2 83.8 L44.2 77.8 L48.2 83.8 L44.2 89.8 Z" fill="#063136" stroke="#5eead4" stroke-width="0.85" />
+  </g>
+  <g id="part-flank-R" data-pivot="106,52" data-parent="part-torso-thorax-1" data-z-index="20" data-blend="normal" data-motion="rotate-sym-right">
+    <circle cx="106" cy="52" r="8" fill="#090d16" stroke="#fbbf24" stroke-width="1.6" />
+    <polygon points="102,24 122,42 120,78 100,90 96,52" fill="url(#t4-obsidian)" stroke="#fbbf24" stroke-width="2.2" />
+    <polygon points="104,32 116,44 114,72 102,82" fill="url(#t4-gold-plate)" stroke="#2dd4bf" stroke-width="1.2" />
+    <path d="M102 42 L116 50 M102 56 L116 64 M102 68 L112 74" stroke="#fbbf24" stroke-width="0.75" />
+    <circle cx="106" cy="52" r="3.5" fill="#2dd4bf" />
+  </g>
+  <g id="part-flank-L" data-pivot="22,52" data-parent="part-torso-thorax-1" data-z-index="20" data-blend="normal" data-motion="rotate-sym-left">
+    <circle cx="22" cy="52" r="8" fill="#090d16" stroke="#fbbf24" stroke-width="1.6" />
+    <polygon points="26,24 6,42 8,78 28,90 32,52" fill="url(#t4-obsidian)" stroke="#fbbf24" stroke-width="2.2" />
+    <polygon points="24,32 12,44 14,72 26,82" fill="url(#t4-gold-plate)" stroke="#2dd4bf" stroke-width="1.2" />
+    <path d="M26 42 L12 50 M26 56 L12 64 M26 68 L16 74" stroke="#fbbf24" stroke-width="0.75" />
+    <circle cx="22" cy="52" r="3.5" fill="#2dd4bf" />
+  </g>
+  <g id="part-aux-stabilizer-4" data-pivot="36,64" data-parent="root" data-z-index="20" data-blend="normal">
+    <circle cx="36" cy="64" r="3.5" fill="#042326" stroke="#2dd4bf" stroke-width="1.2" />
+    <path d="M32 64 L36 58 L40 64 L36 70 Z" fill="#063136" stroke="#5eead4" stroke-width="0.85" />
+  </g>
+  <g id="part-aux-stabilizer-5" data-pivot="44.2,44.2" data-parent="root" data-z-index="21" data-blend="normal">
+    <circle cx="44.2" cy="44.2" r="3.5" fill="#042326" stroke="#2dd4bf" stroke-width="1.2" />
+    <path d="M40.2 44.2 L44.2 38.2 L48.2 44.2 L44.2 50.2 Z" fill="#063136" stroke="#5eead4" stroke-width="0.85" />
+  </g>
+  <g id="part-torso-thorax-2" data-pivot="64,50" data-parent="part-torso-thorax-1" data-z-index="24" data-blend="normal" data-motion="wave-spine-2">
+    <circle cx="64" cy="50" r="13" fill="#090d16" stroke="#fbbf24" stroke-width="1.6" />
+    <polygon points="18,46 110,46 106,66 22,66" fill="url(#t4-obsidian)" stroke="#fbbf24" stroke-width="2.4" />
+    <polygon points="28,50 100,50 96,62 32,62" fill="url(#t4-gold-plate)" stroke="#2dd4bf" stroke-width="1.2" />
+    <line x1="32" y1="56" x2="96" y2="56" stroke="#fbbf24" stroke-width="0.8" />
+    <circle cx="44" cy="56" r="2.8" fill="#2dd4bf" />
+    <circle cx="84" cy="56" r="2.8" fill="#2dd4bf" />
+  </g>
+  <g id="part-torso-thorax-1" data-pivot="64,34" data-parent="root" data-z-index="28" data-blend="normal" data-motion="wave-spine-1">
+    <polygon points="20,28 108,28 110,48 18,48" fill="url(#t4-obsidian)" stroke="#fbbf24" stroke-width="2.4" />
+    <polygon points="28,32 100,32 102,44 26,44" fill="url(#t4-gold-plate)" stroke="#2dd4bf" stroke-width="1.2" />
+    <line x1="30" y1="38" x2="98" y2="38" stroke="#2dd4bf" stroke-width="0.75" />
+    <circle cx="40" cy="38" r="2.5" fill="#fbbf24" />
+    <circle cx="88" cy="38" r="2.5" fill="#fbbf24" />
+    <circle cx="57" cy="29" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="72" cy="38" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-torso-head" data-pivot="64,24" data-parent="part-torso-thorax-1" data-z-index="32" data-blend="normal" data-motion="nod-head">
+    <circle cx="64" cy="24" r="11" fill="#090d16" stroke="#fbbf24" stroke-width="1.8" />
+    <polygon points="64,4 102,16 106,32 22,32 26,16" fill="url(#t4-obsidian)" stroke="#fbbf24" stroke-width="2.5" />
+    <polygon points="64,9 94,18 96,28 32,28 34,18" fill="url(#t4-gold-plate)" stroke="#2dd4bf" stroke-width="1.2" />
+    <path d="M44 18 L64 10 L84 18 M64 8 L64 28" stroke="#ffffff" stroke-width="0.8" />
+    <circle cx="48" cy="22" r="2.5" fill="#2dd4bf" />
+    <circle cx="80" cy="22" r="2.5" fill="#2dd4bf" />
+  </g>
+  <g id="part-neural-core" data-pivot="64,56" data-parent="part-torso-thorax-2" data-z-index="36" data-blend="normal" data-motion="pulse-core">
+    <path d="M56 18 L56 106 M72 18 L72 106 M48 56 L80 56" stroke="#2dd4bf" stroke-width="1.6" stroke-opacity="0.85" />
+    <polygon points="64,40 78,56 64,72 50,56" fill="url(#t4-reactor)" stroke="#ffffff" stroke-width="1.4" />
+    <circle cx="64" cy="56" r="6" fill="#ffffff" />
+    <circle cx="64" cy="34" r="4" fill="#fbbf24" stroke="#ffffff" stroke-width="1.0" />
+    <circle cx="64" cy="80" r="4.5" fill="#fbbf24" stroke="#ffffff" stroke-width="1.0" />
+    <line x1="64" y1="34" x2="50" y2="31" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="34" x2="78" y2="31" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="44" x2="50" y2="41" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="44" x2="78" y2="41" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="54" x2="50" y2="51" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="54" x2="78" y2="51" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="64" x2="50" y2="61" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="64" x2="78" y2="61" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="74" x2="50" y2="71" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="74" x2="78" y2="71" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="84" x2="50" y2="81" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+    <line x1="64" y1="84" x2="78" y2="81" stroke="#2dd4bf" stroke-width="0.6" stroke-opacity="0.7" />
+  </g>
+  <g id="part-light-rim-torso" data-pivot="64,64" data-parent="part-torso-thorax-1" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M26 16 L64 4 L102 16" stroke="url(#t4-rim)" stroke-width="3.0" stroke-linecap="round" />
+    <path d="M18 30 L28 84 L50 116 M110 30 L100 84 L78 116" stroke="url(#t4-rim)" stroke-width="2.4" stroke-linecap="round" />
+  </g>
+  <g id="part-light-rim-flank" data-pivot="64,52" data-parent="part-torso-thorax-1" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M24 26 L6 42 L8 78 M104 26 L122 42 L120 78" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M18 24 L10 14 L24 8 M110 24 L118 14 L104 8 M14 88 L22 98 L12 106 M114 88 L106 98 L116 106" stroke="#2dd4bf" stroke-width="1.3" stroke-linecap="round" />
+    <circle cx="34" cy="12" r="2.5" fill="#ffffff" />
+    <circle cx="94" cy="12" r="2.5" fill="#ffffff" />
+    <circle cx="12" cy="56" r="2.5" fill="#fbbf24" />
+    <circle cx="116" cy="56" r="2.5" fill="#fbbf24" />
+    <circle cx="64" cy="120" r="2.5" fill="#ef4444" />
+    <circle cx="92.8" cy="80.6" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="35.2" cy="80.6" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="35.2" cy="47.3" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="92.8" cy="47.3" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <path d="M103.8 87 L106.9 88.8" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M74.9 104.6 L75.8 107.9" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M45 96.9 L43.3 99.9" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M15.7 76.9 L12.3 77.8" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M24.2 41 L21.1 39.2" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M53.1 23.4 L52.2 20.1" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M83 31.1 L84.8 28.1" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M112.3 51.1 L115.7 50.2" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
   </g>
 </svg>
-

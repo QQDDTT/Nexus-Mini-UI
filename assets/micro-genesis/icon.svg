@@ -1,36 +1,98 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="micro-genesis-icon-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#0a192f"/>
-      <stop offset="100%" stop-color="#030712"/>
+    <radialGradient id="mg-icon-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.72" />
+      <stop offset="65%" stop-color="#03181c" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
     </radialGradient>
-    <radialGradient id="coreGlow" cx="40%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#00f0ff"/>
-      <stop offset="60%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0369a1"/>
+    <radialGradient id="mg-icon-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.32" />
+      <stop offset="55%" stop-color="#a855f7" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
     </radialGradient>
-    <filter id="neonBlur" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
+    <linearGradient id="mg-icon-soma" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d9488" />
+      <stop offset="50%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#03181c" />
+    </linearGradient>
+    <linearGradient id="mg-icon-jaw" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="45%" stop-color="#d946ef" />
+      <stop offset="100%" stop-color="#4a044e" />
+    </linearGradient>
+    <linearGradient id="mg-icon-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#2dd4bf" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <rect width="192" height="192" rx="36" fill="url(#bgGlow)"/>
-  
-  <!-- 尾部柔性鞭毛 -->
-  <path d="M 55 125 C 35 145, 20 120, 15 155" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
-  <path d="M 60 135 C 45 160, 30 145, 25 170" fill="none" stroke="#00f0ff" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-
-  <!-- 细胞外壁与双层脂质膜呼吸光晕 -->
-  <ellipse cx="105" cy="95" rx="55" ry="38" fill="rgba(0, 240, 255, 0.12)" stroke="#00f0ff" stroke-width="3.5" filter="url(#neonBlur)"/>
-  
-  <!-- 几丁质护盾骨板微结构 -->
-  <path d="M 85 62 Q 105 58 125 64" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
-  <path d="M 75 75 Q 105 70 135 78" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-
-  <!-- 细胞质与能量光核 -->
-  <ellipse cx="108" cy="94" rx="28" ry="20" fill="url(#coreGlow)" filter="url(#neonBlur)"/>
-  <circle cx="116" cy="90" r="7" fill="#ffffff" opacity="0.9"/>
-
-  <!-- 摄食口器探针 -->
-  <polygon points="160,95 182,88 178,95 182,102" fill="#fbbf24"/>
+  <g id="part-shadow-cast" data-pivot="64,68" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="70" rx="52" ry="48" fill="url(#mg-icon-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#mg-icon-aura)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M122.3,64 Q120.08,87.23 105.22,105.22 Q85.58,116.09 64,122.3 Q40.77,120.08 22.78,105.22 Q11.91,85.58 5.7,64 Q7.92,40.77 22.78,22.78 Q42.42,11.91 64,5.7 Q87.23,7.92 105.22,22.78 Q116.09,42.42 122.3,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M116.7,64 Q114.91,85.09 101.26,101.26 Q83.43,110.91 64,116.7 Q42.91,114.91 26.74,101.26 Q17.09,83.43 11.3,64 Q13.09,42.91 26.74,26.74 Q44.57,17.09 64,11.3 Q85.09,13.09 101.26,26.74 Q110.91,44.57 116.7,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="122.3" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="121.5" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="122.3" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="121.5" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="5.7" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="4.9" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="5.7" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="4.9" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M108.6,64 Q104.7,87.5 86.3,102.62 Q64,106.68 41.7,102.62 Q23.3,87.5 19.4,64 Q27.04,42.66 41.7,25.38 Q64,17 86.3,25.38 Q100.96,42.66 108.6,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="108.6" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="19.4" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="102.62" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="25.38" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="64" cy="19.4" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-flagella-tail" data-pivot="64,94" data-parent="part-torso-soma" data-z-index="15" data-blend="normal">
+    <path d="M64 94 C54 104 74 112 64 122" stroke="#2dd4bf" stroke-width="2.2" stroke-linecap="round" />
+    <circle cx="64" cy="94" r="5" fill="#042326" stroke="#2dd4bf" stroke-width="1.2" />
+  </g>
+  <g id="part-torso-soma" data-pivot="64,66" data-parent="root" data-z-index="25" data-blend="normal">
+    <path d="M64 28 C88 28 96 56 86 82 C78 96 50 96 42 82 C32 56 40 28 64 28 Z" fill="url(#mg-icon-soma)" stroke="#2dd4bf" stroke-width="2.2" />
+    <path d="M46 54 C58 48 70 48 82 54 M44 70 C58 64 70 64 84 70" stroke="#5eead4" stroke-width="0.75" stroke-opacity="0.65" />
+    <circle cx="64" cy="62" r="10" fill="#1e1b4b" stroke="#d946ef" stroke-width="1.5" />
+    <circle cx="64" cy="62" r="4" fill="#ffffff" />
+    <circle cx="57" cy="61" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="72" cy="70" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-mandible-left" data-pivot="48,34" data-parent="part-torso-soma" data-z-index="35" data-blend="normal">
+    <path d="M48 34 C34 24 36 12 52 8 L54 18 C46 22 46 28 52 32 Z" fill="url(#mg-icon-jaw)" stroke="#fef08a" stroke-width="1.6" />
+    <circle cx="48" cy="34" r="5" fill="#042326" stroke="#2dd4bf" stroke-width="1.2" />
+  </g>
+  <g id="part-mandible-right" data-pivot="80,34" data-parent="part-torso-soma" data-z-index="35" data-blend="normal">
+    <path d="M80 34 C94 24 92 12 76 8 L74 18 C82 22 82 28 76 32 Z" fill="url(#mg-icon-jaw)" stroke="#fef08a" stroke-width="1.6" />
+    <circle cx="80" cy="34" r="5" fill="#042326" stroke="#2dd4bf" stroke-width="1.2" />
+  </g>
+  <g id="part-light-rim-soma" data-pivot="64,66" data-parent="part-torso-soma" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M42 46 C48 32 80 32 86 46" stroke="url(#mg-icon-rim)" stroke-width="2.2" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <circle cx="52" cy="10" r="2" fill="#ffffff" />
+    <circle cx="76" cy="10" r="2" fill="#ffffff" />
+    <circle cx="81" cy="93.4" r="1.4" fill="#ffffff" />
+    <circle cx="47" cy="93.4" r="1.4" fill="#ffffff" />
+    <circle cx="47" cy="34.6" r="1.4" fill="#ffffff" />
+    <circle cx="81" cy="34.6" r="1.4" fill="#ffffff" />
+  </g>
 </svg>

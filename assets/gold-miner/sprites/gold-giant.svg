@@ -1,37 +1,108 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="gold-giant-rig" data-root-anchor="64,72" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="gg-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181009" stop-opacity="0.78" />
+      <stop offset="65%" stop-color="#1c1209" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <radialGradient id="gg-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.45" />
+      <stop offset="55%" stop-color="#f59e0b" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="gg-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#451a03" />
+      <stop offset="50%" stop-color="#3f2e1e" />
+      <stop offset="100%" stop-color="#120c06" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <linearGradient id="gg-gold-deep" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="35%" stop-color="#fbbf24" />
+      <stop offset="75%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#451a03" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
+    <linearGradient id="gg-gold-crown" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#d97706" />
     </linearGradient>
-    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#064e3b"/>
-    </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <linearGradient id="gg-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+      <stop offset="45%" stop-color="#fde047" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <polygon points="60,10 112,26 120,76 94,116 32,116 8,78 18,28" fill="url(#goldArmor)" stroke="#ffffff" stroke-width="3.5" stroke-linejoin="round"/>
-  <polygon points="44,26 92,34 100,72 68,94 30,78" fill="#fde047" fill-opacity="0.5"/>
-  <polygon points="56,42 78,48 70,70 50,64" fill="#ffffff" fill-opacity="0.7"/>
+  <!-- [光影层 1] 底层巨型软阴影贴图 (z=1, multiply) -->
+  <g id="part-shadow-cast" data-pivot="64,96" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="96" rx="58" ry="26" fill="url(#gg-shadow)" />
+  </g>
+  <!-- [光影层 2A] 底层富矿皇冠级外光环 (z=4, screen) -->
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#gg-aura)" />
+    <ellipse cx="64" cy="64" rx="58.3" ry="51.3" fill="none" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.72" />
+    <ellipse cx="64" cy="64" rx="52.7" ry="46.38" fill="none" stroke="#f59e0b" stroke-width="0.75" stroke-opacity="0.55" />
+    <polygon points="122.3,60 126.3,64 122.3,68 118.3,64" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="105.2" cy="105.2" r="2.0" fill="#fef08a" />
+    <polygon points="64,118.3 68,122.3 64,126.3 60,122.3" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="22.8" cy="105.2" r="2.0" fill="#fef08a" />
+    <polygon points="5.7,60 9.7,64 5.7,68 1.7,64" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="22.8" cy="22.8" r="2.0" fill="#fef08a" />
+    <polygon points="64,1.7 68,5.7 64,9.7 60,5.7" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="105.2" cy="22.8" r="2.0" fill="#fef08a" />
+  </g>
+  <!-- [光影层 2B] 底层逆时针能量晶格内环 (z=5, screen) -->
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <ellipse cx="64" cy="64" rx="44.6" ry="39.25" fill="none" stroke="#fef08a" stroke-width="1.0" stroke-opacity="0.68" />
+    <polygon points="108.6,61.4 111.2,64 108.6,66.6 106,64" fill="#fef08a" />
+    <polygon points="86.3,100 88.9,102.6 86.3,105.2 83.7,102.6" fill="#fef08a" />
+    <polygon points="41.7,100 44.3,102.6 41.7,105.2 39.1,102.6" fill="#fef08a" />
+    <polygon points="19.4,61.4 22,64 19.4,66.6 16.8,64" fill="#fef08a" />
+    <polygon points="41.7,22.8 44.3,25.4 41.7,28 39.1,25.4" fill="#fef08a" />
+    <polygon points="86.3,22.8 88.9,25.4 86.3,28 83.7,25.4" fill="#fef08a" />
+  </g>
+  <!-- [骨骼部件 1] 深层玄武金矿脉基座 (z=14) -->
+  <g id="part-vein-pedestal" data-pivot="64,84" data-parent="root" data-z-index="14" data-blend="normal">
+    <polygon points="10,82 24,54 104,54 118,82 102,108 26,108" fill="url(#gg-obsidian)" stroke="#fbbf24" stroke-width="2.4" stroke-linejoin="round" />
+    <path d="M22 82 L64 96 L106 82 M36 96 L92 96" stroke="#fbbf24" stroke-width="1.0" stroke-opacity="0.7" />
+  </g>
+  <!-- [骨骼部件 2] 左翼巨型金矿山棱柱 (z=22) -->
+  <g id="part-gold-wing-left" data-pivot="34,66" data-parent="part-vein-pedestal" data-z-index="22" data-blend="normal">
+    <circle cx="34" cy="66" r="10" fill="#451a03" stroke="#fbbf24" stroke-width="1.5" />
+    <polygon points="12,68 24,32 52,40 54,84 22,94" fill="url(#gg-gold-deep)" stroke="#fde047" stroke-width="2.2" stroke-linejoin="round" />
+    <polygon points="18,64 26,38 46,44 40,70" fill="url(#gg-gold-crown)" stroke="#ffffff" stroke-width="1.0" />
+    <path d="M24 32 L40 70 L22 94 M12 68 L40 70" stroke="#ffffff" stroke-width="0.75" stroke-opacity="0.75" />
+  </g>
+  <!-- [骨骼部件 3] 右翼巨型金矿山棱柱 (z=24) -->
+  <g id="part-gold-wing-right" data-pivot="94,66" data-parent="part-vein-pedestal" data-z-index="24" data-blend="normal">
+    <circle cx="94" cy="66" r="10" fill="#451a03" stroke="#fbbf24" stroke-width="1.5" />
+    <polygon points="76,40 104,32 116,68 106,94 74,84" fill="url(#gg-gold-deep)" stroke="#fde047" stroke-width="2.2" stroke-linejoin="round" />
+    <polygon points="82,44 102,38 110,64 88,70" fill="url(#gg-gold-crown)" stroke="#ffffff" stroke-width="1.0" />
+    <path d="M104 32 L88 70 L106 94 M116 68 L88 70" stroke="#ffffff" stroke-width="0.75" stroke-opacity="0.75" />
+  </g>
+  <!-- [骨骼部件 4] 中央帝王富矿主峰 (z=32) -->
+  <g id="part-gold-monolith-center" data-pivot="64,60" data-parent="part-vein-pedestal" data-z-index="32" data-blend="normal">
+    <polygon points="34,58 50,16 78,16 94,58 82,98 46,98" fill="url(#gg-gold-deep)" stroke="#fef08a" stroke-width="2.5" stroke-linejoin="round" />
+    <polygon points="44,54 54,22 74,22 84,54 64,74" fill="url(#gg-gold-crown)" stroke="#ffffff" stroke-width="1.3" />
+    <!-- 内部晶格脉络与探照灯琥珀金伴生晶脉 -->
+    <path d="M50 16 L64 74 L78 16 M34 58 L64 74 L94 58 M64 74 L64 98" stroke="#ffffff" stroke-width="0.85" stroke-opacity="0.85" />
+    <path d="M48 82 L64 74 L80 82" stroke="#f59e0b" stroke-width="1.2" stroke-opacity="0.8" />
+  </g>
+  <!-- [骨骼部件 5] 前景伴生高纯度金晶簇 (z=38) -->
+  <g id="part-gold-front-cluster" data-pivot="64,88" data-parent="part-gold-monolith-center" data-z-index="38" data-blend="normal">
+    <polygon points="42,88 54,70 74,70 86,88 76,104 52,104" fill="url(#gg-gold-crown)" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round" />
+    <circle cx="64" cy="86" r="3.5" fill="#f59e0b" />
+  </g>
+  <!-- [光影层 3] 巨型金核受光切面高光映射贴图 (z=45, plus-lighter) -->
+  <g id="part-light-rim-monolith" data-pivot="64,60" data-parent="part-gold-monolith-center" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M24 32 L50 16 L78 16 L104 32" stroke="url(#gg-rim)" stroke-width="3.2" stroke-linecap="round" />
+    <path d="M44 54 L64 74 L84 54" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+  </g>
+  <!-- [光影层 4] 顶层耀眼星芒与黄金粒子冕 (z=65, screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,54" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M64 8 L64 24 M56 16 L72 16" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+    <path d="M26 24 L26 36 M20 30 L32 30 M102 24 L102 36 M96 30 L108 30" stroke="#fef08a" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="40" cy="18" r="2.2" fill="#ffffff" />
+    <circle cx="88" cy="18" r="2.2" fill="#ffffff" />
+    <circle cx="64" cy="40" r="2.8" fill="#ffffff" />
+  </g>
 </svg>

@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#030712" />
+  <meta name="theme-color" content="#050914" />
   <title>星轨防线 · STAR DEFENDER | Nexus-Mini</title>
   <link rel="icon" type="image/svg+xml" href="../assets/star-defender/icon.svg" />
+  <link rel="stylesheet" href="../assets/star-defender/style.css" />
   <style>
     :root {
-      --void: #030712;
-      --panel: rgba(13, 20, 36, 0.82);
+      --void: #050914;
+      --panel: rgba(11, 19, 41, 0.78);
       --border: rgba(0, 240, 255, 0.24);
       --cyan: #00f0ff;
       --gold: #fbbf24;
@@ -587,7 +588,8 @@
       function render() {
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
-        ctx.fillStyle = '#030712';
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#050914';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Deep Space Starfield

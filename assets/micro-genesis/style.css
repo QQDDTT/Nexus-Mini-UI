@@ -1,0 +1,171 @@
+/* ============================================================================
+ * 微界演化 (Micro-Genesis) — Chroma-Muse Bespoke Theme Stylesheet
+ * Style Anchor: STYLE-23 (Bioluminescent Cellular Confocal) + STYLE-133 (Hydro-Thermal)
+ * 5:3:1 Allocation:
+ *   [5] 50% Cryo-Electron Petri Dish Abyssal Teal (#03181c -> #062c30 -> #0a3a40)
+ *   [3] 30% Translucent Phospholipid Bio-Membrane HUD + 6-Page Sandbox Layout
+ *   [1] 10% Bioluminescent Aqua (#2dd4bf), ATP Lime (#a3e635), Mutation Coral (#fb7185)
+ * ============================================================================ */
+
+:root {
+  /* [5] 50% Abyssal Petri Dish Fluid Surfaces */
+  --mg-bg-abyss: #03181c;
+  --mg-bg-petri: #062c30;
+  --mg-bg-hydro: #0a3a40;
+  --mg-caustic-glow: rgba(45, 212, 191, 0.10);
+
+  /* [3] 30% Phospholipid Bio-Membrane HUD & 6-Page Panels */
+  --mg-membrane-bg: rgba(4, 35, 38, 0.82);
+  --mg-membrane-card: rgba(7, 50, 54, 0.76);
+  --mg-membrane-border: rgba(45, 212, 191, 0.34);
+  --mg-membrane-inner: rgba(153, 246, 228, 0.16);
+  --mg-text-bio-white: #f0fdfa;
+  --mg-text-bio-mist: #99f6e4;
+  --mg-text-bio-muted: #5eead4;
+
+  /* [1] 10% Confocal Fluorophore Accents */
+  --mg-accent-aqua: #2dd4bf;
+  --mg-accent-atp-lime: #a3e635;
+  --mg-accent-coral: #fb7185;
+  --mg-accent-solar-amber: #fbbf24;
+  --mg-accent- abyssal-violet: #c084fc;
+
+  --mg-radius-vesicle: 22px;
+  --mg-radius-pill: 9999px;
+  --mg-font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --mg-font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: radial-gradient(circle at 50% 48%, var(--mg-bg-hydro) 0%, var(--mg-bg-petri) 52%, var(--mg-bg-abyss) 100%);
+  color: var(--mg-text-bio-white);
+  font-family: var(--mg-font-sans);
+}
+
+/* [5] 50% Cryo-Electron Petri Dish & Marine Snow Bokeh */
+.mg-petri-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 25% 30%, rgba(45, 212, 191, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 75% 68%, rgba(163, 230, 53, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, var(--mg-bg-petri) 0%, var(--mg-bg-abyss) 92%);
+}
+
+/* [3] 30% Translucent Phospholipid Bio-Membrane HUD & 6 Pages */
+.mg-page-view {
+  position: relative;
+  z-index: 1;
+  display: none;
+  width: 100%;
+  height: 100%;
+  padding: max(12px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+}
+
+.mg-page-view.is-active {
+  display: flex;
+  flex-direction: column;
+}
+
+.mg-membrane-panel {
+  background: var(--mg-membrane-bg);
+  border: 1.5px solid var(--mg-membrane-border);
+  border-radius: var(--mg-radius-vesicle);
+  box-shadow:
+    inset 0 0 18px var(--mg-membrane-inner),
+    0 12px 28px rgba(2, 14, 16, 0.65);
+  backdrop-filter: blur(14px);
+}
+
+/* 3D Vital Bars: HP (#2dd4bf), Energy (#a3e635), Gene (#c084fc) */
+.mg-vital-cluster {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+}
+
+.mg-vital-track {
+  width: 110px;
+  height: 10px;
+  border-radius: var(--mg-radius-pill);
+  background: rgba(3, 24, 28, 0.85);
+  border: 1px solid var(--mg-membrane-border);
+  overflow: hidden;
+}
+
+.mg-vital-fill-hp     { height: 100%; background: linear-gradient(90deg, #0d9488, var(--mg-accent-aqua)); }
+.mg-vital-fill-energy { height: 100%; background: linear-gradient(90deg, #65a30d, var(--mg-accent-atp-lime)); }
+.mg-vital-fill-gene   { height: 100%; background: linear-gradient(90deg, #9333ea, #e879f9); }
+
+/* Pure SVG Icon Organ Action Rings (Page 6 Arena) */
+.mg-organ-skill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(45, 212, 191, 0.28) 0%, rgba(4, 35, 38, 0.88) 75%);
+  border: 2px solid var(--mg-accent-aqua);
+  box-shadow:
+    0 0 16px rgba(45, 212, 191, 0.28),
+    inset 0 0 10px rgba(153, 246, 228, 0.25);
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.mg-organ-skill-btn:active {
+  transform: scale(0.92);
+}
+
+/* [1] 10% Bioluminescent Evolution CTA */
+.mg-btn-evolve {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 24px;
+  border-radius: var(--mg-radius-pill);
+  border: 1.5px solid #99f6e4;
+  background: linear-gradient(135deg, var(--mg-accent-aqua) 0%, #0d9488 100%);
+  color: #022c22;
+  font-weight: 800;
+  font-size: 0.95rem;
+  box-shadow: 0 0 22px rgba(45, 212, 191, 0.40);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   [Momus-Audit Terminal Adaptation Hardening: 852x393 Mobile Landscape]
+   ========================================================================== */
+html, body {
+  width: 100vw;
+  height: 100dvh;
+  max-width: 100vw;
+  max-height: 100dvh;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+button, [role="button"], .btn, .cta-btn, .arcade-back-pill {
+  min-width: 44px;
+  min-height: 44px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}

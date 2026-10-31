@@ -219,7 +219,7 @@
         remaining--;
         done();
       };
-      img.src = `../assets/${gameFolder}/sprites/${spriteMap[k]}?v=20261029`;
+      img.src = `../assets/${gameFolder}/sprites/${spriteMap[k]}?v=20261031`;
       images[k] = img;
     });
 

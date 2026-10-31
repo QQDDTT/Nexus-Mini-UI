@@ -1,39 +1,153 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="tower-boba-rig" data-root-anchor="64,96" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <!-- 1. 烘焙暖棕桌面接触软阴影 -->
+    <radialGradient id="tb-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#23120b" stop-opacity="0.72" />
+      <stop offset="65%" stop-color="#23120b" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#23120b" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <!-- 2. 糖果甜点暖光场 -->
+    <radialGradient id="tb-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f472b6" stop-opacity="0.38" />
+      <stop offset="55%" stop-color="#fbbf24" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#23120b" stop-opacity="0" />
+    </radialGradient>
+    <!-- 3. 金黄威化饼干茶托材质 -->
+    <linearGradient id="tb-wafer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <!-- 4. 香草白巧奶油糖霜材质 -->
+    <linearGradient id="tb-frosting" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="55%" stop-color="#fff1f2" />
+      <stop offset="100%" stop-color="#fbcfe8" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
+    <!-- 5. 焦糖布丁SSS次表面散射材质 -->
+    <radialGradient id="tb-custard" cx="38%" cy="32%" r="68%">
+      <stop offset="0%" stop-color="#fef9c3" />
+      <stop offset="48%" stop-color="#fbbf24" />
+      <stop offset="85%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#92400e" />
+    </radialGradient>
+    <!-- 6. 草莓果冻SSS次表面散射材质 -->
+    <radialGradient id="tb-berry" cx="38%" cy="32%" r="68%">
+      <stop offset="0%" stop-color="#ffe4e6" />
+      <stop offset="45%" stop-color="#f472b6" />
+      <stop offset="85%" stop-color="#db2777" />
+      <stop offset="100%" stop-color="#9d174d" />
+    </radialGradient>
+    <!-- 7. 丝滑琥珀焦糖淋面材质 -->
+    <linearGradient id="tb-caramel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="55%" stop-color="#78350f" />
+      <stop offset="100%" stop-color="#451a03" />
     </linearGradient>
-    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#064e3b"/>
+    <!-- 8. 果冻水滴边缘高光贴图 -->
+    <linearGradient id="tb-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
+      <stop offset="50%" stop-color="#fef08a" stop-opacity="0.82" />
+      <stop offset="100%" stop-color="#f472b6" stop-opacity="0" />
     </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
-    </linearGradient>
+    <radialGradient id="tb-pearl" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="50%" stop-color="#451a03" />
+      <stop offset="100%" stop-color="#23120b" />
+    </radialGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <rect x="34" y="54" width="60" height="56" rx="16" fill="url(#goldArmor)" stroke="#fef08a" stroke-width="2.5"/>
-  <rect x="54" y="14" width="20" height="48" rx="6" fill="url(#cyanArmor)" stroke="#e0f2fe" stroke-width="2"/>
-  <circle cx="48" cy="92" r="7" fill="#1c1917"/>
-  <circle cx="64" cy="96" r="7" fill="#1c1917"/>
-  <circle cx="80" cy="92" r="7" fill="#1c1917"/>
+  <g id="part-shadow-cast" data-pivot="64,98" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="98" rx="52" ry="20" fill="url(#tb-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,68" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="68" r="58" fill="url(#tb-aura)" />
+    <path fill="none" stroke="#f472b6" stroke-width="1.6" stroke-opacity="0.78" d="M118.5,68 Q119.93,82.99 111.2,95.25 Q104.94,108.94 91.25,115.2 Q78.99,123.93 64,122.5 Q49.01,123.93 36.75,115.2 Q23.06,108.94 16.8,95.25 Q8.07,82.99 9.5,68 Q8.07,53.01 16.8,40.75 Q23.06,27.06 36.75,20.8 Q49.01,12.07 64,13.5 Q78.99,12.07 91.25,20.8 Q104.94,27.06 111.2,40.75 Q119.93,53.01 118.5,68 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#fbbf24" stroke-width="0.9" stroke-opacity="0.62" d="M113.3,68 Q114.9,81.64 106.7,92.65 Q101.26,105.26 88.65,110.7 Q77.64,118.9 64,117.3 Q50.36,118.9 39.35,110.7 Q26.74,105.26 21.3,92.65 Q13.1,81.64 14.7,68 Q13.1,54.36 21.3,43.35 Q26.74,30.74 39.35,25.3 Q50.36,17.1 64,18.7 Q77.64,17.1 88.65,25.3 Q101.26,30.74 106.7,43.35 Q114.9,54.36 113.3,68 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 118.5 63.5 Q 118.5 68 123 68 Q 118.5 68 118.5 72.5 Q 118.5 68 114 68 Q 118.5 68 118.5 63.5 Z" fill="#ffffff" stroke="#f472b6" stroke-width="0.7" />
+    <path d="M 64 118 Q 64 122.5 68.5 122.5 Q 64 122.5 64 127 Q 64 122.5 59.5 122.5 Q 64 122.5 64 118 Z" fill="#ffffff" stroke="#f472b6" stroke-width="0.7" />
+    <path d="M 9.5 63.5 Q 9.5 68 14 68 Q 9.5 68 9.5 72.5 Q 9.5 68 5 68 Q 9.5 68 9.5 63.5 Z" fill="#ffffff" stroke="#f472b6" stroke-width="0.7" />
+    <path d="M 64 9 Q 64 13.5 68.5 13.5 Q 64 13.5 64 18 Q 64 13.5 59.5 13.5 Q 64 13.5 64 9 Z" fill="#ffffff" stroke="#f472b6" stroke-width="0.7" />
+    <circle cx="102.5" cy="106.5" r="2.5" fill="#fff1f2" stroke="#fbbf24" stroke-width="0.75" />
+    <circle cx="25.5" cy="106.5" r="2.5" fill="#fff1f2" stroke="#fbbf24" stroke-width="0.75" />
+    <circle cx="25.5" cy="29.5" r="2.5" fill="#fff1f2" stroke="#fbbf24" stroke-width="0.75" />
+    <circle cx="102.5" cy="29.5" r="2.5" fill="#fff1f2" stroke="#fbbf24" stroke-width="0.75" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,68" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fbcfe8" stroke-width="1.1" stroke-opacity="0.74" d="M105.8,68 Q104.84,84.91 93.56,97.56 Q80.91,108.84 64,109.8 Q47.09,108.84 34.44,97.56 Q23.16,84.91 22.2,68 Q23.16,51.09 34.44,38.44 Q47.09,27.16 64,26.2 Q80.91,27.16 93.56,38.44 Q104.84,51.09 105.8,68 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="105.8" cy="68" r="2.2" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.65" />
+    <circle cx="84.9" cy="104.2" r="2.2" fill="#fbbf24" stroke="#fbcfe8" stroke-width="0.65" />
+    <circle cx="43.1" cy="104.2" r="2.2" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.65" />
+    <circle cx="22.2" cy="68" r="2.2" fill="#fbbf24" stroke="#fbcfe8" stroke-width="0.65" />
+    <circle cx="43.1" cy="31.8" r="2.2" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.65" />
+    <circle cx="84.9" cy="31.8" r="2.2" fill="#fbbf24" stroke="#fbcfe8" stroke-width="0.65" />
+    <path d="M93.56,93.56 Q95.06,96.06 97.56,97.56 Q95.06,99.06 93.56,101.56 Q92.06,99.06 89.56,97.56 Q92.06,96.06 93.56,93.56 Z" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.75" />
+    <path d="M34.44,93.56 Q35.94,96.06 38.44,97.56 Q35.94,99.06 34.44,101.56 Q32.94,99.06 30.44,97.56 Q32.94,96.06 34.44,93.56 Z" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.75" />
+    <path d="M34.44,34.44 Q35.94,36.94 38.44,38.44 Q35.94,39.94 34.44,42.44 Q32.94,39.94 30.44,38.44 Q32.94,36.94 34.44,34.44 Z" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.75" />
+    <path d="M93.56,34.44 Q95.06,36.94 97.56,38.44 Q95.06,39.94 93.56,42.44 Q92.06,39.94 89.56,38.44 Q92.06,36.94 93.56,34.44 Z" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.75" />
+  </g>
+  <!-- 金黄威化饼干茶托与白巧奶油边底座 -->
+  <g id="part-pedestal-base" data-pivot="64,92" data-parent="root" data-z-index="14" data-blend="normal">
+    <ellipse cx="64" cy="92" rx="44" ry="13" fill="url(#tb-wafer)" stroke="#b45309" stroke-width="2.2" />
+    <ellipse cx="64" cy="89" rx="37" ry="9.5" fill="url(#tb-frosting)" stroke="#f472b6" stroke-width="1.4" />
+    <path d="M34 91 Q49 96 64 91 Q79 96 94 91" stroke="#d97706" stroke-width="0.8" stroke-linecap="round" />
+    <circle cx="57.6" cy="87.2" r="1.15" fill="#ff8da1" stroke="#4a1c11" stroke-width="0.65" />
+  </g>
+  <!-- 糖豆平衡稳定装饰 -->
+  <g id="part-aux-stabilizer-1" data-pivot="83.8,83.8" data-parent="root" data-z-index="17" data-blend="normal">
+    <circle cx="83.8" cy="83.8" r="4.0" fill="url(#tb-pearl)" stroke="#fef08a" stroke-width="1.2" />
+    <circle cx="82.5" cy="82.5" r="1.2" fill="#ffffff" />
+  </g>
+  <g id="part-aux-stabilizer-2" data-pivot="64,92" data-parent="root" data-z-index="18" data-blend="normal">
+    <circle cx="64" cy="92" r="4.0" fill="url(#tb-pearl)" stroke="#f472b6" stroke-width="1.2" />
+    <circle cx="62.8" cy="90.8" r="1.2" fill="#ffffff" />
+  </g>
+  <!-- 自转珍珠奶茶波霸糖圈 -->
+  <g id="part-coil-ring" data-pivot="64,78" data-parent="part-pedestal-base" data-z-index="20" data-blend="normal" data-motion="spin-cw">
+    <ellipse cx="64" cy="78" rx="28" ry="11" fill="url(#tb-frosting)" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="42" cy="78" r="3.8" fill="url(#tb-pearl)" stroke="#ffffff" stroke-width="0.8" />
+    <circle cx="56" cy="83" r="3.8" fill="url(#tb-pearl)" stroke="#ffffff" stroke-width="0.8" />
+    <circle cx="72" cy="83" r="3.8" fill="url(#tb-pearl)" stroke="#ffffff" stroke-width="0.8" />
+    <circle cx="86" cy="78" r="3.8" fill="url(#tb-pearl)" stroke="#ffffff" stroke-width="0.8" />
+  </g>
+  <!-- 左右双联装彩色条纹波霸吸管炮管 -->
+  <g id="part-barrel-right" data-pivot="78,42" data-parent="part-turret-head" data-z-index="26" data-blend="normal" data-motion="recoil-y">
+    <circle cx="78" cy="42" r="6.5" fill="url(#tb-frosting)" stroke="#f472b6" stroke-width="1.4" />
+    <path d="M72 42 L74 12 C74 8 86 8 86 12 L84 42 Z" fill="url(#tb-berry)" stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" />
+    <ellipse cx="80" cy="12" rx="6" ry="2.5" fill="#451a03" stroke="#fef08a" stroke-width="1.2" />
+    <circle cx="80" cy="10" r="3.5" fill="url(#tb-pearl)" />
+  </g>
+  <g id="part-barrel-left" data-pivot="50,42" data-parent="part-turret-head" data-z-index="26" data-blend="normal" data-motion="recoil-y">
+    <circle cx="50" cy="42" r="6.5" fill="url(#tb-frosting)" stroke="#f472b6" stroke-width="1.4" />
+    <path d="M44 42 L42 12 C42 8 54 8 54 12 L56 42 Z" fill="url(#tb-berry)" stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" />
+    <ellipse cx="48" cy="12" rx="6" ry="2.5" fill="#451a03" stroke="#fef08a" stroke-width="1.2" />
+    <circle cx="48" cy="10" r="3.5" fill="url(#tb-pearl)" />
+  </g>
+  <!-- 草莓波霸奶茶杯主体与云朵奶盖塔头 -->
+  <g id="part-turret-head" data-pivot="64,66" data-parent="part-pedestal-base" data-z-index="34" data-blend="normal" data-motion="rotate-aim">
+    <path d="M36 48 C36 32 92 32 92 48 L86 82 C78 90 50 90 42 82 Z" fill="url(#tb-berry)" stroke="#ffffff" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M34 48 C34 36 52 34 64 36 C76 34 94 36 94 48 C90 56 80 50 74 56 C68 62 60 50 54 56 C46 62 36 56 34 48 Z" fill="url(#tb-frosting)" stroke="#fbcfe8" stroke-width="1.6" stroke-linejoin="round" />
+    <!-- 萌系黑糖珍珠大眼与腮红 -->
+    <circle cx="52" cy="64" r="4.5" fill="#451a03" stroke="#ffffff" stroke-width="1.0" />
+    <circle cx="50.5" cy="62.5" r="1.6" fill="#ffffff" />
+    <circle cx="76" cy="64" r="4.5" fill="#451a03" stroke="#ffffff" stroke-width="1.0" />
+    <circle cx="74.5" cy="62.5" r="1.6" fill="#ffffff" />
+    <ellipse cx="44" cy="69" rx="3.8" ry="2.0" fill="#fde047" fill-opacity="0.75" />
+    <ellipse cx="84" cy="69" rx="3.8" ry="2.0" fill="#fde047" fill-opacity="0.75" />
+    <path d="M60 68 Q64 73 68 68" stroke="#451a03" stroke-width="1.8" stroke-linecap="round" />
+    <!-- 杯底悬浮波霸黑糖珍珠颗粒 -->
+    <circle cx="50" cy="78" r="3.2" fill="url(#tb-pearl)" />
+    <circle cx="64" cy="80" r="3.5" fill="url(#tb-pearl)" />
+    <circle cx="78" cy="78" r="3.2" fill="url(#tb-pearl)" />
+    <!-- 唯一水滴腰果形高光 + 次级圆点 -->
+    <ellipse cx="52" cy="46" rx="5.6" ry="2.7" transform="rotate(-22 52 46)" fill="#ffffff" fill-opacity="0.94" />
+    <circle cx="45" cy="52" r="1.8" fill="#ffffff" fill-opacity="0.88" />
+  </g>
+  <g id="part-light-rim-turret" data-pivot="64,66" data-parent="part-turret-head" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M36 48 C36 34 92 34 92 48" stroke="url(#tb-rim)" stroke-width="2.8" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,10" data-parent="part-turret-head" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <circle cx="48" cy="6" r="2.8" fill="#fef08a" />
+    <circle cx="80" cy="6" r="2.8" fill="#fef08a" />
+    <path d="M40 20 Q48 14 56 20 M72 20 Q80 14 88 20" stroke="#ffffff" stroke-width="0.85" stroke-linecap="round" />
+  </g>
 </svg>

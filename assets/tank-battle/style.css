@@ -1,0 +1,206 @@
+/* ============================================================================
+ * 钢铁防线 (Tank Battle) — Chroma-Muse Bespoke Theme Stylesheet
+ * Style Anchor: STYLE-19 (Heavy Cast-Iron Military Armor) + STYLE-43 (Industrial)
+ * 5:3:1 Allocation:
+ *   [5] 50% Heavy Olive-Drab Trench (#0b1610 -> #14241b) + Anti-Slip Diamond Grid
+ *   [3] 30% 45° Chamfered Tactical Command Console HUD + Corner Blast Rivets
+ *   [1] 10% P1 NATO Green (#22c55e), P2 Desert Amber (#f59e0b), Crimson Alert (#ef4444)
+ * ============================================================================ */
+
+:root {
+  /* [5] 50% Heavy Olive-Drab Trench & Rolled Steel Surfaces */
+  --tb-bg-trench-deep: #0b1610;
+  --tb-bg-trench-olive: #14241b;
+  --tb-steel-plate: #1c2e24;
+  --tb-grid-stencil: rgba(74, 222, 128, 0.06);
+
+  /* [3] 30% Chamfered Tactical Console HUD */
+  --tb-hud-armor-bg: rgba(14, 28, 20, 0.88);
+  --tb-hud-panel-steel: rgba(24, 43, 32, 0.92);
+  --tb-hud-border-olive: #3f6212;
+  --tb-hud-rivet: #65a30d;
+  --tb-text-stencil: #ecfccb;
+  --tb-text-tactical: #a3e635;
+  --tb-text-muted: #84cc16;
+
+  /* [1] 10% Focal Tactical Accents */
+  --tb-accent-p1-green: #22c55e;
+  --tb-accent-p1-bright: #4ade80;
+  --tb-accent-p2-amber: #f59e0b;
+  --tb-accent-p2-bright: #fde047;
+  --tb-accent-enemy-red: #ef4444;
+
+  /* Chamfer Geometry & Typography */
+  --tb-chamfer-clip: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+  --tb-font-sans: 'Chakra Petch', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --tb-font-mono: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: radial-gradient(circle at 50% 50%, var(--tb-bg-trench-olive) 0%, var(--tb-bg-trench-deep) 90%);
+  color: var(--tb-text-stencil);
+  font-family: var(--tb-font-sans);
+}
+
+/* [5] 50% Olive-Drab Trench & Anti-Slip Diamond Grid */
+.tb-battlefield-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-color: var(--tb-bg-trench-deep);
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.08) 0%, transparent 70%),
+    linear-gradient(to right, var(--tb-grid-stencil) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--tb-grid-stencil) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+}
+
+/* [3] 30% 45° Chamfered Tactical Field Command Console HUD */
+.tb-console-panel {
+  position: relative;
+  padding: 12px 18px;
+  background: var(--tb-hud-armor-bg);
+  border: 2px solid var(--tb-hud-border-olive);
+  clip-path: var(--tb-chamfer-clip);
+  box-shadow:
+    inset 0 1px 0 rgba(163, 230, 53, 0.22),
+    0 10px 24px rgba(5, 11, 8, 0.72);
+}
+
+.tb-console-panel::before,
+.tb-console-panel::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tb-hud-rivet);
+  box-shadow: 0 0 4px rgba(163, 230, 53, 0.5);
+}
+
+.tb-console-panel::before {
+  top: 8px;
+  left: 8px;
+}
+
+.tb-console-panel::after {
+  bottom: 8px;
+  right: 8px;
+}
+
+.tb-telemetry-readout {
+  font-family: var(--tb-font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--tb-text-tactical);
+  text-transform: uppercase;
+}
+
+.tb-player-badge-p1 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: rgba(21, 128, 61, 0.28);
+  border-left: 3px solid var(--tb-accent-p1-green);
+  color: var(--tb-accent-p1-bright);
+  font-weight: 700;
+}
+
+.tb-player-badge-p2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: rgba(180, 83, 9, 0.28);
+  border-left: 3px solid var(--tb-accent-p2-amber);
+  color: var(--tb-accent-p2-bright);
+  font-weight: 700;
+}
+
+/* [1] 10% Tactical Strike Action Buttons */
+.tb-btn-deploy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 10px 26px;
+  clip-path: var(--tb-chamfer-clip);
+  background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+  border: 1px solid #86efac;
+  color: #052e16;
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 0 18px rgba(34, 197, 94, 0.35);
+  cursor: pointer;
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.tb-btn-deploy:hover {
+  filter: brightness(1.08);
+}
+
+.tb-btn-deploy:active {
+  transform: scale(0.96);
+}
+
+.tb-btn-coop-amber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 22px;
+  clip-path: var(--tb-chamfer-clip);
+  background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
+  border: 1px solid #fde047;
+  color: #1c1917;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   [Momus-Audit Terminal Adaptation Hardening: 852x393 Mobile Landscape]
+   ========================================================================== */
+html, body {
+  width: 100vw;
+  height: 100dvh;
+  max-width: 100vw;
+  max-height: 100dvh;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+button, [role="button"], .btn, .cta-btn, .arcade-back-pill {
+  min-width: 44px;
+  min-height: 44px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}
+
+/* ==========================================================================
+   [Safe-Area & Mobile Landscape 852x393 Protection]
+   ========================================================================== */
+:root {
+  --nexus-safe-top: env(safe-area-inset-top, 0px);
+  --nexus-safe-right: env(safe-area-inset-right, 0px);
+  --nexus-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nexus-safe-left: env(safe-area-inset-left, 0px);
+}

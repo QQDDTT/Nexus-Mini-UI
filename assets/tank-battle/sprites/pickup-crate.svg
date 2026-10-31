@@ -1,28 +1,121 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="pickup-crate-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#0f2442" stop-opacity="0.75"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="pc-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0b1610" stop-opacity="0.76" />
+      <stop offset="65%" stop-color="#0d1912" stop-opacity="0.34" />
+      <stop offset="100%" stop-color="#0d1912" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="steelBox" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#090d16"/>
+    <radialGradient id="pc-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.35" />
+      <stop offset="55%" stop-color="#fbbf24" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#0d1912" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="pc-hull-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e2f23" />
+      <stop offset="55%" stop-color="#14241b" />
+      <stop offset="100%" stop-color="#0d1912" />
     </linearGradient>
-    <linearGradient id="goldBracket" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fde047"/>
-      <stop offset="50%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#78350f"/>
+    <linearGradient id="pc-gold-trim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#b45309" />
     </linearGradient>
+    <linearGradient id="pc-rim-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#22c55e" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="pc-core-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#22c55e" />
+      <stop offset="80%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <!-- Layer 1: Base Chassis -->
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <rect x="20" y="20" width="88" height="88" rx="14" fill="url(#steelBox)" stroke="#00f0ff" stroke-width="3"/>
-  <!-- Layer 2: Heavy Corner Armor Brackets & Cross Straps -->
-  <path d="M20 40 L40 20 M88 20 L108 40 M20 88 L40 108 M88 108 L108 88" stroke="url(#goldBracket)" stroke-width="6" stroke-linecap="round"/>
-  <rect x="32" y="58" width="64" height="12" rx="4" fill="url(#goldBracket)"/>
-  <rect x="58" y="32" width="12" height="64" rx="4" fill="url(#goldBracket)"/>
-  <!-- Layer 3: Central Energy Core -->
-  <rect x="48" y="48" width="32" height="32" rx="8" fill="#082f49" stroke="#00f0ff" stroke-width="2.5"/>
-  <circle cx="64" cy="64" r="8" fill="#00f0ff"/>
-  <circle cx="64" cy="64" r="3.5" fill="#ffffff"/>
+  <!-- [光影层 1] 空投箱底部接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 空投信标外层顺时针全息光环 (z=4, screen) -->
+  <!-- [光影层 2B] 空投信标内层逆时针相位环 (z=5, screen) -->
+  <!-- [骨骼部件 1] 八角战术空投箱底座 (z=15) -->
+  <!-- [骨骼部件 2] 中央全息战利品能量核 (z=25) -->
+  <!-- [骨骼部件 3A] 上侧向外滑动打开的装甲锁扣箱盖 (z=30) -->
+  <!-- [骨骼部件 3B] 下侧向外滑动打开的装甲锁扣箱盖 (z=30) -->
+  <!-- [骨骼部件 3C] 左侧向外滑动打开的装甲锁扣箱盖 (z=30) -->
+  <!-- [骨骼部件 3D] 右侧向外滑动打开的装甲锁扣箱盖 (z=30) -->
+  <!-- [光影层 4] 箱体受光边缘高光映射贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 5] 顶层空投信标脉冲光束冕 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,66" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="66" rx="56" ry="56" fill="url(#pc-shadow-grad)" />
+    <polygon points="40,20 88,20 108,40 108,88 88,108 40,108 20,88 20,40" fill="#0b1610" fill-opacity="0.45" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#pc-aura-field)" />
+    <path fill="none" stroke="#22c55e" stroke-width="1.5" stroke-opacity="0.72" d="M120.04,80.07 A58.3,58.3 0 0,1 80.07,120.04 M47.93,120.04 A58.3,58.3 0 0,1 7.96,80.07 M7.96,47.93 A58.3,58.3 0 0,1 47.93,7.96 M80.07,7.96 A58.3,58.3 0 0,1 120.04,47.93 M64,1.7 L64,10.7 M64,117.3 L64,126.3 M1.7,64 L10.7,64 M117.3,64 L126.3,64" stroke-linejoin="bevel" />
+    <path fill="none" stroke="#4ade80" stroke-width="0.85" stroke-opacity="0.58" d="M114.66,78.53 A52.7,52.7 0 0,1 78.53,114.66 M49.47,114.66 A52.7,52.7 0 0,1 13.34,78.53 M13.34,49.47 A52.7,52.7 0 0,1 49.47,13.34 M78.53,13.34 A52.7,52.7 0 0,1 114.66,49.47 M64,7.3 L64,16.3 M64,111.7 L64,120.7 M7.3,64 L16.3,64 M111.7,64 L120.7,64" stroke-linejoin="bevel" />
+    <line x1="114.7" y1="64" x2="124.3" y2="64" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="99.9" y1="99.9" x2="106.6" y2="106.6" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="64" y1="114.7" x2="64" y2="124.3" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="28.1" y1="99.9" x2="21.4" y2="106.6" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="13.3" y1="64" x2="3.7" y2="64" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="28.1" y1="28.1" x2="21.4" y2="21.4" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="64" y1="13.3" x2="64" y2="3.7" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="99.9" y1="28.1" x2="106.6" y2="21.4" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <rect x="103" y="103" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="20.6" y="103" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="20.6" y="20.6" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="103" y="20.6" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fbbf24" stroke-width="1.1" stroke-opacity="0.68" d="M106.87,76.29 A44.6,44.6 0 0,1 76.29,106.87 M51.71,106.87 A44.6,44.6 0 0,1 21.13,76.29 M21.13,51.71 A44.6,44.6 0 0,1 51.71,21.13 M76.29,21.13 A44.6,44.6 0 0,1 106.87,51.71 M64,15.4 L64,24.4 M64,103.6 L64,112.6 M15.4,64 L24.4,64 M103.6,64 L112.6,64" stroke-linejoin="bevel" />
+    <circle cx="108.6" cy="64" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="86.3" cy="102.6" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="41.7" cy="102.6" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="19.4" cy="64" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="41.7" cy="25.4" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="86.3" cy="25.4" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+  </g>
+  <g id="part-crate-base" data-pivot="64,64" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="40,20 88,20 108,40 108,88 88,108 40,108 20,88 20,40" fill="url(#pc-hull-obsidian)" stroke="url(#pc-gold-trim)" stroke-width="2.2" stroke-linejoin="bevel" />
+    <rect x="32" y="32" width="64" height="64" rx="6" fill="#0b1911" stroke="#22c55e" stroke-width="1.2" />
+    <line x1="32" y1="32" x2="96" y2="96" stroke="#22c55e" stroke-width="0.8" stroke-opacity="0.5" />
+    <line x1="96" y1="32" x2="32" y2="96" stroke="#22c55e" stroke-width="0.8" stroke-opacity="0.5" />
+  </g>
+  <g id="part-loot-core" data-pivot="64,64" data-parent="part-crate-base" data-z-index="25" data-blend="normal" data-motion="spin-cw">
+    <circle cx="64" cy="64" r="20" fill="url(#pc-core-glow)" />
+    <polygon points="64,44 70,58 84,64 70,70 64,84 58,70 44,64 58,58" fill="#ffffff" />
+    <circle cx="64" cy="64" r="5" fill="#fbbf24" />
+    <circle cx="52" cy="54" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="76" cy="54" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="52" cy="74" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="76" cy="74" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+  </g>
+  <g id="part-hatch-left" data-pivot="34,64" data-parent="part-crate-base" data-z-index="30" data-blend="normal" data-motion="slide-open-left">
+    <polygon points="22,42 46,50 46,78 22,86" fill="url(#pc-hull-obsidian)" stroke="#fbbf24" stroke-width="1.8" stroke-linejoin="bevel" />
+    <line x1="30" y1="54" x2="30" y2="74" stroke="#22c55e" stroke-width="1.2" />
+    <circle cx="40" cy="64" r="2" fill="#fbbf24" />
+  </g>
+  <g id="part-hatch-right" data-pivot="94,64" data-parent="part-crate-base" data-z-index="30" data-blend="normal" data-motion="slide-open-right">
+    <polygon points="106,42 106,86 82,78 82,50" fill="url(#pc-hull-obsidian)" stroke="#fbbf24" stroke-width="1.8" stroke-linejoin="bevel" />
+    <line x1="98" y1="54" x2="98" y2="74" stroke="#22c55e" stroke-width="1.2" />
+    <circle cx="88" cy="64" r="2" fill="#fbbf24" />
+  </g>
+  <g id="part-hatch-top" data-pivot="64,34" data-parent="part-crate-base" data-z-index="30" data-blend="normal" data-motion="slide-open-up">
+    <polygon points="42,22 86,22 78,46 50,46" fill="url(#pc-hull-obsidian)" stroke="#fbbf24" stroke-width="1.8" stroke-linejoin="bevel" />
+    <line x1="54" y1="30" x2="74" y2="30" stroke="#22c55e" stroke-width="1.2" />
+    <circle cx="64" cy="40" r="2" fill="#fbbf24" />
+  </g>
+  <g id="part-hatch-bottom" data-pivot="64,94" data-parent="part-crate-base" data-z-index="30" data-blend="normal" data-motion="slide-open-down">
+    <polygon points="50,82 78,82 86,106 42,106" fill="url(#pc-hull-obsidian)" stroke="#fbbf24" stroke-width="1.8" stroke-linejoin="bevel" />
+    <line x1="54" y1="98" x2="74" y2="98" stroke="#22c55e" stroke-width="1.2" />
+    <circle cx="64" cy="88" r="2" fill="#fbbf24" />
+  </g>
+  <g id="part-light-rim-crate" data-pivot="64,64" data-parent="part-crate-base" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M20 40 L40 20 H88 L108 40" stroke="url(#pc-rim-glow)" stroke-width="2.6" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.7" d="M90.92,71.72 A28,28 0 0,1 71.72,90.92 M56.28,90.92 A28,28 0 0,1 37.08,71.72 M37.08,56.28 A28,28 0 0,1 56.28,37.08 M71.72,37.08 A28,28 0 0,1 90.92,56.28 M64,32 L64,41 M64,87 L64,96 M32,64 L41,64 M87,64 L96,64" stroke-linejoin="bevel" />
+    <circle cx="32" cy="32" r="2.2" fill="#22c55e" />
+    <circle cx="96" cy="32" r="2.2" fill="#22c55e" />
+    <circle cx="32" cy="96" r="2.2" fill="#fbbf24" />
+    <circle cx="96" cy="96" r="2.2" fill="#fbbf24" />
+  </g>
 </svg>

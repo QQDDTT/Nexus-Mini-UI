@@ -1,0 +1,230 @@
+/* ============================================================================
+ * 保卫布丁 (Pudding Defense) — Chroma-Muse Bespoke Theme Stylesheet
+ * Style Anchor: STYLE-11 (Casual Candy / Jelly Squash-and-Stretch) + STYLE-08 (Soft Pastel)
+ * 5:3:1 Allocation:
+ *   [5] 50% Warm Patisserie Cocoa Table + Strawberry/Mint Macaron Grid + Golden Wafer Path
+ *   [3] 30% White-Chocolate & Strawberry Frosting 20px Pill HUD Cards
+ *   [1] 10% Custard Gold (#fbbf24) & Berry Pink (#f472b6) Bouncy CTAs
+ * ============================================================================ */
+
+:root {
+  /* [5] 50% Patisserie Background & Board Surfaces */
+  --pd-bg-cocoa-deep: #23120b;
+  --pd-bg-cocoa-warm: #3b1d11;
+  --pd-tile-strawberry: #fff1f2;
+  --pd-tile-mint: #ecfdf5;
+  --pd-path-wafer: #fed7aa;
+  --pd-path-caramel-trim: #f59e0b;
+
+  /* [3] 30% Frosting Pill HUD & Typography */
+  --pd-hud-frosting-bg: rgba(59, 25, 36, 0.84);
+  --pd-hud-cream-card: rgba(255, 241, 242, 0.94);
+  --pd-hud-border-pink: rgba(249, 168, 212, 0.48);
+  --pd-hud-inner-cream: rgba(255, 255, 255, 0.35);
+  --pd-text-cream: #fffbeb;
+  --pd-text-berry: #fbcfe8;
+  --pd-text-roast: #451a03;
+
+  /* [1] 10% Focal Sweet Accents */
+  --pd-accent-custard: #fbbf24;
+  --pd-accent-custard-deep: #d97706;
+  --pd-accent-berry: #f472b6;
+  --pd-accent-berry-deep: #db2777;
+  --pd-accent-mint: #34d399;
+  --pd-accent-cherry: #fb7185;
+
+  /* Shape & Motion Tokens */
+  --pd-radius-pill: 20px;
+  --pd-radius-round: 9999px;
+  --pd-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --pd-font-rounded: 'Nunito', 'YouYuan', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: radial-gradient(circle at 50% 45%, var(--pd-bg-cocoa-warm) 0%, var(--pd-bg-cocoa-deep) 88%);
+  color: var(--pd-text-cream);
+  font-family: var(--pd-font-rounded);
+}
+
+/* [5] 50% Patisserie Table & Macaron Checkerboard Arena */
+.pd-stage-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(244, 114, 182, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 82% 78%, rgba(251, 191, 36, 0.12) 0%, transparent 45%),
+    linear-gradient(160deg, var(--pd-bg-cocoa-warm) 0%, var(--pd-bg-cocoa-deep) 100%);
+}
+
+.pd-board-frame {
+  position: relative;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #fde68a 0%, #f59e0b 100%);
+  padding: 6px;
+  box-shadow:
+    0 14px 32px rgba(20, 8, 4, 0.55),
+    inset 0 2px 0 rgba(255, 255, 255, 0.65);
+}
+
+/* [3] 30% White-Chocolate & Strawberry Frosting HUD Cards */
+.pd-hud-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--pd-hud-frosting-bg);
+  border: 2px solid var(--pd-hud-border-pink);
+  border-radius: var(--pd-radius-pill);
+  box-shadow:
+    0 8px 20px rgba(35, 18, 11, 0.45),
+    inset 0 2px 0 var(--pd-hud-inner-cream);
+  backdrop-filter: blur(12px);
+}
+
+.pd-sugar-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--pd-radius-round);
+  background: rgba(35, 18, 11, 0.65);
+  border: 1.5px solid rgba(251, 191, 36, 0.55);
+  color: var(--pd-accent-custard);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.pd-tower-dock {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--pd-hud-frosting-bg);
+  border: 2px solid var(--pd-hud-border-pink);
+  border-radius: 24px;
+  box-shadow:
+    0 10px 24px rgba(35, 18, 11, 0.50),
+    inset 0 2px 0 var(--pd-hud-inner-cream);
+}
+
+.pd-tower-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 72px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 241, 242, 0.16) 0%, rgba(244, 114, 182, 0.08) 100%);
+  border: 2px solid rgba(249, 168, 212, 0.38);
+  transition: transform 0.24s var(--pd-spring-bounce), border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.pd-tower-slot:hover,
+.pd-tower-slot.is-selected {
+  transform: translateY(-5px) scale(1.05);
+  border-color: var(--pd-accent-custard);
+  box-shadow: 0 6px 16px rgba(251, 191, 36, 0.32);
+}
+
+/* [1] 10% Custard Gold & Berry Pink Bouncy CTA Buttons */
+.pd-btn-custard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 24px;
+  border-radius: var(--pd-radius-round);
+  border: 2px solid #fef3c7;
+  background: linear-gradient(180deg, #fde047 0%, var(--pd-accent-custard) 55%, var(--pd-accent-custard-deep) 100%);
+  color: var(--pd-text-roast);
+  font-weight: 900;
+  font-size: 0.95rem;
+  box-shadow:
+    0 6px 0 #92400e,
+    0 10px 20px rgba(251, 191, 36, 0.38),
+    inset 0 2px 0 rgba(255, 255, 255, 0.75);
+  transition: transform 0.18s var(--pd-spring-bounce), box-shadow 0.18s ease;
+  cursor: pointer;
+}
+
+.pd-btn-custard:active {
+  transform: translateY(4px) scale(1.06, 0.94);
+  box-shadow: 0 2px 0 #92400e;
+}
+
+.pd-btn-berry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 20px;
+  border-radius: var(--pd-radius-round);
+  border: 2px solid #fce7f3;
+  background: linear-gradient(180deg, #f9a8d4 0%, var(--pd-accent-berry) 55%, var(--pd-accent-berry-deep) 100%);
+  color: #ffffff;
+  font-weight: 800;
+  box-shadow:
+    0 5px 0 #9d174d,
+    inset 0 2px 0 rgba(255, 255, 255, 0.65);
+  transition: transform 0.18s var(--pd-spring-bounce);
+  cursor: pointer;
+}
+
+@keyframes pdJellyPulse {
+  0%, 100% { transform: scale(1, 1); }
+  40%      { transform: scale(1.07, 0.93); }
+  70%      { transform: scale(0.96, 1.04); }
+}
+
+.pd-jelly-anim {
+  animation: pdJellyPulse 2.4s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   [Momus-Audit Terminal Adaptation Hardening: 852x393 Mobile Landscape]
+   ========================================================================== */
+html, body {
+  width: 100vw;
+  height: 100dvh;
+  max-width: 100vw;
+  max-height: 100dvh;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+button, [role="button"], .btn, .cta-btn, .arcade-back-pill {
+  min-width: 44px;
+  min-height: 44px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}
+
+/* ==========================================================================
+   [Safe-Area & Mobile Landscape 852x393 Protection]
+   ========================================================================== */
+:root {
+  --nexus-safe-top: env(safe-area-inset-top, 0px);
+  --nexus-safe-right: env(safe-area-inset-right, 0px);
+  --nexus-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nexus-safe-left: env(safe-area-inset-left, 0px);
+}

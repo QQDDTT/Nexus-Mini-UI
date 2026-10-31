@@ -1,31 +1,133 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" data-rig-id="mouth-herb-lv3-rig" data-root-anchor="48,70" data-has-aura="true">
   <defs>
-    <linearGradient id="herb3Body" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#10b981"/>
-      <stop offset="50%" stop-color="#065f46"/>
-      <stop offset="100%" stop-color="#022c22"/>
+    <radialGradient id="mh3-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.78" />
+      <stop offset="68%" stop-color="#03181c" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="mh3-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.36" />
+      <stop offset="50%" stop-color="#10b981" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="mh3-chitin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065f46" />
+      <stop offset="45%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#03181c" />
     </linearGradient>
-    <radialGradient id="herb3Disc" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#fbbf24"/>
-      <stop offset="55%" stop-color="#34d399"/>
-      <stop offset="100%" stop-color="#047857"/>
+    <linearGradient id="mh3-crystal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="35%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#064e3b" />
+    </linearGradient>
+    <linearGradient id="mh3-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+      <stop offset="45%" stop-color="#fbbf24" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
     </radialGradient>
   </defs>
-  <!-- Lv.3 Crystalline Resonance Grinding Disc: 金绿辉光六角星芒研磨口器 + 强力向心引力流线 -->
-  <g id="layer-base">
-    <path d="M14 22 L82 22 L61 84 L35 84 Z" fill="url(#herb3Body)" stroke="#fbbf24" stroke-width="2.6"/>
-    <ellipse cx="48" cy="22" rx="34" ry="12" fill="#022c22" stroke="#10b981" stroke-width="2.6"/>
+  <!-- 中心晶化共鸣六角星芒研磨齿盘 (part-inner-tongue) -->
+  <!-- 左晶化共鸣引力颚瓣 -->
+  <!-- 右晶化共鸣引力颚瓣 -->
+  <g id="part-shadow-cast" data-pivot="48,54" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="48" cy="54" rx="44" ry="40" fill="url(#mh3-shadow)" />
   </g>
-  <g id="layer-material">
-    <!-- Grinding Hex-Star Disc -->
-    <polygon points="48,9 54,19 68,19 57,25 61,35 48,29 35,35 39,25 28,19 42,19" fill="url(#herb3Disc)" stroke="#fbbf24" stroke-width="1.8"/>
-    <circle cx="48" cy="56" r="10" fill="#047857" stroke="#fbbf24" stroke-width="2.2"/>
-    <circle cx="48" cy="56" r="4.5" fill="#fbbf24"/>
+  <g id="part-aura-ring-outer" data-pivot="48,44" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="48" cy="44" r="42" fill="url(#mh3-aura)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M87.5,44 Q86.71,60.03 75.93,71.93 Q62.38,78.72 48,83.5 Q31.97,82.71 20.07,71.93 Q13.28,58.38 8.5,44 Q9.29,27.97 20.07,16.07 Q33.62,9.28 48,4.5 Q64.03,5.29 75.93,16.07 Q82.72,29.62 87.5,44 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M83.7,44 Q83.2,58.58 73.24,69.24 Q60.93,75.21 48,79.7 Q33.42,79.2 22.76,69.24 Q16.79,56.93 12.3,44 Q12.8,29.42 22.76,18.76 Q35.07,12.79 48,8.3 Q62.58,8.8 73.24,18.76 Q79.21,31.07 83.7,44 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="87.5" cy="44" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="86.7" cy="43.2" r="0.9" fill="#ffffff" />
+    <circle cx="75.9" cy="71.9" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="48" cy="83.5" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="47.2" cy="82.7" r="0.9" fill="#ffffff" />
+    <circle cx="20.1" cy="71.9" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="8.5" cy="44" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="7.7" cy="43.2" r="0.9" fill="#ffffff" />
+    <circle cx="20.1" cy="16.1" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="48" cy="4.5" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="47.2" cy="3.7" r="0.9" fill="#ffffff" />
+    <circle cx="75.9" cy="16.1" r="1.6" fill="#34d399" fill-opacity="0.8" />
   </g>
-  <g id="layer-glow">
-    <!-- Centripetal Inflow Streamlines (强力向心引力流线) -->
-    <path d="M18 6 Q32 14 42 18 M78 6 Q64 14 54 18 M48 2 L48 14" fill="none" stroke="#00f0ff" stroke-width="2" stroke-dasharray="3 2" stroke-linecap="round"/>
-    <circle cx="26" cy="10" r="2.5" fill="#34d399"/>
-    <circle cx="70" cy="10" r="2.5" fill="#34d399"/>
+  <g id="part-aura-ring-inner" data-pivot="48,44" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M78.2,44 Q76.23,60.3 63.1,70.15 Q48,72.28 32.9,70.15 Q19.77,60.3 17.8,44 Q23.51,29.86 32.9,17.85 Q48,11.4 63.1,17.85 Q72.49,29.86 78.2,44 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="78.2" cy="44" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="63.1" cy="70.2" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="32.9" cy="70.2" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="17.8" cy="44" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="32.9" cy="17.8" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="63.1" cy="17.8" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="74.15" cy="59.1" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="21.85" cy="59.1" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="48" cy="13.8" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-pharynx-base" data-pivot="48,70" data-parent="root" data-z-index="10" data-blend="normal">
+    <polygon points="20,62 76,62 68,86 28,86" fill="url(#mh3-chitin)" stroke="#fbbf24" stroke-width="2.3" />
+    <path d="M28 68 L68 68 M32 76 L64 76" stroke="#2dd4bf" stroke-width="0.9" stroke-opacity="0.8" />
+  </g>
+  <g id="part-lv3-crown-1" data-pivot="48,48" data-parent="root" data-z-index="19" data-blend="normal">
+    <circle cx="48" cy="48" r="4.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.85" />
+  </g>
+  <g id="part-inner-tongue" data-pivot="48,42" data-parent="part-pharynx-base" data-z-index="20" data-blend="normal" data-motion="spin-cw">
+    <polygon points="48,20 66,31 66,53 48,64 30,53 30,31" fill="url(#mh3-crystal)" stroke="#fbbf24" stroke-width="1.8" />
+    <polygon points="48,26 60,34 60,50 48,58 36,50 36,34" fill="#064e3b" stroke="#2dd4bf" stroke-width="1.3" />
+    <circle cx="48" cy="42" r="8" fill="#fbbf24" stroke="#ffffff" stroke-width="1.2" />
+    <circle cx="48" cy="42" r="3.5" fill="#ffffff" />
+  </g>
+  <g id="part-mandible-right" data-pivot="66,64" data-parent="part-pharynx-base" data-z-index="30" data-blend="normal" data-motion="rotate-sym-right">
+    <path d="M66 64 C90 48 90 20 70 6 L60 16 L68 28 L60 40 L68 52 Z" fill="url(#mh3-chitin)" stroke="#fbbf24" stroke-width="2.2" />
+    <path d="M70 6 L60 16 L68 28 L60 40 L68 52 L76 40 C82 28 78 14 70 6 Z" fill="url(#mh3-crystal)" stroke="#ffffff" stroke-width="1.1" />
+    <circle cx="66" cy="64" r="7.5" fill="#042326" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="66" cy="64" r="3.5" fill="#2dd4bf" />
+    <circle cx="59" cy="59" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="74" cy="68" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-mandible-left" data-pivot="30,64" data-parent="part-pharynx-base" data-z-index="30" data-blend="normal" data-motion="rotate-sym-left">
+    <path d="M30 64 C6 48 6 20 26 6 L36 16 L28 28 L36 40 L28 52 Z" fill="url(#mh3-chitin)" stroke="#fbbf24" stroke-width="2.2" />
+    <path d="M26 6 L36 16 L28 28 L36 40 L28 52 L20 40 C14 28 18 14 26 6 Z" fill="url(#mh3-crystal)" stroke="#ffffff" stroke-width="1.1" />
+    <circle cx="30" cy="64" r="7.5" fill="#042326" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="30" cy="64" r="3.5" fill="#2dd4bf" />
+  </g>
+  <g id="part-lv3-synapse-node-1" data-pivot="33.2,62.8" data-parent="root" data-z-index="44" data-blend="normal">
+    <circle cx="33.2" cy="62.8" r="3.2" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="33.2" cy="62.8" r="1.3" fill="#fbbf24" />
+  </g>
+  <g id="part-light-rim-left" data-pivot="30,64" data-parent="part-mandible-left" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M26 6 C8 22 10 46 28 60" stroke="url(#mh3-rim)" stroke-width="2.6" stroke-linecap="round" />
+  </g>
+  <g id="part-light-rim-right" data-pivot="66,64" data-parent="part-mandible-right" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M70 6 C88 22 86 46 68 60" stroke="url(#mh3-rim)" stroke-width="2.6" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="48,44" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <circle cx="26" cy="10" r="2.2" fill="#ffffff" />
+    <circle cx="70" cy="10" r="2.2" fill="#ffffff" />
+    <circle cx="48" cy="12" r="2.5" fill="#fbbf24" />
+    <circle cx="48" cy="26" r="2.0" fill="#2dd4bf" />
+    <circle cx="69.7" cy="60.5" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="26.3" cy="60.5" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="26.3" cy="35.5" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="69.7" cy="35.5" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="17.7" cy="72.5" r="1.5" fill="#d946ef" />
+    <circle cx="9" cy="49.4" r="1.5" fill="#d946ef" />
+    <circle cx="16.1" cy="25.6" r="1.5" fill="#d946ef" />
+    <circle cx="35.9" cy="10.9" r="1.5" fill="#d946ef" />
+    <circle cx="60.7" cy="11.1" r="1.5" fill="#d946ef" />
+    <circle cx="75.4" cy="59.3" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="69" cy="69" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="59.3" cy="75.4" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="48" cy="77.6" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="36.7" cy="75.4" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="27" cy="69" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="20.6" cy="59.3" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="18.4" cy="48" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="20.6" cy="36.7" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="27" cy="27" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="36.7" cy="20.6" r="1.1" fill="#2dd4bf" opacity="0.75" />
   </g>
 </svg>

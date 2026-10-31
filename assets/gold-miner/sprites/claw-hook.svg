@@ -1,39 +1,142 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="claw-hook-rig" data-root-anchor="64,20" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <!-- 1. 抓钩底层投射软阴影 -->
+    <radialGradient id="ch-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181009" stop-opacity="0.68" />
+      <stop offset="65%" stop-color="#1c1209" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <!-- 2. 等离子磁力锁定光环 -->
+    <radialGradient id="ch-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.32" />
+      <stop offset="60%" stop-color="#fbbf24" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
+    </radialGradient>
+    <!-- 3. 黑曜重金属基底 -->
+    <linearGradient id="ch-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3f2e1e" />
+      <stop offset="55%" stop-color="#271a0c" />
+      <stop offset="100%" stop-color="#120c06" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <!-- 4. 钛合金爪刃分件材质 -->
+    <linearGradient id="ch-blade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="35%" stop-color="#94a3b8" />
+      <stop offset="75%" stop-color="#4e342e" />
+      <stop offset="100%" stop-color="#271a0c" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
+    <!-- 5. 液压金护套材质 -->
+    <linearGradient id="ch-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#92400e" />
     </linearGradient>
-    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#064e3b"/>
+    <!-- 6. 爪指受光边缘高光 -->
+    <linearGradient id="ch-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#f59e0b" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
     </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
-    </linearGradient>
+    <!-- 7. 关节轴承核心高光 -->
+    <radialGradient id="ch-joint" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="45%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+    </radialGradient>
+    <pattern id="hazard-stripes" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="10" height="10" fill="#1c1917" />
+      <rect width="5" height="10" fill="#f59e0b" />
+    </pattern>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <line x1="64" y1="8" x2="64" y2="48" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-  <circle cx="64" cy="52" r="10" fill="url(#steelGrad)" stroke="#00f0ff" stroke-width="2.5"/>
-  <path d="M58 56 C30 64 24 94 48 110" stroke="url(#steelGrad)" stroke-width="8" stroke-linecap="round" fill="none"/>
-  <path d="M70 56 C98 64 104 94 80 110" stroke="url(#steelGrad)" stroke-width="8" stroke-linecap="round" fill="none"/>
-  <path d="M64 60 L64 98" stroke="#00f0ff" stroke-width="4" stroke-linecap="round"/>
+  <!-- [光影层 1] 底层环境接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 底层锁定光环外环：顺时针自转瞄准刻度 (z=4, screen) -->
+  <!-- [光影层 2B] 底层锁定光环内环：逆时针自转磁力环 (z=5, screen) -->
+  <!-- [骨骼部件 1] 顶部万向旋转吊环 (z=15) -->
+  <!-- [骨骼部件 2] 中心伸缩等离子吸附探针 (z=22) -->
+  <!-- [骨骼部件 3] 左独立旋转机械爪指 (pivot 44,48) (z=30) -->
+  <!-- [骨骼部件 4] 右独立旋转机械爪指 (pivot 84,48) (z=30) -->
+  <!-- [骨骼部件 5] 中央液压铰链座 (z=36) -->
+  <!-- [光影层 3] 随爪指联动的受光边缘高光映射贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 4] 顶层等离子电火花与体积辉光冕贴图 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,68" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="70" rx="50" ry="44" fill="url(#ch-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,68" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="68" r="58" fill="url(#ch-aura)" />
+    <ellipse cx="64" cy="68" rx="54.5" ry="47.96" fill="none" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.72" />
+    <ellipse cx="64" cy="68" rx="49.3" ry="43.38" fill="none" stroke="#f59e0b" stroke-width="0.75" stroke-opacity="0.55" />
+    <polygon points="118.5,64 122.5,68 118.5,72 114.5,68" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="102.5" cy="106.5" r="2.0" fill="#fef08a" />
+    <polygon points="64,118.5 68,122.5 64,126.5 60,122.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="25.5" cy="106.5" r="2.0" fill="#fef08a" />
+    <polygon points="9.5,64 13.5,68 9.5,72 5.5,68" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="25.5" cy="29.5" r="2.0" fill="#fef08a" />
+    <polygon points="64,9.5 68,13.5 64,17.5 60,13.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="102.5" cy="29.5" r="2.0" fill="#fef08a" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,68" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <ellipse cx="64" cy="68" rx="41.8" ry="36.78" fill="none" stroke="#fef08a" stroke-width="1.0" stroke-opacity="0.68" />
+    <polygon points="105.8,65.4 108.4,68 105.8,70.6 103.2,68" fill="#fef08a" />
+    <polygon points="84.9,101.6 87.5,104.2 84.9,106.8 82.3,104.2" fill="#fef08a" />
+    <polygon points="43.1,101.6 45.7,104.2 43.1,106.8 40.5,104.2" fill="#fef08a" />
+    <polygon points="22.2,65.4 24.8,68 22.2,70.6 19.6,68" fill="#fef08a" />
+    <polygon points="43.1,29.2 45.7,31.8 43.1,34.4 40.5,31.8" fill="#fef08a" />
+    <polygon points="84.9,29.2 87.5,31.8 84.9,34.4 82.3,31.8" fill="#fef08a" />
+  </g>
+  <g id="part-swivel-ring" data-pivot="64,20" data-parent="root" data-z-index="15" data-blend="normal">
+    <circle cx="64" cy="18" r="10" fill="none" stroke="url(#ch-gold)" stroke-width="4.0" />
+    <circle cx="64" cy="18" r="10" fill="none" stroke="#fef08a" stroke-width="1.0" />
+    <rect x="56" y="24" width="16" height="10" rx="3" fill="url(#ch-obsidian)" stroke="#f59e0b" stroke-width="1.8" />
+    <circle cx="64" cy="29" r="2.5" fill="#f59e0b" />
+  </g>
+  <g id="part-center-probe" data-pivot="64,54" data-parent="part-claw-hub" data-z-index="22" data-blend="normal" data-motion="translate-y">
+    <path d="M58 54 L70 54 L68 78 L64 88 L60 78 Z" fill="url(#ch-obsidian)" stroke="#f59e0b" stroke-width="1.8" />
+    <polygon points="64,86 67,72 64,60 61,72" fill="#f59e0b" fill-opacity="0.85" />
+    <path d="M60 62 L68 62 M61 68 L67 68" stroke="#ffffff" stroke-width="0.8" />
+    <circle cx="64" cy="88" r="3.5" fill="url(#ch-joint)" />
+  </g>
+  <g id="part-claw-right" data-pivot="84,48" data-parent="part-claw-hub" data-z-index="30" data-blend="normal" data-motion="rotate-sym-right">
+    <!-- 外骨骼重甲爪臂 -->
+    <path d="M84 48 C108 52 116 78 104 104 L82 118 L88 104 L98 92 C104 78 100 64 84 58 Z" fill="url(#ch-obsidian)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="round" />
+    <!-- 内侧钛合金切割刃面 -->
+    <path d="M84 58 C100 64 104 78 98 92 L88 104 L82 118 L76 110 L90 90 C94 78 92 66 80 60 Z" fill="url(#ch-blade)" stroke="#f59e0b" stroke-width="1.2" />
+    <!-- 工程微刻线与液压管路 -->
+    <path d="M96 56 L106 72 L104 90 M100 76 L94 78" stroke="#f59e0b" stroke-width="0.7" stroke-opacity="0.75" />
+    <!-- 根部球头防穿帮轴承盖 (圆心严格在 84,48) -->
+    <circle cx="84" cy="48" r="9" fill="#1c130b" stroke="#fbbf24" stroke-width="2.0" />
+    <circle cx="84" cy="48" r="4.5" fill="url(#ch-joint)" />
+    <polygon points="84,41 89,48 84,55 79,48" fill="none" stroke="#fef08a" stroke-width="0.75" stroke-opacity="0.8" />
+    <circle cx="84" cy="48" r="1.8" fill="#ffffff" />
+  </g>
+  <g id="part-claw-left" data-pivot="44,48" data-parent="part-claw-hub" data-z-index="30" data-blend="normal" data-motion="rotate-sym-left">
+    <!-- 外骨骼重甲爪臂 -->
+    <path d="M44 48 C20 52 12 78 24 104 L46 118 L40 104 L30 92 C24 78 28 64 44 58 Z" fill="url(#ch-obsidian)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="round" />
+    <!-- 内侧钛合金切割刃面 -->
+    <path d="M44 58 C28 64 24 78 30 92 L40 104 L46 118 L52 110 L38 90 C34 78 36 66 48 60 Z" fill="url(#ch-blade)" stroke="#f59e0b" stroke-width="1.2" />
+    <!-- 工程微刻线与液压管路 -->
+    <path d="M32 56 L22 72 L24 90 M28 76 L34 78" stroke="#f59e0b" stroke-width="0.7" stroke-opacity="0.75" />
+    <!-- 根部球头防穿帮轴承盖 (圆心严格在 44,48) -->
+    <circle cx="44" cy="48" r="9" fill="#1c130b" stroke="#fbbf24" stroke-width="2.0" />
+    <circle cx="44" cy="48" r="4.5" fill="url(#ch-joint)" />
+  </g>
+  <g id="part-claw-hub" data-pivot="64,44" data-parent="part-swivel-ring" data-z-index="36" data-blend="normal">
+    <path d="M40 34 L88 34 L94 48 L80 58 L48 58 L34 48 Z" fill="url(#ch-obsidian)" stroke="#f59e0b" stroke-width="2.2" stroke-linejoin="round" />
+    <polygon points="46,38 82,38 86,46 76,54 52,54 42,46" fill="url(#ch-gold)" stroke="#fef08a" stroke-width="1.1" />
+    <path d="M50 42 L78 42 M54 49 L74 49" stroke="#120c06" stroke-width="0.8" />
+    <circle cx="64" cy="46" r="6" fill="#120c06" stroke="#f59e0b" stroke-width="1.6" />
+    <circle cx="64" cy="46" r="3" fill="url(#ch-joint)" />
+    <rect x="44" y="86" width="40" height="5" rx="1.5" fill="url(#hazard-stripes)" stroke="#fbbf24" stroke-width="0.7" />
+  </g>
+  <g id="part-light-rim-right" data-pivot="84,48" data-parent="part-claw-right" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M92 50 C110 58 112 82 102 102 L84 116" stroke="url(#ch-rim)" stroke-width="2.6" stroke-linecap="round" />
+  </g>
+  <g id="part-light-rim-left" data-pivot="44,48" data-parent="part-claw-left" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M36 50 C18 58 16 82 26 102 L44 116" stroke="url(#ch-rim)" stroke-width="2.6" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,88" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M46 112 L56 104 L54 96 L64 90 L74 96 L72 104 L82 112" stroke="#f59e0b" stroke-width="1.3" stroke-linecap="round" />
+    <circle cx="46" cy="114" r="2.2" fill="#ffffff" />
+    <circle cx="82" cy="114" r="2.2" fill="#ffffff" />
+    <circle cx="64" cy="90" r="2.5" fill="#fef08a" />
+  </g>
 </svg>

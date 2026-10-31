@@ -1,37 +1,105 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="item-tonic-rig" data-root-anchor="64,84" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="it-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181009" stop-opacity="0.72" />
+      <stop offset="65%" stop-color="#1c1209" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <radialGradient id="it-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.42" />
+      <stop offset="55%" stop-color="#10b981" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="it-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3f2e1e" />
+      <stop offset="55%" stop-color="#271a0c" />
+      <stop offset="100%" stop-color="#120c06" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <linearGradient id="it-plasma" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="25%" stop-color="#6ee7b7" />
+      <stop offset="65%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#d97706" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
+    <linearGradient id="it-gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#92400e" />
     </linearGradient>
-    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#064e3b"/>
-    </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <linearGradient id="it-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#34d399" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <rect x="52" y="16" width="24" height="16" rx="4" fill="url(#steelGrad)" stroke="#bae6fd" stroke-width="2"/>
-  <path d="M48 32 L80 32 L98 62 L98 104 C98 110 92 114 84 114 L44 114 C36 114 30 110 30 104 L30 62 Z" fill="url(#cyanArmor)" stroke="#e0f2fe" stroke-width="3"/>
-  <polygon points="68,48 50,76 64,76 58,100 78,70 64,70" fill="#fde047"/>
+  <!-- [光影层 1] 底层接触软阴影贴图 (z=1, multiply) -->
+  <g id="part-shadow-cast" data-pivot="64,104" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="104" rx="44" ry="16" fill="url(#it-shadow)" />
+  </g>
+  <!-- [光影层 2A] 底层超频生物电外光环 (z=4, screen) -->
+  <g id="part-aura-ring-outer" data-pivot="64,66" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="66" r="60" fill="url(#it-aura)" />
+    <ellipse cx="64" cy="66" rx="56.4" ry="49.63" fill="none" stroke="#34d399" stroke-width="1.4" stroke-opacity="0.72" />
+    <ellipse cx="64" cy="66" rx="51" ry="44.88" fill="none" stroke="#fbbf24" stroke-width="0.75" stroke-opacity="0.55" />
+    <polygon points="120.4,62 124.4,66 120.4,70 116.4,66" fill="#34d399" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="103.9" cy="105.9" r="2.0" fill="#fef08a" />
+    <polygon points="64,118.4 68,122.4 64,126.4 60,122.4" fill="#34d399" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="24.1" cy="105.9" r="2.0" fill="#fef08a" />
+    <polygon points="7.6,62 11.6,66 7.6,70 3.6,66" fill="#34d399" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="24.1" cy="26.1" r="2.0" fill="#fef08a" />
+    <polygon points="64,5.6 68,9.6 64,13.6 60,9.6" fill="#34d399" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="103.9" cy="26.1" r="2.0" fill="#fef08a" />
+  </g>
+  <!-- [光影层 2B] 底层逆时针能量涡流内环 (z=5, screen) -->
+  <g id="part-aura-ring-inner" data-pivot="64,66" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <ellipse cx="64" cy="66" rx="43.2" ry="38.02" fill="none" stroke="#fef08a" stroke-width="1.0" stroke-opacity="0.68" />
+    <polygon points="107.2,63.4 109.8,66 107.2,68.6 104.6,66" fill="#fef08a" />
+    <polygon points="85.6,100.8 88.2,103.4 85.6,106 83,103.4" fill="#fef08a" />
+    <polygon points="42.4,100.8 45,103.4 42.4,106 39.8,103.4" fill="#fef08a" />
+    <polygon points="20.8,63.4 23.4,66 20.8,68.6 18.2,66" fill="#fef08a" />
+    <polygon points="42.4,26 45,28.6 42.4,31.2 39.8,28.6" fill="#fef08a" />
+    <polygon points="85.6,26 88.2,28.6 85.6,31.2 83,28.6" fill="#fef08a" />
+  </g>
+  <!-- [骨骼部件 1] 装甲烧瓶底座与外壁护架 (z=18) -->
+  <g id="part-flask-chassis" data-pivot="64,72" data-parent="root" data-z-index="18" data-blend="normal">
+    <path d="M48 34 L80 34 L82 48 L100 76 C104 88 96 100 82 100 L46 100 C32 100 24 88 28 76 L46 48 Z" fill="url(#it-obsidian)" stroke="#34d399" stroke-width="2.2" stroke-linejoin="round" />
+    <!-- 底部防撞金托架 -->
+    <path d="M32 88 L96 88 L90 102 L38 102 Z" fill="url(#it-gold)" stroke="#fef08a" stroke-width="1.2" />
+  </g>
+  <!-- [骨骼部件 2] 内部晃动的高能生力荧光药液层 (z=26) -->
+  <g id="part-liquid-core" data-pivot="64,78" data-parent="part-flask-chassis" data-z-index="26" data-blend="normal" data-motion="rotate-swing">
+    <path d="M38 68 C50 62 78 72 90 66 L94 78 C96 86 90 94 80 94 L48 94 C38 94 32 86 34 78 Z" fill="url(#it-plasma)" stroke="#ffffff" stroke-width="1.2" />
+    <circle cx="52" cy="82" r="3.5" fill="#ffffff" fill-opacity="0.85" />
+    <circle cx="74" cy="78" r="2.5" fill="#ffffff" fill-opacity="0.85" />
+    <circle cx="64" cy="86" r="4.0" fill="#fef08a" fill-opacity="0.9" />
+  </g>
+  <!-- [骨骼部件 3] 顶部高压密封瓶塞与压力阀 (z=32) -->
+  <g id="part-valve-stopper" data-pivot="64,28" data-parent="part-flask-chassis" data-z-index="32" data-blend="normal">
+    <rect x="44" y="28" width="40" height="8" rx="3" fill="url(#it-gold)" stroke="#ffffff" stroke-width="1.3" />
+    <rect x="52" y="16" width="24" height="12" rx="4" fill="url(#it-obsidian)" stroke="#34d399" stroke-width="1.8" />
+    <circle cx="64" cy="22" r="3.5" fill="#34d399" />
+  </g>
+  <!-- [骨骼部件 4] 中央高能闪电增幅徽章 (z=38) -->
+  <g id="part-power-bolt" data-pivot="64,68" data-parent="part-flask-chassis" data-z-index="38" data-blend="normal" data-motion="pulse-breathe">
+    <polygon points="68,46 50,68 62,68 58,90 78,64 66,64" fill="#fde047" stroke="#ffffff" stroke-width="1.6" stroke-linejoin="round" />
+  </g>
+  <!-- [光影层 3] 烧瓶玻璃壁受光高光贴图 (z=45, plus-lighter) -->
+  <g id="part-light-rim-flask" data-pivot="64,72" data-parent="part-flask-chassis" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M48 36 L46 48 L30 76 C28 84 32 92 40 94" stroke="url(#it-rim)" stroke-width="2.8" stroke-linecap="round" />
+    <path d="M80 36 L82 48 L98 76" stroke="url(#it-rim)" stroke-width="2.0" stroke-linecap="round" />
+  </g>
+  <!-- [光影层 4] 顶层电弧游丝与上升能量气泡冕 (z=65, screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,66" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M26 52 L34 44 L30 36 L40 28 M102 52 L94 44 L98 36 L88 28" stroke="#34d399" stroke-width="1.3" stroke-linecap="round" />
+    <circle cx="40" cy="26" r="2.2" fill="#ffffff" />
+    <circle cx="88" cy="26" r="2.2" fill="#ffffff" />
+    <circle cx="64" cy="12" r="2.5" fill="#6ee7b7" />
+    <circle cx="44" cy="72" r="1.8" fill="#ffffff" />
+    <circle cx="84" cy="72" r="1.8" fill="#ffffff" />
+    <circle cx="56" cy="56" r="1.6" fill="#34d399" />
+    <circle cx="72" cy="56" r="1.6" fill="#34d399" />
+    <circle cx="36" cy="92" r="1.6" fill="#fbbf24" />
+    <circle cx="92" cy="92" r="1.6" fill="#fbbf24" />
+    <circle cx="64" cy="98" r="1.8" fill="#ffffff" />
+  </g>
 </svg>

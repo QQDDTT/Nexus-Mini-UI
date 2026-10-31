@@ -1,27 +1,157 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="util-spike-lv3-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <linearGradient id="spike3" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0%" stop-color="#0369a1"/>
-      <stop offset="50%" stop-color="#00f0ff"/>
-      <stop offset="85%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#ffffff"/>
+    <radialGradient id="usp3-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.78" />
+      <stop offset="65%" stop-color="#03181c" stop-opacity="0.38" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="usp3-aura-shock" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.38" />
+      <stop offset="50%" stop-color="#2dd4bf" stop-opacity="0.22" />
+      <stop offset="82%" stop-color="#ef4444" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="usp3-armor-root" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#450a0a" />
+      <stop offset="50%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#03181c" />
     </linearGradient>
+    <linearGradient id="usp3-gold-drill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="22%" stop-color="#fef08a" />
+      <stop offset="55%" stop-color="#fbbf24" />
+      <stop offset="85%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <radialGradient id="usp3-joint-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="42%" stop-color="#2dd4bf" />
+      <stop offset="78%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="usp3-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+      <stop offset="38%" stop-color="#fef08a" stop-opacity="0.88" />
+      <stop offset="75%" stop-color="#2dd4bf" stop-opacity="0.76" />
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <!-- Lv.3 超音速电磁骨矛阵：三联扇形磁轨发射巢 + 金青棱晶穿甲骨矛 + 音爆环 -->
-  <!-- 扇形左矛 -->
-  <polygon points="24,86 24,18 36,38 32,40 42,86" fill="url(#spike3)" stroke="#00f0ff" stroke-width="2"/>
-  <!-- 扇形右矛 -->
-  <polygon points="86,86 96,40 92,38 104,18 104,86" fill="url(#spike3)" stroke="#00f0ff" stroke-width="2"/>
-  <!-- 中央主电磁骨矛 -->
-  <polygon points="50,86 64,6 78,34 72,36 78,86" fill="url(#spike3)" stroke="#fbbf24" stroke-width="2.5"/>
-  <line x1="64" y1="8" x2="64" y2="86" stroke="#ffffff" stroke-width="3"/>
-  <!-- 超音速激波环 -->
-  <ellipse cx="64" cy="28" rx="18" ry="5" fill="none" stroke="#fbbf24" stroke-width="2"/>
-  <ellipse cx="64" cy="48" rx="28" ry="7" fill="none" stroke="#00f0ff" stroke-width="2"/>
-  <!-- 磁轨三联炮座 -->
-  <polygon points="16,80 112,80 102,110 26,110" fill="#082f49" stroke="#fbbf24" stroke-width="3"/>
-  <circle cx="36" cy="95" r="6" fill="#00f0ff"/>
-  <circle cx="64" cy="95" r="8" fill="#fbbf24"/>
-  <circle cx="92" cy="95" r="6" fill="#00f0ff"/>
+  <!-- [光影层 1] 环境接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 破甲冲击波外环：顺时针自转超速电磁激波环 (z=4, screen) -->
+  <!-- [光影层 2B] 破甲冲击波内环：逆时针自转电磁加速导轨环 (z=5, screen) -->
+  <!-- [骨骼部件 1] 电磁黑金重甲根座 (z=10) -->
+  <!-- [骨骼部件 2] 左侧电磁加速副护刺 (z=20) -->
+  <!-- [骨骼部件 3] 右侧电磁加速副护刺 (z=20) -->
+  <!-- [骨骼部件 4] 中心可高频旋转/伸缩的破甲金晶钻头主刺 (z=30) -->
+  <!-- [光影层 3] 钻刃受光高光贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 4] 顶层超速电磁破甲激波冕与电弧 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,74" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="74" rx="58" ry="52" fill="url(#usp3-cast-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#usp3-aura-shock)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M122.3,64 Q120.08,87.23 105.22,105.22 Q85.58,116.09 64,122.3 Q40.77,120.08 22.78,105.22 Q11.91,85.58 5.7,64 Q7.92,40.77 22.78,22.78 Q42.42,11.91 64,5.7 Q87.23,7.92 105.22,22.78 Q116.09,42.42 122.3,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M116.7,64 Q114.91,85.09 101.26,101.26 Q83.43,110.91 64,116.7 Q42.91,114.91 26.74,101.26 Q17.09,83.43 11.3,64 Q13.09,42.91 26.74,26.74 Q44.57,17.09 64,11.3 Q85.09,13.09 101.26,26.74 Q110.91,44.57 116.7,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="122.3" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="121.5" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="122.3" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="121.5" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="5.7" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="4.9" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="5.7" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="4.9" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M108.6,64 Q104.7,87.5 86.3,102.62 Q64,106.68 41.7,102.62 Q23.3,87.5 19.4,64 Q27.04,42.66 41.7,25.38 Q64,17 86.3,25.38 Q100.96,42.66 108.6,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="108.6" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="19.4" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="102.62" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="25.38" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="64" cy="19.4" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-spike-armor-root" data-pivot="64,88" data-parent="root" data-z-index="10" data-blend="normal">
+    <polygon points="64,52 114,70 102,110 64,122 26,110 14,70" fill="url(#usp3-armor-root)" stroke="#fbbf24" stroke-width="2.3" />
+    <polygon points="64,60 100,74 92,104 64,114 36,104 28,74" fill="#060b16" stroke="#2dd4bf" stroke-width="1.3" />
+    <path d="M28 74 L100 74 M34 90 L94 90 M64 60 L64 114" stroke="#fbbf24" stroke-width="0.8" stroke-opacity="0.8" />
+    <circle cx="64" cy="88" r="9" fill="#042326" stroke="#fbbf24" stroke-width="2.0" />
+    <circle cx="64" cy="88" r="4.8" fill="url(#usp3-joint-glow)" />
+  </g>
+  <g id="part-lv3-crown-1" data-pivot="64,64" data-parent="root" data-z-index="19" data-blend="normal">
+    <circle cx="64" cy="64" r="4.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.85" />
+  </g>
+  <g id="part-spike-guard-right" data-pivot="94,76" data-parent="part-spike-armor-root" data-z-index="20" data-blend="normal" data-motion="rotate-sym-right">
+    <polygon points="116,14 94,40 102,42 84,68 90,90 112,80 108,50 118,52" fill="url(#usp3-gold-drill)" stroke="#fef08a" stroke-width="2.1" stroke-linejoin="round" />
+    <polygon points="112,24 96,48 92,78 106,72" fill="#042326" stroke="#2dd4bf" stroke-width="1.1" />
+    <path d="M116 14 L94 76 M108 50 L92 60" stroke="#2dd4bf" stroke-width="0.85" />
+    <circle cx="94" cy="76" r="7.5" fill="#042326" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="94" cy="76" r="4" fill="url(#usp3-joint-glow)" />
+  </g>
+  <g id="part-spike-guard-left" data-pivot="34,76" data-parent="part-spike-armor-root" data-z-index="20" data-blend="normal" data-motion="rotate-sym-left">
+    <polygon points="12,14 34,40 26,42 44,68 38,90 16,80 20,50 10,52" fill="url(#usp3-gold-drill)" stroke="#fef08a" stroke-width="2.1" stroke-linejoin="round" />
+    <polygon points="16,24 32,48 36,78 22,72" fill="#042326" stroke="#2dd4bf" stroke-width="1.1" />
+    <path d="M12 14 L34 76 M20 50 L36 60" stroke="#2dd4bf" stroke-width="0.85" />
+    <circle cx="34" cy="76" r="7.5" fill="#042326" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="34" cy="76" r="4" fill="url(#usp3-joint-glow)" />
+  </g>
+  <g id="part-spike-drill" data-pivot="64,72" data-parent="part-spike-armor-root" data-z-index="30" data-blend="normal" data-motion="translate-y">
+    <polygon points="64,4 84,30 75,30 86,52 76,52 88,70 64,82 40,70 52,52 42,52 53,30 44,30" fill="url(#usp3-gold-drill)" stroke="#fef08a" stroke-width="2.4" stroke-linejoin="round" />
+    <polygon points="64,12 76,34 70,34 78,56 64,74 50,56 58,34 52,34" fill="#080f20" stroke="#2dd4bf" stroke-width="1.4" />
+    <line x1="64" y1="4" x2="64" y2="74" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+    <!-- 金晶螺旋破甲导槽 -->
+    <path d="M54 24 L74 32 M50 40 L78 48 M46 56 L82 64" stroke="#2dd4bf" stroke-width="1.5" stroke-linecap="round" />
+    <circle cx="64" cy="72" r="9.5" fill="#042326" stroke="#fef08a" stroke-width="2.0" />
+    <circle cx="64" cy="72" r="5" fill="url(#usp3-joint-glow)" />
+    <circle cx="57" cy="67" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="72" cy="76" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-lv3-synapse-node-1" data-pivot="43,85" data-parent="root" data-z-index="44" data-blend="normal">
+    <circle cx="43" cy="85" r="3.2" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="43" cy="85" r="1.3" fill="#fbbf24" />
+  </g>
+  <g id="part-lv3-synapse-node-2" data-pivot="43,43" data-parent="root" data-z-index="44" data-blend="normal">
+    <circle cx="43" cy="43" r="3.2" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="43" cy="43" r="1.3" fill="#fbbf24" />
+  </g>
+  <g id="part-light-rim-spike" data-pivot="64,72" data-parent="part-spike-drill" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <polyline points="40,70 52,52 42,52 53,30 44,30 64,4 84,30 75,30 86,52 76,52 88,70" stroke="url(#usp3-rim-light)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+    <polyline points="16,80 12,14 44,68" stroke="#2dd4bf" stroke-width="2.0" stroke-linecap="round" />
+    <polyline points="112,80 116,14 84,68" stroke="#2dd4bf" stroke-width="2.0" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <path d="M32 28 L48 12 L64 4 L80 12 L96 28" stroke="#2dd4bf" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="64" cy="5" r="3" fill="#ffffff" />
+    <circle cx="12" cy="14" r="2.8" fill="#fef08a" />
+    <circle cx="116" cy="14" r="2.8" fill="#fef08a" />
+    <circle cx="24" cy="44" r="2.2" fill="#2dd4bf" />
+    <circle cx="104" cy="44" r="2.2" fill="#2dd4bf" />
+    <circle cx="60.2" cy="118.9" r="1.5" fill="#d946ef" />
+    <circle cx="27.9" cy="105.5" r="1.5" fill="#d946ef" />
+    <circle cx="10.2" cy="75.4" r="1.5" fill="#d946ef" />
+    <circle cx="102.9" cy="80.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="93.8" cy="93.8" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="80.1" cy="102.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="64" cy="106.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="47.9" cy="102.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="34.2" cy="93.8" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="25.1" cy="80.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="21.9" cy="64" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="25.1" cy="47.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="34.2" cy="34.2" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="47.9" cy="25.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="64" cy="21.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+  </g>
 </svg>
-

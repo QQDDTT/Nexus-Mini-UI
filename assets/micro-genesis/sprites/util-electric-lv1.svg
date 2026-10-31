@@ -1,18 +1,120 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="util-electric-lv1-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <radialGradient id="elec1" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="45%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#0369a1"/>
+    <radialGradient id="ue1-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.65" />
+      <stop offset="65%" stop-color="#03181c" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="ue1-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.34" />
+      <stop offset="55%" stop-color="#0d9488" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="ue1-insulator-base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c4a6e" />
+      <stop offset="55%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#021619" />
+    </linearGradient>
+    <linearGradient id="ue1-capacitor-plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7dd3fc" />
+      <stop offset="40%" stop-color="#0d9488" />
+      <stop offset="85%" stop-color="#082f49" />
+      <stop offset="100%" stop-color="#021619" />
+    </linearGradient>
+    <radialGradient id="ue1-tesla-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="45%" stop-color="#2dd4bf" />
+      <stop offset="85%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#082f49" />
+    </radialGradient>
+    <linearGradient id="ue1-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
+      <stop offset="45%" stop-color="#2dd4bf" stop-opacity="0.82" />
+      <stop offset="100%" stop-color="#5eead4" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
     </radialGradient>
   </defs>
-  <!-- Lv.1 微弱发电囊：青蓝球形生物电容囊 + 3道外溢电弧丝 -->
-  <circle cx="64" cy="64" r="38" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6 5"/>
-  <circle cx="64" cy="64" r="24" fill="url(#elec1)" stroke="#00f0ff" stroke-width="2.5"/>
-  <!-- 3道离散电弧 -->
-  <polyline points="64,40 58,26 68,20 64,10" fill="none" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <polyline points="42,76 28,82 32,92 20,98" fill="none" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <polyline points="86,76 100,82 96,92 108,98" fill="none" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="64" cy="64" r="8" fill="#ffffff"/>
+  <!-- [光影层 1] 环境接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 雷神高压电场正转外环 (z=4, screen) -->
+  <!-- [光影层 2B] 雷神高压电场反转内环 (z=5, screen) -->
+  <!-- [骨骼部件 1] 生物绝缘底座 (z=10) -->
+  <!-- [骨骼部件 2] 左侧双极放电电容盘 (z=20) -->
+  <!-- [骨骼部件 3] 右侧双极放电电容盘 (z=20) -->
+  <!-- [骨骼部件 4] 中央旋转特斯拉电枢核 (z=30) -->
+  <!-- [光影层 3] 电极受光高光贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 4] 顶层游走闪电弧 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,68" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="68" rx="52" ry="46" fill="url(#ue1-cast-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#ue1-aura-field)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M122.3,64 Q120.08,87.23 105.22,105.22 Q85.58,116.09 64,122.3 Q40.77,120.08 22.78,105.22 Q11.91,85.58 5.7,64 Q7.92,40.77 22.78,22.78 Q42.42,11.91 64,5.7 Q87.23,7.92 105.22,22.78 Q116.09,42.42 122.3,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M116.7,64 Q114.91,85.09 101.26,101.26 Q83.43,110.91 64,116.7 Q42.91,114.91 26.74,101.26 Q17.09,83.43 11.3,64 Q13.09,42.91 26.74,26.74 Q44.57,17.09 64,11.3 Q85.09,13.09 101.26,26.74 Q110.91,44.57 116.7,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="122.3" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="121.5" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="122.3" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="121.5" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="5.7" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="4.9" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="5.7" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="4.9" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M108.6,64 Q104.7,87.5 86.3,102.62 Q64,106.68 41.7,102.62 Q23.3,87.5 19.4,64 Q27.04,42.66 41.7,25.38 Q64,17 86.3,25.38 Q100.96,42.66 108.6,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="108.6" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="19.4" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="102.62" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="25.38" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="64" cy="19.4" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-electric-insulator-base" data-pivot="64,64" data-parent="root" data-z-index="10" data-blend="normal">
+    <polygon points="64,22 104,44 104,84 64,106 24,84 24,44" fill="url(#ue1-insulator-base)" stroke="#5eead4" stroke-width="2.0" />
+    <polygon points="64,30 94,48 94,80 64,98 34,80 34,48" fill="#071122" stroke="#2dd4bf" stroke-width="1.1" />
+    <path d="M34 48 L94 80 M94 48 L34 80 M64 30 L64 98" stroke="#2dd4bf" stroke-width="0.65" stroke-opacity="0.6" />
+  </g>
+  <g id="part-electric-capacitor-right" data-pivot="90,64" data-parent="part-electric-insulator-base" data-z-index="20" data-blend="normal" data-motion="rotate-sym-right">
+    <path d="M84 26 C110 32 114 96 84 102 L80 86 C100 80 100 48 80 42 Z" fill="url(#ue1-capacitor-plate)" stroke="#7dd3fc" stroke-width="2.0" stroke-linejoin="round" />
+    <path d="M102 48 L86 52 M104 64 L88 64 M102 80 L86 76" stroke="#ffffff" stroke-width="1.0" stroke-opacity="0.8" />
+    <circle cx="90" cy="64" r="6.5" fill="#042326" stroke="#2dd4bf" stroke-width="1.6" />
+    <circle cx="90" cy="64" r="3.2" fill="#ffffff" />
+  </g>
+  <g id="part-electric-capacitor-left" data-pivot="38,64" data-parent="part-electric-insulator-base" data-z-index="20" data-blend="normal" data-motion="rotate-sym-left">
+    <path d="M44 26 C18 32 14 96 44 102 L48 86 C28 80 28 48 48 42 Z" fill="url(#ue1-capacitor-plate)" stroke="#7dd3fc" stroke-width="2.0" stroke-linejoin="round" />
+    <path d="M26 48 L42 52 M24 64 L40 64 M26 80 L42 76" stroke="#ffffff" stroke-width="1.0" stroke-opacity="0.8" />
+    <circle cx="38" cy="64" r="6.5" fill="#042326" stroke="#2dd4bf" stroke-width="1.6" />
+    <circle cx="38" cy="64" r="3.2" fill="#ffffff" />
+  </g>
+  <g id="part-electric-tesla-core" data-pivot="64,64" data-parent="part-electric-insulator-base" data-z-index="30" data-blend="normal" data-motion="spin-cw">
+    <circle cx="64" cy="64" r="20" fill="url(#ue1-tesla-core)" stroke="#ffffff" stroke-width="2.2" />
+    <polygon points="64,38 70,56 88,64 70,72 64,90 58,72 40,64 58,56" fill="#2dd4bf" fill-opacity="0.75" stroke="#ffffff" stroke-width="1.1" />
+    <circle cx="64" cy="64" r="7" fill="#ffffff" />
+    <circle cx="57" cy="59" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="72" cy="68" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-light-rim-electric" data-pivot="64,64" data-parent="part-electric-insulator-base" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M44 26 C20 34 16 94 44 102" stroke="url(#ue1-rim-light)" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M84 26 C108 34 112 94 84 102" stroke="url(#ue1-rim-light)" stroke-width="2.5" stroke-linecap="round" />
+    <path fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.72" d="M85,64 Q85.62,72.95 78.85,78.85 Q71.3,81.63 64,85 Q55.05,85.62 49.15,78.85 Q46.37,71.3 43,64 Q42.38,55.05 49.15,49.15 Q56.7,46.37 64,43 Q72.95,42.38 78.85,49.15 Q81.63,56.7 85,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <polyline points="38,40 50,32 56,42 64,22 72,42 78,32 90,40" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    <polyline points="38,88 50,96 56,86 64,106 72,86 78,96 90,88" stroke="#7dd3fc" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="64" cy="22" r="2.8" fill="#ffffff" />
+    <circle cx="64" cy="106" r="2.8" fill="#ffffff" />
+    <circle cx="22" cy="64" r="2.2" fill="#2dd4bf" />
+    <circle cx="106" cy="64" r="2.2" fill="#2dd4bf" />
+  </g>
 </svg>
-

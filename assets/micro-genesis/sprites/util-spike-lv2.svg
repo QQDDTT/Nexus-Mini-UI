@@ -1,21 +1,124 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="util-spike-lv2-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <linearGradient id="spike2" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0%" stop-color="#0284c7"/>
-      <stop offset="55%" stop-color="#bae6fd"/>
-      <stop offset="100%" stop-color="#ffffff"/>
+    <radialGradient id="usp2-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.72" />
+      <stop offset="65%" stop-color="#03181c" stop-opacity="0.34" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="usp2-aura-shock" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.34" />
+      <stop offset="55%" stop-color="#ef4444" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="usp2-armor-root" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#115e59" />
+      <stop offset="50%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#03181c" />
     </linearGradient>
+    <linearGradient id="usp2-barb-drill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="28%" stop-color="#5eead4" />
+      <stop offset="68%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#063136" />
+    </linearGradient>
+    <radialGradient id="usp2-joint-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="45%" stop-color="#2dd4bf" />
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="usp2-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
+      <stop offset="42%" stop-color="#2dd4bf" stop-opacity="0.82" />
+      <stop offset="82%" stop-color="#ef4444" stop-opacity="0.68" />
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <!-- Lv.2 穿甲双联棘刺器：双膛气压骨鞘 + 两枚带放血倒钩的穿甲骨矛 -->
-  <!-- 左穿甲骨矛（带倒钩） -->
-  <polygon points="36,84 46,14 56,36 50,38 56,84" fill="url(#spike2)" stroke="#00f0ff" stroke-width="2.2"/>
-  <polygon points="36,36 46,14 42,38" fill="#e0f2fe"/>
-  <!-- 右穿甲骨矛（带倒钩） -->
-  <polygon points="72,84 82,14 92,36 86,38 92,84" fill="url(#spike2)" stroke="#00f0ff" stroke-width="2.2"/>
-  <polygon points="72,36 82,14 78,38" fill="#e0f2fe"/>
-  <!-- 双联气压发射鞘 -->
-  <rect x="24" y="76" width="80" height="30" rx="14" fill="#0c4a6e" stroke="#00f0ff" stroke-width="2.5"/>
-  <circle cx="46" cy="91" r="8" fill="#00f0ff"/>
-  <circle cx="82" cy="91" r="8" fill="#00f0ff"/>
+  <!-- [光影层 1] 环境接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 破甲冲击波外环：顺时针自转倒钩激波环 (z=4, screen) -->
+  <!-- [光影层 2B] 破甲冲击波内环：逆时针自转音爆环 (z=5, screen) -->
+  <!-- [骨骼部件 1] 双联重甲根座 (z=10) -->
+  <!-- [骨骼部件 2] 左侧带赤红倒钩副护刺 (z=20) -->
+  <!-- [骨骼部件 3] 右侧带赤红倒钩副护刺 (z=20) -->
+  <!-- [骨骼部件 4] 中心可高频旋转/伸缩的破甲钻头主刺 (z=30) -->
+  <!-- [光影层 3] 钻刃受光高光贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 4] 顶层破甲冲击波锥与赤红倒钩星芒 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,74" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="74" rx="54" ry="48" fill="url(#usp2-cast-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#usp2-aura-shock)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M122.3,64 Q120.08,87.23 105.22,105.22 Q85.58,116.09 64,122.3 Q40.77,120.08 22.78,105.22 Q11.91,85.58 5.7,64 Q7.92,40.77 22.78,22.78 Q42.42,11.91 64,5.7 Q87.23,7.92 105.22,22.78 Q116.09,42.42 122.3,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M116.7,64 Q114.91,85.09 101.26,101.26 Q83.43,110.91 64,116.7 Q42.91,114.91 26.74,101.26 Q17.09,83.43 11.3,64 Q13.09,42.91 26.74,26.74 Q44.57,17.09 64,11.3 Q85.09,13.09 101.26,26.74 Q110.91,44.57 116.7,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="122.3" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="121.5" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="122.3" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="121.5" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="5.7" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="4.9" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="5.7" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="4.9" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M108.6,64 Q104.7,87.5 86.3,102.62 Q64,106.68 41.7,102.62 Q23.3,87.5 19.4,64 Q27.04,42.66 41.7,25.38 Q64,17 86.3,25.38 Q100.96,42.66 108.6,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="108.6" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="19.4" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="102.62" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="25.38" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="64" cy="19.4" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-spike-armor-root" data-pivot="64,88" data-parent="root" data-z-index="10" data-blend="normal">
+    <polygon points="64,56 108,72 98,108 64,118 30,108 20,72" fill="url(#usp2-armor-root)" stroke="#2dd4bf" stroke-width="2.2" />
+    <polygon points="64,64 96,76 88,102 64,110 40,102 32,76" fill="#070d1e" stroke="#ef4444" stroke-width="1.2" />
+    <path d="M32 76 L96 76 M38 90 L90 90 M64 64 L64 110" stroke="#2dd4bf" stroke-width="0.7" stroke-opacity="0.7" />
+    <circle cx="64" cy="88" r="8" fill="#042326" stroke="#ef4444" stroke-width="1.8" />
+    <circle cx="64" cy="88" r="4" fill="url(#usp2-joint-glow)" />
+  </g>
+  <g id="part-spike-guard-right" data-pivot="90,76" data-parent="part-spike-armor-root" data-z-index="20" data-blend="normal" data-motion="rotate-sym-right">
+    <polygon points="110,22 92,44 98,46 82,68 86,88 106,78 104,52 112,54" fill="url(#usp2-barb-drill)" stroke="#5eead4" stroke-width="2.0" stroke-linejoin="round" />
+    <path d="M110 22 L90 76 M104 52 L88 62" stroke="#ffffff" stroke-width="0.85" />
+    <circle cx="90" cy="76" r="7" fill="#042326" stroke="#2dd4bf" stroke-width="1.6" />
+    <circle cx="90" cy="76" r="3.5" fill="url(#usp2-joint-glow)" />
+  </g>
+  <g id="part-spike-guard-left" data-pivot="38,76" data-parent="part-spike-armor-root" data-z-index="20" data-blend="normal" data-motion="rotate-sym-left">
+    <polygon points="18,22 36,44 30,46 46,68 42,88 22,78 24,52 16,54" fill="url(#usp2-barb-drill)" stroke="#5eead4" stroke-width="2.0" stroke-linejoin="round" />
+    <path d="M18 22 L38 76 M24 52 L40 62" stroke="#ffffff" stroke-width="0.85" />
+    <circle cx="38" cy="76" r="7" fill="#042326" stroke="#2dd4bf" stroke-width="1.6" />
+    <circle cx="38" cy="76" r="3.5" fill="url(#usp2-joint-glow)" />
+  </g>
+  <g id="part-spike-drill" data-pivot="64,72" data-parent="part-spike-armor-root" data-z-index="30" data-blend="normal" data-motion="translate-y">
+    <polygon points="64,4 82,36 74,36 84,66 64,78 44,66 54,36 46,36" fill="url(#usp2-barb-drill)" stroke="#f8fafc" stroke-width="2.3" stroke-linejoin="round" />
+    <polygon points="64,14 74,40 70,40 76,62 64,72 52,62 58,40 54,40" fill="#063136" stroke="#2dd4bf" stroke-width="1.2" />
+    <line x1="64" y1="6" x2="64" y2="70" stroke="#ffffff" stroke-width="1.9" stroke-linecap="round" />
+    <!-- 螺旋钻纹 -->
+    <path d="M56 26 L72 34 M52 44 L76 52 M50 56 L78 64" stroke="#ef4444" stroke-width="1.4" stroke-linecap="round" />
+    <circle cx="64" cy="72" r="8.5" fill="#042326" stroke="#2dd4bf" stroke-width="1.9" />
+    <circle cx="64" cy="72" r="4.2" fill="url(#usp2-joint-glow)" />
+    <circle cx="57" cy="67" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="72" cy="76" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-light-rim-spike" data-pivot="64,72" data-parent="part-spike-drill" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <polyline points="44,66 54,36 46,36 64,4 82,36 74,36 84,66" stroke="url(#usp2-rim-light)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+    <polyline points="22,78 18,22 46,68" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round" />
+    <polyline points="106,78 110,22 82,68" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <path d="M40 22 L64 4 L88 22" stroke="#2dd4bf" stroke-width="1.5" stroke-linecap="round" />
+    <circle cx="64" cy="4" r="2" fill="#ffffff" />
+    <circle cx="18" cy="22" r="2.5" fill="#ef4444" />
+    <circle cx="110" cy="22" r="2.5" fill="#ef4444" />
+  </g>
 </svg>
-

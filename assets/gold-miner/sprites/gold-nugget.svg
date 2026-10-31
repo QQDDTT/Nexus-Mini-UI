@@ -1,37 +1,107 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="gold-nugget-rig" data-root-anchor="64,68" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="gn-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181009" stop-opacity="0.72" />
+      <stop offset="65%" stop-color="#1c1209" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <radialGradient id="gn-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.38" />
+      <stop offset="60%" stop-color="#d97706" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="gn-base-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#451a03" />
+      <stop offset="55%" stop-color="#3f2e1e" />
+      <stop offset="100%" stop-color="#120c06" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <linearGradient id="gn-gold-main" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="40%" stop-color="#fbbf24" />
+      <stop offset="80%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#451a03" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
+    <linearGradient id="gn-gold-bright" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#d97706" />
     </linearGradient>
-    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#064e3b"/>
-    </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <linearGradient id="gn-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#fde047" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <polygon points="64,22 102,38 110,78 82,108 38,104 18,70 32,34" fill="url(#goldArmor)" stroke="#fef9c3" stroke-width="3" stroke-linejoin="round"/>
-  <polygon points="52,36 86,46 74,76 42,68" fill="#fef08a" fill-opacity="0.55"/>
-  <circle cx="84" cy="44" r="5" fill="#ffffff"/>
+  <!-- [光影层 1] 底层环境接触软阴影贴图 (z=1, multiply) -->
+  <g id="part-shadow-cast" data-pivot="64,84" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="86" rx="48" ry="26" fill="url(#gn-shadow)" />
+  </g>
+  <!-- [光影层 2A] 底层富矿辐射外环 (z=4, screen) -->
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#gn-aura)" />
+    <ellipse cx="64" cy="64" rx="58.3" ry="51.3" fill="none" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.72" />
+    <ellipse cx="64" cy="64" rx="52.7" ry="46.38" fill="none" stroke="#f59e0b" stroke-width="0.75" stroke-opacity="0.55" />
+    <polygon points="122.3,60 126.3,64 122.3,68 118.3,64" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="105.2" cy="105.2" r="2.0" fill="#fef08a" />
+    <polygon points="64,118.3 68,122.3 64,126.3 60,122.3" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="22.8" cy="105.2" r="2.0" fill="#fef08a" />
+    <polygon points="5.7,60 9.7,64 5.7,68 1.7,64" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="22.8" cy="22.8" r="2.0" fill="#fef08a" />
+    <polygon points="64,1.7 68,5.7 64,9.7 60,5.7" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="105.2" cy="22.8" r="2.0" fill="#fef08a" />
+  </g>
+  <!-- [光影层 2B] 底层富矿脉冲内环 (z=5, screen) -->
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <ellipse cx="64" cy="64" rx="44.6" ry="39.25" fill="none" stroke="#fef08a" stroke-width="1.0" stroke-opacity="0.68" />
+    <polygon points="108.6,61.4 111.2,64 108.6,66.6 106,64" fill="#fef08a" />
+    <polygon points="86.3,100 88.9,102.6 86.3,105.2 83.7,102.6" fill="#fef08a" />
+    <polygon points="41.7,100 44.3,102.6 41.7,105.2 39.1,102.6" fill="#fef08a" />
+    <polygon points="19.4,61.4 22,64 19.4,66.6 16.8,64" fill="#fef08a" />
+    <polygon points="41.7,22.8 44.3,25.4 41.7,28 39.1,25.4" fill="#fef08a" />
+    <polygon points="86.3,22.8 88.9,25.4 86.3,28 83.7,25.4" fill="#fef08a" />
+  </g>
+  <!-- [骨骼部件 1] 底层黑曜岩床母岩基座 (z=15) -->
+  <g id="part-bedrock-matrix" data-pivot="64,74" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="22,74 36,52 92,50 106,72 94,96 34,98" fill="url(#gn-base-dark)" stroke="#b45309" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M34 74 L64 84 L94 72" stroke="#fbbf24" stroke-width="0.9" stroke-opacity="0.65" />
+  </g>
+  <!-- [骨骼部件 2] 左侧副金块晶簇 (z=24) -->
+  <g id="part-nugget-lobe-left" data-pivot="42,66" data-parent="part-bedrock-matrix" data-z-index="24" data-blend="normal">
+    <circle cx="42" cy="66" r="8" fill="#451a03" stroke="#fbbf24" stroke-width="1.4" />
+    <polygon points="20,66 32,42 54,46 58,72 36,86" fill="url(#gn-gold-main)" stroke="#fde047" stroke-width="2.0" stroke-linejoin="round" />
+    <polygon points="26,62 34,46 50,50 44,68" fill="url(#gn-gold-bright)" stroke="#ffffff" stroke-width="0.9" />
+    <path d="M32 42 L44 68 L36 86 M20 66 L44 68" stroke="#fef08a" stroke-width="0.7" stroke-opacity="0.75" />
+  </g>
+  <!-- [骨骼部件 3] 右侧副金块晶簇 (z=26) -->
+  <g id="part-nugget-lobe-right" data-pivot="86,68" data-parent="part-bedrock-matrix" data-z-index="26" data-blend="normal">
+    <circle cx="86" cy="68" r="8" fill="#451a03" stroke="#fbbf24" stroke-width="1.4" />
+    <polygon points="72,48 96,44 108,66 96,88 70,82" fill="url(#gn-gold-main)" stroke="#fde047" stroke-width="2.0" stroke-linejoin="round" />
+    <polygon points="76,52 94,48 102,64 86,70" fill="url(#gn-gold-bright)" stroke="#ffffff" stroke-width="0.9" />
+    <path d="M96,44 L86,70 L96,88 M108,66 L86,70" stroke="#fef08a" stroke-width="0.7" stroke-opacity="0.75" />
+  </g>
+  <!-- [骨骼部件 4] 中央高纯度天然金核主晶 (z=34) -->
+  <g id="part-nugget-core" data-pivot="64,62" data-parent="part-bedrock-matrix" data-z-index="34" data-blend="normal">
+    <polygon points="40,56 54,30 78,32 90,58 78,86 48,84" fill="url(#gn-gold-main)" stroke="#fef08a" stroke-width="2.4" stroke-linejoin="round" />
+    <polygon points="48,54 56,36 74,38 82,56 66,68" fill="url(#gn-gold-bright)" stroke="#ffffff" stroke-width="1.2" />
+    <path d="M54 30 L66 68 L78 86 M40 56 L66 68 L90 58 M48 84 L66 68" stroke="#ffffff" stroke-width="0.75" stroke-opacity="0.8" />
+    <circle cx="62" cy="48" r="2.5" fill="#ffffff" />
+    <polygon points="64,55 69,62 64,69 59,62" fill="none" stroke="#fef08a" stroke-width="0.75" stroke-opacity="0.8" />
+    <circle cx="64" cy="62" r="1.8" fill="#ffffff" />
+  </g>
+  <!-- [光影层 3] 金块切面受光边缘高光贴图 (z=45, plus-lighter) -->
+  <g id="part-light-rim-facets" data-pivot="64,62" data-parent="part-nugget-core" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M32 42 L54 30 L78 32 L96 44" stroke="url(#gn-rim)" stroke-width="2.8" stroke-linecap="round" />
+    <path d="M48 54 L66 68 L82 56" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
+  </g>
+  <!-- [光影层 4] 顶层闪耀十字星芒与金尘冕 (z=65, screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,62" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M56 26 L56 38 M50 32 L62 32" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
+    <path d="M88 42 L88 50 M84 46 L92 46" stroke="#fef08a" stroke-width="1.4" stroke-linecap="round" />
+    <circle cx="34" cy="40" r="2.0" fill="#fde047" />
+    <circle cx="96" cy="76" r="1.8" fill="#ffffff" />
+    <circle cx="48" cy="24" r="1.6" fill="#f59e0b" />
+    <circle cx="80" cy="26" r="1.6" fill="#ffffff" />
+    <circle cx="28" cy="84" r="1.5" fill="#fbbf24" />
+    <circle cx="102" cy="54" r="1.5" fill="#fef08a" />
+  </g>
 </svg>

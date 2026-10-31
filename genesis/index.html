@@ -3,30 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#030712" />
+  <meta name="theme-color" content="#03181c" />
   <title>微界演化：基因沙盘 · MICRO-GENESIS | Nexus-Mini</title>
   <link rel="icon" type="image/svg+xml" href="../assets/micro-genesis/icon.svg" />
+  <link rel="stylesheet" href="../assets/micro-genesis/style.css" />
   <style>
     :root {
       /* 【5】50% 基础底色体系 (Base Void) */
-      --mg-bg-void: #030712;
-      --mg-bg-petri: radial-gradient(circle at 50% 50%, #071026 0%, #030712 85%);
-      --mg-fluid-mesh: rgba(0, 240, 255, 0.025);
+      --mg-bg-void: #03181c;
+      --mg-bg-petri: radial-gradient(circle at 50% 50%, #0a3a40 0%, #03181c 85%);
+      --mg-fluid-mesh: rgba(45, 212, 191, 0.04);
       --mg-ambient-vignette: rgba(3, 7, 18, 0.85);
 
       /* 【3】30% 结构层与细胞体 (Structural Panels & Biomass) */
-      --mg-glass-panel: rgba(13, 20, 36, 0.82);
-      --mg-glass-card: rgba(15, 23, 42, 0.76);
+      --mg-glass-panel: rgba(6, 44, 48, 0.84);
+      --mg-glass-card: rgba(10, 58, 64, 0.78);
       --mg-glass-blur: blur(12px);
-      --mg-border-subtle: rgba(0, 240, 255, 0.18);
-      --mg-border-hover: rgba(0, 240, 255, 0.48);
+      --mg-border-subtle: rgba(45, 212, 191, 0.28);
+      --mg-border-hover: rgba(45, 212, 191, 0.62);
       --mg-organ-skeleton: #94a3b8;
       --mg-text-primary: #f8fafc;
       --mg-text-secondary: #94a3b8;
       --mg-text-muted: #64748b;
 
       /* 【1】10% 绝对焦点点睛 (Accent Focus) */
-      --mg-accent-cyan: #00f0ff;
+      --mg-accent-cyan: #2dd4bf;
       --mg-accent-gold: #fbbf24;
       --mg-accent-crimson: #ef4444;
       --mg-accent-emerald: #10b981;
@@ -2577,7 +2578,8 @@
             const st = editorDraft.statsSummary;
             const isSonarOnly = st.maxEarLv > 0 && st.maxEyeLv === 0;
 
-            ctx.clearRect(0, 0, w, h);
+            ctx.shadowBlur = 0;
+        ctx.clearRect(0, 0, w, h);
             ctx.fillStyle = isSonarOnly
               ? '#02050d'
               : (editorPreviewIsNight ? '#030816' : '#06142b');
@@ -4465,6 +4467,7 @@
         const hasEye = st.maxEyeLv > 0;
         const hasEar = st.maxEarLv > 0;
 
+        ctx.shadowBlur = 0;
         ctx.clearRect(0, 0, w, h);
 
         // 广角冷冻物镜缩放 (VIEWPORT_ZOOM = 0.68) + 镜头严格锁定玩家当前控制的个体为中心

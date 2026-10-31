@@ -1,7 +1,8 @@
-const CACHE_NAME = 'nexus-mini-portal-v3.7';
+const CACHE_NAME = 'nexus-mini-portal-v5.0-chroma-muse';
 const CORE_ASSETS = [
   './',
   './index.html',
+  './style.css',
   './manifest.json',
   './icon.svg',
   './shared/nexus-sdk.js',

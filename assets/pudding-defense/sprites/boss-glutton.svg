@@ -1,39 +1,256 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="boss-glutton-rig" data-root-anchor="64,104" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <!-- 1. 烘焙暖棕桌面接触软阴影 -->
+    <radialGradient id="bg-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#23120b" stop-opacity="0.72" />
+      <stop offset="65%" stop-color="#23120b" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#23120b" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <!-- 2. 糖果甜点暖光场 -->
+    <radialGradient id="bg-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fb7185" stop-opacity="0.38" />
+      <stop offset="55%" stop-color="#fbbf24" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#23120b" stop-opacity="0" />
+    </radialGradient>
+    <!-- 3. 金黄威化饼干茶托材质 -->
+    <linearGradient id="bg-wafer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <!-- 4. 香草白巧奶油糖霜材质 -->
+    <linearGradient id="bg-frosting" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="55%" stop-color="#fff1f2" />
+      <stop offset="100%" stop-color="#fbcfe8" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
+    <!-- 5. 焦糖布丁SSS次表面散射材质 -->
+    <radialGradient id="bg-custard" cx="38%" cy="32%" r="68%">
+      <stop offset="0%" stop-color="#fef9c3" />
+      <stop offset="48%" stop-color="#fbbf24" />
+      <stop offset="85%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#92400e" />
+    </radialGradient>
+    <!-- 6. 草莓果冻SSS次表面散射材质 -->
+    <radialGradient id="bg-berry" cx="38%" cy="32%" r="68%">
+      <stop offset="0%" stop-color="#ffe4e6" />
+      <stop offset="45%" stop-color="#f472b6" />
+      <stop offset="85%" stop-color="#db2777" />
+      <stop offset="100%" stop-color="#9d174d" />
+    </radialGradient>
+    <!-- 7. 丝滑琥珀焦糖淋面材质 -->
+    <linearGradient id="bg-caramel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="55%" stop-color="#78350f" />
+      <stop offset="100%" stop-color="#451a03" />
     </linearGradient>
-    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#064e3b"/>
+    <!-- 8. 果冻水滴边缘高光贴图 -->
+    <linearGradient id="bg-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
+      <stop offset="50%" stop-color="#fef08a" stop-opacity="0.82" />
+      <stop offset="100%" stop-color="#f472b6" stop-opacity="0" />
     </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <linearGradient id="bg-roar-cone" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.52" />
+      <stop offset="50%" stop-color="#f472b6" stop-opacity="0.24" />
+      <stop offset="100%" stop-color="#f472b6" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <circle cx="64" cy="68" r="46" fill="url(#crimsonArmor)" stroke="#fbbf24" stroke-width="3.5"/>
-  <polygon points="36,30 48,12 64,28 80,12 92,30" fill="url(#goldArmor)" stroke="#fef9c3" stroke-width="2"/>
-  <path d="M36 76 Q64 102 92 76 Z" fill="#450a0a" stroke="#fca5a5" stroke-width="2"/>
-  <circle cx="46" cy="54" r="8" fill="#fde047"/>
-  <circle cx="82" cy="54" r="8" fill="#fde047"/>
+  <g id="part-shadow-cast" data-pivot="64,108" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="108" rx="60" ry="20" fill="url(#bg-shadow)" />
+    <ellipse cx="64" cy="106" rx="46" ry="14" fill="#23120b" fill-opacity="0.45" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,66" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="66" r="60" fill="url(#bg-aura)" />
+    <path fill="none" stroke="#fbbf24" stroke-width="1.6" stroke-opacity="0.78" d="M120.4,66 Q121.76,81.48 112.84,94.2 Q106.28,108.28 92.2,114.84 Q79.48,123.76 64,122.4 Q48.52,123.76 35.8,114.84 Q21.72,108.28 15.16,94.2 Q6.24,81.48 7.6,66 Q6.24,50.52 15.16,37.8 Q21.72,23.72 35.8,17.16 Q48.52,8.24 64,9.6 Q79.48,8.24 92.2,17.16 Q106.28,23.72 112.84,37.8 Q121.76,50.52 120.4,66 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#f472b6" stroke-width="0.9" stroke-opacity="0.62" d="M115,66 Q116.55,80.08 108.17,91.5 Q102.47,104.47 89.5,110.17 Q78.08,118.55 64,117 Q49.92,118.55 38.5,110.17 Q25.53,104.47 19.83,91.5 Q11.45,80.08 13,66 Q11.45,51.92 19.83,40.5 Q25.53,27.53 38.5,21.83 Q49.92,13.45 64,15 Q78.08,13.45 89.5,21.83 Q102.47,27.53 108.17,40.5 Q116.55,51.92 115,66 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 120.4 61.5 Q 120.4 66 124.9 66 Q 120.4 66 120.4 70.5 Q 120.4 66 115.9 66 Q 120.4 66 120.4 61.5 Z" fill="#ffffff" stroke="#fbbf24" stroke-width="0.7" />
+    <path d="M 64 117.9 Q 64 122.4 68.5 122.4 Q 64 122.4 64 126.9 Q 64 122.4 59.5 122.4 Q 64 122.4 64 117.9 Z" fill="#ffffff" stroke="#fbbf24" stroke-width="0.7" />
+    <path d="M 7.6 61.5 Q 7.6 66 12.1 66 Q 7.6 66 7.6 70.5 Q 7.6 66 3.1 66 Q 7.6 66 7.6 61.5 Z" fill="#ffffff" stroke="#fbbf24" stroke-width="0.7" />
+    <path d="M 64 5.1 Q 64 9.6 68.5 9.6 Q 64 9.6 64 14.1 Q 64 9.6 59.5 9.6 Q 64 9.6 64 5.1 Z" fill="#ffffff" stroke="#fbbf24" stroke-width="0.7" />
+    <circle cx="117.4" cy="66" r="1.5" fill="#fef08a" />
+    <circle cx="114.8" cy="82.5" r="1.5" fill="#f472b6" />
+    <circle cx="107.2" cy="97.4" r="1.5" fill="#fef08a" />
+    <circle cx="95.4" cy="109.2" r="1.5" fill="#f472b6" />
+    <circle cx="80.5" cy="116.8" r="1.5" fill="#fef08a" />
+    <circle cx="64" cy="119.4" r="1.5" fill="#f472b6" />
+    <circle cx="47.5" cy="116.8" r="1.5" fill="#fef08a" />
+    <circle cx="32.6" cy="109.2" r="1.5" fill="#f472b6" />
+    <circle cx="20.8" cy="97.4" r="1.5" fill="#fef08a" />
+    <circle cx="13.2" cy="82.5" r="1.5" fill="#f472b6" />
+    <circle cx="10.6" cy="66" r="1.5" fill="#fef08a" />
+    <circle cx="13.2" cy="49.5" r="1.5" fill="#f472b6" />
+    <circle cx="20.8" cy="34.6" r="1.5" fill="#fef08a" />
+    <circle cx="32.6" cy="22.8" r="1.5" fill="#f472b6" />
+    <circle cx="47.5" cy="15.2" r="1.5" fill="#fef08a" />
+    <circle cx="64" cy="12.6" r="1.5" fill="#f472b6" />
+    <circle cx="80.5" cy="15.2" r="1.5" fill="#fef08a" />
+    <circle cx="95.4" cy="22.8" r="1.5" fill="#f472b6" />
+    <circle cx="107.2" cy="34.6" r="1.5" fill="#fef08a" />
+    <circle cx="114.8" cy="49.5" r="1.5" fill="#f472b6" />
+    <circle cx="103.9" cy="105.9" r="2.6" fill="#fff1f2" stroke="#f472b6" stroke-width="0.75" />
+    <circle cx="24.1" cy="105.9" r="2.6" fill="#fff1f2" stroke="#f472b6" stroke-width="0.75" />
+    <circle cx="24.1" cy="26.1" r="2.6" fill="#fff1f2" stroke="#f472b6" stroke-width="0.75" />
+    <circle cx="103.9" cy="26.1" r="2.6" fill="#fff1f2" stroke="#f472b6" stroke-width="0.75" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,66" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fbcfe8" stroke-width="1.1" stroke-opacity="0.74" d="M105.8,66 Q104.84,84.91 93.56,97.56 Q80.91,108.84 64,109.8 Q47.09,108.84 34.44,97.56 Q23.16,84.91 22.2,66 Q23.16,51.09 34.44,38.44 Q47.09,27.16 64,26.2 Q80.91,27.16 93.56,38.44 Q104.84,51.09 105.8,66 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="105.8" cy="66" r="2.2" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.65" />
+    <circle cx="84.9" cy="104.2" r="2.2" fill="#fbbf24" stroke="#fbcfe8" stroke-width="0.65" />
+    <circle cx="43.1" cy="104.2" r="2.2" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.65" />
+    <circle cx="22.2" cy="66" r="2.2" fill="#fbbf24" stroke="#fbcfe8" stroke-width="0.65" />
+    <circle cx="43.1" cy="31.8" r="2.2" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.65" />
+    <circle cx="84.9" cy="31.8" r="2.2" fill="#fbbf24" stroke="#fbcfe8" stroke-width="0.65" />
+    <path d="M93.56,93.56 Q95.06,96.06 97.56,97.56 Q95.06,99.06 93.56,101.56 Q92.06,99.06 89.56,97.56 Q92.06,96.06 93.56,93.56 Z" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.75" />
+    <path d="M34.44,93.56 Q35.94,96.06 38.44,97.56 Q35.94,99.06 34.44,101.56 Q32.94,99.06 30.44,97.56 Q32.94,96.06 34.44,93.56 Z" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.75" />
+    <path d="M34.44,34.44 Q35.94,36.94 38.44,38.44 Q35.94,39.94 34.44,42.44 Q32.94,39.94 30.44,38.44 Q32.94,36.94 34.44,34.44 Z" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.75" />
+    <path d="M93.56,34.44 Q95.06,36.94 97.56,38.44 Q95.06,39.94 93.56,42.44 Q92.06,39.94 89.56,38.44 Q92.06,36.94 93.56,34.44 Z" fill="#ffffff" stroke="#fbcfe8" stroke-width="0.75" />
+  </g>
+  <g id="part-tail-base" data-pivot="92,88" data-parent="part-torso-abdomen" data-z-index="10" data-blend="normal" data-motion="rotate-swing">
+    <circle cx="92" cy="88" r="7.5" fill="#b45309" stroke="#fbbf24" stroke-width="1.6" />
+    <path d="M90 80 C102 76 114 78 114 88 C114 96 102 98 90 94 Z" fill="url(#bg-berry)" stroke="#ffe4e6" stroke-width="1.8" />
+    <circle cx="85.6" cy="83.2" r="1.15" fill="#ff8da1" stroke="#4a1c11" stroke-width="0.65" />
+  </g>
+  <g id="part-tail-tip" data-pivot="112,84" data-parent="part-tail-base" data-z-index="11" data-blend="normal" data-motion="rotate-swing">
+    <circle cx="112" cy="84" r="5" fill="#fef3c7" stroke="#f472b6" stroke-width="1.4" />
+    <path d="M110 84 C116 70 126 70 124 84 C122 94 112 92 110 84 Z" fill="url(#bg-custard)" stroke="#ffffff" stroke-width="1.5" />
+    <ellipse cx="108.8" cy="86.4" rx="2.0" ry="0.9" transform="rotate(35 108.8 86.4)" fill="#fde047" stroke="#4a1c11" stroke-width="0.6" />
+  </g>
+  <g id="part-dorsal-fin-left" data-pivot="34,46" data-parent="part-torso-thorax" data-z-index="13" data-blend="normal" data-motion="rotate-sym-left">
+    <circle cx="34" cy="46" r="5.5" fill="#b45309" stroke="#fbbf24" stroke-width="1.4" />
+    <path d="M36 44 C22 36 12 28 20 24 C28 20 36 32 36 44 Z" fill="url(#bg-custard)" stroke="#fef08a" stroke-width="1.6" />
+    <circle cx="34" cy="43.6" r="1.65" fill="#a7f3d0" stroke="#4a1c11" stroke-width="0.65" />
+  </g>
+  <g id="part-dorsal-fin-right" data-pivot="94,46" data-parent="part-torso-thorax" data-z-index="13" data-blend="normal" data-motion="rotate-sym-right">
+    <circle cx="94" cy="46" r="5.5" fill="#b45309" stroke="#fbbf24" stroke-width="1.4" />
+    <path d="M92 44 C106 36 116 28 108 24 C100 20 92 32 92 44 Z" fill="url(#bg-custard)" stroke="#fef08a" stroke-width="1.6" />
+    <ellipse cx="97.2" cy="50.8" rx="2.0" ry="0.9" transform="rotate(105 97.2 50.8)" fill="#fffbeb" stroke="#4a1c11" stroke-width="0.6" />
+  </g>
+  <g id="part-leg-left-upper" data-pivot="42,88" data-parent="part-torso-abdomen" data-z-index="15" data-blend="normal" data-motion="walk-cycle-left">
+    <circle cx="42" cy="88" r="7.5" fill="#9d174d" stroke="#fbbf24" stroke-width="1.6" />
+    <path d="M32 86 C30 96 32 104 42 104 C50 104 52 96 50 86 Z" fill="url(#bg-berry)" stroke="#fbbf24" stroke-width="2.0" />
+    <circle cx="48.4" cy="88" r="1.4" fill="#f472b6" stroke="#4a1c11" stroke-width="0.65" />
+  </g>
+  <g id="part-leg-right-upper" data-pivot="86,88" data-parent="part-torso-abdomen" data-z-index="15" data-blend="normal" data-motion="walk-cycle-right">
+    <circle cx="86" cy="88" r="7.5" fill="#9d174d" stroke="#fbbf24" stroke-width="1.6" />
+    <path d="M78 86 C76 96 78 104 86 104 C96 104 98 96 96 86 Z" fill="url(#bg-berry)" stroke="#fbbf24" stroke-width="2.0" />
+    <ellipse cx="79.6" cy="83.2" rx="2.0" ry="0.9" transform="rotate(175 79.6 83.2)" fill="#fb923c" stroke="#4a1c11" stroke-width="0.6" />
+  </g>
+  <g id="part-leg-left-claw" data-pivot="40,100" data-parent="part-leg-left-upper" data-z-index="16" data-blend="normal">
+    <path d="M26 102 C26 98 54 98 54 102 C56 110 46 112 40 112 C34 112 24 110 26 102 Z" fill="url(#bg-wafer)" stroke="#ffffff" stroke-width="1.5" />
+    <circle cx="32" cy="108" r="2.2" fill="#fff1f2" />
+    <circle cx="40" cy="109" r="2.2" fill="#fff1f2" />
+    <circle cx="48" cy="108" r="2.2" fill="#fff1f2" />
+    <circle cx="36.8" cy="102.4" r="1.15" fill="#ff8da1" stroke="#4a1c11" stroke-width="0.65" />
+  </g>
+  <g id="part-leg-right-claw" data-pivot="88,100" data-parent="part-leg-right-upper" data-z-index="16" data-blend="normal">
+    <path d="M74 102 C74 98 102 98 102 102 C104 110 94 112 88 112 C82 112 72 110 74 102 Z" fill="url(#bg-wafer)" stroke="#ffffff" stroke-width="1.5" />
+    <circle cx="80" cy="108" r="2.2" fill="#fff1f2" />
+    <circle cx="88" cy="109" r="2.2" fill="#fff1f2" />
+    <circle cx="96" cy="108" r="2.2" fill="#fff1f2" />
+    <ellipse cx="88" cy="97.6" rx="2.0" ry="0.9" transform="rotate(65 88 97.6)" fill="#fde047" stroke="#4a1c11" stroke-width="0.6" />
+  </g>
+  <!-- 贪吃草莓果冻龙王巨腹 -->
+  <g id="part-torso-abdomen" data-pivot="64,76" data-parent="root" data-z-index="20" data-blend="normal">
+    <ellipse cx="64" cy="74" rx="42" ry="30" fill="url(#bg-berry)" stroke="#fbbf24" stroke-width="2.4" />
+    <ellipse cx="64" cy="78" rx="28" ry="18" fill="url(#bg-frosting)" stroke="#f472b6" stroke-width="1.6" />
+    <path d="M44 74 Q64 80 84 74 M48 82 Q64 88 80 82" stroke="#f472b6" stroke-width="0.9" stroke-linecap="round" />
+    <circle cx="48" cy="70" r="2.0" fill="#fbbf24" />
+    <circle cx="80" cy="70" r="2.0" fill="#fbbf24" />
+    <circle cx="52" cy="84" r="2.0" fill="#34d399" />
+    <circle cx="76" cy="84" r="2.0" fill="#34d399" />
+    <circle cx="67.2" cy="80.8" r="1.65" fill="#a7f3d0" stroke="#4a1c11" stroke-width="0.65" />
+  </g>
+  <!-- 皇家奶油围嘴胸甲 -->
+  <g id="part-torso-thorax" data-pivot="64,56" data-parent="part-torso-abdomen" data-z-index="24" data-blend="normal">
+    <path d="M26 56 C26 30 102 30 102 56 L94 74 C76 80 52 80 34 74 Z" fill="url(#bg-berry)" stroke="#fef08a" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M40 56 C40 52 88 52 88 56 C86 72 76 82 64 82 C52 82 42 72 40 56 Z" fill="url(#bg-frosting)" stroke="#fbbf24" stroke-width="2.0" />
+    <circle cx="64" cy="68" r="6.0" fill="#fb7185" stroke="#ffffff" stroke-width="1.2" />
+    <ellipse cx="52" cy="44" rx="6.0" ry="2.8" transform="rotate(-22 52 44)" fill="#ffffff" fill-opacity="0.94" />
+    <circle cx="45" cy="50" r="1.9" fill="#ffffff" fill-opacity="0.88" />
+    <ellipse cx="70.4" cy="56" rx="2.0" ry="0.9" transform="rotate(135 70.4 56)" fill="#fffbeb" stroke="#4a1c11" stroke-width="0.6" />
+  </g>
+  <g id="part-arm-left-upper" data-pivot="26,58" data-parent="part-torso-thorax" data-z-index="28" data-blend="normal" data-motion="rotate-sym-left">
+    <circle cx="26" cy="58" r="7.5" fill="#9d174d" stroke="#fbbf24" stroke-width="1.8" />
+    <path d="M26 56 C12 58 6 68 12 78 C18 82 28 74 28 66 Z" fill="url(#bg-berry)" stroke="#fef08a" stroke-width="2.0" />
+    <ellipse cx="18" cy="64" rx="4.2" ry="2.0" transform="rotate(-20 18 64)" fill="#ffffff" fill-opacity="0.88" />
+  </g>
+  <g id="part-arm-right-claw" data-pivot="102,58" data-parent="part-torso-thorax" data-z-index="28" data-blend="normal" data-motion="rotate-sym-right">
+    <circle cx="102" cy="58" r="7.5" fill="#9d174d" stroke="#fbbf24" stroke-width="1.8" />
+    <path d="M102 56 C116 58 122 68 116 78 C110 82 100 74 100 66 Z" fill="url(#bg-berry)" stroke="#fef08a" stroke-width="2.0" />
+    <path d="M114 66 C118 52 124 32 118 34 C112 36 108 52 112 66 Z" fill="url(#bg-frosting)" stroke="#f472b6" stroke-width="1.6" />
+  </g>
+  <!-- 黄金甜品三叉餐叉 -->
+  <g id="part-weapon-golden-fork" data-pivot="12,72" data-parent="part-arm-left-upper" data-z-index="30" data-blend="normal" data-motion="rotate-swing">
+    <circle cx="12" cy="72" r="5.5" fill="#b45309" stroke="#f472b6" stroke-width="1.5" />
+    <rect x="9" y="28" width="6" height="56" rx="3" fill="url(#bg-custard)" stroke="#ffffff" stroke-width="1.2" />
+    <path d="M2 28 C2 16 4 10 6 10 C8 10 8 22 10 22 C11 22 11 8 12 8 C13 8 13 22 14 22 C16 22 16 10 18 10 C20 10 22 16 22 28 Z" fill="url(#bg-custard)" stroke="#ffffff" stroke-width="1.4" stroke-linejoin="round" />
+  </g>
+  <g id="part-mouth-pharynx" data-pivot="64,54" data-parent="part-torso-thorax" data-z-index="32" data-blend="normal">
+    <path d="M36 48 C46 38 82 38 92 48 L86 66 C74 74 54 74 42 66 Z" fill="#451a03" stroke="#fb7185" stroke-width="2.0" stroke-linejoin="round" />
+    <circle cx="64" cy="58" r="7.5" fill="#fbbf24" stroke="#ffffff" stroke-width="1.4" />
+  </g>
+  <g id="part-mandible-left" data-pivot="38,56" data-parent="part-mouth-pharynx" data-z-index="35" data-blend="normal" data-motion="rotate-sym-left">
+    <circle cx="38" cy="56" r="6.5" fill="#9d174d" stroke="#fbbf24" stroke-width="1.6" />
+    <path d="M38 56 C42 46 56 46 60 56 C58 66 44 68 38 56 Z" fill="url(#bg-frosting)" stroke="#fbbf24" stroke-width="1.6" />
+  </g>
+  <g id="part-mandible-right" data-pivot="90,56" data-parent="part-mouth-pharynx" data-z-index="35" data-blend="normal" data-motion="rotate-sym-right">
+    <circle cx="90" cy="56" r="6.5" fill="#9d174d" stroke="#fbbf24" stroke-width="1.6" />
+    <path d="M90 56 C86 46 72 46 68 56 C70 66 84 68 90 56 Z" fill="url(#bg-frosting)" stroke="#fbbf24" stroke-width="1.6" />
+  </g>
+  <g id="part-eye-left" data-pivot="48,38" data-parent="part-torso-thorax" data-z-index="38" data-blend="normal" data-motion="track-target">
+    <circle cx="48" cy="38" r="7.5" fill="#451a03" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="48" cy="38" r="4.2" fill="#fde047" />
+    <circle cx="48" cy="38" r="2.0" fill="#fb7185" />
+    <circle cx="46" cy="36" r="1.5" fill="#ffffff" />
+  </g>
+  <g id="part-eye-right" data-pivot="80,38" data-parent="part-torso-thorax" data-z-index="38" data-blend="normal" data-motion="track-target">
+    <circle cx="80" cy="38" r="7.5" fill="#451a03" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="80" cy="38" r="4.2" fill="#fde047" />
+    <circle cx="80" cy="38" r="2.0" fill="#fb7185" />
+    <circle cx="78" cy="36" r="1.5" fill="#ffffff" />
+  </g>
+  <g id="part-boss-crown" data-pivot="64,24" data-parent="part-torso-thorax" data-z-index="40" data-blend="normal" data-motion="translate-y">
+    <path d="M42 28 C40 16 48 12 54 20 C58 10 70 10 74 20 C80 12 88 16 86 28 C76 32 52 32 42 28 Z" fill="url(#bg-custard)" stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" />
+    <circle cx="64" cy="18" r="4.0" fill="#f472b6" stroke="#ffffff" stroke-width="1.2" />
+    <circle cx="50" cy="22" r="2.5" fill="#34d399" />
+    <circle cx="78" cy="22" r="2.5" fill="#34d399" />
+  </g>
+  <g id="part-light-cone-roar" data-pivot="64,58" data-parent="part-mouth-pharynx" data-z-index="43" data-blend="screen" style="mix-blend-mode: screen">
+    <path d="M44 68 C52 56 76 56 84 68 L96 92 C80 98 48 98 32 92 Z" fill="url(#bg-roar-cone)" />
+  </g>
+  <g id="part-light-rim-boss" data-pivot="64,56" data-parent="part-torso-thorax" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M26 56 C26 30 102 30 102 56" stroke="url(#bg-rim)" stroke-width="3.2" stroke-linecap="round" />
+    <path d="M38 56 Q48 46 58 48 M90 56 Q80 46 70 48" stroke="#ffffff" stroke-width="2.0" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,66" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M20 38 Q26 30 34 16 M108 38 Q102 30 94 16" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round" />
+    <circle cx="34" cy="14" r="2.5" fill="#ffffff" />
+    <circle cx="94" cy="14" r="2.5" fill="#ffffff" />
+    <circle cx="64" cy="4" r="2.2" fill="#fef08a" />
+    <circle cx="22" cy="52" r="1.8" fill="#fbbf24" />
+    <circle cx="106" cy="52" r="1.8" fill="#fbbf24" />
+    <circle cx="18" cy="84" r="1.8" fill="#f472b6" />
+    <circle cx="110" cy="84" r="1.8" fill="#f472b6" />
+    <circle cx="36" cy="98" r="1.6" fill="#34d399" />
+    <circle cx="92" cy="98" r="1.6" fill="#34d399" />
+    <path d="M28 24 Q32 28 36 24 M92 24 Q96 28 100 24" stroke="#fbbf24" stroke-width="0.75" stroke-linecap="round" />
+    <path d="M16 64 Q20 68 24 64 M104 64 Q108 68 112 64" stroke="#fbbf24" stroke-width="0.75" stroke-linecap="round" />
+    <path d="M26 92 Q30 96 34 92 M94 92 Q98 96 102 92" stroke="#f472b6" stroke-width="0.75" stroke-linecap="round" />
+    <circle cx="44" cy="12" r="1.5" fill="#ffffff" />
+    <circle cx="84" cy="12" r="1.5" fill="#ffffff" />
+    <circle cx="28" cy="40" r="1.5" fill="#fef08a" />
+    <circle cx="100" cy="40" r="1.5" fill="#fef08a" />
+    <circle cx="28" cy="76" r="1.5" fill="#fbcfe8" />
+    <circle cx="100" cy="76" r="1.5" fill="#fbcfe8" />
+    <circle cx="48" cy="108" r="1.5" fill="#fef08a" />
+    <circle cx="80" cy="108" r="1.5" fill="#fef08a" />
+    <circle cx="64" cy="112" r="1.8" fill="#ffffff" />
+    <circle cx="14" cy="46" r="1.4" fill="#34d399" />
+    <circle cx="114" cy="46" r="1.4" fill="#34d399" />
+    <circle cx="14" cy="72" r="1.4" fill="#fbbf24" />
+    <circle cx="114" cy="72" r="1.4" fill="#fbbf24" />
+    <circle cx="54" cy="8" r="1.4" fill="#f472b6" />
+    <circle cx="74" cy="8" r="1.4" fill="#f472b6" />
+  </g>
 </svg>

@@ -1,39 +1,103 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="item-clover-rig" data-root-anchor="64,68" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="ic-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181009" stop-opacity="0.68" />
+      <stop offset="65%" stop-color="#1c1209" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <radialGradient id="ic-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.42" />
+      <stop offset="55%" stop-color="#fbbf24" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="ic-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7" />
+      <stop offset="45%" stop-color="#10b981" />
+      <stop offset="85%" stop-color="#047857" />
+      <stop offset="100%" stop-color="#120c06" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <linearGradient id="ic-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#b45309" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
-    </linearGradient>
-    <linearGradient id="bioGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#064e3b"/>
-    </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <linearGradient id="ic-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#6ee7b7" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <circle cx="48" cy="48" r="20" fill="url(#bioGreen)" stroke="#a7f3d0" stroke-width="2.5"/>
-  <circle cx="80" cy="48" r="20" fill="url(#bioGreen)" stroke="#a7f3d0" stroke-width="2.5"/>
-  <circle cx="48" cy="80" r="20" fill="url(#bioGreen)" stroke="#a7f3d0" stroke-width="2.5"/>
-  <circle cx="80" cy="80" r="20" fill="url(#bioGreen)" stroke="#a7f3d0" stroke-width="2.5"/>
-  <circle cx="64" cy="64" r="10" fill="#fde047"/>
+  <!-- [光影层 1] 底层环境软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 底层欧皇翡翠幸运外光环 (z=4, screen) -->
+  <!-- [光影层 2B] 底层黄金星盘内环 (z=5, screen) -->
+  <!-- [骨骼部件 1] 金丝根茎基座 (z=15) -->
+  <!-- [骨骼部件 2] 上方翡翠晶叶 (z=24) -->
+  <!-- [骨骼部件 3] 下方翡翠晶叶 (z=24) -->
+  <!-- [骨骼部件 4] 左方翡翠晶叶 (z=26) -->
+  <!-- [骨骼部件 5] 右方翡翠晶叶 (z=26) -->
+  <!-- [骨骼部件 6] 中央黄金星核铰链座 (z=36) -->
+  <!-- [光影层 3] 四叶草晶面受光高光贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 4] 顶层幸运星芒与金翠粒子冕 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,96" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="96" rx="44" ry="18" fill="url(#ic-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,60" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="60" r="58" fill="url(#ic-aura)" />
+    <ellipse cx="64" cy="60" rx="54.5" ry="47.96" fill="none" stroke="#34d399" stroke-width="1.4" stroke-opacity="0.72" />
+    <ellipse cx="64" cy="60" rx="49.3" ry="43.38" fill="none" stroke="#fbbf24" stroke-width="0.75" stroke-opacity="0.55" />
+    <polygon points="118.5,56 122.5,60 118.5,64 114.5,60" fill="#34d399" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="102.5" cy="98.5" r="2.0" fill="#fef08a" />
+    <polygon points="64,110.5 68,114.5 64,118.5 60,114.5" fill="#34d399" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="25.5" cy="98.5" r="2.0" fill="#fef08a" />
+    <polygon points="9.5,56 13.5,60 9.5,64 5.5,60" fill="#34d399" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="25.5" cy="21.5" r="2.0" fill="#fef08a" />
+    <polygon points="64,1.5 68,5.5 64,9.5 60,5.5" fill="#34d399" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="102.5" cy="21.5" r="2.0" fill="#fef08a" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,60" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <ellipse cx="64" cy="60" rx="41.8" ry="36.78" fill="none" stroke="#fef08a" stroke-width="1.0" stroke-opacity="0.68" />
+    <polygon points="105.8,57.4 108.4,60 105.8,62.6 103.2,60" fill="#fef08a" />
+    <polygon points="84.9,93.6 87.5,96.2 84.9,98.8 82.3,96.2" fill="#fef08a" />
+    <polygon points="43.1,93.6 45.7,96.2 43.1,98.8 40.5,96.2" fill="#fef08a" />
+    <polygon points="22.2,57.4 24.8,60 22.2,62.6 19.6,60" fill="#fef08a" />
+    <polygon points="43.1,21.2 45.7,23.8 43.1,26.4 40.5,23.8" fill="#fef08a" />
+    <polygon points="84.9,21.2 87.5,23.8 84.9,26.4 82.3,23.8" fill="#fef08a" />
+  </g>
+  <g id="part-clover-stem" data-pivot="64,60" data-parent="root" data-z-index="15" data-blend="normal">
+    <path d="M64 60 C64 82 72 96 84 108 L76 112 C62 98 58 82 60 60 Z" fill="url(#ic-gold)" stroke="#fef08a" stroke-width="1.6" />
+  </g>
+  <g id="part-leaf-bottom" data-pivot="64,66" data-parent="part-clover-hub" data-z-index="24" data-blend="normal" data-motion="rotate-swing">
+    <circle cx="64" cy="66" r="6" fill="#064e3b" stroke="#fbbf24" stroke-width="1.2" />
+    <path d="M64 66 L44 90 C40 102 54 108 64 98 C74 108 88 102 84 90 Z" fill="url(#ic-emerald)" stroke="#fde047" stroke-width="2.0" stroke-linejoin="round" />
+    <path d="M64 70 L64 96 M54 90 L64 82 L74 90" stroke="#ffffff" stroke-width="0.85" stroke-opacity="0.8" />
+  </g>
+  <g id="part-leaf-top" data-pivot="64,54" data-parent="part-clover-hub" data-z-index="24" data-blend="normal" data-motion="rotate-swing">
+    <circle cx="64" cy="54" r="6" fill="#064e3b" stroke="#fbbf24" stroke-width="1.2" />
+    <path d="M64 54 L44 30 C40 18 54 12 64 22 C74 12 88 18 84 30 Z" fill="url(#ic-emerald)" stroke="#fde047" stroke-width="2.0" stroke-linejoin="round" />
+    <path d="M64 50 L64 24 M54 30 L64 38 L74 30" stroke="#ffffff" stroke-width="0.85" stroke-opacity="0.8" />
+  </g>
+  <g id="part-leaf-right" data-pivot="70,60" data-parent="part-clover-hub" data-z-index="26" data-blend="normal" data-motion="rotate-sym-right">
+    <circle cx="70" cy="60" r="6" fill="#064e3b" stroke="#fbbf24" stroke-width="1.2" />
+    <path d="M70 60 L94 40 C106 36 112 50 102 60 C112 70 106 84 94 80 Z" fill="url(#ic-emerald)" stroke="#fde047" stroke-width="2.0" stroke-linejoin="round" />
+    <path d="M74 60 L100 60 M94 50 L86 60 L94 70" stroke="#ffffff" stroke-width="0.85" stroke-opacity="0.8" />
+  </g>
+  <g id="part-leaf-left" data-pivot="58,60" data-parent="part-clover-hub" data-z-index="26" data-blend="normal" data-motion="rotate-sym-left">
+    <circle cx="58" cy="60" r="6" fill="#064e3b" stroke="#fbbf24" stroke-width="1.2" />
+    <path d="M58 60 L34 40 C22 36 16 50 26 60 C16 70 22 84 34 80 Z" fill="url(#ic-emerald)" stroke="#fde047" stroke-width="2.0" stroke-linejoin="round" />
+    <path d="M54 60 L28 60 M34 50 L42 60 L34 70" stroke="#ffffff" stroke-width="0.85" stroke-opacity="0.8" />
+  </g>
+  <g id="part-clover-hub" data-pivot="64,60" data-parent="part-clover-stem" data-z-index="36" data-blend="normal">
+    <circle cx="64" cy="60" r="10" fill="url(#ic-gold)" stroke="#ffffff" stroke-width="1.8" />
+    <polygon points="64,52 67,57 72,60 67,63 64,68 61,63 56,60 61,57" fill="#34d399" />
+  </g>
+  <g id="part-light-rim-leaves" data-pivot="64,60" data-parent="part-clover-hub" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M44 30 C40 18 54 12 64 22 C74 12 88 18 84 30" stroke="url(#ic-rim)" stroke-width="2.6" stroke-linecap="round" />
+    <path d="M34 40 C22 36 16 50 26 60 M94 40 C106 36 112 50 102 60" stroke="url(#ic-rim)" stroke-width="2.4" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,60" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M32 22 L32 32 M27 27 L37 27 M96 22 L96 32 M91 27 L101 27" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="64" cy="12" r="2.2" fill="#fde047" />
+    <circle cx="20" cy="60" r="2.0" fill="#6ee7b7" />
+    <circle cx="108" cy="60" r="2.0" fill="#6ee7b7" />
+  </g>
 </svg>

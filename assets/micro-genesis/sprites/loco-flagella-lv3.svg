@@ -1,29 +1,138 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="loco-flagella-lv3-rig" data-root-anchor="64,26" data-has-aura="true">
   <defs>
-    <linearGradient id="flag3" x1="0" y1="0.5" x2="1" y2="0.5">
-      <stop offset="0%" stop-color="#fbbf24"/>
-      <stop offset="35%" stop-color="#00f0ff"/>
-      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.15"/>
+    <radialGradient id="lf3-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.78" />
+      <stop offset="68%" stop-color="#03181c" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="lf3-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.35" />
+      <stop offset="50%" stop-color="#2dd4bf" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="lf3-base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#115e59" />
+      <stop offset="45%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#03181c" />
     </linearGradient>
-    <radialGradient id="rotor3" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="45%" stop-color="#fbbf24"/>
-      <stop offset="85%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#082f49"/>
+    <linearGradient id="lf3-strand" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#fbbf24" />
+      <stop offset="70%" stop-color="#2dd4bf" />
+      <stop offset="100%" stop-color="#115e59" />
+    </linearGradient>
+    <linearGradient id="lf3-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+      <stop offset="45%" stop-color="#fbbf24" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
     </radialGradient>
   </defs>
-  <!-- Lv.3 超频涡轮鞭毛簇：ATP 涡轮转子环 + 四联等离子鞭毛束 -->
-  <!-- 涡轮护环 -->
-  <ellipse cx="26" cy="64" rx="16" ry="32" fill="#082f49" stroke="#fbbf24" stroke-width="2.5"/>
-  <ellipse cx="26" cy="64" rx="11" ry="24" fill="url(#rotor3)" stroke="#00f0ff" stroke-width="2"/>
-  <!-- 四股高频鞭毛丝 -->
-  <path d="M 38 46 C 60 22, 82 70, 104 38 C 114 26, 120 40, 126 34" fill="none" stroke="url(#flag3)" stroke-width="4.5" stroke-linecap="round"/>
-  <path d="M 40 58 C 62 42, 84 86, 106 58 C 116 46, 122 58, 126 54" fill="none" stroke="url(#flag3)" stroke-width="5.5" stroke-linecap="round"/>
-  <path d="M 40 70 C 62 86, 84 42, 106 70 C 116 82, 122 70, 126 74" fill="none" stroke="url(#flag3)" stroke-width="5.5" stroke-linecap="round"/>
-  <path d="M 38 82 C 60 106, 82 58, 104 90 C 114 102, 120 88, 126 94" fill="none" stroke="url(#flag3)" stroke-width="4.5" stroke-linecap="round"/>
-  <!-- 涡流光环 -->
-  <ellipse cx="68" cy="64" rx="6" ry="22" fill="none" stroke="#00f0ff" stroke-width="2" stroke-dasharray="4 3"/>
-  <ellipse cx="98" cy="64" rx="5" ry="16" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-dasharray="3 3"/>
-  <circle cx="26" cy="64" r="6" fill="#ffffff"/>
+  <!-- 量子波导四轴轴承基座 -->
+  <!-- 第 1 段四束波导尾纤节 (part-flagella-seg1) -->
+  <!-- 第 2 段四束波导尾纤节 (part-flagella-seg2) -->
+  <!-- 第 3 段四束流光尾羽梢 (part-flagella-seg3) -->
+  <g id="part-shadow-cast" data-pivot="64,68" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="68" rx="48" ry="56" fill="url(#lf3-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#lf3-aura)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M122.3,64 Q120.08,87.23 105.22,105.22 Q85.58,116.09 64,122.3 Q40.77,120.08 22.78,105.22 Q11.91,85.58 5.7,64 Q7.92,40.77 22.78,22.78 Q42.42,11.91 64,5.7 Q87.23,7.92 105.22,22.78 Q116.09,42.42 122.3,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M116.7,64 Q114.91,85.09 101.26,101.26 Q83.43,110.91 64,116.7 Q42.91,114.91 26.74,101.26 Q17.09,83.43 11.3,64 Q13.09,42.91 26.74,26.74 Q44.57,17.09 64,11.3 Q85.09,13.09 101.26,26.74 Q110.91,44.57 116.7,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="122.3" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="121.5" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="122.3" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="121.5" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="5.7" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="4.9" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="5.7" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="4.9" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M108.6,64 Q104.7,87.5 86.3,102.62 Q64,106.68 41.7,102.62 Q23.3,87.5 19.4,64 Q27.04,42.66 41.7,25.38 Q64,17 86.3,25.38 Q100.96,42.66 108.6,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="108.6" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="19.4" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="102.62" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="25.38" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="64" cy="19.4" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-flagella-rotor-base" data-pivot="64,24" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="30,14 98,14 88,34 40,34" fill="url(#lf3-base)" stroke="#fbbf24" stroke-width="2.4" />
+    <circle cx="46" cy="24" r="5.5" fill="#042326" stroke="#fbbf24" stroke-width="1.4" />
+    <circle cx="64" cy="24" r="7" fill="#042326" stroke="#2dd4bf" stroke-width="1.6" />
+    <circle cx="82" cy="24" r="5.5" fill="#042326" stroke="#fbbf24" stroke-width="1.4" />
+    <circle cx="64" cy="24" r="3" fill="#ffffff" />
+  </g>
+  <g id="part-lv3-crown-1" data-pivot="64,64" data-parent="root" data-z-index="19" data-blend="normal">
+    <circle cx="64" cy="64" r="4.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.85" />
+  </g>
+  <g id="part-flagella-seg1" data-pivot="64,34" data-parent="part-flagella-rotor-base" data-z-index="22" data-blend="normal" data-motion="whip-seg1">
+    <circle cx="64" cy="34" r="7" fill="#042326" stroke="#fbbf24" stroke-width="1.5" />
+    <path d="M44 32 C26 46 30 58 54 64 L58 58 C38 52 36 44 48 32 Z" fill="url(#lf3-strand)" stroke="#fbbf24" stroke-width="1.6" />
+    <path d="M84 32 C102 46 98 58 74 64 L70 58 C90 52 92 44 80 32 Z" fill="url(#lf3-strand)" stroke="#fbbf24" stroke-width="1.6" />
+    <path d="M58 34 C50 44 52 54 64 62 C76 54 78 44 70 34 Z" fill="url(#lf3-strand)" stroke="#2dd4bf" stroke-width="1.5" />
+  </g>
+  <g id="part-flagella-seg2" data-pivot="64,62" data-parent="part-flagella-seg1" data-z-index="26" data-blend="normal" data-motion="whip-seg2">
+    <circle cx="64" cy="62" r="6.5" fill="#042326" stroke="#2dd4bf" stroke-width="1.5" />
+    <path d="M56 62 C34 74 36 86 56 96 L60 90 C44 82 44 74 60 62 Z" fill="url(#lf3-strand)" stroke="#2dd4bf" stroke-width="1.6" />
+    <path d="M72 62 C94 74 92 86 72 96 L68 90 C84 82 84 74 68 62 Z" fill="url(#lf3-strand)" stroke="#2dd4bf" stroke-width="1.6" />
+    <circle cx="64" cy="62" r="3" fill="#fbbf24" />
+  </g>
+  <g id="part-flagella-seg3" data-pivot="64,92" data-parent="part-flagella-seg2" data-z-index="30" data-blend="normal" data-motion="whip-seg3">
+    <circle cx="64" cy="92" r="5.5" fill="#042326" stroke="#fbbf24" stroke-width="1.4" />
+    <path d="M56 92 C40 104 44 116 56 124 C50 112 52 102 62 92 Z" fill="url(#lf3-strand)" stroke="#fbbf24" stroke-width="1.5" />
+    <path d="M72 92 C88 104 84 116 72 124 C78 112 76 102 66 92 Z" fill="url(#lf3-strand)" stroke="#fbbf24" stroke-width="1.5" />
+    <polygon points="64,92 69,112 64,124 59,112" fill="url(#lf3-strand)" stroke="#ffffff" stroke-width="1.2" />
+    <circle cx="64" cy="124" r="2" fill="#ffffff" />
+    <circle cx="57" cy="87" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="72" cy="96" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-lv3-synapse-node-1" data-pivot="43,85" data-parent="root" data-z-index="44" data-blend="normal">
+    <circle cx="43" cy="85" r="3.2" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="43" cy="85" r="1.3" fill="#fbbf24" />
+  </g>
+  <g id="part-lv3-synapse-node-2" data-pivot="43,43" data-parent="root" data-z-index="44" data-blend="normal">
+    <circle cx="43" cy="43" r="3.2" fill="#021619" stroke="#2dd4bf" stroke-width="1.1" />
+    <circle cx="43" cy="43" r="1.3" fill="#fbbf24" />
+  </g>
+  <g id="part-light-rim-flagella" data-pivot="64,34" data-parent="part-flagella-seg1" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M42 34 C26 46 30 58 54 62 M86 34 C102 46 98 58 74 62" stroke="url(#lf3-rim)" stroke-width="2.6" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <circle cx="34" cy="68" r="2.2" fill="#ffffff" />
+    <circle cx="94" cy="68" r="2.2" fill="#ffffff" />
+    <circle cx="42" cy="104" r="2.2" fill="#fbbf24" />
+    <circle cx="86" cy="104" r="2.2" fill="#2dd4bf" />
+    <circle cx="92.8" cy="80.6" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="35.2" cy="80.6" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="35.2" cy="47.3" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="92.8" cy="47.3" r="1.3" fill="#ffffff" fill-opacity="0.8" />
+    <circle cx="21.3" cy="98.6" r="1.5" fill="#d946ef" />
+    <circle cx="9" cy="65.9" r="1.5" fill="#d946ef" />
+    <circle cx="18.9" cy="32.5" r="1.5" fill="#d946ef" />
+    <circle cx="102.9" cy="80.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="93.8" cy="93.8" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="80.1" cy="102.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="64" cy="106.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="47.9" cy="102.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="34.2" cy="93.8" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="25.1" cy="80.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="21.9" cy="64" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="25.1" cy="47.9" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="34.2" cy="34.2" r="1.1" fill="#2dd4bf" opacity="0.75" />
+    <circle cx="47.9" cy="25.1" r="1.1" fill="#2dd4bf" opacity="0.75" />
+  </g>
 </svg>
-

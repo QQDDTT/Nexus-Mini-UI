@@ -1,0 +1,144 @@
+/* ============================================================================
+ * 星轨防线 (Star Defender) — Chroma-Muse Bespoke Theme Stylesheet
+ * Style Anchor: STYLE-20 (Hard Sci-Fi Starfield) + STYLE-64 (Aerospace Telemetry HUD)
+ * 5:3:1 Allocation:
+ *   [5] 50% Anodized Titanium Void (#050914 -> #0c1938) + JWST Amber/Magenta Nebula
+ *   [3] 30% 4-Corner Aerospace Flight Deck Telemetry HUD + Mitered Reticle Brackets
+ *   [1] 10% Ion Plume Cyan (#00f0ff), Warp Gold (#fbbf24), Plasma Magenta (#e879f9)
+ * ============================================================================ */
+
+:root {
+  /* [5] 50% Deep-Space Titanium Void & JWST Nebula Surfaces */
+  --sd-bg-void: #050914;
+  --sd-bg-cobalt: #0c1938;
+  --sd-nebula-magenta: rgba(217, 70, 239, 0.11);
+  --sd-nebula-amber: rgba(245, 158, 11, 0.09);
+
+  /* [3] 30% Aerospace Flight Deck Telemetry HUD */
+  --sd-hud-deck-bg: rgba(7, 15, 34, 0.78);
+  --sd-hud-dock-panel: rgba(11, 23, 50, 0.88);
+  --sd-hud-border-cyan: rgba(56, 189, 248, 0.30);
+  --sd-text-telemetry: #f8fafc;
+  --sd-text-vector: #7dd3fc;
+  --sd-text-muted: #64748b;
+
+  /* [1] 10% High-Energy Propulsion & Weapon Accents */
+  --sd-accent-ion-cyan: #00f0ff;
+  --sd-accent-warp-gold: #fbbf24;
+  --sd-accent-plasma-magenta: #e879f9;
+  --sd-accent-hull-red: #f43f5e;
+
+  --sd-miter-clip: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  --sd-font-sans: 'Orbitron', 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --sd-font-mono: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background-color: var(--sd-bg-void);
+  color: var(--sd-text-telemetry);
+  font-family: var(--sd-font-sans);
+}
+
+/* [5] 50% Anodized Titanium Void & JWST Deep-Field Nebula */
+.sd-cosmos-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 22% 28%, var(--sd-nebula-magenta) 0%, transparent 52%),
+    radial-gradient(ellipse at 78% 72%, var(--sd-nebula-amber) 0%, transparent 48%),
+    radial-gradient(circle at 50% 50%, var(--sd-bg-cobalt) 0%, var(--sd-bg-void) 88%);
+}
+
+/* [3] 30% 4-Corner Frameless Aerospace Flight Deck Telemetry HUD */
+.sd-telemetry-pod {
+  position: relative;
+  padding: 10px 16px;
+  background: var(--sd-hud-deck-bg);
+  border: 1px solid var(--sd-hud-border-cyan);
+  clip-path: var(--sd-miter-clip);
+  backdrop-filter: blur(12px);
+}
+
+.sd-telemetry-pod::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 2px;
+  background: var(--sd-accent-ion-cyan);
+}
+
+.sd-shield-bar {
+  height: 8px;
+  background: linear-gradient(90deg, #0284c7 0%, var(--sd-accent-ion-cyan) 100%);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.45);
+}
+
+.sd-capacitor-bar {
+  height: 6px;
+  background: linear-gradient(90deg, #a21caf 0%, var(--sd-accent-plasma-magenta) 100%);
+}
+
+/* [1] 10% Warp & Weapon Fire Control CTA */
+.sd-btn-sortie {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 10px 26px;
+  clip-path: var(--sd-miter-clip);
+  border: 1px solid var(--sd-accent-ion-cyan);
+  background: linear-gradient(135deg, var(--sd-accent-ion-cyan) 0%, #0284c7 100%);
+  color: #030712;
+  font-weight: 900;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 0 22px rgba(0, 240, 255, 0.38);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   [Momus-Audit Terminal Adaptation Hardening: 852x393 Mobile Landscape]
+   ========================================================================== */
+html, body {
+  width: 100vw;
+  height: 100dvh;
+  max-width: 100vw;
+  max-height: 100dvh;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+button, [role="button"], .btn, .cta-btn, .arcade-back-pill {
+  min-width: 44px;
+  min-height: 44px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}
+
+/* ==========================================================================
+   [Safe-Area & Mobile Landscape 852x393 Protection]
+   ========================================================================== */
+:root {
+  --nexus-safe-top: env(safe-area-inset-top, 0px);
+  --nexus-safe-right: env(safe-area-inset-right, 0px);
+  --nexus-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nexus-safe-left: env(safe-area-inset-left, 0px);
+}

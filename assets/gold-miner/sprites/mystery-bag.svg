@@ -1,28 +1,106 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="mystery-bag-rig" data-root-anchor="64,84" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#172554" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="mb-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181009" stop-opacity="0.72" />
+      <stop offset="65%" stop-color="#1c1209" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fca5a5"/>
-      <stop offset="50%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#7f1d1d"/>
+    <radialGradient id="mb-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d946ef" stop-opacity="0.38" />
+      <stop offset="55%" stop-color="#fbbf24" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#1c1209" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="mb-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b0764" />
+      <stop offset="55%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#120c06" />
     </linearGradient>
-    <linearGradient id="goldCrest" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
-      <stop offset="50%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#b45309"/>
+    <linearGradient id="mb-pouch" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#451a03" />
+    </linearGradient>
+    <linearGradient id="mb-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+    <linearGradient id="mb-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#fbbf24" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#d946ef" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <!-- Layer 1: Base Ambient Glow & Pouch Silhouette -->
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <path d="M46 36 C36 22 92 22 82 36 C106 52 108 104 64 108 C20 104 22 52 46 36 Z" fill="url(#crimsonArmor)" stroke="#fde047" stroke-width="3"/>
-  <!-- Layer 2: Golden Cinch Collar & Structural Seams -->
-  <rect x="44" y="32" width="40" height="8" rx="4" fill="url(#goldCrest)" stroke="#fef9c3" stroke-width="1.5"/>
-  <path d="M46 52 C38 68 38 88 48 98" stroke="#fca5a5" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
-  <!-- Layer 3: Multi-Faceted Gem Emblem (Zero Text/Symbols) -->
-  <polygon points="64,50 78,68 64,86 50,68" fill="url(#goldCrest)" stroke="#fef9c3" stroke-width="2"/>
-  <polygon points="64,57 71,68 64,79 57,68" fill="#00f0ff"/>
-  <circle cx="64" cy="68" r="3" fill="#ffffff"/>
+  <!-- [光影层 1] 底层环境软阴影贴图 (z=1, multiply) -->
+  <g id="part-shadow-cast" data-pivot="64,104" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="104" rx="46" ry="18" fill="url(#mb-shadow)" />
+  </g>
+  <!-- [光影层 2A] 底层秘宝星象外光环 (z=4, screen) -->
+  <g id="part-aura-ring-outer" data-pivot="64,68" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="68" r="58" fill="url(#mb-aura)" />
+    <ellipse cx="64" cy="68" rx="54.5" ry="47.96" fill="none" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.72" />
+    <ellipse cx="64" cy="68" rx="49.3" ry="43.38" fill="none" stroke="#f59e0b" stroke-width="0.75" stroke-opacity="0.55" />
+    <polygon points="118.5,64 122.5,68 118.5,72 114.5,68" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="102.5" cy="106.5" r="2.0" fill="#fef08a" />
+    <polygon points="64,118.5 68,122.5 64,126.5 60,122.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="25.5" cy="106.5" r="2.0" fill="#fef08a" />
+    <polygon points="9.5,64 13.5,68 9.5,72 5.5,68" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="25.5" cy="29.5" r="2.0" fill="#fef08a" />
+    <polygon points="64,9.5 68,13.5 64,17.5 60,13.5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="102.5" cy="29.5" r="2.0" fill="#fef08a" />
+  </g>
+  <!-- [光影层 2B] 底层黄金秘文内环 (z=5, screen) -->
+  <g id="part-aura-ring-inner" data-pivot="64,68" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <ellipse cx="64" cy="68" rx="41.8" ry="36.78" fill="none" stroke="#fef08a" stroke-width="1.0" stroke-opacity="0.68" />
+    <polygon points="105.8,65.4 108.4,68 105.8,70.6 103.2,68" fill="#fef08a" />
+    <polygon points="84.9,101.6 87.5,104.2 84.9,106.8 82.3,104.2" fill="#fef08a" />
+    <polygon points="43.1,101.6 45.7,104.2 43.1,106.8 40.5,104.2" fill="#fef08a" />
+    <polygon points="22.2,65.4 24.8,68 22.2,70.6 19.6,68" fill="#fef08a" />
+    <polygon points="43.1,29.2 45.7,31.8 43.1,34.4 40.5,31.8" fill="#fef08a" />
+    <polygon points="84.9,29.2 87.5,31.8 84.9,34.4 82.3,31.8" fill="#fef08a" />
+  </g>
+  <!-- [骨骼部件 1] 顶部荷叶褶皱袋口领 (z=18) -->
+  <g id="part-bag-collar" data-pivot="64,36" data-parent="part-bag-body" data-z-index="18" data-blend="normal" data-motion="rotate-swing">
+    <circle cx="64" cy="36" r="8" fill="#451a03" stroke="#fbbf24" stroke-width="1.5" />
+    <path d="M40 22 C48 14 56 26 64 16 C72 26 80 14 88 22 L78 40 L50 40 Z" fill="url(#mb-pouch)" stroke="#fde047" stroke-width="2.0" stroke-linejoin="round" />
+    <path d="M48 24 L56 36 M64 20 L64 36 M80 24 L72 36" stroke="#fef08a" stroke-width="0.9" stroke-opacity="0.75" />
+  </g>
+  <!-- [骨骼部件 2] 秘宝重革囊袋主体 (z=26) -->
+  <g id="part-bag-body" data-pivot="64,72" data-parent="root" data-z-index="26" data-blend="normal">
+    <path d="M46 38 L82 38 C102 52 108 82 92 98 C78 108 50 108 36 98 C20 82 26 52 46 38 Z" fill="url(#mb-obsidian)" stroke="#fbbf24" stroke-width="2.4" stroke-linejoin="round" />
+    <path d="M50 42 L78 42 C94 54 98 78 86 92 C74 100 54 100 42 92 C30 78 34 54 50 42 Z" fill="url(#mb-pouch)" stroke="#fde047" stroke-width="1.2" />
+    <!-- 皮革缝线与全息能量脉络 -->
+    <path d="M36 68 C52 74 76 74 92 68 M40 84 C56 90 72 90 88 84" stroke="#fef08a" stroke-width="0.75" stroke-opacity="0.75" />
+  </g>
+  <!-- [骨骼部件 3] 金丝束口锁环与左右流苏吊坠 (z=32) -->
+  <g id="part-bag-cinch-cord" data-pivot="64,38" data-parent="part-bag-body" data-z-index="32" data-blend="normal">
+    <rect x="44" y="34" width="40" height="8" rx="4" fill="url(#mb-gold)" stroke="#ffffff" stroke-width="1.4" />
+    <path d="M46 38 C32 44 28 56 32 66 M82 38 C96 44 100 56 96 66" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" />
+    <circle cx="32" cy="66" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="1.2" />
+    <circle cx="96" cy="66" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="1.2" />
+  </g>
+  <!-- [骨骼部件 4] 中央悬浮秘宝星芒徽章 (无文字纯几何图形) (z=38) -->
+  <g id="part-mystery-emblem" data-pivot="64,70" data-parent="part-bag-body" data-z-index="38" data-blend="normal" data-motion="pulse-breathe">
+    <polygon points="64,48 82,70 64,92 46,70" fill="url(#mb-obsidian)" stroke="#f59e0b" stroke-width="2.0" stroke-linejoin="round" />
+    <!-- 几何秘宝弧线与核心晶钻 -->
+    <path d="M56 62 C56 54 72 54 72 62 C72 68 64 68 64 74" stroke="#fef08a" stroke-width="3.0" stroke-linecap="round" />
+    <circle cx="64" cy="82" r="3.2" fill="#f59e0b" />
+  </g>
+  <!-- [光影层 3] 囊袋受光边缘高光贴图 (z=45, plus-lighter) -->
+  <g id="part-light-rim-bag" data-pivot="64,72" data-parent="part-bag-body" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M46 38 C28 52 24 78 36 96" stroke="url(#mb-rim)" stroke-width="2.8" stroke-linecap="round" />
+    <path d="M82 38 C100 52 104 78 92 96" stroke="url(#mb-rim)" stroke-width="2.4" stroke-linecap="round" />
+  </g>
+  <!-- [光影层 4] 顶层秘宝星尘与电弧冕 (z=65, screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,68" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M24 34 L24 44 M19 39 L29 39 M104 34 L104 44 M99 39 L109 39" stroke="#fef08a" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="64" cy="14" r="2.2" fill="#ffffff" />
+    <circle cx="42" cy="24" r="1.8" fill="#d946ef" />
+    <circle cx="86" cy="24" r="1.8" fill="#f59e0b" />
+    <circle cx="26" cy="84" r="1.8" fill="#fbbf24" />
+    <circle cx="102" cy="84" r="1.8" fill="#fbbf24" />
+    <circle cx="48" cy="96" r="1.5" fill="#ffffff" />
+    <circle cx="80" cy="96" r="1.5" fill="#ffffff" />
+    <circle cx="64" cy="50" r="1.6" fill="#f59e0b" />
+  </g>
 </svg>

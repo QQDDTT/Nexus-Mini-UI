@@ -1,32 +1,183 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="enemy-lurker-rig" data-root-anchor="64,46" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#0f2442" stop-opacity="0.75"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="el-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.78" />
+      <stop offset="65%" stop-color="#030712" stop-opacity="0.36" />
+      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <radialGradient id="el-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#9333ea" stop-opacity="0.32" />
+      <stop offset="55%" stop-color="#00f0ff" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="el-abyss-mantle" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#311042" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#030712" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fde047"/>
-      <stop offset="50%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#451a03"/>
+    <linearGradient id="el-bio-tentacle" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="55%" stop-color="#7e22ce" />
+      <stop offset="100%" stop-color="#00f0ff" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f87171"/>
-      <stop offset="50%" stop-color="#dc2626"/>
-      <stop offset="100%" stop-color="#450a0a"/>
-    </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e2e8f0"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <radialGradient id="el-eye-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#fbbf24" />
+      <stop offset="80%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#450a0a" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="el-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#00f0ff" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#d946ef" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <polygon points="64,14 112,64 64,92 16,64" fill="#0f172a" stroke="#e879f9" stroke-width="2.5"/>
-  <polygon points="64,28 92,62 64,78 36,62" fill="#4a044e" stroke="#38bdf8" stroke-width="1.5"/>
-  <circle cx="64" cy="56" r="8" fill="#f0abfc"/>
+  <!-- [光影层 1] 潜伏者深空接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 深渊暗紫脉冲外环：顺时针旋转相位潜行波 (z=4, screen) -->
+  <!-- [光影层 2B] 深渊暗紫脉冲内环：逆时针旋转虚空涟漪环 (z=5, screen) -->
+  <!-- [骨骼部件 1~3] 左外触手三段骨骼链 (Root -> Mid -> Tip) (z=15~17) -->
+  <!-- [骨骼部件 4~6] 左中触手三段骨骼链 (z=18~20) -->
+  <!-- [骨骼部件 7~9] 左内触手三段骨骼链 (z=21~23) -->
+  <!-- [骨骼部件 10~12] 右内触手三段骨骼链 (z=21~23) -->
+  <!-- [骨骼部件 13~15] 右中触手三段骨骼链 (z=18~20) -->
+  <!-- [骨骼部件 16~18] 右外触手三段骨骼链 (z=15~17) -->
+  <!-- [骨骼部件 19] 左独立咬合深渊巨颚 (z=28) -->
+  <!-- [骨骼部件 20] 右独立咬合深渊巨颚 (z=28) -->
+  <!-- [骨骼部件 21] 深海流线头冠主躯干与眼眶 (z=34) -->
+  <!-- [骨骼部件 22] 独立锁定追踪瞳孔 (z=40) -->
+  <!-- [光影层 4] 头冠与触手受光边缘高光映射贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 5] 顶层生物荧光游丝与电弧冕贴图 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,66" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="68" rx="54" ry="56" fill="url(#el-cast-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#el-aura-field)" />
+    <path fill="none" stroke="#e879f9" stroke-width="1.3" stroke-opacity="0.72" d="M119.45,82.02 A58.3,58.3 0 0,1 82.02,119.45 M45.98,119.45 A58.3,58.3 0 0,1 8.55,82.02 M8.55,45.98 A58.3,58.3 0 0,1 45.98,8.55 M82.02,8.55 A58.3,58.3 0 0,1 119.45,45.98" stroke-linecap="square" />
+    <path fill="none" stroke="#a855f7" stroke-width="0.65" stroke-opacity="0.52" d="M114.12,80.29 A52.7,52.7 0 0,1 80.29,114.12 M47.71,114.12 A52.7,52.7 0 0,1 13.88,80.29 M13.88,47.71 A52.7,52.7 0 0,1 47.71,13.88 M80.29,13.88 A52.7,52.7 0 0,1 114.12,47.71" stroke-linecap="square" />
+    <line x1="118.3" y1="64" x2="125.3" y2="64" stroke="#e879f9" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="102.4" y1="102.4" x2="107.3" y2="107.3" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="64" y1="118.3" x2="64" y2="125.3" stroke="#e879f9" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="25.6" y1="102.4" x2="20.7" y2="107.3" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="9.7" y1="64" x2="2.7" y2="64" stroke="#e879f9" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="25.6" y1="25.6" x2="20.7" y2="20.7" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="64" y1="9.7" x2="64" y2="2.7" stroke="#e879f9" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="102.4" y1="25.6" x2="107.3" y2="20.7" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.82" />
+    <polygon points="64,2.7 68,9.7 60,9.7" fill="#e879f9" fill-opacity="0.82" />
+    <polygon points="64,125.3 68,118.3 60,118.3" fill="#e879f9" fill-opacity="0.82" />
+    <polygon points="2.7,64 9.7,68 9.7,60" fill="#f43f5e" fill-opacity="0.82" />
+    <polygon points="125.3,64 118.3,68 118.3,60" fill="#f43f5e" fill-opacity="0.82" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#f43f5e" stroke-width="0.9" stroke-opacity="0.68" d="M106.42,77.78 A44.6,44.6 0 0,1 67.11,108.49 M30.86,93.84 A44.6,44.6 0 0,1 23.91,44.45 M54.73,20.37 A44.6,44.6 0 0,1 100.98,39.06" stroke-linecap="square" />
+    <rect x="107" y="62.4" width="3.2" height="3.2" fill="#e879f9" />
+    <rect x="84.7" y="101" width="3.2" height="3.2" fill="#e879f9" />
+    <rect x="40.1" y="101" width="3.2" height="3.2" fill="#e879f9" />
+    <rect x="17.8" y="62.4" width="3.2" height="3.2" fill="#e879f9" />
+    <rect x="40.1" y="23.8" width="3.2" height="3.2" fill="#e879f9" />
+    <rect x="84.7" y="23.8" width="3.2" height="3.2" fill="#e879f9" />
+  </g>
+  <g id="part-tentacle-L1-root" data-pivot="38,62" data-parent="part-head-mantle" data-z-index="15" data-blend="normal" data-motion="ik-wave-root">
+    <path d="M34 60 L42 64 L32 82 L24 78 Z" fill="url(#el-bio-tentacle)" stroke="#d946ef" stroke-width="1.2" />
+    <circle cx="38" cy="62" r="4" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-R1-root" data-pivot="90,62" data-parent="part-head-mantle" data-z-index="15" data-blend="normal" data-motion="ik-wave-root">
+    <path d="M86 64 L94 60 L104 78 L96 82 Z" fill="url(#el-bio-tentacle)" stroke="#d946ef" stroke-width="1.2" />
+    <circle cx="90" cy="62" r="4" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-L1-mid" data-pivot="28,80" data-parent="part-tentacle-L1-root" data-z-index="16" data-blend="normal" data-motion="ik-wave-mid">
+    <path d="M24 78 L32 82 L24 100 L17 96 Z" fill="url(#el-bio-tentacle)" stroke="#00f0ff" stroke-width="1.2" />
+    <circle cx="28" cy="80" r="3.2" fill="#1e1b4b" stroke="#d946ef" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-R1-mid" data-pivot="100,80" data-parent="part-tentacle-R1-root" data-z-index="16" data-blend="normal" data-motion="ik-wave-mid">
+    <path d="M96 82 L104 78 L111 96 L104 100 Z" fill="url(#el-bio-tentacle)" stroke="#00f0ff" stroke-width="1.2" />
+    <circle cx="100" cy="80" r="3.2" fill="#1e1b4b" stroke="#d946ef" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-L1-tip" data-pivot="20,98" data-parent="part-tentacle-L1-mid" data-z-index="17" data-blend="normal" data-motion="ik-wave-tip">
+    <polygon points="17,96 24,100 12,120" fill="#00f0ff" stroke="#ffffff" stroke-width="0.7" />
+    <circle cx="20" cy="98" r="2.5" fill="#00f0ff" />
+  </g>
+  <g id="part-tentacle-R1-tip" data-pivot="108,98" data-parent="part-tentacle-R1-mid" data-z-index="17" data-blend="normal" data-motion="ik-wave-tip">
+    <polygon points="104,100 111,96 116,120" fill="#00f0ff" stroke="#ffffff" stroke-width="0.7" />
+    <circle cx="108" cy="98" r="2.5" fill="#00f0ff" />
+  </g>
+  <g id="part-tentacle-L2-root" data-pivot="48,66" data-parent="part-head-mantle" data-z-index="18" data-blend="normal" data-motion="ik-wave-root">
+    <path d="M44 65 L52 67 L46 86 L38 84 Z" fill="url(#el-bio-tentacle)" stroke="#d946ef" stroke-width="1.2" />
+    <circle cx="48" cy="66" r="4" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-R2-root" data-pivot="80,66" data-parent="part-head-mantle" data-z-index="18" data-blend="normal" data-motion="ik-wave-root">
+    <path d="M76 67 L84 65 L90 84 L82 86 Z" fill="url(#el-bio-tentacle)" stroke="#d946ef" stroke-width="1.2" />
+    <circle cx="80" cy="66" r="4" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-R2-mid" data-pivot="86,85" data-parent="part-tentacle-R2-root" data-z-index="19" data-blend="normal" data-motion="ik-wave-mid">
+    <path d="M82 86 L90 84 L93 102 L86 104 Z" fill="url(#el-bio-tentacle)" stroke="#00f0ff" stroke-width="1.2" />
+    <circle cx="86" cy="85" r="3.2" fill="#1e1b4b" stroke="#d946ef" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-L2-mid" data-pivot="42,85" data-parent="part-tentacle-L2-root" data-z-index="19" data-blend="normal" data-motion="ik-wave-mid">
+    <path d="M38 84 L46 86 L42 104 L35 102 Z" fill="url(#el-bio-tentacle)" stroke="#00f0ff" stroke-width="1.2" />
+    <circle cx="42" cy="85" r="3.2" fill="#1e1b4b" stroke="#d946ef" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-L2-tip" data-pivot="38,103" data-parent="part-tentacle-L2-mid" data-z-index="20" data-blend="normal" data-motion="ik-wave-tip">
+    <polygon points="35,102 42,104 34,124" fill="#00f0ff" stroke="#ffffff" stroke-width="0.7" />
+    <circle cx="38" cy="103" r="2.5" fill="#00f0ff" />
+  </g>
+  <g id="part-tentacle-R2-tip" data-pivot="90,103" data-parent="part-tentacle-R2-mid" data-z-index="20" data-blend="normal" data-motion="ik-wave-tip">
+    <polygon points="86,104 93,102 94,124" fill="#00f0ff" stroke="#ffffff" stroke-width="0.7" />
+    <circle cx="90" cy="103" r="2.5" fill="#00f0ff" />
+  </g>
+  <g id="part-tentacle-R3-root" data-pivot="70,68" data-parent="part-head-mantle" data-z-index="21" data-blend="normal" data-motion="ik-wave-root">
+    <path d="M66 68 L74 68 L76 88 L68 88 Z" fill="url(#el-bio-tentacle)" stroke="#d946ef" stroke-width="1.2" />
+    <circle cx="70" cy="68" r="3.8" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-L3-root" data-pivot="58,68" data-parent="part-head-mantle" data-z-index="21" data-blend="normal" data-motion="ik-wave-root">
+    <path d="M54 68 L62 68 L60 88 L52 88 Z" fill="url(#el-bio-tentacle)" stroke="#d946ef" stroke-width="1.2" />
+    <circle cx="58" cy="68" r="3.8" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-L3-mid" data-pivot="56,88" data-parent="part-tentacle-L3-root" data-z-index="22" data-blend="normal" data-motion="ik-wave-mid">
+    <path d="M52 88 L60 88 L58 106 L51 106 Z" fill="url(#el-bio-tentacle)" stroke="#00f0ff" stroke-width="1.2" />
+    <circle cx="56" cy="88" r="3" fill="#1e1b4b" stroke="#d946ef" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-R3-mid" data-pivot="72,88" data-parent="part-tentacle-R3-root" data-z-index="22" data-blend="normal" data-motion="ik-wave-mid">
+    <path d="M68 88 L76 88 L77 106 L70 106 Z" fill="url(#el-bio-tentacle)" stroke="#00f0ff" stroke-width="1.2" />
+    <circle cx="72" cy="88" r="3" fill="#1e1b4b" stroke="#d946ef" stroke-width="1.2" />
+  </g>
+  <g id="part-tentacle-R3-tip" data-pivot="74,106" data-parent="part-tentacle-R3-mid" data-z-index="23" data-blend="normal" data-motion="ik-wave-tip">
+    <polygon points="70,106 77,106 74,126" fill="#00f0ff" stroke="#ffffff" stroke-width="0.7" />
+    <circle cx="74" cy="106" r="2.2" fill="#00f0ff" />
+  </g>
+  <g id="part-tentacle-L3-tip" data-pivot="54,106" data-parent="part-tentacle-L3-mid" data-z-index="23" data-blend="normal" data-motion="ik-wave-tip">
+    <polygon points="51,106 58,106 54,126" fill="#00f0ff" stroke="#ffffff" stroke-width="0.7" />
+    <circle cx="54" cy="106" r="2.2" fill="#00f0ff" />
+  </g>
+  <g id="part-jaw-left" data-pivot="42,52" data-parent="part-head-mantle" data-z-index="28" data-blend="normal" data-motion="bite-left">
+    <path d="M42 52 C18 46 14 22 36 10 L42 22 L34 32 L44 42 Z" fill="url(#el-abyss-mantle)" stroke="#00f0ff" stroke-width="2.2" />
+    <circle cx="42" cy="52" r="4.5" fill="#091326" stroke="#fbbf24" stroke-width="1.2" />
+    <path d="M 36 52 H 48 M 42 46 V 58" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.8" />
+  </g>
+  <g id="part-jaw-right" data-pivot="86,52" data-parent="part-head-mantle" data-z-index="28" data-blend="normal" data-motion="bite-right">
+    <path d="M86 52 C110 46 114 22 92 10 L86 22 L94 32 L84 42 Z" fill="url(#el-abyss-mantle)" stroke="#00f0ff" stroke-width="2.2" />
+    <circle cx="86" cy="52" r="4.5" fill="#091326" stroke="#fbbf24" stroke-width="1.2" />
+  </g>
+  <g id="part-head-mantle" data-pivot="64,46" data-parent="root" data-z-index="34" data-blend="normal">
+    <path d="M64 12 C96 18 104 50 92 66 C76 72 52 72 36 66 C24 50 32 18 64 12 Z" fill="url(#el-abyss-mantle)" stroke="#d946ef" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <path d="M64 20 C86 24 90 48 82 60 C70 64 58 64 46 60 C38 48 42 24 64 20 Z" fill="#1e1b4b" stroke="#00f0ff" stroke-width="1.2" />
+    <!-- 生物神经微刻线 -->
+    <path d="M64 20 L64 62 M46 38 L82 38 M42 50 L86 50" stroke="#00f0ff" stroke-width="0.7" stroke-opacity="0.65" />
+    <!-- 中央深渊眼眶底盘 -->
+    <circle cx="64" cy="44" r="11" fill="#020617" stroke="#fbbf24" stroke-width="1.8" />
+  </g>
+  <g id="part-eye-locking-pupil" data-pivot="64,44" data-parent="part-head-mantle" data-z-index="40" data-blend="normal" data-motion="pupil-track">
+    <circle cx="64" cy="44" r="7" fill="url(#el-eye-glow)" />
+    <ellipse cx="64" cy="44" rx="2.2" ry="5.5" fill="#ffffff" />
+  </g>
+  <g id="part-light-rim-lurker" data-pivot="64,46" data-parent="part-head-mantle" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M36 66 C24 50 32 18 64 12 C96 18 104 50 92 66" stroke="url(#el-rim-light)" stroke-width="2.2" stroke-linecap="round" />
+    <path d="M28 80 L20 98 L12 120 M100 80 L108 98 L116 120" stroke="#00f0ff" stroke-width="1.2" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M24 30 L32 22 M104 30 L96 22" stroke="#00f0ff" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="36" cy="10" r="2" fill="#ffffff" />
+    <circle cx="92" cy="10" r="2" fill="#ffffff" />
+    <circle cx="64" cy="12" r="2.5" fill="#00f0ff" />
+    <path d="M103.8 87 L106.9 88.8" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+  </g>
 </svg>

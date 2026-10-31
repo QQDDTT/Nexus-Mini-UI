@@ -1,34 +1,271 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none" data-rig-id="boss-leviathan-rig" data-root-anchor="128,112" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#0f2442" stop-opacity="0.75"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <!-- 1. 巨兽底层深空接触软阴影材质 -->
+    <radialGradient id="bl-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.86" />
+      <stop offset="65%" stop-color="#030712" stop-opacity="0.46" />
+      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <!-- 2. 首领相位威压法阵场渐变 -->
+    <radialGradient id="bl-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ef4444" stop-opacity="0.34" />
+      <stop offset="48%" stop-color="#9333ea" stop-opacity="0.22" />
+      <stop offset="78%" stop-color="#00f0ff" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
+    </radialGradient>
+    <!-- 3. 方向性虚空吐息体积光锥渐变 -->
+    <linearGradient id="bl-breath-cone" x1="50%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="30%" stop-color="#00f0ff" stop-opacity="0.65" />
+      <stop offset="70%" stop-color="#d946ef" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fde047"/>
-      <stop offset="50%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#451a03"/>
+    <!-- 4. 深渊黑曜几丁质重甲基底 (50% 暗部体积) -->
+    <linearGradient id="bl-abyss-chitin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b0764" />
+      <stop offset="45%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#030712" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f87171"/>
-      <stop offset="50%" stop-color="#dc2626"/>
-      <stop offset="100%" stop-color="#450a0a"/>
+    <!-- 5. 中层猩红紫晶骨板分件 (30% 结构刻面) -->
+    <linearGradient id="bl-crimson-plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#dc2626" />
+      <stop offset="50%" stop-color="#6b21a8" />
+      <stop offset="100%" stop-color="#1e1b4b" />
     </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e2e8f0"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <!-- 6. 碎星巨鳌等离子刀刃渐变 (10% 焦点高光) -->
+    <linearGradient id="bl-crusher-blade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="25%" stop-color="#fbbf24" />
+      <stop offset="65%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#450a0a" />
+    </linearGradient>
+    <!-- 7. 虚空核心与关节轴承发光 -->
+    <radialGradient id="bl-void-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#00f0ff" />
+      <stop offset="75%" stop-color="#d946ef" />
+      <stop offset="100%" stop-color="#3b0764" stop-opacity="0" />
+    </radialGradient>
+    <!-- 8. 全身甲壳逆光受光高光贴图 -->
+    <linearGradient id="bl-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="40%" stop-color="#00f0ff" stop-opacity="0.82" />
+      <stop offset="75%" stop-color="#fbbf24" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <polygon points="64,8 114,42 102,112 64,94 26,112 14,42" fill="url(#crimsonArmor)" stroke="#fbbf24" stroke-width="3"/>
-  <polygon points="64,24 92,52 82,92 64,80 46,92 36,52" fill="#450a0a" stroke="#f87171" stroke-width="2"/>
-  <circle cx="64" cy="56" r="14" fill="#00f0ff" stroke="#ffffff" stroke-width="2.5"/>
-  <circle cx="44" cy="38" r="5" fill="#fde047"/>
-  <circle cx="84" cy="38" r="5" fill="#fde047"/>
+  <!-- [光影层 1] 底层深渊巨兽接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 底层深渊威压顺时针自转外法阵光环 (z=4, screen) -->
+  <!-- [光影层 2B] 底层深渊威压逆时针自转内法阵光环 (z=5, screen) -->
+  <!-- [光影层 3] 方向性虚空吐息体积光锥贴图 (z=9, screen) -->
+  <!-- [骨骼部件 1~8] 4 对多关节节肢步足 (L1~L4, R1~R4) (z=14~18) -->
+  <!-- [骨骼部件 9] 碎星流星尾锤 (z=20) -->
+  <!-- [骨骼部件 10] 第 3 胸腹脊椎节：后腹核心腔 (z=22) -->
+  <!-- [骨骼部件 11] 第 2 胸腹脊椎节：中胸装甲节 (z=25) -->
+  <!-- [骨骼部件 12] 第 1 胸腹脊椎节：前胸主龙骨节 (z=28) -->
+  <!-- [骨骼部件 13] 左外层碎星巨鳌 (z=32) -->
+  <!-- [骨骼部件 14] 右外层碎星巨鳌 (z=32) -->
+  <!-- [骨骼部件 15] 左内层高频切割副颚 (z=34) -->
+  <!-- [骨骼部件 16] 右内层高频切割副颚 (z=34) -->
+  <!-- [骨骼部件 17] 中心虚空吐息聚能炮口 (z=36) -->
+  <!-- [骨骼部件 18] 利维坦头颅重甲冠冕 (z=38) -->
+  <!-- [骨骼部件 19] 多枚独立索敌复眼高光瞳孔簇 (z=42) -->
+  <!-- [光影层 4] 全身甲壳与碎星巨鳌逆光受光高光贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 5] 顶层狂暴雷电冕与悬浮深渊电弧丝贴图 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="128,136" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="128" cy="136" rx="118" ry="114" fill="url(#bl-cast-shadow)" />
+    <ellipse cx="128" cy="128" rx="86" ry="92" fill="#020617" fill-opacity="0.5" />
+    <circle cx="71.6" cy="66.6" r="0.8" fill="#38bdf8" stroke="#0b1329" stroke-width="0.6" opacity="0.82" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="128,128" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="128" cy="128" r="126" fill="url(#bl-aura-field)" />
+    <path fill="none" stroke="#e879f9" stroke-width="1.3" stroke-opacity="0.72" d="M240.61,164.59 A118.4,118.4 0 0,1 164.59,240.61 M91.41,240.61 A118.4,118.4 0 0,1 15.39,164.59 M15.39,91.41 A118.4,118.4 0 0,1 91.41,15.39 M164.59,15.39 A118.4,118.4 0 0,1 240.61,91.41" stroke-linecap="square" />
+    <path fill="none" stroke="#a855f7" stroke-width="0.65" stroke-opacity="0.52" d="M229.86,161.1 A107.1,107.1 0 0,1 161.1,229.86 M94.9,229.86 A107.1,107.1 0 0,1 26.14,161.1 M26.14,94.9 A107.1,107.1 0 0,1 94.9,26.14 M161.1,26.14 A107.1,107.1 0 0,1 229.86,94.9" stroke-linecap="square" />
+    <line x1="242.4" y1="128" x2="249.4" y2="128" stroke="#e879f9" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="208.9" y1="208.9" x2="213.8" y2="213.8" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="128" y1="242.4" x2="128" y2="249.4" stroke="#e879f9" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="47.1" y1="208.9" x2="42.2" y2="213.8" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="13.6" y1="128" x2="6.6" y2="128" stroke="#e879f9" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="47.1" y1="47.1" x2="42.2" y2="42.2" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="128" y1="13.6" x2="128" y2="6.6" stroke="#e879f9" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="208.9" y1="47.1" x2="213.8" y2="42.2" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.82" />
+    <polygon points="128,6.6 132,13.6 124,13.6" fill="#e879f9" fill-opacity="0.82" />
+    <polygon points="128,249.4 132,242.4 124,242.4" fill="#e879f9" fill-opacity="0.82" />
+    <polygon points="6.6,128 13.6,132 13.6,124" fill="#f43f5e" fill-opacity="0.82" />
+    <polygon points="249.4,128 242.4,132 242.4,124" fill="#f43f5e" fill-opacity="0.82" />
+    <line x1="240.1" y1="128" x2="243.3" y2="128" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="232.5" y1="168.5" x2="235.5" y2="169.7" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="210.8" y1="203.5" x2="213.2" y2="205.7" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="178" y1="228.3" x2="179.4" y2="231.2" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="138.3" y1="239.6" x2="138.6" y2="242.8" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="97.3" y1="235.8" x2="96.4" y2="238.9" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="60.4" y1="217.5" x2="58.5" y2="220" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="32.7" y1="187" x2="30" y2="188.7" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="17.8" y1="148.6" x2="14.7" y2="149.2" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="17.8" y1="107.4" x2="14.7" y2="106.8" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="32.7" y1="69" x2="30" y2="67.3" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="60.4" y1="38.5" x2="58.5" y2="36" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="97.3" y1="20.2" x2="96.4" y2="17.1" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="138.3" y1="16.4" x2="138.6" y2="13.2" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="178" y1="27.7" x2="179.4" y2="24.8" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="210.8" y1="52.5" x2="213.2" y2="50.3" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <line x1="232.5" y1="87.5" x2="235.5" y2="86.3" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.75" />
+    <circle cx="52.1" cy="69.2" r="1.05" fill="#38bdf8" stroke="#0b1329" stroke-width="0.6" opacity="0.82" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="128,128" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#f43f5e" stroke-width="0.9" stroke-opacity="0.68" d="M214.26,156.03 A90.7,90.7 0 0,1 134.33,218.48 M60.6,188.69 A90.7,90.7 0 0,1 46.48,88.24 M109.14,39.28 A90.7,90.7 0 0,1 203.19,77.28" stroke-linecap="square" />
+    <rect x="217.1" y="126.4" width="3.2" height="3.2" fill="#e879f9" />
+    <rect x="171.8" y="204.9" width="3.2" height="3.2" fill="#e879f9" />
+    <rect x="81.1" y="204.9" width="3.2" height="3.2" fill="#e879f9" />
+    <rect x="35.7" y="126.4" width="3.2" height="3.2" fill="#e879f9" />
+    <rect x="81" y="47.9" width="3.2" height="3.2" fill="#e879f9" />
+    <rect x="171.8" y="47.9" width="3.2" height="3.2" fill="#e879f9" />
+    <circle cx="71.3" cy="47.6" r="1.3" fill="#38bdf8" stroke="#0b1329" stroke-width="0.6" opacity="0.82" />
+  </g>
+  <g id="part-light-cone-breath" data-pivot="128,62" data-parent="part-void-breath-maw" data-z-index="9" data-blend="screen" data-motion="pulse-beam" style="mix-blend-mode: screen">
+    <polygon points="128,62 76,4 180,4" fill="url(#bl-breath-cone)" />
+    <line x1="128" y1="62" x2="128" y2="4" stroke="#ffffff" stroke-width="1.8" />
+    <line x1="128" y1="62" x2="96" y2="8" stroke="#00f0ff" stroke-width="0.7" />
+    <line x1="128" y1="62" x2="160" y2="8" stroke="#00f0ff" stroke-width="0.7" />
+    <circle cx="71.3" cy="85.8" r="0.8" fill="#38bdf8" stroke="#0b1329" stroke-width="0.6" opacity="0.82" />
+  </g>
+  <g id="part-leg-L1" data-pivot="84,96" data-parent="part-spine-thorax-1" data-z-index="14" data-blend="normal" data-motion="ik-leg-step">
+    <path d="M84 96 L38 78 L14 96 L28 104 L44 90 L84 104 Z" fill="url(#bl-abyss-chitin)" stroke="#00f0ff" stroke-width="1.8" />
+    <circle cx="38" cy="84" r="4" fill="#fbbf24" />
+    <circle cx="84" cy="96" r="6" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-leg-R1" data-pivot="172,96" data-parent="part-spine-thorax-1" data-z-index="14" data-blend="normal" data-motion="ik-leg-step">
+    <path d="M172 96 L218 78 L242 96 L228 104 L212 90 L172 104 Z" fill="url(#bl-abyss-chitin)" stroke="#00f0ff" stroke-width="1.8" />
+    <circle cx="218" cy="84" r="4" fill="#fbbf24" />
+    <circle cx="172" cy="96" r="6" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-leg-L2" data-pivot="80,126" data-parent="part-spine-thorax-1" data-z-index="15" data-blend="normal" data-motion="ik-leg-step">
+    <path d="M80 126 L28 118 L8 142 L24 148 L38 130 L80 136 Z" fill="url(#bl-abyss-chitin)" stroke="#00f0ff" stroke-width="1.8" />
+    <circle cx="32" cy="124" r="4" fill="#fbbf24" />
+    <circle cx="80" cy="126" r="6" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-leg-R2" data-pivot="176,126" data-parent="part-spine-thorax-1" data-z-index="15" data-blend="normal" data-motion="ik-leg-step">
+    <path d="M176 126 L228 118 L248 142 L232 148 L218 130 L176 136 Z" fill="url(#bl-abyss-chitin)" stroke="#00f0ff" stroke-width="1.8" />
+    <circle cx="224" cy="124" r="4" fill="#fbbf24" />
+    <circle cx="176" cy="126" r="6" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-leg-L3" data-pivot="86,158" data-parent="part-spine-thorax-2" data-z-index="16" data-blend="normal" data-motion="ik-leg-step">
+    <path d="M86 158 L36 160 L16 188 L32 190 L46 172 L86 168 Z" fill="url(#bl-abyss-chitin)" stroke="#d946ef" stroke-width="1.8" />
+    <circle cx="40" cy="166" r="3.5" fill="#00f0ff" />
+    <circle cx="86" cy="158" r="5.5" fill="#091326" stroke="#d946ef" stroke-width="1.2" />
+  </g>
+  <g id="part-leg-R3" data-pivot="170,158" data-parent="part-spine-thorax-2" data-z-index="16" data-blend="normal" data-motion="ik-leg-step">
+    <path d="M170 158 L220 160 L240 188 L224 190 L210 172 L170 168 Z" fill="url(#bl-abyss-chitin)" stroke="#d946ef" stroke-width="1.8" />
+    <circle cx="216" cy="166" r="3.5" fill="#00f0ff" />
+    <circle cx="170" cy="158" r="5.5" fill="#091326" stroke="#d946ef" stroke-width="1.2" />
+  </g>
+  <g id="part-leg-L4" data-pivot="96,188" data-parent="part-spine-abdomen-3" data-z-index="17" data-blend="normal" data-motion="ik-leg-step">
+    <path d="M96 188 L52 198 L34 226 L48 226 L62 208 L96 198 Z" fill="url(#bl-abyss-chitin)" stroke="#d946ef" stroke-width="1.8" />
+    <circle cx="96" cy="188" r="5" fill="#091326" stroke="#d946ef" stroke-width="1.2" />
+  </g>
+  <g id="part-leg-R4" data-pivot="160,188" data-parent="part-spine-abdomen-3" data-z-index="17" data-blend="normal" data-motion="ik-leg-step">
+    <path d="M160 188 L204 198 L222 226 L208 226 L194 208 L160 198 Z" fill="url(#bl-abyss-chitin)" stroke="#d946ef" stroke-width="1.8" />
+    <circle cx="160" cy="188" r="5" fill="#091326" stroke="#d946ef" stroke-width="1.2" />
+  </g>
+  <g id="part-tail-mace" data-pivot="128,214" data-parent="part-spine-abdomen-3" data-z-index="20" data-blend="normal" data-motion="sway-tail">
+    <polygon points="128,208 148,224 140,250 128,242 116,250 108,224" fill="url(#bl-crusher-blade)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <polygon points="108,224 94,234 110,238" fill="#ef4444" />
+    <polygon points="148,224 162,234 146,238" fill="#ef4444" />
+    <circle cx="128" cy="214" r="6" fill="#091326" stroke="#fbbf24" stroke-width="1.2" />
+    <circle cx="128" cy="214" r="2.8" fill="#00f0ff" />
+  </g>
+  <g id="part-spine-abdomen-3" data-pivot="128,182" data-parent="part-spine-thorax-2" data-z-index="22" data-blend="normal" data-motion="spine-wave-3">
+    <polygon points="128,168 164,180 154,214 102,214 92,180" fill="url(#bl-abyss-chitin)" stroke="#d946ef" stroke-width="2.2" />
+    <polygon points="128,174 154,184 146,208 110,208 102,184" fill="url(#bl-crimson-plate)" stroke="#00f0ff" stroke-width="1.2" />
+    <circle cx="128" cy="194" r="8" fill="url(#bl-void-core)" />
+    <circle cx="128" cy="182" r="6.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-spine-thorax-2" data-pivot="128,144" data-parent="part-spine-thorax-1" data-z-index="25" data-blend="normal" data-motion="spine-wave-2">
+    <polygon points="128,128 176,142 166,182 90,182 80,142" fill="url(#bl-abyss-chitin)" stroke="#fbbf24" stroke-width="2.2" />
+    <polygon points="128,134 166,146 158,176 98,176 90,146" fill="url(#bl-crimson-plate)" stroke="#00f0ff" stroke-width="1.2" />
+    <path d="M98 156 L158 156 M104 166 L152 166 M128 134 L128 176" stroke="#00f0ff" stroke-width="0.7" stroke-opacity="0.75" />
+    <circle cx="128" cy="144" r="8" fill="url(#bl-void-core)" />
+    <path d="M 122 144 H 134 M 128 138 V 150" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.8" />
+  </g>
+  <g id="part-spine-thorax-1" data-pivot="128,106" data-parent="root" data-z-index="28" data-blend="normal" data-motion="spine-wave-1">
+    <polygon points="128,84 186,102 178,146 78,146 70,102" fill="url(#bl-abyss-chitin)" stroke="#00f0ff" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <polygon points="128,92 176,106 168,138 88,138 80,106" fill="url(#bl-crimson-plate)" stroke="#fbbf24" stroke-width="1.2" />
+    <path d="M86 116 L170 116 M92 128 L164 128 M128 92 L128 138" stroke="#ffffff" stroke-width="0.7" stroke-opacity="0.7" />
+    <circle cx="128" cy="116" r="14" fill="url(#bl-void-core)" stroke="#ffffff" stroke-width="1.2" />
+    <circle cx="128" cy="116" r="6" fill="#ffffff" />
+  </g>
+  <g id="part-crusher-claw-L" data-pivot="78,76" data-parent="part-head-carapace" data-z-index="32" data-blend="normal" data-motion="crush-left">
+    <path d="M78 76 C22 64 8 24 52 6 L68 24 L50 38 L68 50 L54 64 L82 70 Z" fill="url(#bl-abyss-chitin)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <path d="M52 6 L68 24 L50 38 L68 50 L54 64 L36 48 C24 32 30 16 52 6 Z" fill="url(#bl-crusher-blade)" stroke="#ffffff" stroke-width="1.2" />
+    <path d="M36 48 L50 38 M42 30 L58 24" stroke="#00f0ff" stroke-width="0.7" />
+    <circle cx="78" cy="76" r="9" fill="#091326" stroke="#fbbf24" stroke-width="2.2" />
+    <circle cx="78" cy="76" r="4.5" fill="url(#bl-void-core)" />
+  </g>
+  <g id="part-crusher-claw-R" data-pivot="178,76" data-parent="part-head-carapace" data-z-index="32" data-blend="normal" data-motion="crush-right">
+    <path d="M178 76 C234 64 248 24 204 6 L188 24 L206 38 L188 50 L202 64 L174 70 Z" fill="url(#bl-abyss-chitin)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <path d="M204 6 L188 24 L206 38 L188 50 L202 64 L220 48 C232 32 226 16 204 6 Z" fill="url(#bl-crusher-blade)" stroke="#ffffff" stroke-width="1.2" />
+    <path d="M220 48 L206 38 M214 30 L198 24" stroke="#00f0ff" stroke-width="0.7" />
+    <circle cx="178" cy="76" r="9" fill="#091326" stroke="#fbbf24" stroke-width="2.2" />
+    <circle cx="178" cy="76" r="4.5" fill="url(#bl-void-core)" />
+  </g>
+  <g id="part-inner-mandible-L" data-pivot="102,64" data-parent="part-head-carapace" data-z-index="34" data-blend="normal" data-motion="slice-left">
+    <polygon points="102,64 76,28 94,18 106,38 98,48 110,56" fill="url(#bl-crusher-blade)" stroke="#00f0ff" stroke-width="1.8" />
+    <circle cx="102" cy="64" r="5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-inner-mandible-R" data-pivot="154,64" data-parent="part-head-carapace" data-z-index="34" data-blend="normal" data-motion="slice-right">
+    <polygon points="154,64 180,28 162,18 150,38 158,48 146,56" fill="url(#bl-crusher-blade)" stroke="#00f0ff" stroke-width="1.8" />
+    <circle cx="154" cy="64" r="5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <g id="part-void-breath-maw" data-pivot="128,62" data-parent="part-head-carapace" data-z-index="36" data-blend="normal" data-motion="recoil-maw">
+    <polygon points="114,62 120,40 136,40 142,62" fill="#020617" stroke="#00f0ff" stroke-width="1.8" />
+    <circle cx="128" cy="54" r="8" fill="url(#bl-void-core)" stroke="#ffffff" stroke-width="1.2" />
+    <circle cx="128" cy="54" r="3.5" fill="#ffffff" />
+  </g>
+  <g id="part-head-carapace" data-pivot="128,84" data-parent="part-spine-thorax-1" data-z-index="38" data-blend="normal" data-motion="head-turn">
+    <polygon points="128,50 176,68 168,104 128,96 88,104 80,68" fill="url(#bl-abyss-chitin)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <polygon points="128,58 164,72 158,96 128,90 98,96 92,72" fill="url(#bl-crimson-plate)" stroke="#00f0ff" stroke-width="1.2" />
+    <path d="M128 58 L128 90 M96 78 L160 78" stroke="#00f0ff" stroke-width="0.7" />
+    <!-- 6 枚索敌复眼眼眶底盘 -->
+    <circle cx="104" cy="74" r="5.5" fill="#020617" stroke="#fbbf24" stroke-width="1.2" />
+    <circle cx="152" cy="74" r="5.5" fill="#020617" stroke="#fbbf24" stroke-width="1.2" />
+    <circle cx="92" cy="84" r="4.2" fill="#020617" stroke="#00f0ff" stroke-width="1.2" />
+    <circle cx="164" cy="84" r="4.2" fill="#020617" stroke="#00f0ff" stroke-width="1.2" />
+    <circle cx="114" cy="84" r="4" fill="#020617" stroke="#ef4444" stroke-width="1.2" />
+    <circle cx="142" cy="84" r="4" fill="#020617" stroke="#ef4444" stroke-width="1.2" />
+    <circle cx="128" cy="84" r="6" fill="#091326" stroke="#fbbf24" stroke-width="1.2" />
+  </g>
+  <g id="part-eye-cluster-pupils" data-pivot="128,78" data-parent="part-head-carapace" data-z-index="42" data-blend="normal" data-motion="pupil-track">
+    <circle cx="128" cy="78" r="4.0" fill="#050b18" stroke="#00f0ff" stroke-width="1.1" />
+    <circle cx="104" cy="73" r="2.8" fill="#ef4444" />
+    <circle cx="104" cy="72" r="1.2" fill="#ffffff" />
+    <circle cx="152" cy="73" r="2.8" fill="#ef4444" />
+    <circle cx="152" cy="72" r="1.2" fill="#ffffff" />
+    <circle cx="92" cy="83" r="2" fill="#00f0ff" />
+    <circle cx="164" cy="83" r="2" fill="#00f0ff" />
+    <circle cx="114" cy="83" r="2" fill="#fbbf24" />
+    <circle cx="142" cy="83" r="2" fill="#fbbf24" />
+    <circle cx="128" cy="78" r="1.6" fill="#fbbf24" />
+  </g>
+  <g id="part-light-rim-leviathan" data-pivot="128,112" data-parent="part-spine-thorax-1" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M52 6 C14 26 24 62 78 76 L70 102 L80 142 L92 180 L108 224" stroke="url(#bl-rim-light)" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M204 6 C242 26 232 62 178 76 L186 102 L176 142 L164 180 L148 224" stroke="url(#bl-rim-light)" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M80 68 L128 50 L176 68" stroke="#ffffff" stroke-width="1.5" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="128,128" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M36 52 L52 38 L44 22 L66 12 M220 52 L204 38 L212 22 L190 12" stroke="#00f0ff" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M48 112 L68 98 L60 82 M208 112 L188 98 L196 82" stroke="#fbbf24" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M64 176 L84 162 M192 176 L172 162" stroke="#d946ef" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="52" cy="6" r="3" fill="#ffffff" />
+    <circle cx="204" cy="6" r="3" fill="#ffffff" />
+    <circle cx="128" cy="24" r="2.8" fill="#00f0ff" />
+    <circle cx="128" cy="248" r="2.8" fill="#fbbf24" />
+    <path d="M207.7 174 L213.7 177.5" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M149.7 209.1 L151.6 215.9" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M90 193.8 L86.5 199.9" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M31.4 153.9 L24.6 155.7" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M48.3 82 L42.3 78.5" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M106.3 46.9 L104.4 40.1" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M166 62.2 L169.5 56.1" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+    <path d="M224.6 102.1 L231.4 100.3" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+  </g>
 </svg>

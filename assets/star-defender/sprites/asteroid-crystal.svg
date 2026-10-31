@@ -1,33 +1,117 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="asteroid-crystal-rig" data-root-anchor="64,68" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#0f2442" stop-opacity="0.75"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="ac-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.8" />
+      <stop offset="65%" stop-color="#030712" stop-opacity="0.38" />
+      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="cyanArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <radialGradient id="ac-prism-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.34" />
+      <stop offset="55%" stop-color="#d946ef" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="ac-basalt-matrix" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="55%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#030712" />
     </linearGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fde047"/>
-      <stop offset="50%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#451a03"/>
+    <linearGradient id="ac-cyan-crystal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#00f0ff" />
+      <stop offset="75%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0f172a" />
     </linearGradient>
-    <linearGradient id="crimsonArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f87171"/>
-      <stop offset="50%" stop-color="#dc2626"/>
-      <stop offset="100%" stop-color="#450a0a"/>
+    <linearGradient id="ac-purple-crystal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5d0fe" />
+      <stop offset="35%" stop-color="#d946ef" />
+      <stop offset="75%" stop-color="#7e22ce" />
+      <stop offset="100%" stop-color="#1e1b4b" />
     </linearGradient>
-    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e2e8f0"/>
-      <stop offset="50%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+    <linearGradient id="ac-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#00f0ff" stop-opacity="0.82" />
+      <stop offset="100%" stop-color="#d946ef" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <polygon points="64,12 96,36 108,76 78,112 36,104 16,66 34,28" fill="#1e1b4b" stroke="#38bdf8" stroke-width="2.5"/>
-  <polygon points="64,22 80,56 64,96 48,56" fill="#00f0ff" fill-opacity="0.75" stroke="#e0f2fe" stroke-width="1.5"/>
-  <polygon points="34,46 60,64 42,88" fill="#a855f7" fill-opacity="0.8"/>
-  <polygon points="92,48 68,66 84,90" fill="#38bdf8" fill-opacity="0.8"/>
+  <!-- [光影层 1] 底层深空接触软阴影贴图 (z=1, multiply) -->
+  <g id="part-shadow-cast" data-pivot="64,72" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="72" rx="56" ry="52" fill="url(#ac-cast-shadow)" />
+  </g>
+  <!-- [光影层 2A] 棱镜折射外环：顺时针旋转晶体谐振场 (z=4, screen) -->
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#ac-prism-aura)" />
+    <path fill="none" stroke="#00f0ff" stroke-width="1.3" stroke-opacity="0.72" d="M119.45,82.02 A58.3,58.3 0 0,1 82.02,119.45 M45.98,119.45 A58.3,58.3 0 0,1 8.55,82.02 M8.55,45.98 A58.3,58.3 0 0,1 45.98,8.55 M82.02,8.55 A58.3,58.3 0 0,1 119.45,45.98" stroke-linecap="square" />
+    <path fill="none" stroke="#38bdf8" stroke-width="0.65" stroke-opacity="0.52" d="M114.12,80.29 A52.7,52.7 0 0,1 80.29,114.12 M47.71,114.12 A52.7,52.7 0 0,1 13.88,80.29 M13.88,47.71 A52.7,52.7 0 0,1 47.71,13.88 M80.29,13.88 A52.7,52.7 0 0,1 114.12,47.71" stroke-linecap="square" />
+    <line x1="118.3" y1="64" x2="125.3" y2="64" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="102.4" y1="102.4" x2="107.3" y2="107.3" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="64" y1="118.3" x2="64" y2="125.3" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="25.6" y1="102.4" x2="20.7" y2="107.3" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="9.7" y1="64" x2="2.7" y2="64" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="25.6" y1="25.6" x2="20.7" y2="20.7" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="64" y1="9.7" x2="64" y2="2.7" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
+    <line x1="102.4" y1="25.6" x2="107.3" y2="20.7" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
+    <polygon points="64,2.7 68,9.7 60,9.7" fill="#00f0ff" fill-opacity="0.82" />
+    <polygon points="64,125.3 68,118.3 60,118.3" fill="#00f0ff" fill-opacity="0.82" />
+    <polygon points="2.7,64 9.7,68 9.7,60" fill="#fbbf24" fill-opacity="0.82" />
+    <polygon points="125.3,64 118.3,68 118.3,60" fill="#fbbf24" fill-opacity="0.82" />
+  </g>
+  <!-- [光影层 2B] 棱镜折射内环：逆时针旋转高能折射环 (z=5, screen) -->
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fbbf24" stroke-width="0.9" stroke-opacity="0.68" d="M106.42,77.78 A44.6,44.6 0 0,1 67.11,108.49 M30.86,93.84 A44.6,44.6 0 0,1 23.91,44.45 M54.73,20.37 A44.6,44.6 0 0,1 100.98,39.06" stroke-linecap="square" />
+    <rect x="107" y="62.4" width="3.2" height="3.2" fill="#00f0ff" />
+    <rect x="84.7" y="101" width="3.2" height="3.2" fill="#00f0ff" />
+    <rect x="40.1" y="101" width="3.2" height="3.2" fill="#00f0ff" />
+    <rect x="17.8" y="62.4" width="3.2" height="3.2" fill="#00f0ff" />
+    <rect x="40.1" y="23.8" width="3.2" height="3.2" fill="#00f0ff" />
+    <rect x="84.7" y="23.8" width="3.2" height="3.2" fill="#00f0ff" />
+  </g>
+  <!-- [骨骼部件 1] 暗黑玄武岩陨石母体基座 (z=15) -->
+  <g id="part-basalt-matrix" data-pivot="64,76" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="24,58 50,48 82,48 106,60 112,88 88,112 40,112 16,88" fill="url(#ac-basalt-matrix)" stroke="#38bdf8" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <path d="M26 74 L56 64 L96 76 M44 98 L64 82 L86 98" stroke="#00f0ff" stroke-width="0.7" stroke-opacity="0.65" />
+    <circle cx="64" cy="76" r="6" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <!-- [骨骼部件 2] 左侧独立可碎裂紫晶簇 (z=24) -->
+  <g id="part-crystal-cluster-L" data-pivot="38,68" data-parent="part-basalt-matrix" data-z-index="24" data-blend="normal" data-motion="shatter-left">
+    <polygon points="38,68 10,36 26,22 48,54" fill="url(#ac-purple-crystal)" stroke="#f5d0fe" stroke-width="1.8" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <polygon points="32,74 6,58 18,46 38,68" fill="url(#ac-cyan-crystal)" stroke="#00f0ff" stroke-width="1.2" />
+    <!-- 内部折光丝 -->
+    <path d="M26 22 L38 68 M10 36 L34 52" stroke="#ffffff" stroke-width="0.7" stroke-opacity="0.82" />
+    <circle cx="38" cy="68" r="4.5" fill="#1e1b4b" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <!-- [骨骼部件 3] 右侧独立可碎裂紫青晶簇 (z=26) -->
+  <g id="part-crystal-cluster-R" data-pivot="90,68" data-parent="part-basalt-matrix" data-z-index="26" data-blend="normal" data-motion="shatter-right">
+    <polygon points="90,68 118,34 100,20 78,54" fill="url(#ac-cyan-crystal)" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <polygon points="96,74 122,56 110,44 90,68" fill="url(#ac-purple-crystal)" stroke="#f5d0fe" stroke-width="1.2" />
+    <path d="M100 20 L90 68 M118 34 L94 52" stroke="#ffffff" stroke-width="0.7" stroke-opacity="0.82" />
+    <circle cx="90" cy="68" r="4.5" fill="#1e1b4b" stroke="#00f0ff" stroke-width="1.2" />
+  </g>
+  <!-- [骨骼部件 4] 中央高能主电光青六棱晶柱 (z=32) -->
+  <g id="part-crystal-spire-center" data-pivot="64,62" data-parent="part-basalt-matrix" data-z-index="32" data-blend="normal" data-motion="pulse-spire">
+    <polygon points="64,8 82,32 76,68 52,68 46,32" fill="url(#ac-cyan-crystal)" stroke="#ffffff" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <polygon points="64,8 74,34 64,64 54,34" fill="#ffffff" fill-opacity="0.35" />
+    <!-- 内部折光丝 -->
+    <path d="M64 8 L64 66 M46 32 L82 32 M52 50 L76 50" stroke="#ffffff" stroke-width="0.7" stroke-opacity="0.9" />
+    <circle cx="64" cy="62" r="5.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+    <circle cx="64" cy="62" r="2.5" fill="#ffffff" />
+  </g>
+  <!-- [骨骼部件 5] 前方底部副生紫晶簇 (z=38) -->
+  <g id="part-crystal-sub-bottom" data-pivot="64,86" data-parent="part-basalt-matrix" data-z-index="38" data-blend="normal" data-motion="shatter-bottom">
+    <polygon points="50,82 64,120 78,82 64,74" fill="url(#ac-purple-crystal)" stroke="#00f0ff" stroke-width="1.8" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <line x1="64" y1="74" x2="64" y2="118" stroke="#ffffff" stroke-width="0.7" />
+    <circle cx="64" cy="86" r="4" fill="#1e1b4b" stroke="#fbbf24" stroke-width="1.2" />
+  </g>
+  <!-- [光影层 4] 多面体晶簇受光边缘高光映射贴图 (z=45, plus-lighter) -->
+  <g id="part-light-rim-crystal" data-pivot="64,68" data-parent="part-basalt-matrix" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M10 36 L26 22 L46 32 L64 8 L82 32 L100 20 L118 34" stroke="url(#ac-rim-light)" stroke-width="2.2" stroke-linecap="round" />
+  </g>
+  <!-- [光影层 5] 顶层悬浮晶尘与棱镜电弧辉光冕贴图 (z=65, screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M34 18 L44 12 M94 18 L84 12" stroke="#00f0ff" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="64" cy="8" r="2.8" fill="#ffffff" />
+    <circle cx="26" cy="22" r="2.2" fill="#00f0ff" />
+    <circle cx="100" cy="20" r="2.2" fill="#00f0ff" />
+    <circle cx="18" cy="68" r="1.8" fill="#d946ef" />
+    <circle cx="110" cy="68" r="1.8" fill="#d946ef" />
+  </g>
 </svg>

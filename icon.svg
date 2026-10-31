@@ -1,42 +1,140 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" data-rig-id="nexus-portal-icon-rig" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#0f172a" />
-      <stop offset="100%" stop-color="#020617" />
+    <radialGradient id="np-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#02040a" stop-opacity="0.92" />
+      <stop offset="65%" stop-color="#030712" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8" />
+    <radialGradient id="np-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.38" />
+      <stop offset="55%" stop-color="#3b82f6" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="np-obsidian-hull" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050b18" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="np-cyan-blade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7" />
       <stop offset="50%" stop-color="#00f0ff" />
-      <stop offset="100%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#e0f2fe" />
     </linearGradient>
-    <linearGradient id="neonGold" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="np-gold-core" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#fde047" />
-      <stop offset="100%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#ef4444" />
     </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="12" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
+    <linearGradient id="np-rim-light" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#00f0ff" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0" />
+    </linearGradient>
   </defs>
-
-  <!-- 背景圆角底盘板 -->
-  <rect width="512" height="512" rx="112" fill="url(#bgGlow)" stroke="#00f0ff" stroke-width="4" stroke-opacity="0.3" />
-  
-  <!-- 赛博网格与对角线 -->
-  <path d="M64 256 H448 M256 64 V448" stroke="#1e293b" stroke-width="2" />
-  <circle cx="256" cy="256" r="180" fill="none" stroke="#00f0ff" stroke-width="2" stroke-opacity="0.2" stroke-dasharray="8 8" />
-
-  <!-- 核心几何六边形枢纽徽章 -->
-  <polygon points="256,96 394,176 394,336 256,416 118,336 118,176" 
-           fill="none" stroke="url(#neonCyan)" stroke-width="12" filter="url(#glow)" />
-
-  <!-- 中央闪电战术能量矩阵 -->
-  <path d="M280 136 L176 272 H264 L232 376 L336 240 H248 Z" 
-        fill="url(#neonGold)" filter="url(#glow)" />
-
-  <!-- 四角战术雷达刻度点 -->
-  <circle cx="160" cy="160" r="8" fill="#00f0ff" />
-  <circle cx="352" cy="160" r="8" fill="#00f0ff" />
-  <circle cx="160" cy="352" r="8" fill="#00f0ff" />
-  <circle cx="352" cy="352" r="8" fill="#00f0ff" />
+  <!-- 1. 底层接触软阴影贴图 -->
+  <g id="part-shadow-cast" data-pivot="128,128" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="128" cy="134" rx="112" ry="108" fill="url(#np-cast-shadow)" />
+    <circle cx="128" cy="128" r="96" fill="url(#np-cast-shadow)" />
+  </g>
+  <!-- 2. 外层顺时针战术星盘光环 -->
+  <g id="part-aura-ring-outer" data-pivot="128,128" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="128" cy="128" r="126" fill="url(#np-aura-field)" />
+    <path fill="none" stroke="#00f0ff" stroke-width="1.4" stroke-opacity="0.78" d="M240.61,164.59 A118.4,118.4 0 0,1 164.59,240.61 M91.41,240.61 A118.4,118.4 0 0,1 15.39,164.59 M15.39,91.41 A118.4,118.4 0 0,1 91.41,15.39 M164.59,15.39 A118.4,118.4 0 0,1 240.61,91.41" stroke-linecap="square" />
+    <path fill="none" stroke="#fbbf24" stroke-width="0.8" stroke-opacity="0.62" d="M229.86,161.1 A107.1,107.1 0 0,1 161.1,229.86 M94.9,229.86 A107.1,107.1 0 0,1 26.14,161.1 M26.14,94.9 A107.1,107.1 0 0,1 94.9,26.14 M161.1,26.14 A107.1,107.1 0 0,1 229.86,94.9" stroke-linecap="square" />
+    <line x1="233.1" y1="128" x2="249.4" y2="128" stroke="#fbbf24" stroke-width="1.5" stroke-opacity="0.8" />
+    <line x1="219" y1="180.5" x2="233.1" y2="188.7" stroke="#00f0ff" stroke-width="0.8" stroke-opacity="0.8" />
+    <line x1="180.6" y1="219" x2="188.7" y2="233.1" stroke="#00f0ff" stroke-width="0.8" stroke-opacity="0.8" />
+    <line x1="128" y1="233.1" x2="128" y2="249.4" stroke="#fbbf24" stroke-width="1.5" stroke-opacity="0.8" />
+    <line x1="75.5" y1="219" x2="67.3" y2="233.1" stroke="#00f0ff" stroke-width="0.8" stroke-opacity="0.8" />
+    <line x1="37" y1="180.5" x2="22.9" y2="188.7" stroke="#00f0ff" stroke-width="0.8" stroke-opacity="0.8" />
+    <line x1="22.9" y1="128" x2="6.6" y2="128" stroke="#fbbf24" stroke-width="1.5" stroke-opacity="0.8" />
+    <line x1="37" y1="75.4" x2="22.9" y2="67.3" stroke="#00f0ff" stroke-width="0.8" stroke-opacity="0.8" />
+    <line x1="75.4" y1="37" x2="67.3" y2="22.9" stroke="#00f0ff" stroke-width="0.8" stroke-opacity="0.8" />
+    <line x1="128" y1="22.9" x2="128" y2="6.6" stroke="#fbbf24" stroke-width="1.5" stroke-opacity="0.8" />
+    <line x1="180.6" y1="37" x2="188.7" y2="22.9" stroke="#00f0ff" stroke-width="0.8" stroke-opacity="0.8" />
+    <line x1="219" y1="75.4" x2="233.1" y2="67.3" stroke="#00f0ff" stroke-width="0.8" stroke-opacity="0.8" />
+  </g>
+  <!-- 3. 内层逆时针相位叶轮光环 -->
+  <g id="part-aura-ring-inner" data-pivot="128,128" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fbbf24" stroke-width="1.1" stroke-opacity="0.75" d="M214.26,156.03 A90.7,90.7 0 0,1 134.33,218.48 M60.6,188.69 A90.7,90.7 0 0,1 46.48,88.24 M109.14,39.28 A90.7,90.7 0 0,1 203.19,77.28" stroke-linecap="square" />
+    <circle cx="218.7" cy="128" r="2.8" fill="#00f0ff" stroke="#ffffff" stroke-width="0.8" />
+    <circle cx="128" cy="218.7" r="2.8" fill="#00f0ff" stroke="#ffffff" stroke-width="0.8" />
+    <circle cx="37.3" cy="128" r="2.8" fill="#00f0ff" stroke="#ffffff" stroke-width="0.8" />
+    <circle cx="128" cy="37.3" r="2.8" fill="#00f0ff" stroke="#ffffff" stroke-width="0.8" />
+  </g>
+  <!-- 4. 核心指向光锥贴图 -->
+  <g id="part-light-cone-main" data-pivot="128,128" data-parent="root" data-z-index="8" data-blend="screen" style="mix-blend-mode: screen">
+    <polygon points="128,128 84,20 172,20" fill="url(#np-aura-field)" opacity="0.55" />
+    <polygon points="128,128 84,236 172,236" fill="url(#np-aura-field)" opacity="0.4" />
+  </g>
+  <!-- 5. 主装甲六芒星际底座 (Root Chassis) -->
+  <g id="part-chassis-hex" data-pivot="128,128" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="128,28 214,78 214,178 128,228 42,178 42,78" fill="url(#np-obsidian-hull)" stroke="#00f0ff" stroke-width="2.4" stroke-linejoin="round" />
+    <polygon points="128,42 200,84 200,172 128,214 56,172 56,84" fill="#050b18" stroke="#38bdf8" stroke-width="1.2" />
+    <path d="M128 42 V214 M56 84 L200 172 M200 84 L56 172" stroke="#00f0ff" stroke-width="0.65" opacity="0.45" />
+    <path fill="none" stroke="#00f0ff" stroke-width="0.7" stroke-opacity="0.72" d="M188.87,147.78 A64,64 0 0,1 147.78,188.87 M108.22,188.87 A64,64 0 0,1 67.13,147.78 M67.13,108.22 A64,64 0 0,1 108.22,67.13 M147.78,67.13 A64,64 0 0,1 188.87,108.22" stroke-linecap="square" />
+    <circle cx="128" cy="128" r="14" fill="#0f172a" stroke="#00f0ff" stroke-width="1.5" />
+    <circle cx="128" cy="54" r="3" fill="#00f0ff" />
+    <circle cx="128" cy="202" r="3" fill="#00f0ff" />
+    <circle cx="66" cy="92" r="3" fill="#00f0ff" />
+    <circle cx="190" cy="92" r="3" fill="#00f0ff" />
+    <circle cx="66" cy="164" r="3" fill="#00f0ff" />
+    <circle cx="190" cy="164" r="3" fill="#00f0ff" />
+  </g>
+  <!-- 6. 左翼可变后掠高能护盾翼 (Left Articulated Wing) -->
+  <g id="part-wing-shield-L" data-pivot="72,128" data-parent="part-chassis-hex" data-z-index="22" data-blend="normal">
+    <circle cx="72" cy="128" r="8" fill="#0f172a" stroke="#00f0ff" stroke-width="1.6" />
+    <circle cx="72" cy="128" r="3.5" fill="#00f0ff" />
+    <polygon points="72,92 26,64 18,128 26,192 72,164" fill="url(#np-obsidian-hull)" stroke="url(#np-cyan-blade)" stroke-width="2.0" stroke-linejoin="round" />
+    <polygon points="64,102 34,82 28,128 34,174 64,154" fill="#091326" stroke="#38bdf8" stroke-width="1.1" />
+    <path d="M34 102 H60 M32 128 H62 M34 154 H60" stroke="#00f0ff" stroke-width="0.65" opacity="0.75" />
+  </g>
+  <!-- 7. 右翼可变后掠高能护盾翼 (Right Articulated Wing) -->
+  <g id="part-wing-shield-R" data-pivot="184,128" data-parent="part-chassis-hex" data-z-index="22" data-blend="normal">
+    <circle cx="184" cy="128" r="8" fill="#0f172a" stroke="#00f0ff" stroke-width="1.6" />
+    <circle cx="184" cy="128" r="3.5" fill="#00f0ff" />
+    <polygon points="184,92 230,64 238,128 230,192 184,164" fill="url(#np-obsidian-hull)" stroke="url(#np-cyan-blade)" stroke-width="2.0" stroke-linejoin="round" />
+    <polygon points="192,102 222,82 228,128 222,174 192,154" fill="#091326" stroke="#38bdf8" stroke-width="1.1" />
+    <path d="M196 102 H222 M194 128 H224 M196 154 H222" stroke="#00f0ff" stroke-width="0.65" opacity="0.75" />
+  </g>
+  <!-- 8. 上方前掠战术传感器阵列 (Top Sensor Array) -->
+  <g id="part-sensor-crest-top" data-pivot="128,62" data-parent="part-chassis-hex" data-z-index="26" data-blend="normal">
+    <circle cx="128" cy="62" r="7" fill="#0f172a" stroke="#00f0ff" stroke-width="1.4" />
+    <circle cx="128" cy="62" r="3" fill="#fbbf24" />
+    <polygon points="128,18 156,58 128,48 100,58" fill="url(#np-obsidian-hull)" stroke="#00f0ff" stroke-width="1.8" />
+    <line x1="128" y1="24" x2="128" y2="54" stroke="#00f0ff" stroke-width="0.7" />
+  </g>
+  <!-- 9. 下方矢量推进尾椎 (Bottom Thruster Nozzle) -->
+  <g id="part-thruster-tail" data-pivot="128,194" data-parent="part-chassis-hex" data-z-index="26" data-blend="normal">
+    <circle cx="128" cy="194" r="7" fill="#0f172a" stroke="#00f0ff" stroke-width="1.4" />
+    <circle cx="128" cy="194" r="3" fill="#fbbf24" />
+    <polygon points="104,194 152,194 140,236 116,236" fill="url(#np-obsidian-hull)" stroke="#38bdf8" stroke-width="1.8" />
+    <polygon points="116,202 140,202 128,232" fill="url(#np-gold-core)" />
+  </g>
+  <!-- 10. 中央旋转电弧反应堆转子 (Center Reactor Rotor) -->
+  <g id="part-reactor-rotor" data-pivot="128,128" data-parent="part-chassis-hex" data-z-index="34" data-blend="normal">
+    <circle cx="128" cy="128" r="46" fill="#050b18" stroke="url(#np-cyan-blade)" stroke-width="2.2" />
+    <path fill="none" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.72" d="M162.24,139.12 A36,36 0 0,1 139.12,162.24 M116.88,162.24 A36,36 0 0,1 93.76,139.12 M93.76,116.88 A36,36 0 0,1 116.88,93.76 M139.12,93.76 A36,36 0 0,1 162.24,116.88" stroke-linecap="square" />
+    <polygon points="142,74 92,134 126,134 114,182 164,122 130,122" fill="url(#np-gold-core)" stroke="#ffffff" stroke-width="1.2" stroke-linejoin="round" />
+    <circle cx="128" cy="128" r="6" fill="#ffffff" />
+  </g>
+  <!-- 11. 本体与双翼受光边缘高光映射贴图 (Rim Light Overlay) -->
+  <g id="part-light-rim-chassis" data-pivot="128,128" data-parent="part-chassis-hex" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <polyline points="42,78 128,28 214,78" fill="none" stroke="url(#np-rim-light)" stroke-width="2.2" stroke-linecap="round" />
+    <polyline points="26,64 72,92 128,62 184,92 230,64" fill="none" stroke="#ffffff" stroke-width="1.1" opacity="0.8" />
+    <path d="M92 92 L128 72 L164 92" fill="none" stroke="#00f0ff" stroke-width="0.8" opacity="0.85" />
+  </g>
+  <!-- 12. 顶层体积辉光冕与游走电弧贴图 (Top Corona & Arcs) -->
+  <g id="part-aura-corona-top" data-pivot="128,128" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <circle cx="128" cy="128" r="54" fill="url(#np-aura-field)" opacity="0.65" />
+    <path d="M76 86 L92 100 L84 114 M180 86 L164 100 L172 114" fill="none" stroke="#00f0ff" stroke-width="1.1" opacity="0.85" />
+    <circle cx="128" cy="36" r="2.2" fill="#ffffff" />
+    <circle cx="128" cy="220" r="2.2" fill="#ffffff" />
+    <circle cx="48" cy="128" r="2.2" fill="#00f0ff" />
+    <circle cx="208" cy="128" r="2.2" fill="#00f0ff" />
+    <circle cx="78" cy="78" r="1.8" fill="#fbbf24" />
+    <circle cx="178" cy="78" r="1.8" fill="#fbbf24" />
+    <circle cx="78" cy="178" r="1.8" fill="#fbbf24" />
+    <circle cx="178" cy="178" r="1.8" fill="#fbbf24" />
+  </g>
 </svg>

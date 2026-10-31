@@ -1,22 +1,137 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="base-eagle-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#0f2442" stop-opacity="0.75"/>
-      <stop offset="100%" stop-color="#030712" stop-opacity="0"/>
+    <radialGradient id="be-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0b1610" stop-opacity="0.78" />
+      <stop offset="65%" stop-color="#0d1912" stop-opacity="0.36" />
+      <stop offset="100%" stop-color="#0d1912" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="goldArmor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fde047"/>
-      <stop offset="50%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#78350f"/>
+    <radialGradient id="be-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.32" />
+      <stop offset="55%" stop-color="#22c55e" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#0d1912" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="be-pedestal-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e2f23" />
+      <stop offset="55%" stop-color="#14241b" />
+      <stop offset="100%" stop-color="#0d1912" />
     </linearGradient>
+    <linearGradient id="be-gold-wing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#fbbf24" />
+      <stop offset="75%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#451a03" />
+    </linearGradient>
+    <linearGradient id="be-rim-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#22c55e" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="be-core-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#22c55e" />
+      <stop offset="80%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#15803d" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <!-- Layer 1: Armored Command Bunker Base -->
-  <circle cx="64" cy="64" r="58" fill="url(#bgGlow)"/>
-  <rect x="16" y="16" width="96" height="96" rx="16" fill="#0f172a" stroke="#fbbf24" stroke-width="3"/>
-  <!-- Layer 2: Cyber Eagle Spread Wings & Tail Silhouette -->
-  <path d="M64 24 L76 42 L108 32 L96 58 L104 72 L78 72 L86 98 L64 88 L42 98 L50 72 L24 72 L32 58 L20 32 L52 42 Z" fill="url(#goldArmor)" stroke="#fef9c3" stroke-width="2" stroke-linejoin="round"/>
-  <!-- Layer 3: Eagle Shield Core & Glowing Eye Crest -->
-  <polygon points="64,44 78,58 64,80 50,58" fill="#082f49" stroke="#00f0ff" stroke-width="2"/>
-  <circle cx="64" cy="58" r="6" fill="#00f0ff"/>
-  <circle cx="64" cy="58" r="2.5" fill="#ffffff"/>
+  <!-- [光影层 1] 指挥部地基接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 指挥部量子护盾外层法阵环 (z=4, screen) -->
+  <!-- [光影层 2B] 指挥部量子护盾内层逆转环 (z=5, screen) -->
+  <!-- [骨骼部件 1] 八角重装装甲地基 (z=15) -->
+  <!-- [骨骼部件 2] 苍鹰尾羽装甲盾 (z=22) -->
+  <!-- [骨骼部件 3A] 左独立扇动展开的机械金青羽翼 (z=30) -->
+  <!-- [骨骼部件 3B] 右独立扇动展开的机械金青羽翼 (z=30) -->
+  <!-- [骨骼部件 4] 中央量子反应核心胸甲 (z=35) -->
+  <!-- [骨骼部件 5] 苍鹰头部与发光索敌眼 (z=40) -->
+  <!-- [光影层 4] 羽翼与胸甲受光边缘高光映射贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 5] 顶层量子电弧冕与神圣辉光 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,66" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="66" rx="58" ry="56" fill="url(#be-shadow-grad)" />
+    <polygon points="40,14 88,14 114,40 114,88 88,114 40,114 14,88 14,40" fill="#0b1610" fill-opacity="0.5" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#be-aura-field)" />
+    <path fill="none" stroke="#22c55e" stroke-width="1.5" stroke-opacity="0.72" d="M120.04,80.07 A58.3,58.3 0 0,1 80.07,120.04 M47.93,120.04 A58.3,58.3 0 0,1 7.96,80.07 M7.96,47.93 A58.3,58.3 0 0,1 47.93,7.96 M80.07,7.96 A58.3,58.3 0 0,1 120.04,47.93 M64,1.7 L64,10.7 M64,117.3 L64,126.3 M1.7,64 L10.7,64 M117.3,64 L126.3,64" stroke-linejoin="bevel" />
+    <path fill="none" stroke="#4ade80" stroke-width="0.85" stroke-opacity="0.58" d="M114.66,78.53 A52.7,52.7 0 0,1 78.53,114.66 M49.47,114.66 A52.7,52.7 0 0,1 13.34,78.53 M13.34,49.47 A52.7,52.7 0 0,1 49.47,13.34 M78.53,13.34 A52.7,52.7 0 0,1 114.66,49.47 M64,7.3 L64,16.3 M64,111.7 L64,120.7 M7.3,64 L16.3,64 M111.7,64 L120.7,64" stroke-linejoin="bevel" />
+    <line x1="114.7" y1="64" x2="124.3" y2="64" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="99.9" y1="99.9" x2="106.6" y2="106.6" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="64" y1="114.7" x2="64" y2="124.3" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="28.1" y1="99.9" x2="21.4" y2="106.6" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="13.3" y1="64" x2="3.7" y2="64" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="28.1" y1="28.1" x2="21.4" y2="21.4" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="64" y1="13.3" x2="64" y2="3.7" stroke="#22c55e" stroke-width="1.4" stroke-opacity="0.8" />
+    <line x1="99.9" y1="28.1" x2="106.6" y2="21.4" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
+    <rect x="103" y="103" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="20.6" y="103" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="20.6" y="20.6" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+    <rect x="103" y="20.6" width="4.4" height="4.4" fill="#fbbf24" stroke="#0b1610" stroke-width="0.7" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fbbf24" stroke-width="1.1" stroke-opacity="0.68" d="M106.87,76.29 A44.6,44.6 0 0,1 76.29,106.87 M51.71,106.87 A44.6,44.6 0 0,1 21.13,76.29 M21.13,51.71 A44.6,44.6 0 0,1 51.71,21.13 M76.29,21.13 A44.6,44.6 0 0,1 106.87,51.71 M64,15.4 L64,24.4 M64,103.6 L64,112.6 M15.4,64 L24.4,64 M103.6,64 L112.6,64" stroke-linejoin="bevel" />
+    <circle cx="108.6" cy="64" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="86.3" cy="102.6" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="41.7" cy="102.6" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="19.4" cy="64" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="41.7" cy="25.4" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+    <circle cx="86.3" cy="25.4" r="2.0" fill="#22c55e" stroke="#0b1610" stroke-width="0.65" />
+  </g>
+  <g id="part-pedestal-base" data-pivot="64,64" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="42,16 86,16 112,42 112,86 86,112 42,112 16,86 16,42" fill="url(#be-pedestal-obsidian)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="bevel" />
+    <polygon points="46,22 82,22 106,46 106,82 82,106 46,106 22,82 22,46" fill="#0b1911" stroke="#22c55e" stroke-width="1.1" />
+    <path d="M46 22 L64 40 L82 22 M22 46 L40 64 L22 82 M106 46 L88 64 L106 82 M46 106 L64 88 L82 106" stroke="#22c55e" stroke-width="0.7" stroke-opacity="0.65" />
+    <circle cx="44" cy="20" r="1.8" fill="#fbbf24" />
+    <circle cx="84" cy="20" r="1.8" fill="#fbbf24" />
+    <circle cx="44" cy="108" r="1.8" fill="#fbbf24" />
+    <circle cx="84" cy="108" r="1.8" fill="#fbbf24" />
+  </g>
+  <g id="part-tail-plume" data-pivot="64,82" data-parent="part-pedestal-base" data-z-index="22" data-blend="normal" data-motion="pulse-scale">
+    <circle cx="64" cy="82" r="4.0" fill="#06100a" stroke="#22c55e" stroke-width="1.1" />
+    <polygon points="50,80 78,80 86,104 72,98 64,108 56,98 42,104" fill="url(#be-gold-wing)" stroke="#fef08a" stroke-width="1.5" stroke-linejoin="bevel" />
+    <line x1="64" y1="80" x2="64" y2="104" stroke="#22c55e" stroke-width="1.0" />
+    <line x1="56" y1="82" x2="50" y2="98" stroke="#22c55e" stroke-width="0.8" />
+    <line x1="72" y1="82" x2="78" y2="98" stroke="#22c55e" stroke-width="0.8" />
+    <circle cx="64" cy="82" r="1.6" fill="#fbbf24" />
+  </g>
+  <g id="part-wing-R" data-pivot="78,62" data-parent="part-pedestal-base" data-z-index="30" data-blend="normal" data-motion="rotate-sym-right">
+    <circle cx="78" cy="62" r="6" fill="#0b1911" stroke="#fbbf24" stroke-width="1.6" />
+    <polygon points="78,54 118,26 110,46 120,54 106,66 114,74 94,80 78,70" fill="url(#be-gold-wing)" stroke="#fef08a" stroke-width="2.0" stroke-linejoin="bevel" />
+    <polygon points="82,58 110,38 104,52 112,58 100,66 82,66" fill="#22c55e" fill-opacity="0.75" />
+    <line x1="82" y1="58" x2="110" y2="38" stroke="#ffffff" stroke-width="0.9" />
+    <line x1="82" y1="62" x2="112" y2="58" stroke="#ffffff" stroke-width="0.9" />
+    <circle cx="78" cy="62" r="2.5" fill="#ffffff" />
+    <circle cx="66" cy="52" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="90" cy="52" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="66" cy="72" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+    <circle cx="90" cy="72" r="1.5" fill="#fbbf24" stroke="#06100a" stroke-width="0.6" />
+  </g>
+  <g id="part-wing-L" data-pivot="50,62" data-parent="part-pedestal-base" data-z-index="30" data-blend="normal" data-motion="rotate-sym-left">
+    <circle cx="50" cy="62" r="6" fill="#0b1911" stroke="#fbbf24" stroke-width="1.6" />
+    <polygon points="50,54 10,26 18,46 8,54 22,66 14,74 34,80 50,70" fill="url(#be-gold-wing)" stroke="#fef08a" stroke-width="2.0" stroke-linejoin="bevel" />
+    <polygon points="46,58 18,38 24,52 16,58 28,66 46,66" fill="#22c55e" fill-opacity="0.75" />
+    <line x1="46" y1="58" x2="18" y2="38" stroke="#ffffff" stroke-width="0.9" />
+    <line x1="46" y1="62" x2="16" y2="58" stroke="#ffffff" stroke-width="0.9" />
+    <circle cx="50" cy="62" r="2.5" fill="#ffffff" />
+  </g>
+  <g id="part-core-shield" data-pivot="64,66" data-parent="part-pedestal-base" data-z-index="35" data-blend="normal">
+    <polygon points="48,48 80,48 86,66 64,90 42,66" fill="#14241b" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="bevel" />
+    <circle cx="64" cy="66" r="14" fill="url(#be-core-glow)" />
+    <polygon points="64,54 72,66 64,78 56,66" fill="#ffffff" />
+    <circle cx="64" cy="66" r="4" fill="#22c55e" />
+  </g>
+  <g id="part-eagle-head" data-pivot="64,42" data-parent="part-core-shield" data-z-index="40" data-blend="normal" data-motion="aim-look">
+    <circle cx="64" cy="42" r="4.0" fill="#06100a" stroke="#22c55e" stroke-width="1.1" />
+    <polygon points="64,20 78,34 72,48 56,48 50,34" fill="url(#be-gold-wing)" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="bevel" />
+    <polygon points="64,34 69,44 64,50 59,44" fill="#fef08a" />
+    <polygon points="55,34 61,36 57,39" fill="#22c55e" />
+    <polygon points="73,34 67,36 71,39" fill="#22c55e" />
+    <circle cx="64" cy="42" r="1.6" fill="#fbbf24" />
+  </g>
+  <g id="part-light-rim-wings" data-pivot="64,64" data-parent="part-core-shield" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M10 26 L50 54 M118 26 L78 54 M50 34 L64 20 L78 34" stroke="url(#be-rim-glow)" stroke-width="2.6" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M24 22 L34 16 L30 8 M104 22 L94 16 L98 8" stroke="#22c55e" stroke-width="1.3" stroke-linecap="round" />
+    <circle cx="30" cy="8" r="2.2" fill="#ffffff" />
+    <circle cx="98" cy="8" r="2.2" fill="#ffffff" />
+    <circle cx="64" cy="12" r="2.5" fill="#fef08a" />
+  </g>
 </svg>

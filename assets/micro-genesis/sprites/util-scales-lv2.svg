@@ -1,23 +1,130 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="util-scales-lv2-rig" data-root-anchor="64,64" data-has-aura="true">
   <defs>
-    <linearGradient id="scale2" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#1e40af"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <!-- 1. 环境接触软阴影材质 -->
+    <radialGradient id="us2-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#021317" stop-opacity="0.70" />
+      <stop offset="62%" stop-color="#03181c" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <!-- 2. 六角重鳞力场光环材质 -->
+    <radialGradient id="us2-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.30" />
+      <stop offset="55%" stop-color="#fbbf24" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
+    <!-- 3. 几丁质黑曜深海基底材质 -->
+    <linearGradient id="us2-chitin-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#115e59" />
+      <stop offset="50%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#03181c" />
     </linearGradient>
+    <!-- 4. 六角钙化重甲板材质 -->
+    <linearGradient id="us2-hex-armor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5eead4" />
+      <stop offset="30%" stop-color="#1d4ed8" />
+      <stop offset="75%" stop-color="#063136" />
+      <stop offset="100%" stop-color="#021619" />
+    </linearGradient>
+    <!-- 5. 轴承核心与金青受光高光 -->
+    <radialGradient id="us2-joint-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="45%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="us2-rim-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="40%" stop-color="#fbbf24" stop-opacity="0.80" />
+      <stop offset="80%" stop-color="#2dd4bf" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="confocal-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0" />
+      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.16" />
+      <stop offset="86%" stop-color="#a855f7" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <!-- Lv.2 硅化覆瓦鳞甲：六角蜂巢咬合硅化重甲 + 青蓝反伤棱边 -->
-  <!-- 左右翼板 -->
-  <polygon points="16,44 40,28 56,44 56,82 36,98 16,80" fill="url(#scale2)" stroke="#38bdf8" stroke-width="2.5"/>
-  <polygon points="72,44 88,28 112,44 112,80 92,98 72,82" fill="url(#scale2)" stroke="#38bdf8" stroke-width="2.5"/>
-  <!-- 中央主重甲盾 -->
-  <polygon points="36,28 64,12 92,28 92,76 64,112 36,76" fill="url(#scale2)" stroke="#00f0ff" stroke-width="3"/>
-  <!-- 内嵌硅晶反伤纹 -->
-  <polygon points="48,36 64,24 80,36 80,70 64,96 48,70" fill="none" stroke="#bae6fd" stroke-width="2"/>
-  <line x1="64" y1="16" x2="64" y2="106" stroke="#ffffff" stroke-width="3"/>
-  <!-- 铆接能量点 -->
-  <circle cx="34" cy="58" r="3.5" fill="#00f0ff"/>
-  <circle cx="94" cy="58" r="3.5" fill="#00f0ff"/>
-  <circle cx="64" cy="54" r="5" fill="#ffffff"/>
+  <!-- [光影层 1] 环境接触软阴影贴图 (z=1, multiply) -->
+  <!-- [光影层 2A] 护甲力场外环：顺时针自转六角防御矩阵环 (z=4, screen) -->
+  <!-- [光影层 2B] 能量缓冲棱镜网内环：逆时针自转蜂窝力场网 (z=5, screen) -->
+  <!-- [骨骼部件 1] 几丁质重型基底层与能量缓冲棱镜网 (z=10) -->
+  <!-- [骨骼部件 2] 左侧六角反应重鳞甲片 (z=20) -->
+  <!-- [骨骼部件 3] 右侧六角反应重鳞甲片 (z=20) -->
+  <!-- [骨骼部件 4] 中央主六角蜂窝重型反应盾鳞 (z=30) -->
+  <!-- [光影层 3] 鳞片边缘受光高光贴图 (z=45, plus-lighter) -->
+  <!-- [光影层 4] 顶层体积辉光冕与六角力场折射光斑 (z=65, screen) -->
+  <g id="part-shadow-cast" data-pivot="64,70" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="70" rx="54" ry="48" fill="url(#us2-cast-shadow)" />
+    <ellipse cx="64" cy="72" rx="38" ry="32" fill="#021317" fill-opacity="0.42" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#us2-aura-field)" />
+    <path fill="none" stroke="#2dd4bf" stroke-width="1.2" stroke-opacity="0.65" d="M122.3,64 Q120.08,87.23 105.22,105.22 Q85.58,116.09 64,122.3 Q40.77,120.08 22.78,105.22 Q11.91,85.58 5.7,64 Q7.92,40.77 22.78,22.78 Q42.42,11.91 64,5.7 Q87.23,7.92 105.22,22.78 Q116.09,42.42 122.3,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <path fill="none" stroke="#34d399" stroke-width="0.7" stroke-opacity="0.5" d="M116.7,64 Q114.91,85.09 101.26,101.26 Q83.43,110.91 64,116.7 Q42.91,114.91 26.74,101.26 Q17.09,83.43 11.3,64 Q13.09,42.91 26.74,26.74 Q44.57,17.09 64,11.3 Q85.09,13.09 101.26,26.74 Q110.91,44.57 116.7,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="122.3" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="121.5" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="122.3" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="121.5" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="105.2" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="5.7" cy="64" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="4.9" cy="63.2" r="0.9" fill="#ffffff" />
+    <circle cx="22.8" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+    <circle cx="64" cy="5.7" r="3.0" fill="#2dd4bf" fill-opacity="0.35" stroke="#fde047" stroke-width="0.85" />
+    <circle cx="63.2" cy="4.9" r="0.9" fill="#ffffff" />
+    <circle cx="105.2" cy="22.8" r="1.6" fill="#34d399" fill-opacity="0.8" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#fde047" stroke-width="0.85" stroke-opacity="0.62" d="M108.6,64 Q104.7,87.5 86.3,102.62 Q64,106.68 41.7,102.62 Q23.3,87.5 19.4,64 Q27.04,42.66 41.7,25.38 Q64,17 86.3,25.38 Q100.96,42.66 108.6,64 Z" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="108.6" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="102.6" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="19.4" cy="64" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="41.7" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="86.3" cy="25.4" r="2.1" fill="#34d399" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.6" />
+    <circle cx="102.62" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="25.38" cy="86.3" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+    <circle cx="64" cy="19.4" r="2.8" fill="#fde047" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.75" />
+  </g>
+  <g id="part-scale-base-dermis" data-pivot="64,74" data-parent="root" data-z-index="10" data-blend="normal">
+    <polygon points="64,22 108,44 102,92 64,112 26,92 20,44" fill="url(#us2-chitin-obsidian)" stroke="#5eead4" stroke-width="2.1" />
+    <polygon points="64,30 96,48 92,86 64,102 36,86 32,48" fill="#070e1d" stroke="#fbbf24" stroke-width="1.1" stroke-opacity="0.75" />
+    <path d="M36 66 L92 66 M42 80 L86 80 M64 30 L64 102" stroke="#2dd4bf" stroke-width="0.65" stroke-opacity="0.6" />
+  </g>
+  <g id="part-scale-plate-right" data-pivot="90,66" data-parent="part-scale-base-dermis" data-z-index="20" data-blend="normal" data-motion="rotate-sym-right">
+    <polygon points="90,24 70,36 72,74 92,96 112,80 110,42" fill="url(#us2-hex-armor)" stroke="#fbbf24" stroke-width="2.0" stroke-linejoin="round" />
+    <polygon points="90,32 78,40 80,70 92,86 104,74 102,46" fill="url(#us2-chitin-obsidian)" stroke="#2dd4bf" stroke-width="1.1" />
+    <path d="M90 32 L92 86 M102 46 L78 40 M104 74 L80 70" stroke="#2dd4bf" stroke-width="0.65" stroke-opacity="0.7" />
+    <circle cx="90" cy="66" r="7" fill="#042326" stroke="#fbbf24" stroke-width="1.6" />
+    <circle cx="90" cy="66" r="3.5" fill="url(#us2-joint-core)" />
+  </g>
+  <g id="part-scale-plate-left" data-pivot="38,66" data-parent="part-scale-base-dermis" data-z-index="20" data-blend="normal" data-motion="rotate-sym-left">
+    <polygon points="38,24 58,36 56,74 36,96 16,80 18,42" fill="url(#us2-hex-armor)" stroke="#fbbf24" stroke-width="2.0" stroke-linejoin="round" />
+    <polygon points="38,32 50,40 48,70 36,86 24,74 26,46" fill="url(#us2-chitin-obsidian)" stroke="#2dd4bf" stroke-width="1.1" />
+    <path d="M38 32 L36 86 M26 46 L50 40 M24 74 L48 70" stroke="#2dd4bf" stroke-width="0.65" stroke-opacity="0.7" />
+    <circle cx="38" cy="66" r="7" fill="#042326" stroke="#fbbf24" stroke-width="1.6" />
+    <circle cx="38" cy="66" r="3.5" fill="url(#us2-joint-core)" />
+  </g>
+  <g id="part-scale-plate-center" data-pivot="64,60" data-parent="part-scale-base-dermis" data-z-index="30" data-blend="normal" data-motion="translate-y">
+    <polygon points="64,12 92,30 90,72 64,106 38,72 36,30" fill="url(#us2-hex-armor)" stroke="#fbbf24" stroke-width="2.4" stroke-linejoin="round" />
+    <polygon points="64,20 84,34 82,68 64,96 46,68 44,34" fill="url(#us2-chitin-obsidian)" stroke="#2dd4bf" stroke-width="1.3" />
+    <path d="M64 18 L64 96 M44 34 L64 48 L84 34 M46 68 L64 80 L82 68" stroke="#fbbf24" stroke-width="1.1" stroke-opacity="0.85" />
+    <path d="M50 48 L78 48 M50 58 L78 58" stroke="#2dd4bf" stroke-width="0.65" stroke-opacity="0.7" />
+    <circle cx="64" cy="60" r="8.5" fill="#042326" stroke="#fbbf24" stroke-width="1.8" />
+    <circle cx="64" cy="60" r="4.2" fill="url(#us2-joint-core)" />
+    <circle cx="57" cy="55" r="3.2" fill="#99f6e4" fill-opacity="0.38" stroke="#ffffff" stroke-width="0.65" />
+    <circle cx="72" cy="64" r="2.4" fill="#fde047" fill-opacity="0.42" stroke="#2dd4bf" stroke-width="0.6" />
+  </g>
+  <g id="part-light-rim-scales" data-pivot="64,60" data-parent="part-scale-plate-center" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <polyline points="38,70 36,30 64,12 92,30 90,70" stroke="url(#us2-rim-glow)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+    <polyline points="18,76 18,42 38,24" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round" />
+    <polyline points="110,76 110,42 90,24" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <polygon points="64,26 76,34 76,50 64,58 52,50 52,34" stroke="#ffffff" stroke-width="0.9" stroke-opacity="0.75" />
+    <circle cx="64" cy="12" r="2.5" fill="#ffffff" />
+    <circle cx="38" cy="24" r="2" fill="#fbbf24" />
+    <circle cx="90" cy="24" r="2" fill="#fbbf24" />
+    <circle cx="64" cy="106" r="2.2" fill="#2dd4bf" />
+  </g>
 </svg>
-
