@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v9.0-style57x39-r2';
+const CACHE_NAME = 'nexus-mini-portal-v9.1-style57x39-r3';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -62,6 +62,15 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       })
-      .catch(() => caches.match(event.request))
+      .catch(async () => {
+        const exact = await caches.match(event.request);
+        if (exact) return exact;
+        const ignoreQuery = await caches.match(event.request, { ignoreSearch: true });
+        if (ignoreQuery) return ignoreQuery;
+        if (event.request.mode === 'navigate') {
+          return caches.match('./index.html');
+        }
+        return Response.error();
+      })
   );
 });
