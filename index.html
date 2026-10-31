@@ -981,22 +981,18 @@
 
   <!-- 平台门户主界面 -->
   <div id="portal-shell">
-    <!-- 顶部指挥栏 -->
+    <!-- 顶部指挥栏 (第 1 层 · 平台主页：仅展示游戏清单、游戏规则介绍与游戏画面截图) -->
     <header class="topbar">
       <div class="brand">
         <img src="./icon.svg" alt="Nexus-Mini" class="brand-logo" />
         <span class="brand-title">NEXUS-MINI</span>
-        <span class="brand-sub">精品微游资源介绍与即玩/安装中枢</span>
+        <span class="brand-sub">第 1 层 · 平台主页 (游戏清单 · 规则介绍 · 画面截图)</span>
         <span class="status-pill">
           <span class="status-dot"></span>
-          <span>LAN 1~5ms · 114 RIGGED SVG SPRITES</span>
+          <span>零远端通信 · 本地单机 &amp; 局域网 1~5ms</span>
         </span>
       </div>
       <div class="topbar-controls">
-        <button class="pill-btn gold-badge" id="btn-auth-pill" title="切换统帅账号或登录管理员">
-          <svg class="nx-ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span id="auth-nickname-label">加载身份...</span>
-        </button>
         <button class="pill-btn" id="btn-pwa-install" title="安装到手机桌面 (支持离线启动)">
           <svg class="nx-ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <span>安装桌面版</span>
@@ -1010,7 +1006,7 @@
 
     <!-- 70:30 掌机主从工作区 -->
     <main class="workspace-grid">
-      <!-- 左侧 70%：当前选中微游资源展台 -->
+      <!-- 左侧 70%：当前选中微游规则介绍与画面截图展台 -->
       <section class="hero-stage">
         <div class="hero-header">
           <div class="hero-title-group">
@@ -1018,7 +1014,7 @@
             <div>
               <div class="hero-meta-top">
                 <span class="code-tag" id="hero-code">GAME-02</span>
-                <span class="mode-tag" id="hero-multiplayer-badge">一人一机 · 局域网零延迟 / URL 残影</span>
+                <span class="mode-tag" id="hero-multiplayer-badge">客户端单机 + 局域网 1~5ms 双环境</span>
                 <span class="code-tag" id="hero-genre" style="color:#94a3b8; border-color:rgba(255,255,255,0.12); background:rgba(255,255,255,0.04);">深空战术射击</span>
               </div>
               <div>
@@ -1030,54 +1026,42 @@
           </div>
         </div>
 
-        <!-- 4-Tab 详情导航 (全矢量 SVG 图标) -->
+        <!-- 2-Tab 详情导航 (第 1 层主页严格限定：游戏规则介绍 & 游戏画面截图) -->
         <nav class="inspector-tabs" id="inspector-tabs">
           <button class="tab-btn active" data-tab="overview">
             <svg class="nx-ico" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            <span>玩法与机制介绍</span>
+            <span>游戏规则介绍</span>
           </button>
-          <button class="tab-btn" data-tab="gallery">
+          <button class="tab-btn" data-tab="screenshots">
             <svg class="nx-ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            <span>精灵贴图与蓝图库 (12)</span>
-          </button>
-          <button class="tab-btn" data-tab="multiplayer">
-            <svg class="nx-ico" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-            <span>局域网一人一机联机</span>
-          </button>
-          <button class="tab-btn" data-tab="save">
-            <svg class="nx-ico" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <span>独立资产与存档</span>
+            <span>游戏画面截图</span>
           </button>
         </nav>
 
         <!-- 动态详情内容区 -->
         <div class="inspector-body" id="inspector-content"></div>
 
-        <!-- 底部双通道操作栏 (唯一 10% 电光青视觉重心) -->
+        <!-- 底部操作栏 (唯一 10% 电光青视觉重心：进入第 2 层游戏菜单) -->
         <footer class="hero-actions">
           <button class="primary-cta" id="btn-launch-game" style="white-space:nowrap;">
             <svg class="nx-ico" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>
-            <span>立即全屏出击</span>
+            <span id="btn-launch-label">进入「星轨防线」游戏菜单</span>
           </button>
           <button class="secondary-cta" id="btn-open-pwa-guide">
             <svg class="nx-ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             <span>安装桌面/离线包</span>
           </button>
-          <button class="secondary-cta" id="btn-quick-p2p">
-            <svg class="nx-ico" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-            <span>局域网房间联机</span>
-          </button>
         </footer>
       </section>
 
-      <!-- 右侧 30%：5 大收录微游矩阵列表 -->
+      <!-- 右侧 30%：平台游戏清单 -->
       <aside class="matrix-roster">
         <div class="roster-header">
           <span class="roster-title">
             <svg class="nx-ico" style="color:var(--nexus-accent-cyan);" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4m-2-2v4m7-2h.01m2.99 0h.01"/></svg>
-            <span>收录微游资源清单</span>
+            <span>平台游戏清单</span>
           </span>
-          <span class="roster-count">5 GAMES · 60 SPRITES</span>
+          <span class="roster-count">5 GAMES</span>
         </div>
         <div class="roster-list" id="roster-list"></div>
       </aside>
