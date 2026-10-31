@@ -3,258 +3,363 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1610" />
+  <meta name="theme-color" content="#1b1f26" />
   <title>钢铁防线 · TANK BATTLE | Nexus-Mini</title>
   <link rel="icon" type="image/svg+xml" href="../assets/tank-battle/icon.svg" />
-  <link rel="stylesheet" href="../assets/tank-battle/style.css" />
+  <link rel="stylesheet" href="../assets/tank-battle/style.css?v=20261031b" />
   <style>
     :root {
-      --void: #0b1610;
-      --panel: rgba(20, 36, 27, 0.88);
-      --border: rgba(34, 197, 94, 0.32);
-      --cyan: #22c55e;
-      --gold: #f59e0b;
-      --red: #ef4444;
-      --green: #10b981;
-      --text: #ecfdf5;
-      --muted: #86efac;
+      --void: #1b1f26;
+      --panel: #2b313a;
+      --border: #4a5462;
+      --cyan: #c48f5a;
+      --gold: #e0be99;
+      --red: #b5604a;
+      --green: #7a9a82;
+      --text: #d6deea;
+      --muted: #909ba8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
     html, body {
       width: 100vw; height: 100dvh; overflow: hidden; overscroll-behavior: none;
-      background: var(--void); color: var(--text);
+      background-color: var(--void);
+      background-image:
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #242932 0%, #1b1f26 100%);
+      color: var(--text);
       font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
     }
+
     #app {
       width: 100%; height: 100%;
       display: grid;
-      grid-template-columns: 230px 1fr 220px;
+      grid-template-columns: 204px 1fr 204px;
       gap: 10px;
-      padding: max(8px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-      background: radial-gradient(circle at 50% 45%, #14241b 0%, #0b1610 85%);
+      padding:
+        max(8px, env(safe-area-inset-top))
+        max(12px, env(safe-area-inset-right))
+        max(8px, env(safe-area-inset-bottom))
+        max(12px, env(safe-area-inset-left));
+      align-items: center;
     }
-    .side-panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 8px 10px;
+
+    /* 左右重型发蓝乌金钢操控舱（4px 厚断面 + 四角沉头内六角螺栓） */
+    .t3-wing {
+      height: 100%;
+      background: linear-gradient(180deg, #303742 0%, #232830 100%);
+      border-top: 2px solid #566170;
+      border-left: 2px solid #47515e;
+      border-right: 2px solid #181c21;
+      border-bottom: 4px solid #121519;
+      border-radius: 3px;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.72), inset 0 0 16px rgba(0, 0, 0, 0.38);
+      padding: 9px 10px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 6px;
-      backdrop-filter: blur(12px);
       min-height: 0;
       overflow: hidden;
+      position: relative;
     }
-    .brand-row {
-      display: flex; align-items: center; gap: 8px;
-      padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.08);
+
+    .brand-stamp {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #181c22;
     }
-    .brand-row img { width: 28px; height: 28px; border-radius: 6px; }
-    .brand-row h1 { font-size: 0.88rem; font-weight: 800; color: var(--text); white-space: nowrap; }
-    .brand-row p { font-size: 0.64rem; color: var(--cyan); white-space: nowrap; }
-    .stat-card {
-      background: rgba(3, 7, 18, 0.65);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 7px;
-      padding: 4px 7px;
+    .brand-stamp img {
+      width: 28px;
+      height: 28px;
+      border-radius: 3px;
+      border: 1px solid #566170;
     }
-    .stat-label { font-size: 0.63rem; color: var(--muted); white-space: nowrap; }
-    .stat-val { font-size: 0.82rem; font-weight: 800; color: var(--text); margin-top: 1px; white-space: nowrap; }
-    .stat-val.gold { color: var(--gold); }
-    .stat-val.cyan { color: var(--cyan); }
-    .btn {
+    .brand-stamp h1 {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #d6deea;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      text-shadow: 0 1px 2px #0e1114;
+    }
+    .brand-stamp p {
+      font-size: 0.62rem;
+      font-family: "Consolas", monospace;
+      color: #c48f5a;
+      white-space: nowrap;
+    }
+
+    /* 深冲压乌金钢遥测读数槽 */
+    .wing-stat-box {
+      background: #1a1e24;
+      border: 1px solid #3d4552;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.82);
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-radius: 2px;
+    }
+    .wing-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "Consolas", "Noto Sans SC", monospace;
+      font-size: 0.68rem;
+      color: #98a3b0;
+      white-space: nowrap;
+    }
+    .wing-stat-row strong {
+      color: #d6deea;
+      font-weight: 800;
+    }
+    .wing-stat-row strong.brass {
+      color: #e0be99;
+    }
+
+    /* 机械液压十字方向盘总成 (每个方向键满足 >=44x44px 触控热区) */
+    .dpad-housing {
+      width: 148px;
+      height: 148px;
+      margin: 0 auto;
+      background: #181c22;
+      border: 2px solid #444d59;
+      border-radius: 4px;
+      box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.88), 0 1px 0 rgba(255, 255, 255, 0.08);
+      display: grid;
+      grid-template-columns: repeat(3, 44px);
+      grid-template-rows: repeat(3, 44px);
+      gap: 3px;
+      padding: 3px;
+      justify-content: center;
+      align-content: center;
+    }
+    .dpad-btn {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(180deg, #3a424f 0%, #292f38 100%);
+      color: #b6c0cc;
+      border-top: 1.5px solid #5b6778;
+      border-left: 1.5px solid #4b5563;
+      border-right: 1.5px solid #1a1e24;
+      border-bottom: 3px solid #13161b;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      touch-action: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.65);
+    }
+    .dpad-btn:active,
+    .dpad-btn.pressed {
+      background: linear-gradient(180deg, #495363 0%, #363e4a 100%);
+      color: #e0be99;
+      border-top-color: #c48f5a;
+      transform: translateY(1px);
+    }
+    .dpad-axle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 中央 26×26 铸钢防盾战场取景框 */
+    .stage-wrap {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      min-height: 0;
+    }
+    .battlefield-bezel {
+      height: 100%;
+      max-width: 100%;
+      aspect-ratio: 1 / 1;
+      background: linear-gradient(135deg, #3a424f 0%, #242932 100%);
+      border-top: 2px solid #5c6878;
+      border-left: 2px solid #4c5663;
+      border-right: 3px solid #171b20;
+      border-bottom: 4px solid #111418;
+      border-radius: 3px;
+      padding: 6px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      background: #1d2128;
+      border: 2px solid #13161b;
+      box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.85);
+      display: block;
+      touch-action: none;
+    }
+
+    /* 右翼：退火紫铜主炮击发栓与防弹钢加固按键 */
+    .fire-housing {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin: auto 0;
+    }
+    .fortify-btn {
+      width: 100%;
       min-height: 44px;
       padding: 0 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: rgba(15, 23, 42, 0.85);
-      color: var(--text);
-      font-size: 0.75rem;
-      font-weight: 700;
+      background: linear-gradient(180deg, #3c4450 0%, #2b313a 100%);
+      color: #e0be99;
+      border-top: 1.5px solid #5b6778;
+      border-left: 1.5px solid #4b5563;
+      border-right: 1.5px solid #1a1e24;
+      border-bottom: 3px solid #13161b;
+      border-radius: 2px;
+      font-size: 0.72rem;
+      font-weight: 800;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.14s ease;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
     }
-    .btn:hover { border-color: var(--cyan); background: rgba(22, 35, 62, 0.92); }
-    .btn:active { transform: scale(0.96); }
-    .btn.primary {
-      background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
-      border-color: #86efac;
-      color: #030712;
-      box-shadow: 0 0 16px rgba(34, 197, 94, 0.42);
+    .fortify-btn:active {
+      transform: translateY(1px);
     }
-    .btn.gold { border-color: rgba(251, 191, 36, 0.5); color: var(--gold); }
-    .stage-wrap {
-      display: flex; align-items: center; justify-content: center;
-      position: relative; min-width: 0; min-height: 0;
-    }
-    canvas {
-      background: #0d1a13;
-      border: 2px solid rgba(34, 197, 94, 0.42);
-      border-radius: 8px;
-      box-shadow: 0 0 32px rgba(0, 0, 0, 0.85);
-      max-width: 100%; max-height: 100%;
-      aspect-ratio: 1 / 1;
-      touch-action: none;
-    }
-    /* Virtual D-Pad & Action Buttons */
-    .dpad-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 46px);
-      grid-template-rows: repeat(3, 46px);
-      gap: 4px;
+    .fire-plunger {
+      width: 96px;
+      height: 96px;
+      min-height: 96px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 32%, #9c6f44 0%, #75512f 55%, #52371e 100%);
+      color: #f0e4d6;
+      border: 5px solid #3a424f;
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.82),
+        inset 0 2px 3px rgba(255, 255, 255, 0.28),
+        inset 0 -4px 6px rgba(0, 0, 0, 0.68);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      margin: 2px auto;
-    }
-    .dpad-btn {
-      width: 46px; height: 46px;
-      border-radius: 9px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(0, 240, 255, 0.32);
-      color: var(--cyan);
-      display: flex; align-items: center; justify-content: center;
+      gap: 2px;
       cursor: pointer;
       touch-action: none;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.88);
     }
-    .dpad-btn:active, .dpad-btn.pressed {
-      background: rgba(0, 240, 255, 0.28);
-      border-color: var(--cyan);
-      transform: scale(0.95);
-    }
-    .fire-btn {
-      width: 100%; min-height: 50px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
-      border: 2px solid #67e8f9;
-      color: #030712;
-      font-size: 0.86rem;
+    .fire-plunger strong {
+      font-size: 0.82rem;
       font-weight: 900;
-      display: flex; flex-direction: row; align-items: center; justify-content: center;
-      gap: 6px;
+      letter-spacing: 0.06em;
       white-space: nowrap;
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.38);
-      touch-action: none;
     }
-    .fire-btn:active { transform: scale(0.96); }
-    .modal-backdrop {
-      position: fixed; inset: 0; z-index: 8500;
-      background: rgba(3, 7, 18, 0.85);
-      backdrop-filter: blur(8px);
-      display: none; align-items: center; justify-content: center; padding: 16px;
+    .fire-plunger span {
+      font-size: 0.56rem;
+      font-family: "Consolas", monospace;
+      color: #e3c598;
+      white-space: nowrap;
     }
-    .modal-backdrop.active { display: flex; }
-    .modal-card {
-      max-width: 520px; width: 100%;
-      background: rgba(9, 14, 26, 0.97);
-      border: 1px solid rgba(0, 240, 255, 0.55);
-      border-radius: 16px;
-      padding: 18px 20px;
-      display: flex; flex-direction: column; gap: 10px;
+    .fire-plunger:active {
+      transform: scale(0.96);
+      box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.85),
+        inset 0 3px 6px rgba(0, 0, 0, 0.75);
     }
-    .upgrade-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 8px 10px; background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
-    }
+
     @media (max-width: 880px) {
-      #app { grid-template-columns: 188px 1fr 188px; gap: 6px; padding: 6px; }
+      #app { grid-template-columns: 176px 1fr 176px; gap: 6px; padding: 6px; }
+      .dpad-housing { width: 142px; height: 142px; }
+      .fire-plunger { width: 84px; height: 84px; min-height: 84px; }
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <!-- 左侧：战术仪表盘与十字方向操控 -->
-    <aside class="side-panel tb-armor-plate">
+    <!-- 左翼：重型发蓝炮钢遥测槽与机械十字方向盘 -->
+    <aside class="t3-wing tb-rivets">
       <div>
-        <div class="brand-row">
+        <div class="brand-stamp">
           <img src="../assets/tank-battle/icon.svg" alt="Tank Battle" />
           <div>
             <h1>钢铁防线</h1>
-            <p id="hud-lan" style="color:var(--green);">AI 战术僚机协同</p>
+            <p id="hud-lan">AI 战术僚机协同</p>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px;">
-          <div class="stat-card">
-            <div class="stat-label">战役关卡</div>
-            <div class="stat-val cyan" id="hud-stage">第 1 关</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">剩余敌坦</div>
-            <div class="stat-val" id="hud-enemies">16 辆</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">坦克硬币</div>
-            <div class="stat-val gold" id="hud-coins">500</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">战车军衔</div>
-            <div class="stat-val cyan" id="hud-rank">Rank 1</div>
-          </div>
+        <div class="wing-stat-box" style="margin-top:6px;">
+          <div class="wing-stat-row"><span>防区 SECTOR</span><strong class="brass" id="hud-stage">第 1 关</strong></div>
+          <div class="wing-stat-row"><span>敌坦 HOSTILES</span><strong id="hud-enemies">16 辆</strong></div>
+          <div class="wing-stat-row"><span>军械币 COINS</span><strong class="brass" id="hud-coins">500</strong></div>
+          <div class="wing-stat-row"><span>战车军衔 RANK</span><strong id="hud-rank">Rank 1</strong></div>
         </div>
       </div>
 
-      <!-- 触控四向十字键 (支持键盘 WASD / 方向键) -->
+      <!-- 机械液压十字方向键 (支持触控 & 键盘 WASD / 方向键) -->
       <div>
-        <div class="dpad-grid">
+        <div class="dpad-housing">
           <div></div>
           <button class="dpad-btn" data-dir="0" aria-label="Up">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 6 19 16 5 16"/></svg>
           </button>
           <div></div>
           <button class="dpad-btn" data-dir="3" aria-label="Left">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 12 16 5 16 19"/></svg>
           </button>
-          <div style="display:flex;align-items:center;justify-content:center;color:rgba(0,240,255,0.3);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>
+          <div class="dpad-axle">
+            <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="#232830" stroke="#6c7888" stroke-width="2"/></svg>
           </div>
           <button class="dpad-btn" data-dir="1" aria-label="Right">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="18 12 8 19 8 5"/></svg>
           </button>
           <div></div>
           <button class="dpad-btn" data-dir="2" aria-label="Down">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 18 5 8 19 8"/></svg>
           </button>
           <div></div>
+        </div>
+        <div style="font-size:0.58rem;text-align:center;font-family:Consolas,monospace;color:#8592a1;margin-top:4px;">
+          机械液压转向总成
         </div>
       </div>
     </aside>
 
-    <!-- 中央：26x26 网格主战场画布 -->
+    <!-- 中央：26×26 铸钢防盾取景框与主战场画布 -->
     <main class="stage-wrap">
-      <canvas id="battle-canvas" width="624" height="624"></canvas>
+      <div class="battlefield-bezel tb-rivets">
+        <canvas id="battle-canvas" width="624" height="624"></canvas>
+      </div>
     </main>
 
-    <!-- 右侧：武器开火、战车军械库与局域网联机 -->
-    <aside class="side-panel tb-armor-plate" style="padding-top:50px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
-        <div class="stat-card">
-          <div class="stat-label">装甲/总部</div>
-          <div class="stat-val" id="hud-hp" style="font-size:0.75rem;">HP3·完好</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">战役得分</div>
-          <div class="stat-val gold" id="hud-score">0</div>
-        </div>
+    <!-- 右翼：退火紫铜主炮击发栓、地堡钢化加固与装甲状态槽 -->
+    <aside class="t3-wing tb-rivets" style="padding-top:52px;">
+      <div class="fire-housing">
+        <button class="fortify-btn" id="btn-fortify-base" aria-label="加固地堡" title="消耗 50 军械币加固统帅地堡">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>钢墙加固 (-50)</span>
+        </button>
+
+        <button class="fire-plunger" id="btn-fire" aria-label="主炮击发" title="120MM 主炮穿甲弹击发">
+          <strong>击发 FIRE</strong>
+          <span>120MM APFSDS</span>
+        </button>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
-        <button class="btn" id="btn-fortify-base" aria-label="加固总部" title="加固总部" style="width:52px;height:52px;padding:0;border-radius:14px;border-color:rgba(251,191,36,0.55);color:var(--gold);">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </button>
-        <button class="fire-btn" id="btn-fire" aria-label="主炮齐射" title="主炮齐射" style="width:76px;height:76px;min-height:76px;border-radius:50%;padding:0;">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
-        </button>
+      <div class="wing-stat-box">
+        <div class="wing-stat-row"><span>1P 装甲/地堡</span><strong id="hud-hp">HP3·完好</strong></div>
+        <div class="wing-stat-row"><span>2P 协同僚机</span><strong>120MM 双联</strong></div>
+        <div class="wing-stat-row"><span>防线战绩</span><strong class="brass" id="hud-score">0</strong></div>
       </div>
     </aside>
   </div>
 
-  <script src="../shared/nexus-sdk.js?v=4.0"></script>
+  <script src="../shared/nexus-sdk.js?v=4.1"></script>
   <script>
     (() => {
       NexusSDK.initShellUI({ gameId: 'tank-battle', gameTitle: '钢铁防线' });
@@ -286,7 +391,7 @@
       const GRID = 26;
       const TILE = 24; // 26 * 24 = 624px
 
-      // Tile types: 0 Empty, 1 Brick, 2 Steel, 3 Bush, 4 River, 5 BaseEagle
+      // Tile types: 0 Empty, 1 Brick, 2 Steel, 3 Bush, 4 TrenchWater, 5 BaseEagle
       let map = Array.from({ length: GRID }, () => Array(GRID).fill(0));
       let stage = 1;
       let score = 0;
@@ -303,15 +408,28 @@
         { dx: -1, dy: 0, ang: -Math.PI / 2 }
       ];
 
-      const p1 = { x: 8 * TILE, y: 24 * TILE, dir: 0, hp: 3, rank: saveData.rank || 1, shield: 120, cd: 0 };
-      const p2 = { x: 16 * TILE, y: 24 * TILE, dir: 0, hp: 3, rank: 2, shield: 120, cd: 0, isRemote: false };
+      const p1 = { x: 8 * TILE, y: 22 * TILE, dir: 0, hp: 3, rank: saveData.rank || 1, shield: 120, cd: 0 };
+      const p2 = { x: 16 * TILE, y: 22 * TILE, dir: 0, hp: 3, rank: 2, shield: 120, cd: 0, isRemote: false };
       let enemies = [];
       let bullets = [];
       let crates = [];
       let particles = [];
+      let treadMarks = [];
+
+      function recordTread(tank) {
+        if (Math.random() > 0.28) return;
+        treadMarks.push({
+          x: tank.x + TILE * 0.9,
+          y: tank.y + TILE * 0.9,
+          dir: tank.dir,
+          alpha: 0.26
+        });
+        if (treadMarks.length > 90) treadMarks.shift();
+      }
 
       function buildStageMap(stg) {
         map = Array.from({ length: GRID }, () => Array(GRID).fill(0));
+        treadMarks = [];
         const rng = NexusSDK.createSeededRandom(stg * 9137 + 101);
         for (let r = 3; r < 22; r += 2) {
           for (let c = 2; c < 24; c += 2) {
@@ -320,7 +438,7 @@
             if (roll < 0.36) t = 1; // Brick
             else if (roll < 0.48) t = 2; // Steel
             else if (roll < 0.58) t = 3; // Bush
-            else if (roll < 0.64 && r > 6 && r < 18) t = 4; // River
+            else if (roll < 0.63 && r > 6 && r < 18) t = 4; // Anti-tank trench channel
             map[r][c] = t;
             map[r][c + 1] = t;
             map[r + 1][c] = t;
@@ -332,12 +450,15 @@
         map[24][12] = 5; map[24][13] = 5;
         map[25][12] = 5; map[25][13] = 5;
 
-        p1.x = 8 * TILE; p1.y = 24 * TILE; p1.dir = 0; p1.hp = 3; p1.shield = 150;
-        p2.x = 16 * TILE; p2.y = 24 * TILE; p2.dir = 0; p2.hp = 3; p2.shield = 150;
-        enemies = [];
+        p1.x = 8 * TILE; p1.y = 22 * TILE; p1.dir = 0; p1.hp = 3; p1.shield = 150;
+        p2.x = 16 * TILE; p2.y = 22 * TILE; p2.dir = 0; p2.hp = 3; p2.shield = 150;
+        enemies = [
+          { type: 'mammoth', x: 12 * TILE, y: 2 * TILE, dir: 2, hp: 4, maxHp: 4, speed: 1.15, cd: 35, size: TILE * 1.85 },
+          { type: 'raider', x: 4 * TILE, y: 4 * TILE, dir: 2, hp: 2, maxHp: 2, speed: 1.8, cd: 40, size: TILE * 1.8 }
+        ];
         bullets = [];
         crates = [];
-        remainingSpawns = 14 + stg * 2;
+        remainingSpawns = 12 + stg * 2;
         baseAlive = true;
 
         // Every 3rd stage spawns a Siege Boss Train at top
@@ -366,7 +487,7 @@
         const types = ['scout', 'raider', 'shooter', 'mammoth'];
         const type = types[(remainingSpawns + stage) % types.length];
         const hpMap = { scout: 1, raider: 1, shooter: 2, mammoth: 4 };
-        const spdMap = { scout: 1.7, raider: 2.3, shooter: 1.6, mammoth: 1.15 };
+        const spdMap = { scout: 1.7, raider: 2.2, shooter: 1.6, mammoth: 1.15 };
         enemies.push({
           type,
           x: col * TILE,
@@ -415,13 +536,13 @@
         if (owner === 'p1') NexusSDK.audio.shoot();
       }
 
-      function explode(x, y, color = '#fbbf24', count = 10) {
+      function explode(x, y, color = '#d8b584', count = 10) {
         for (let i = 0; i < count; i++) {
           const a = (Math.PI * 2 * i) / count + Math.random() * 0.4;
-          const sp = 1.5 + Math.random() * 3.2;
+          const sp = 1.4 + Math.random() * 2.8;
           particles.push({
             x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
-            life: 20 + Math.floor(Math.random() * 12), color
+            life: 18 + Math.floor(Math.random() * 10), color
           });
         }
       }
@@ -478,15 +599,15 @@
         const el = document.getElementById('hud-lan');
         if (st.connected) {
           el.textContent = `LAN 已直连 (${st.peerLatencyMs}ms · ${st.role.toUpperCase()})`;
-          el.style.color = '#00f0ff';
+          el.style.color = '#e0be99';
           p2.isRemote = true;
         } else if (st.failoverActive) {
           el.textContent = '3s 断线自愈 · AI 僚机已接管';
-          el.style.color = '#fbbf24';
+          el.style.color = '#c48f5a';
           p2.isRemote = false;
         } else {
           el.textContent = 'AI 战术僚机协同中';
-          el.style.color = '#10b981';
+          el.style.color = '#9eb0c7';
           p2.isRemote = false;
         }
       });
@@ -509,7 +630,6 @@
       function updateAIWingman() {
         if (p2.isRemote && lan.isConnected()) return;
         if (Math.random() < 0.04) {
-          // Move toward nearest enemy or guard base
           const target = enemies[0];
           if (target) {
             const dx = target.x - p2.x;
@@ -525,6 +645,7 @@
         const ny = p2.y + d.dy * 1.9;
         if (canMoveRect(nx, ny)) {
           p2.x = nx; p2.y = ny;
+          recordTread(p2);
         } else {
           p2.dir = (p2.dir + 1) % 4;
         }
@@ -562,8 +683,8 @@
           const ny = p1.y + d.dy * spd;
           if (canMoveRect(nx, ny)) {
             p1.x = nx; p1.y = ny;
+            recordTread(p1);
           } else {
-            // [TB-P1-01] +-6px Corner-Snapping Tolerance
             const perpX = d.dy !== 0 ? 1 : 0;
             const perpY = d.dx !== 0 ? 1 : 0;
             for (const snap of [-2, 2, -4, 4, -6, 6]) {
@@ -598,8 +719,8 @@
           const ny = en.y + d.dy * en.speed;
           if (canMoveRect(nx, ny, en.size || TILE * 1.75)) {
             en.x = nx; en.y = ny;
+            recordTread(en);
           } else {
-            // Bias towards bottom base
             en.dir = Math.random() < 0.45 ? 2 : Math.floor(Math.random() * 4);
           }
           if (en.cd <= 0) {
@@ -631,22 +752,21 @@
           const t = map[r]?.[c];
           if (t === 1) {
             map[r][c] = 0;
-            explode(b.x, b.y, '#f97316', 6);
+            explode(b.x, b.y, '#b5604a', 6);
             NexusSDK.audio.hit();
             bullets.splice(i, 1);
             continue;
           } else if (t === 2) {
             if (b.breakSteel) map[r][c] = 0;
-            explode(b.x, b.y, '#38bdf8', 6);
+            explode(b.x, b.y, '#9eb0c7', 6);
             NexusSDK.audio.hit();
             bullets.splice(i, 1);
             continue;
           } else if (t === 5) {
             if (b.owner === 'enemy') {
               baseAlive = false;
-              explode(13 * TILE, 24.5 * TILE, '#ef4444', 24);
+              explode(13 * TILE, 24.5 * TILE, '#c97a63', 24);
               NexusSDK.audio.explosion();
-              // Auto repair after 2s to prevent frustration deadlock
               setTimeout(() => {
                 baseAlive = true;
                 setBaseWall(2);
@@ -668,7 +788,7 @@
                 en.hp -= b.dmg;
                 hitEnemy = true;
                 if (en.hp <= 0) {
-                  explode(en.x + sz / 2, en.y + sz / 2, '#fbbf24', 14);
+                  explode(en.x + sz / 2, en.y + sz / 2, '#d8b584', 14);
                   NexusSDK.audio.explosion();
                   score += en.type === 'boss' ? 1500 : 200;
                   saveData.currency.tankCoins += en.type === 'boss' ? 150 : 25;
@@ -684,7 +804,7 @@
                   enemies.splice(j, 1);
                   updateHud();
                 } else {
-                  explode(b.x, b.y, '#00f0ff', 5);
+                  explode(b.x, b.y, '#c48f5a', 5);
                   NexusSDK.audio.hit();
                 }
                 break;
@@ -700,7 +820,7 @@
               if (p1.shield <= 0) {
                 p1.hp = Math.max(1, p1.hp - 1);
                 p1.shield = 120;
-                explode(p1.x + TILE, p1.y + TILE, '#ef4444', 10);
+                explode(p1.x + TILE, p1.y + TILE, '#b5604a', 10);
                 NexusSDK.audio.warn();
                 updateHud();
               }
@@ -749,7 +869,7 @@
         }
       }
 
-      function drawTankSprite(img, tank, labelColor) {
+      function drawTankSprite(img, tank, ringColor) {
         const sz = tank.size || TILE * 1.85;
         ctx.save();
         ctx.translate(tank.x + sz / 2, tank.y + sz / 2);
@@ -759,28 +879,41 @@
         }
         ctx.restore();
         if (tank.shield > 0) {
-          ctx.strokeStyle = labelColor || '#00f0ff';
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = ringColor || '#c48f5a';
+          ctx.lineWidth = 1.8;
           ctx.beginPath();
-          ctx.arc(tank.x + sz / 2, tank.y + sz / 2, sz * 0.62, 0, Math.PI * 2);
+          ctx.arc(tank.x + sz / 2, tank.y + sz / 2, sz * 0.58, 0, Math.PI * 2);
           ctx.stroke();
         }
       }
 
       function render() {
         ctx.shadowBlur = 0;
-        ctx.fillStyle = '#0d1a13';
+        // 方案 B 低对比度浸油发蓝炮钢地面
+        ctx.fillStyle = '#1d2128';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Tactical Grid
-        ctx.strokeStyle = 'rgba(34, 197, 94, 0.06)';
+        // 微弱拉丝测距网格
+        ctx.strokeStyle = 'rgba(170, 185, 205, 0.055)';
         ctx.lineWidth = 1;
         for (let i = 0; i <= GRID; i++) {
           ctx.beginPath(); ctx.moveTo(i * TILE, 0); ctx.lineTo(i * TILE, GRID * TILE); ctx.stroke();
           ctx.beginPath(); ctx.moveTo(0, i * TILE); ctx.lineTo(GRID * TILE, i * TILE); ctx.stroke();
         }
 
-        // Pass 1: Ground tiles (Brick, Steel, River)
+        // 重型履带碾压地面车辙暗痕
+        ctx.fillStyle = 'rgba(10, 12, 16, 0.35)';
+        treadMarks.forEach((tm) => {
+          if (tm.dir === 0 || tm.dir === 2) {
+            ctx.fillRect(tm.x - 14, tm.y - 3, 6, 4);
+            ctx.fillRect(tm.x + 8, tm.y - 3, 6, 4);
+          } else {
+            ctx.fillRect(tm.x - 3, tm.y - 14, 4, 6);
+            ctx.fillRect(tm.x - 3, tm.y + 8, 4, 6);
+          }
+        });
+
+        // Pass 1: Ground tiles (Brick, Steel, Anti-Tank Trench)
         for (let r = 0; r < GRID; r++) {
           for (let c = 0; c < GRID; c++) {
             const t = map[r][c];
@@ -791,9 +924,9 @@
             } else if (t === 2 && sprites.steel?.complete) {
               ctx.drawImage(sprites.steel, x, y, TILE, TILE);
             } else if (t === 4) {
-              ctx.fillStyle = 'rgba(2, 132, 199, 0.45)';
+              ctx.fillStyle = '#14171d';
               ctx.fillRect(x, y, TILE, TILE);
-              ctx.strokeStyle = 'rgba(0, 240, 255, 0.35)';
+              ctx.strokeStyle = 'rgba(133, 152, 176, 0.22)';
               ctx.beginPath();
               ctx.moveTo(x + 3, y + TILE * 0.5);
               ctx.lineTo(x + TILE - 3, y + TILE * 0.5);
@@ -815,28 +948,28 @@
         });
 
         // Tanks
-        drawTankSprite(sprites.p1, p1, '#22c55e');
-        drawTankSprite(sprites.p2, p2, '#fbbf24');
+        drawTankSprite(sprites.p1, p1, '#8598b0');
+        drawTankSprite(sprites.p2, p2, '#c48f5a');
         enemies.forEach((en) => {
           const sp = sprites[en.type] || sprites.scout;
-          drawTankSprite(sp, en);
+          drawTankSprite(sp, en, '#994e3b');
           if (en.maxHp > 1) {
             const sz = en.size || TILE * 1.8;
-            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillStyle = 'rgba(15, 18, 22, 0.85)';
             ctx.fillRect(en.x, en.y - 6, sz, 4);
-            ctx.fillStyle = '#ef4444';
+            ctx.fillStyle = '#b5604a';
             ctx.fillRect(en.x, en.y - 6, sz * (en.hp / en.maxHp), 4);
           }
         });
 
-        // Bullets (Multi-layer energy shell)
+        // Bullets (退火黄铜/钨芯穿甲弹体，告别赛博荧光青)
         bullets.forEach((b) => {
           ctx.save();
           ctx.translate(b.x, b.y);
-          ctx.fillStyle = b.owner === 'enemy' ? '#ef4444' : '#00f0ff';
-          ctx.beginPath(); ctx.arc(0, 0, 4.5, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#ffffff';
-          ctx.beginPath(); ctx.arc(0, 0, 2, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = b.owner === 'enemy' ? '#c97a63' : '#d8b584';
+          ctx.beginPath(); ctx.arc(0, 0, 4.2, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#f5ebd6';
+          ctx.beginPath(); ctx.arc(0, 0, 1.8, 0, Math.PI * 2); ctx.fill();
           ctx.restore();
         });
 
@@ -847,7 +980,7 @@
               const bx = c * TILE, by = r * TILE;
               const nearAlly = Math.hypot((p1.x + TILE * 0.9) - (bx + TILE * 0.5), (p1.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4 || Math.hypot((p2.x + TILE * 0.9) - (bx + TILE * 0.5), (p2.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4;
               ctx.save();
-              ctx.globalAlpha = nearAlly ? 0.65 : 0.92;
+              ctx.globalAlpha = nearAlly ? 0.62 : 0.90;
               ctx.drawImage(sprites.bush, bx, by, TILE, TILE);
               ctx.restore();
             }
@@ -857,7 +990,7 @@
         // Particles
         particles.forEach((pt) => {
           ctx.fillStyle = pt.color;
-          ctx.fillRect(pt.x - 2, pt.y - 2, 4, 4);
+          ctx.fillRect(pt.x - 2, pt.y - 2, 3.5, 3.5);
         });
       }
 

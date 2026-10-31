@@ -1,101 +1,92 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="tile-brick-rig" data-root-anchor="64,64" data-has-aura="true">
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
   <defs>
-    <radialGradient id="tb-shadow-grad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#0b1610" stop-opacity="0.75" />
-      <stop offset="70%" stop-color="#0d1912" stop-opacity="0.35" />
-      <stop offset="100%" stop-color="#0d1912" stop-opacity="0" />
+    <radialGradient id="tb-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0b0d10" stop-opacity="0.72"/>
+      <stop offset="68%" stop-color="#111419" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#111419" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="tb-aura-field" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#f97316" stop-opacity="0.28" />
-      <stop offset="60%" stop-color="#fbbf24" stop-opacity="0.12" />
-      <stop offset="100%" stop-color="#0d1912" stop-opacity="0" />
+    <linearGradient id="blued-hull" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5c6878"/>
+      <stop offset="45%" stop-color="#3f4854"/>
+      <stop offset="100%" stop-color="#252b33"/>
+    </linearGradient>
+    <radialGradient id="blued-turret" cx="38%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#6e7c8f"/>
+      <stop offset="55%" stop-color="#444e5c"/>
+      <stop offset="100%" stop-color="#262c35"/>
     </radialGradient>
-    <linearGradient id="tb-ceramic-armor" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#7c2d12" />
-      <stop offset="50%" stop-color="#431407" />
-      <stop offset="100%" stop-color="#14241b" />
+    <linearGradient id="tungsten-plate" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#738294"/>
+      <stop offset="50%" stop-color="#4e5968"/>
+      <stop offset="100%" stop-color="#2c333d"/>
     </linearGradient>
-    <linearGradient id="tb-orange-edge" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a" />
-      <stop offset="40%" stop-color="#f97316" />
-      <stop offset="100%" stop-color="#9a3412" />
+    <linearGradient id="enemy-cast-hull" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#59524c"/>
+      <stop offset="48%" stop-color="#3d3834"/>
+      <stop offset="100%" stop-color="#24201e"/>
     </linearGradient>
-    <linearGradient id="tb-rim-glow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-      <stop offset="50%" stop-color="#fbbf24" stop-opacity="0.75" />
-      <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
+    <radialGradient id="enemy-cast-turret" cx="38%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#6b625b"/>
+      <stop offset="55%" stop-color="#47413c"/>
+      <stop offset="100%" stop-color="#292421"/>
+    </radialGradient>
+    <linearGradient id="steel-barrel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#23282e"/>
+      <stop offset="35%" stop-color="#697480"/>
+      <stop offset="55%" stop-color="#8592a1"/>
+      <stop offset="100%" stop-color="#1e2228"/>
     </linearGradient>
+    <linearGradient id="steel-tread" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22262b"/>
+      <stop offset="50%" stop-color="#383e46"/>
+      <stop offset="100%" stop-color="#181b1f"/>
+    </linearGradient>
+    <linearGradient id="brass-trim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d8b584"/>
+      <stop offset="50%" stop-color="#b0804c"/>
+      <stop offset="100%" stop-color="#634524"/>
+    </linearGradient>
+    <linearGradient id="primer-trim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c97a63"/>
+      <stop offset="50%" stop-color="#994e3b"/>
+      <stop offset="100%" stop-color="#5c2b1f"/>
+    </linearGradient>
+    <radialGradient id="warm-muzzle" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e3c598" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#c48f5a" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <!-- [光影层 1] 掩体底部接触软阴影贴图 (z=1, multiply) -->
-  <!-- [光影层 2A] 反应装甲热能微光外场 (z=4, screen) -->
-  <!-- [光影层 2B] 橙金能量接缝脉冲内网 (z=5, screen) -->
-  <!-- [骨骼部件 1] 左上可独立受击剥落复合装甲砖 (z=20) -->
-  <!-- [骨骼部件 2] 右上可独立受击剥落复合装甲砖 (z=20) -->
-  <!-- [骨骼部件 3] 左下可独立受击剥落复合装甲砖 (z=20) -->
-  <!-- [骨骼部件 4] 右下可独立受击剥落复合装甲砖 (z=20) -->
-  <!-- [光影层 4] 反应装甲边缘受光高光贴图 (z=45, plus-lighter) -->
-  <!-- [光影层 5] 顶层反应装甲热辐射微粒冕 (z=65, screen) -->
-  <g id="part-shadow-cast" data-pivot="64,66" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
-    <ellipse cx="64" cy="66" rx="60" ry="60" fill="url(#tb-shadow-grad)" />
-    <rect x="10" y="12" width="108" height="108" rx="8" fill="#0b1610" fill-opacity="0.5" />
+  <g id="part-shadow-cast" data-pivot="64,64" data-blend="multiply">
+    <rect x="4" y="4" width="120" height="120" rx="4" fill="#121417"/>
   </g>
-  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
-    <circle cx="64" cy="64" r="62" fill="url(#tb-aura-field)" />
-    <path fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-opacity="0.72" d="M120.04,80.07 A58.3,58.3 0 0,1 80.07,120.04 M47.93,120.04 A58.3,58.3 0 0,1 7.96,80.07 M7.96,47.93 A58.3,58.3 0 0,1 47.93,7.96 M80.07,7.96 A58.3,58.3 0 0,1 120.04,47.93 M64,1.7 L64,10.7 M64,117.3 L64,126.3 M1.7,64 L10.7,64 M117.3,64 L126.3,64" stroke-linejoin="bevel" />
-    <path fill="none" stroke="#f97316" stroke-width="0.85" stroke-opacity="0.58" d="M114.66,78.53 A52.7,52.7 0 0,1 78.53,114.66 M49.47,114.66 A52.7,52.7 0 0,1 13.34,78.53 M13.34,49.47 A52.7,52.7 0 0,1 49.47,13.34 M78.53,13.34 A52.7,52.7 0 0,1 114.66,49.47 M64,7.3 L64,16.3 M64,111.7 L64,120.7 M7.3,64 L16.3,64 M111.7,64 L120.7,64" stroke-linejoin="bevel" />
-    <line x1="114.7" y1="64" x2="124.3" y2="64" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="99.9" y1="99.9" x2="106.6" y2="106.6" stroke="#fef08a" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="64" y1="114.7" x2="64" y2="124.3" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="28.1" y1="99.9" x2="21.4" y2="106.6" stroke="#fef08a" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="13.3" y1="64" x2="3.7" y2="64" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="28.1" y1="28.1" x2="21.4" y2="21.4" stroke="#fef08a" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="64" y1="13.3" x2="64" y2="3.7" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="99.9" y1="28.1" x2="106.6" y2="21.4" stroke="#fef08a" stroke-width="1.4" stroke-opacity="0.8" />
-    <rect x="103" y="103" width="4.4" height="4.4" fill="#fef08a" stroke="#0b1610" stroke-width="0.7" />
-    <rect x="20.6" y="103" width="4.4" height="4.4" fill="#fef08a" stroke="#0b1610" stroke-width="0.7" />
-    <rect x="20.6" y="20.6" width="4.4" height="4.4" fill="#fef08a" stroke="#0b1610" stroke-width="0.7" />
-    <rect x="103" y="20.6" width="4.4" height="4.4" fill="#fef08a" stroke="#0b1610" stroke-width="0.7" />
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-blend="normal">
+    <rect x="6" y="6" width="116" height="116" rx="3" fill="#262224" stroke="#161415" stroke-width="3"/>
   </g>
-  <g id="part-aura-seam-grid" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
-    <rect x="14" y="14" width="100" height="100" rx="6" fill="#120b04" stroke="#fbbf24" stroke-width="1.4" stroke-opacity="0.7" />
-    <line x1="64" y1="14" x2="64" y2="114" stroke="#fbbf24" stroke-width="2.4" />
-    <line x1="14" y1="64" x2="114" y2="64" stroke="#fbbf24" stroke-width="2.4" />
-    <circle cx="64" cy="64" r="6" fill="#fef08a" />
+  <g id="part-aura-seam-grid" data-pivot="64,64" data-blend="normal">
+    <path d="M6,36 H122 M6,64 H122 M6,92 H122 M64,6 V36 M34,36 V64 M94,36 V64 M64,64 V92 M34,92 V122 M94,92 V122" stroke="#1e1b1c" stroke-width="4"/>
   </g>
-  <g id="part-brick-bl" data-pivot="38,90" data-parent="root" data-z-index="20" data-blend="normal" data-motion="destructible-quad-bl">
-    <rect x="16" y="68" width="44" height="44" rx="4" fill="url(#tb-ceramic-armor)" stroke="url(#tb-orange-edge)" stroke-width="2.0" />
-    <polygon points="22,74 54,74 50,88 26,88" fill="#9a3412" stroke="#fbbf24" stroke-width="0.9" />
-    <path d="M16 92 H60 M38 92 V112" stroke="#f97316" stroke-width="1.1" stroke-opacity="0.8" />
-    <circle cx="24" cy="76" r="1.8" fill="#fef08a" />
-    <circle cx="52" cy="76" r="1.8" fill="#fef08a" />
+  <g id="part-brick-tl" data-pivot="35,35" data-blend="normal">
+    <rect x="10" y="10" width="50" height="22" rx="2" fill="url(#primer-trim)" stroke="#1a1412" stroke-width="1.8"/>
+    <rect x="10" y="38" width="22" height="22" rx="2" fill="#73483b" stroke="#1a1412" stroke-width="1.8"/>
+    <rect x="36" y="38" width="26" height="22" rx="2" fill="#825142" stroke="#1a1412" stroke-width="1.8"/>
   </g>
-  <g id="part-brick-br" data-pivot="90,90" data-parent="root" data-z-index="20" data-blend="normal" data-motion="destructible-quad-br">
-    <rect x="68" y="68" width="44" height="44" rx="4" fill="url(#tb-ceramic-armor)" stroke="url(#tb-orange-edge)" stroke-width="2.0" />
-    <polygon points="74,74 106,74 102,88 78,88" fill="#9a3412" stroke="#fbbf24" stroke-width="0.9" />
-    <path d="M68 92 H112 M90 92 V112" stroke="#f97316" stroke-width="1.1" stroke-opacity="0.8" />
-    <circle cx="76" cy="76" r="1.8" fill="#fef08a" />
-    <circle cx="104" cy="76" r="1.8" fill="#fef08a" />
+  <g id="part-brick-tr" data-pivot="93,35" data-blend="normal">
+    <rect x="66" y="10" width="52" height="22" rx="2" fill="#784b3d" stroke="#1a1412" stroke-width="1.8"/>
+    <rect x="66" y="38" width="26" height="22" rx="2" fill="url(#primer-trim)" stroke="#1a1412" stroke-width="1.8"/>
+    <rect x="96" y="38" width="22" height="22" rx="2" fill="#6b4236" stroke="#1a1412" stroke-width="1.8"/>
   </g>
-  <g id="part-brick-tl" data-pivot="38,38" data-parent="root" data-z-index="20" data-blend="normal" data-motion="destructible-quad-tl">
-    <rect x="16" y="16" width="44" height="44" rx="4" fill="url(#tb-ceramic-armor)" stroke="url(#tb-orange-edge)" stroke-width="2.0" />
-    <polygon points="22,22 54,22 50,36 26,36" fill="#9a3412" stroke="#fbbf24" stroke-width="0.9" />
-    <path d="M16 40 H60 M38 40 V60" stroke="#f97316" stroke-width="1.1" stroke-opacity="0.8" />
-    <circle cx="24" cy="24" r="1.8" fill="#fef08a" />
-    <circle cx="52" cy="24" r="1.8" fill="#fef08a" />
+  <g id="part-brick-bl" data-pivot="35,93" data-blend="normal">
+    <rect x="10" y="68" width="50" height="22" rx="2" fill="#7a4c3e" stroke="#1a1412" stroke-width="1.8"/>
+    <rect x="10" y="96" width="22" height="22" rx="2" fill="#6b4236" stroke="#1a1412" stroke-width="1.8"/>
+    <rect x="36" y="96" width="26" height="22" rx="2" fill="url(#primer-trim)" stroke="#1a1412" stroke-width="1.8"/>
   </g>
-  <g id="part-brick-tr" data-pivot="90,38" data-parent="root" data-z-index="20" data-blend="normal" data-motion="destructible-quad-tr">
-    <rect x="68" y="16" width="44" height="44" rx="4" fill="url(#tb-ceramic-armor)" stroke="url(#tb-orange-edge)" stroke-width="2.0" />
-    <polygon points="74,22 106,22 102,36 78,36" fill="#9a3412" stroke="#fbbf24" stroke-width="0.9" />
-    <path d="M68 40 H112 M90 40 V60" stroke="#f97316" stroke-width="1.1" stroke-opacity="0.8" />
-    <circle cx="76" cy="24" r="1.8" fill="#fef08a" />
-    <circle cx="104" cy="24" r="1.8" fill="#fef08a" />
+  <g id="part-brick-br" data-pivot="93,93" data-blend="normal">
+    <rect x="66" y="68" width="52" height="22" rx="2" fill="url(#primer-trim)" stroke="#1a1412" stroke-width="1.8"/>
+    <rect x="66" y="96" width="26" height="22" rx="2" fill="#784b3d" stroke="#1a1412" stroke-width="1.8"/>
+    <rect x="96" y="96" width="22" height="22" rx="2" fill="#825142" stroke="#1a1412" stroke-width="1.8"/>
   </g>
-  <g id="part-light-rim-bricks" data-pivot="64,64" data-parent="root" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
-    <path d="M16 28 V16 H60 M68 28 V16 H112 M16 80 V68 H60 M68 80 V68 H112" stroke="url(#tb-rim-glow)" stroke-width="2.4" stroke-linecap="round" />
+  <g id="part-light-rim-bricks" data-pivot="64,64" data-blend="plus-lighter">
+    <path d="M12,12 H58 M68,12 H116 M12,70 H58 M68,70 H116" stroke="#c98870" stroke-width="1.5" opacity="0.5"/>
   </g>
-  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
-    <circle cx="64" cy="64" r="3" fill="#ffffff" />
-    <circle cx="38" cy="64" r="1.8" fill="#fbbf24" />
-    <circle cx="90" cy="64" r="1.8" fill="#fbbf24" />
-  </g>
+  <g id="part-aura-corona-top" data-pivot="64,64" data-blend="normal"></g>
 </svg>

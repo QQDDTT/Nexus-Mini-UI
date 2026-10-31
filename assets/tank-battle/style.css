@@ -1,206 +1,421 @@
-/* ============================================================================
- * 钢铁防线 (Tank Battle) — Chroma-Muse Bespoke Theme Stylesheet
- * Style Anchor: STYLE-19 (Heavy Cast-Iron Military Armor) + STYLE-43 (Industrial)
- * 5:3:1 Allocation:
- *   [5] 50% Heavy Olive-Drab Trench (#0b1610 -> #14241b) + Anti-Slip Diamond Grid
- *   [3] 30% 45° Chamfered Tactical Command Console HUD + Corner Blast Rivets
- *   [1] 10% P1 NATO Green (#22c55e), P2 Desert Amber (#f59e0b), Crimson Alert (#ef4444)
- * ============================================================================ */
+/**
+ * @file games/tank-battle/public/style.css
+ * @description 《钢铁防线 (Tank Battle)》专属主题样式表（方案 B：克虏伯发蓝炮钢与冷拔拉丝钨钢 · STYLE-19×113）
+ * 严格遵循：提高写实度、降低对比度、体现钢铁厚重感（4px 厚钢断面 + 火焰切割/数控铣削受光倒角 + 四角沉头内六角螺栓 + 退火紫铜弹壳点睛）
+ */
 
 :root {
-  /* [5] 50% Heavy Olive-Drab Trench & Rolled Steel Surfaces */
-  --tb-bg-trench-deep: #0b1610;
-  --tb-bg-trench-olive: #14241b;
-  --tb-steel-plate: #1c2e24;
-  --tb-grid-stencil: rgba(74, 222, 128, 0.06);
+  /* ===== [5] 50% 基础底色体系：浸油发蓝炮钢与冷拔拉丝钨钢底板（低对比度柔和暗部） ===== */
+  --void: #1b1f26;
+  --tb-bg-void: #1b1f26;
+  --tb-bg-steel: #242932;
+  --tb-bg-battlefloor: #1d2128;
 
-  /* [3] 30% Chamfered Tactical Console HUD */
-  --tb-hud-armor-bg: rgba(14, 28, 20, 0.88);
-  --tb-hud-panel-steel: rgba(24, 43, 32, 0.92);
-  --tb-hud-border-olive: #3f6212;
-  --tb-hud-rivet: #65a30d;
-  --tb-text-stencil: #ecfccb;
-  --tb-text-tactical: #a3e635;
-  --tb-text-muted: #84cc16;
+  /* ===== [3] 30% 结构层与 4px 厚断面铣削倒角乌金钢板 ===== */
+  --panel: #2b313a;
+  --tb-plate-grad: linear-gradient(165deg, #353c47 0%, #292f38 65%, #22272f 100%);
+  --tb-plate-selected-grad: linear-gradient(165deg, #3f4855 0%, #303742 65%, #272d36 100%);
+  --tb-dock-grad: linear-gradient(180deg, #313842 0%, #242931 100%);
+  --tb-well-bg: #1a1e24;
+  --tb-bevel-top: #5a6575;
+  --tb-bevel-left: #4b5563;
+  --tb-bevel-right: #1a1e24;
+  --tb-bevel-bottom: #13161b;
+  --border: #4a5462;
 
-  /* [1] 10% Focal Tactical Accents */
-  --tb-accent-p1-green: #22c55e;
-  --tb-accent-p1-bright: #4ade80;
-  --tb-accent-p2-amber: #f59e0b;
-  --tb-accent-p2-bright: #fde047;
-  --tb-accent-enemy-red: #ef4444;
+  /* ===== [1] 10% 绝对焦点点睛：退火紫铜/黄铜弹壳色 + 冷拔钨钢银 + 防锈红丹底漆 ===== */
+  --cyan: #c48f5a;
+  --gold: #e0be99;
+  --red: #b5604a;
+  --green: #7a9a82;
+  --tb-brass: #c48f5a;
+  --tb-brass-bright: #e0be99;
+  --tb-brass-deep: #6b4b2b;
+  --tb-tungsten: #8598b0;
+  --tb-primer-red: #b5604a;
 
-  /* Chamfer Geometry & Typography */
-  --tb-chamfer-clip: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
-  --tb-font-sans: 'Chakra Petch', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --tb-font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  /* ===== 低对比度柔和金属文字色阶 ===== */
+  --text: #d6deea;
+  --muted: #909ba8;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
-
+/* 根视口拉丝钨钢底纹 */
 html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
-  background: radial-gradient(circle at 50% 50%, var(--tb-bg-trench-olive) 0%, var(--tb-bg-trench-deep) 90%);
-  color: var(--tb-text-stencil);
-  font-family: var(--tb-font-sans);
-}
-
-/* [5] 50% Olive-Drab Trench & Anti-Slip Diamond Grid */
-.tb-battlefield-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background-color: var(--tb-bg-trench-deep);
+  background-color: var(--tb-bg-void) !important;
   background-image:
-    radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.08) 0%, transparent 70%),
-    linear-gradient(to right, var(--tb-grid-stencil) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--tb-grid-stencil) 1px, transparent 1px);
-  background-size: 100% 100%, 32px 32px, 32px 32px;
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.014) 0px, rgba(255, 255, 255, 0.014) 1px, transparent 1px, transparent 3px),
+    linear-gradient(180deg, #242932 0%, #1b1f26 100%) !important;
+  color: var(--text) !important;
 }
 
-/* [3] 30% 45° Chamfered Tactical Field Command Console HUD */
-.tb-console-panel {
+/* 四角工业沉头铆钉通用装饰 */
+.tb-rivets,
+.tb-armor-plate,
+#nx-tier2-menu .nx-t2-card,
+#nx-tier2-menu .tb-unit-card,
+#nx-tier2-menu .tb-inspector-dock {
   position: relative;
-  padding: 12px 18px;
-  background: var(--tb-hud-armor-bg);
-  border: 2px solid var(--tb-hud-border-olive);
-  clip-path: var(--tb-chamfer-clip);
-  box-shadow:
-    inset 0 1px 0 rgba(163, 230, 53, 0.22),
-    0 10px 24px rgba(5, 11, 8, 0.72);
 }
-
-.tb-console-panel::before,
-.tb-console-panel::after {
-  content: '';
+.tb-rivets::before,
+.tb-rivets::after,
+.tb-armor-plate::before,
+.tb-armor-plate::after,
+#nx-tier2-menu .tb-unit-card::before,
+#nx-tier2-menu .tb-unit-card::after {
+  content: "";
   position: absolute;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: var(--tb-hud-rivet);
-  box-shadow: 0 0 4px rgba(163, 230, 53, 0.5);
+  background: radial-gradient(circle at 35% 35%, #7e8a99, #1e232a 78%);
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+  z-index: 3;
+}
+.tb-rivets::before,
+.tb-armor-plate::before,
+#nx-tier2-menu .tb-unit-card::before {
+  top: 5px;
+  left: 5px;
+}
+.tb-rivets::after,
+.tb-armor-plate::after,
+#nx-tier2-menu .tb-unit-card::after {
+  top: 5px;
+  right: 5px;
 }
 
-.tb-console-panel::before {
-  top: 8px;
-  left: 8px;
+/* ============================================================================
+ * 第二层 · 重装军械库与单位清单界面 (#nx-tier2-menu 方案 B 深度定制)
+ * ============================================================================ */
+#nx-tier2-menu {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 3px),
+    linear-gradient(180deg, #242932 0%, #1b1f26 100%) !important;
+  border: 3px solid #4a5360 !important;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -3px 0 #12151a !important;
+  padding:
+    max(6px, env(safe-area-inset-top))
+    max(10px, env(safe-area-inset-right))
+    max(6px, env(safe-area-inset-bottom))
+    max(10px, env(safe-area-inset-left)) !important;
+  gap: 6px !important;
 }
 
-.tb-console-panel::after {
-  bottom: 8px;
-  right: 8px;
+#nx-tier2-menu .nx-t2-header {
+  background: linear-gradient(180deg, #343b46 0%, #262c35 100%) !important;
+  border-top: 2px solid #5a6575 !important;
+  border-left: 2px solid #4b5563 !important;
+  border-right: 2px solid #1a1e24 !important;
+  border-bottom: 3px solid #13161b !important;
+  border-radius: 3px !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  height: 46px !important;
 }
 
-.tb-telemetry-readout {
-  font-family: var(--tb-font-mono);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--tb-text-tactical);
-  text-transform: uppercase;
+#nx-tier2-menu .nx-t2-title {
+  color: #d6deea !important;
+  text-shadow: 0 1px 2px #0e1114 !important;
+  letter-spacing: 0.05em !important;
 }
 
-.tb-player-badge-p1 {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 12px;
-  background: rgba(21, 128, 61, 0.28);
-  border-left: 3px solid var(--tb-accent-p1-green);
-  color: var(--tb-accent-p1-bright);
-  font-weight: 700;
+#nx-tier2-menu .nx-t2-sub {
+  color: #c48f5a !important;
+  font-family: "Consolas", "JetBrains Mono", monospace !important;
 }
 
-.tb-player-badge-p2 {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 12px;
-  background: rgba(180, 83, 9, 0.28);
-  border-left: 3px solid var(--tb-accent-p2-amber);
-  color: var(--tb-accent-p2-bright);
-  font-weight: 700;
+#nx-tier2-menu .nx-t2-tab {
+  background: linear-gradient(180deg, #2c323b 0%, #22272f 100%) !important;
+  color: #8b96a3 !important;
+  border-top: 1px solid #4a5462 !important;
+  border-left: 1px solid #3d4652 !important;
+  border-right: 1px solid #1a1e24 !important;
+  border-bottom: 3px solid #13161b !important;
+  border-radius: 2px !important;
+  font-weight: 700 !important;
 }
 
-/* [1] 10% Tactical Strike Action Buttons */
-.tb-btn-deploy {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+#nx-tier2-menu .nx-t2-tab.active {
+  background: linear-gradient(180deg, #404957 0%, #303742 100%) !important;
+  color: #e3be96 !important;
+  border-color: #6c798a !important;
+  border-top: 2px solid #c48f5a !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 2px 5px rgba(0, 0, 0, 0.55) !important;
+}
+
+#nx-tier2-menu .nx-t2-body {
+  background: rgba(24, 28, 35, 0.65) !important;
+  border: 2px solid #38404c !important;
+  border-radius: 3px !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+  padding: 8px 10px !important;
+}
+
+#nx-tier2-menu .nx-t2-footer {
+  background: linear-gradient(180deg, #323944 0%, #242931 100%) !important;
+  border-top: 2px solid #566170 !important;
+  border-left: 2px solid #47515e !important;
+  border-right: 2px solid #181c21 !important;
+  border-bottom: 3px solid #121519 !important;
+  border-radius: 3px !important;
+  height: 48px !important;
+}
+
+#nx-tier2-menu .nx-t2-btn {
+  background: linear-gradient(180deg, #3c4450 0%, #2b313a 100%) !important;
+  color: #c5ced9 !important;
+  border-top: 1px solid #5b6778 !important;
+  border-left: 1px solid #4b5563 !important;
+  border-right: 1px solid #1a1e24 !important;
+  border-bottom: 3px solid #13161b !important;
+  border-radius: 2px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.55) !important;
+}
+
+#nx-tier2-menu .nx-t2-btn.primary {
+  background: linear-gradient(180deg, #8c633b 0%, #6b4b2b 55%, #543a20 100%) !important;
+  color: #efe5da !important;
+  border-top: 2px solid #b88758 !important;
+  border-left: 2px solid #9c7046 !important;
+  border-right: 2px solid #362514 !important;
+  border-bottom: 4px solid #24180d !important;
+  border-radius: 2px !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7) !important;
+  letter-spacing: 0.05em !important;
+}
+
+#nx-tier2-menu .nx-t2-card {
+  background: var(--tb-plate-grad) !important;
+  border-top: 2px solid #5a6575 !important;
+  border-left: 2px solid #4b5563 !important;
+  border-right: 2px solid #1a1e24 !important;
+  border-bottom: 4px solid #13161b !important;
+  border-radius: 2px !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), inset 0 0 12px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* 方案 B 专属：第二层「左 3×2 均质钢印单位清单 + 右侧重型剖面检验台」双栏布局 */
+.tb-roster-workbench {
+  display: grid;
+  grid-template-columns: 1.32fr 0.95fr;
   gap: 10px;
-  min-height: 46px;
-  padding: 10px 26px;
-  clip-path: var(--tb-chamfer-clip);
-  background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
-  border: 1px solid #86efac;
-  color: #052e16;
-  font-weight: 900;
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  box-shadow: 0 0 18px rgba(34, 197, 94, 0.35);
+  height: 100%;
+  min-height: 0;
+}
+.tb-roster-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 7px;
+  min-height: 0;
+}
+.tb-unit-card {
+  background: var(--tb-plate-grad);
+  border-top: 2px solid #5a6575;
+  border-left: 2px solid #4b5563;
+  border-right: 2px solid #1a1e24;
+  border-bottom: 4px solid #13161b;
+  border-radius: 2px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), inset 0 0 12px rgba(0, 0, 0, 0.35);
+  color: #c2cbd6;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   cursor: pointer;
-  transition: transform 0.14s ease, filter 0.14s ease;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+  min-height: 0;
 }
-
-.tb-btn-deploy:hover {
-  filter: brightness(1.08);
+.tb-unit-card:hover {
+  border-top-color: #8598b0;
 }
-
-.tb-btn-deploy:active {
-  transform: scale(0.96);
+.tb-unit-card.selected {
+  background: var(--tb-plate-selected-grad);
+  border-top: 2px solid #c48f5a;
+  border-left: 2px solid #966c42;
+  border-right: 2px solid #261e17;
+  border-bottom: 4px solid #17120e;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.75), inset 0 0 0 1px rgba(196, 143, 90, 0.28);
 }
-
-.tb-btn-coop-amber {
-  display: inline-flex;
+.tb-unit-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.62rem;
+  font-family: "Consolas", monospace;
+  font-weight: 700;
+  color: #8f9aa8;
+}
+.tb-unit-card.selected .tb-unit-card-head {
+  color: #deb487;
+}
+.tb-unit-svg-wrap {
+  flex: 1;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 8px 22px;
-  clip-path: var(--tb-chamfer-clip);
-  background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
-  border: 1px solid #fde047;
-  color: #1c1917;
-  font-weight: 800;
-  cursor: pointer;
+  min-height: 0;
 }
-
-/* ==========================================================================
-   [Momus-Audit Terminal Adaptation Hardening: 852x393 Mobile Landscape]
-   ========================================================================== */
-html, body {
-  width: 100vw;
-  height: 100dvh;
-  max-width: 100vw;
-  max-height: 100dvh;
-  overflow: hidden !important;
-  overscroll-behavior: none !important;
+.tb-unit-svg-wrap img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.75));
 }
-
-button, [role="button"], .btn, .cta-btn, .arcade-back-pill {
-  min-width: 44px;
-  min-height: 44px;
+.tb-unit-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #d0d8e3;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 3px;
   white-space: nowrap;
-  flex-shrink: 0;
-  touch-action: manipulation;
+}
+.tb-unit-card-foot small {
+  font-size: 0.6rem;
+  font-family: "Consolas", monospace;
+  color: #909ba8;
 }
 
-/* ==========================================================================
-   [Safe-Area & Mobile Landscape 852x393 Protection]
-   ========================================================================== */
-:root {
-  --nexus-safe-top: env(safe-area-inset-top, 0px);
-  --nexus-safe-right: env(safe-area-inset-right, 0px);
-  --nexus-safe-bottom: env(safe-area-inset-bottom, 0px);
-  --nexus-safe-left: env(safe-area-inset-left, 0px);
+.tb-inspector-dock {
+  background: var(--tb-dock-grad);
+  border-top: 2px solid #596473;
+  border-left: 2px solid #4a5461;
+  border-right: 2px solid #191d22;
+  border-bottom: 4px solid #121519;
+  border-radius: 2px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.65), inset 0 0 18px rgba(0, 0, 0, 0.4);
+  padding: 9px 11px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #c5ced9;
+  min-height: 0;
+}
+.tb-insp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #1b1f26;
+  padding-bottom: 5px;
+}
+.tb-insp-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #e0c19e;
+  letter-spacing: 0.04em;
+}
+.tb-insp-code {
+  font-size: 0.62rem;
+  font-family: "Consolas", monospace;
+  color: #909ba8;
+  margin-top: 2px;
+}
+.tb-insp-preview-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1b1f26;
+  border: 1px solid #3f4754;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
+  padding: 7px 9px;
+  margin: 5px 0;
+}
+.tb-insp-preview-box img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.8));
+}
+.tb-insp-specs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.tb-spec-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.64rem;
+}
+.tb-spec-line .lbl {
+  width: 48px;
+  color: #9aa5b4;
+  white-space: nowrap;
+}
+.tb-spec-track {
+  flex: 1;
+  height: 7px;
+  background: #15181e;
+  border: 1px solid #3b434f;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+.tb-spec-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5c6d82, #8598b0);
+}
+.tb-spec-fill.brass {
+  background: linear-gradient(90deg, #91663c, #c48f5a);
+}
+.tb-spec-val {
+  width: 42px;
+  text-align: right;
+  font-family: "Consolas", monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #d6deea;
+}
+.tb-mode-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.tb-mode-pill {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #2b313a 0%, #21262d 100%);
+  color: #909ba8;
+  border: 1px solid #434c59;
+  border-bottom: 2px solid #14171b;
+  font-size: 0.66rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tb-mode-pill.active {
+  background: linear-gradient(180deg, #3c4450 0%, #2d343e 100%);
+  color: #e0be99;
+  border-color: #966c42;
+}
+
+/* 第三层右上角返回整备菜单机械拨杆按钮 */
+.nx-return-pill {
+  background: linear-gradient(180deg, #373f4b 0%, #272d36 100%) !important;
+  color: #c5ced9 !important;
+  border-top: 1.5px solid #5b6778 !important;
+  border-left: 1.5px solid #4b5563 !important;
+  border-right: 1.5px solid #1a1e24 !important;
+  border-bottom: 3px solid #13161b !important;
+  border-radius: 3px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.75) !important;
+}
+
+@media (max-width: 760px) {
+  .tb-roster-workbench {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 6px;
+  }
+  .tb-unit-svg-wrap img {
+    width: 40px;
+    height: 40px;
+  }
 }

@@ -527,38 +527,46 @@
       id: 'tank-battle',
       name: '钢铁防线',
       en: 'TANK BATTLE',
-      styleCode: 'STYLE-19+43 · 战地橄榄防滑钢板主题',
+      styleCode: 'STYLE-19×113 · 克虏伯发蓝炮钢与冷拔拉丝钨钢',
       storagePrefix: 'NEXUS_MINI_TANK_',
       icon: '../assets/tank-battle/icon.svg',
       preview: '../assets/tank-battle/preview.png',
-      tagline: '26×26 战术网格基地守卫 · 1P/2P 主战坦克与铁幕攻城列车决战',
+      tagline: '26×26 重装防线守卫 · 发蓝乌金钢主战坦克与铁幕攻城列车决战',
       modes: [
-        { id: 'solo-defense', name: '客户端单机 · 双坦 AI 僚机协同守卫', desc: '1P 玩家主控先锋主战坦，2P 卫戌双管坦由本地战术 AI 自主巡逻护卫鹰标总部' },
-        { id: 'lan-coop', name: '局域网 1~5ms · 一人一机双坦联防', desc: '两名指挥官各自持握手机直连，共享基地钢化护盾与实时弹道同步' }
+        { id: 'solo-defense', name: '单机防线战役', desc: '1P 玩家主控发蓝炮钢主战坦，2P 退火黄铜双管坦由本地战术 AI 协同护卫统帅地堡' },
+        { id: 'lan-coop', name: '局域网双人同屏', desc: '两名指挥官各自持握手机 1~5ms 直连，共享地堡防弹钢墙加固与实时穿甲弹道同步' }
+      ],
+      rosterUnits: [
+        { no: 'NO.01', badge: '120MM RHA', file: 'player-tank-p1.svg', name: '1P 重型主战', weight: '48.5 TON', fullTitle: 'T-80U / M103 重型主战坦克', subCode: '枪管发蓝乌金钢首上 + 砂型铸造炮塔', ammo: 'HVAP-T', armorVal: '220mm', armorPct: 88, velVal: '1650m/s', velPct: 84, pwrVal: '24hp/t', pwrPct: 76 },
+        { no: 'NO.02', badge: 'ERA 反应甲', file: 'player-tank-p2.svg', name: '2P 协同突击', weight: '46.0 TON', fullTitle: '2P 卫戌双联突击重坦', subCode: '冷拔拉丝钨钢车体 + 双联速射滑膛炮', ammo: 'APFSDS', armorVal: '205mm', armorPct: 82, velVal: '1580m/s', velPct: 80, pwrVal: '26hp/t', pwrPct: 82 },
+        { no: 'NO.03', badge: '双联 152MM', file: 'enemy-mammoth.svg', name: '猛犸重装敌坦', weight: '72.0 TON', fullTitle: '猛犸四履带超重型攻坚坦', subCode: '粗粝砂型铸铁 + 防锈红丹底漆重甲', ammo: 'HE-FRAG', armorVal: '260mm', armorPct: 96, velVal: '1320m/s', velPct: 68, pwrVal: '16hp/t', pwrPct: 54 },
+        { no: 'NO.04', badge: '高速侦察', file: 'enemy-scout.svg', name: '轻型穿插敌坦', weight: '28.5 TON', fullTitle: '灰狼半履带高机动侦察坦', subCode: '轻量化铆接钢板 + 双联机炮', ammo: 'AP-I', armorVal: '95mm', armorPct: 45, velVal: '1420m/s', velPct: 72, pwrVal: '32hp/t', pwrPct: 92 },
+        { no: 'NO.05', badge: '铸钢地堡', file: 'base-eagle.svg', name: '统帅核心雕像', weight: 'FORT-01', fullTitle: '八角防爆铸钢统帅鹰标地堡', subCode: '退火黄铜浮雕军徽 + 四角沉头防爆栓', ammo: 'CORE', armorVal: '300mm', armorPct: 100, velVal: '0m/s', velPct: 15, pwrVal: 'FIXED', pwrPct: 100 },
+        { no: 'NO.06', badge: '防弹钢墙', file: 'tile-steel.svg', name: '铆接永固钢块', weight: 'LV.3 穿甲', fullTitle: '克虏伯发蓝铆接防弹钢掩体', subCode: '交叉冲压加强筋 + 沉头六角螺栓', ammo: 'BUNKER', armorVal: '280mm', armorPct: 95, velVal: '0m/s', velPct: 10, pwrVal: 'FIXED', pwrPct: 100 }
       ],
       formulas: [
-        { title: '26×26 复合地形掩体机制', desc: '纳米红砖墙可被常规炮火逐块击毁；钛合金钢墙仅重型穿甲弹可破；光学迷彩林提供半透明隐蔽。' },
-        { title: '鹰标总部钢化加固工程', desc: '消耗 50 枚坦克硬币可将基地外围红砖瞬时升级为钛合金防爆钢墙，抵御敌军集火。' },
-        { title: '敌军装甲合成编队 AI', desc: '灰狼轻坦高速穿插、疾风猎犬侧翼包抄、重甲猛犸正面推进、铁幕攻城列车 Boss 多节齐射。' },
+        { title: '26×26 复合地形掩体机制', desc: '耐火砖石墙可被常规穿甲弹逐块击碎；发蓝防弹钢墙仅 Lv.3 高膛压穿甲弹可破；伪装网灌木提供半透明隐蔽。' },
+        { title: '统帅地堡防弹钢墙加固', desc: '消耗 50 枚军械硬币可将地堡外围砖墙瞬时升级为克虏伯发蓝防弹钢墙，抵御敌军重炮集火。' },
+        { title: '敌军装甲合成编队 AI', desc: '半履带轻坦高速穿插、突击坦侧翼包抄、重甲猛犸正面推进、铁幕攻城列车 Boss 多节齐射。' },
         { title: '3.0 秒双向断线 AI 自愈', desc: '局域网任一指挥官切后台或断连超过 3.0s，系统自动切换本地 AI 僚机无缝接管战车。' }
       ],
       sprites: [
-        { file: 'player-tank-p1.svg', name: '1P 先锋主战坦', role: '玩家主力装甲' },
-        { file: 'player-tank-p2.svg', name: '2P 卫戌双管坦', role: '联机/AI 协同重坦' },
-        { file: 'enemy-scout.svg', name: '灰狼轻坦', role: '侦察突击敌坦' },
-        { file: 'enemy-raider.svg', name: '疾风猎犬', role: '高机动穿插敌坦' },
-        { file: 'enemy-shooter.svg', name: '火力射手', role: '远程速射敌坦' },
-        { file: 'enemy-mammoth.svg', name: '重甲猛犸', role: '多层重甲敌坦' },
-        { file: 'enemy-boss-train.svg', name: '铁幕攻城列车', role: '关底装甲首领' },
-        { file: 'base-eagle.svg', name: '鹰标核心总部', role: '核心守卫目标' },
-        { file: 'tile-brick.svg', name: '纳米红砖墙', role: '可破坏战术掩体' },
-        { file: 'tile-steel.svg', name: '钛合金钢墙', role: '防爆不可摧掩体' },
-        { file: 'tile-bush.svg', name: '光学迷彩林', role: '树冠视觉隐蔽层' },
-        { file: 'pickup-crate.svg', name: '战术补给箱', role: '护盾/火力空投' }
+        { file: 'player-tank-p1.svg', name: '1P 重型主战', role: '发蓝炮钢主力坦' },
+        { file: 'player-tank-p2.svg', name: '2P 协同突击', role: '退火黄铜双管坦' },
+        { file: 'enemy-scout.svg', name: '轻型穿插敌坦', role: '半履带侦察车' },
+        { file: 'enemy-raider.svg', name: '疾风突击敌坦', role: '高机动穿插坦' },
+        { file: 'enemy-shooter.svg', name: '长身管歼击车', role: '远程反坦火炮' },
+        { file: 'enemy-mammoth.svg', name: '猛犸重装敌坦', role: '四履带超重坦' },
+        { file: 'enemy-boss-train.svg', name: '铁幕攻城列车', role: '关底装甲列车' },
+        { file: 'base-eagle.svg', name: '统帅核心雕像', role: '铸钢鹰标地堡' },
+        { file: 'tile-brick.svg', name: '耐火水泥砖墙', role: '可击碎战术工事' },
+        { file: 'tile-steel.svg', name: '铆接永固钢块', role: '防弹不可摧掩体' },
+        { file: 'tile-bush.svg', name: '战地伪装网林', role: '树冠视觉隐蔽层' },
+        { file: 'pickup-crate.svg', name: '冲压军械补给', role: '护盾/晋升空投箱' }
       ],
       getMetrics: (s) => [
-        { label: '坦克防御硬币 (Tank Coins)', val: (s.currency?.tankCoins ?? 500).toLocaleString(), gold: true },
-        { label: '历史最高战绩积分', val: (s.stats?.highScore ?? 6800).toLocaleString(), gold: true },
+        { label: '军械储备硬币 (Ordnance Coins)', val: (s.currency?.tankCoins ?? 500).toLocaleString(), gold: true },
+        { label: '历史最高防线积分', val: (s.stats?.highScore ?? 6800).toLocaleString(), gold: true },
         { label: '当前战车军衔 / 胜场', val: `Rank ${s.rank ?? 1} / ${s.stats?.wins ?? 5} 胜` }
       ],
       grantBonus: (s) => {
@@ -566,7 +574,7 @@
         s.currency.tankCoins += 500;
         s.rank = Math.min(4, (s.rank || 1) + 1);
       },
-      studioBtnText: '立即触发基地钛钢加固整备',
+      studioBtnText: '立即触发地堡防弹钢加固',
       triggerStudio: () => document.getElementById('btn-fortify-base')?.click()
     },
     'gold-miner': {
@@ -1050,6 +1058,7 @@
     // Build Tier 2 6-Module Game Menu Hub DOM
     let currentMenuTab = 'home';
     let selectedModeId = meta.modes[0].id;
+    let selectedUnitIdx = 0;
     let measuredFps = 60;
     let swCacheStatus = '已就绪 (本地离线 CacheStorage 完整)';
 
@@ -1065,26 +1074,28 @@
       document.body.classList.add('nx-in-tier3');
     }
 
+    const isHeavyArmory = Array.isArray(meta.rosterUnits) && meta.rosterUnits.length > 0;
+
     menuEl.innerHTML = `
       <header class="nx-t2-header">
         <div class="nx-t2-brand">
           <button class="nx-t2-btn" id="nx-btn-back-tier1" title="返回第 1 层平台主页">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="15 18 9 12 15 6"/></svg>
-            <span>返回主页</span>
+            <span>${isHeavyArmory ? '返回平台清单' : '返回主页'}</span>
           </button>
           <img src="${meta.icon}" alt="${meta.name}" />
           <div>
-            <div class="nx-t2-title">${meta.name} · 游戏菜单</div>
+            <div class="nx-t2-title">${isHeavyArmory ? `${meta.name} · 重装军械库` : `${meta.name} · 游戏菜单`}</div>
             <div class="nx-t2-sub">${meta.styleCode}</div>
           </div>
         </div>
         <nav class="nx-t2-tabs" id="nx-t2-tabs">
-          <button class="nx-t2-tab active" data-menu-tab="home">① 游戏主页</button>
-          <button class="nx-t2-tab" data-menu-tab="details">② 游戏详情</button>
-          <button class="nx-t2-tab" data-menu-tab="settings">③ 游戏设置</button>
-          <button class="nx-t2-tab" data-menu-tab="assets">④ 资材管理</button>
-          <button class="nx-t2-tab" data-menu-tab="services">⑤ 服务管理</button>
-          <button class="nx-t2-tab" data-menu-tab="lan">⑥ 局域网管理</button>
+          <button class="nx-t2-tab active" data-menu-tab="home">${isHeavyArmory ? '① 装甲清单' : '① 游戏主页'}</button>
+          <button class="nx-t2-tab" data-menu-tab="details">${isHeavyArmory ? '② 战术百科' : '② 游戏详情'}</button>
+          <button class="nx-t2-tab" data-menu-tab="settings">${isHeavyArmory ? '③ 机械设置' : '③ 游戏设置'}</button>
+          <button class="nx-t2-tab" data-menu-tab="assets">${isHeavyArmory ? '④ 军械配装' : '④ 资材管理'}</button>
+          <button class="nx-t2-tab" data-menu-tab="services">${isHeavyArmory ? '⑤ 离线自检' : '⑤ 服务管理'}</button>
+          <button class="nx-t2-tab" data-menu-tab="lan">${isHeavyArmory ? '⑥ 局域网联机' : '⑥ 局域网管理'}</button>
         </nav>
       </header>
       <main class="nx-t2-body" id="nx-t2-body"></main>
@@ -1096,7 +1107,7 @@
           ${meta.studioBtnText ? `<button class="nx-t2-btn" id="nx-btn-open-studio">${meta.studioBtnText}</button>` : ''}
           <button class="nx-t2-btn primary" id="nx-btn-enter-tier3">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span>开始游戏 · 进入游玩界面</span>
+            <span>${isHeavyArmory ? '解锁炮塔闭锁 · 投入防线' : '开始游戏 · 进入游玩界面'}</span>
           </button>
         </div>
       </footer>
@@ -1134,6 +1145,94 @@
       });
 
       if (currentMenuTab === 'home') {
+        if (isHeavyArmory) {
+          const u = meta.rosterUnits[selectedUnitIdx] || meta.rosterUnits[0];
+          const coins = (saveData.currency?.tankCoins ?? 500).toLocaleString();
+          const rk = saveData.rank ?? 1;
+          body.innerHTML = `
+            <div class="tb-roster-workbench">
+              <div class="tb-roster-grid">
+                ${meta.rosterUnits.map((unit, idx) => `
+                  <div class="tb-unit-card ${idx === selectedUnitIdx ? 'selected' : ''}" data-unit-idx="${idx}">
+                    <div class="tb-unit-card-head">
+                      <span>${unit.no}</span>
+                      <span>${unit.badge}</span>
+                    </div>
+                    <div class="tb-unit-svg-wrap">
+                      <img src="../assets/${meta.id}/sprites/${unit.file}?v=20261031b" alt="${unit.name}" />
+                    </div>
+                    <div class="tb-unit-card-foot">
+                      <span>${unit.name}</span>
+                      <small>${unit.weight}</small>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div class="tb-inspector-dock tb-rivets">
+                <div>
+                  <div class="tb-insp-header">
+                    <div>
+                      <div class="tb-insp-title">${u.fullTitle}</div>
+                      <div class="tb-insp-code">${u.subCode}</div>
+                    </div>
+                    <span style="font-size:0.62rem;font-family:Consolas,monospace;color:#c48f5a;font-weight:700;">${u.ammo}</span>
+                  </div>
+
+                  <div class="tb-insp-preview-box">
+                    <img src="../assets/${meta.id}/sprites/${u.file}?v=20261031b" alt="${u.name}" />
+                    <div class="tb-insp-specs">
+                      <div class="tb-spec-line">
+                        <span class="lbl">首上甲</span>
+                        <div class="tb-spec-track"><div class="tb-spec-fill" style="width:${u.armorPct}%"></div></div>
+                        <span class="tb-spec-val">${u.armorVal}</span>
+                      </div>
+                      <div class="tb-spec-line">
+                        <span class="lbl">膛压初速</span>
+                        <div class="tb-spec-track"><div class="tb-spec-fill brass" style="width:${u.velPct}%"></div></div>
+                        <span class="tb-spec-val">${u.velVal}</span>
+                      </div>
+                      <div class="tb-spec-line">
+                        <span class="lbl">功率重量</span>
+                        <div class="tb-spec-track"><div class="tb-spec-fill" style="width:${u.pwrPct}%"></div></div>
+                        <span class="tb-spec-val">${u.pwrVal}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <div style="display:flex;justify-content:space-between;font-size:0.66rem;font-family:Consolas,monospace;color:#9aa5b4;padding:0 2px;">
+                    <span>军械币储备: <strong style="color:#e0be99;">${coins}</strong></span>
+                    <span>当前战车军衔: <strong style="color:#d6deea;">Rank ${rk}</strong></span>
+                  </div>
+                  <div class="tb-mode-selector">
+                    ${meta.modes.map((md) => `
+                      <div class="tb-mode-pill ${selectedModeId === md.id ? 'active' : ''}" data-mode-select="${md.id}">
+                        ${selectedModeId === md.id ? '● ' : '○ '}${md.name}
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          body.querySelectorAll('[data-unit-idx]').forEach((card) => {
+            card.addEventListener('click', () => {
+              AudioEngine.tap();
+              selectedUnitIdx = Number(card.getAttribute('data-unit-idx')) || 0;
+              renderTier2Module();
+            });
+          });
+          body.querySelectorAll('[data-mode-select]').forEach((pill) => {
+            pill.addEventListener('click', () => {
+              AudioEngine.tap();
+              selectedModeId = pill.getAttribute('data-mode-select');
+              renderTier2Module();
+            });
+          });
+          return;
+        }
         const metrics = meta.getMetrics(saveData);
         body.innerHTML = `
           <div class="nx-t2-grid3">
