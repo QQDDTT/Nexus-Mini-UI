@@ -1262,6 +1262,7 @@
           { src: './assets/star-defender/sprites/boss-leviathan.svg', name: '虚空利维坦' }
         ],
         gallery: [
+          { src: './assets/star-defender/preview.png', title: '星轨防线 · 实机深空拦截游玩界面截图' },
           { src: './assets/star-defender/concept.jpg', title: '深空星轨防线概念主视觉' },
           { src: './assets/star-defender/schematics.jpg', title: '360° 战舰网格与火控工程蓝图' }
         ],
@@ -1298,6 +1299,7 @@
           { title: '独立坦克硬币与军衔', desc: '对局获得的坦克防御硬币独立保存在当前统帅名下，可解锁重型双管主战坦克与基地钢化护盾。' },
           { title: '双向断线 AI 僚机自愈', desc: '无论单人游玩还是局域网任一方来电切后台，3 秒内自动切换 AI 战术僚机无缝接管防线。' }
         ],
+        previewImg: './assets/tank-battle/preview.png',
         sprites: [
           { src: './assets/tank-battle/sprites/player-tank-p1.svg', name: '1P 先锋主战坦' },
           { src: './assets/tank-battle/sprites/player-tank-p2.svg', name: '2P 卫戌双管坦' },
@@ -1312,7 +1314,9 @@
           { src: './assets/tank-battle/sprites/tile-bush.svg', name: '光学迷彩林' },
           { src: './assets/tank-battle/sprites/pickup-crate.svg', name: '战术补给箱' }
         ],
-        gallery: [],
+        gallery: [
+          { src: './assets/tank-battle/preview.png', title: '钢铁防线 · 26×26 战地橄榄防滑钢板游玩界面截图' }
+        ],
         defaultSave: (isAdmin) => ({
           currency: { tankCoins: isAdmin ? 999999 : 500 },
           stats: { wins: isAdmin ? 999 : 5, highScore: isAdmin ? 99999 : 6800 },
@@ -1360,7 +1364,9 @@
           { src: './assets/gold-miner/sprites/item-tonic.svg', name: '大力神液压剂' },
           { src: './assets/gold-miner/sprites/item-clover.svg', name: '四叶草芯片' }
         ],
-        gallery: [],
+        gallery: [
+          { src: './assets/gold-miner/preview.png', title: '掘金先锋 · 地底三段岩层与双钩合力起吊游玩界面截图' }
+        ],
         defaultSave: (isAdmin) => ({
           currency: { goldBars: isAdmin ? 999999 : 850 },
           maxStage: isAdmin ? 50 : 6,
@@ -1409,6 +1415,7 @@
           { src: './assets/pudding-defense/sprites/boss-glutton.svg', name: '贪吃大魔王' }
         ],
         gallery: [
+          { src: './assets/pudding-defense/preview.png', title: '保卫布丁 · 可可烘焙台面与甜品卫士实机画面截图' },
           { src: './assets/pudding-defense/combat.png', title: '保卫布丁 16×9 实机塔防交战画面' },
           { src: './assets/pudding-defense/levels.png', title: '章节关卡选择与心流难度曲线预览' }
         ],
@@ -1460,6 +1467,7 @@
           { src: './assets/micro-genesis/sprites/env-meat.svg', name: '有机肉块晶簇' }
         ],
         gallery: [
+          { src: './assets/micro-genesis/preview.png', title: '微界演化 · 培养皿生态沙盘与基因工坊实机截图' },
           { src: './assets/micro-genesis/ui-lab-preview.png', title: '页面 4：物种编辑页面（4阶躯干+五插槽+5维AI倾向）' },
           { src: './assets/micro-genesis/ui-arena-preview.png', title: '页面 6：游戏画面（视听双感官着色+纯SVG图标HUD）' },
           { src: './assets/micro-genesis/ui-bestiary-preview.png', title: '页面 3：化石记录（5大官方物种+5大远古首领+分级图鉴）' }
@@ -1559,7 +1567,7 @@
 
     function updateAuthUI() {
       const label = document.getElementById('auth-nickname-label');
-      label.textContent = `${currentUser.nickname} (${currentUser.userId})`;
+      if (label) label.textContent = `${currentUser.nickname} (${currentUser.userId})`;
     }
 
     /* =========================================================================
@@ -1625,12 +1633,22 @@
       document.getElementById('hero-name').textContent = currentGame.name;
       document.getElementById('hero-en').textContent = currentGame.en;
       document.getElementById('hero-tagline').textContent = currentGame.tagline;
+      const launchLbl = document.getElementById('btn-launch-label');
+      if (launchLbl) launchLbl.textContent = `进入「${currentGame.name}」游戏菜单`;
+
+      if (currentTab !== 'overview' && currentTab !== 'screenshots') {
+        currentTab = 'overview';
+      }
 
       document.querySelectorAll('#inspector-tabs .tab-btn').forEach((btn) => {
         btn.classList.toggle('active', btn.getAttribute('data-tab') === currentTab);
       });
 
       const body = document.getElementById('inspector-content');
+      const primaryShot = (currentGame.gallery && currentGame.gallery[0]) || {
+        src: `./assets/${currentGame.id}/preview.png`,
+        title: `${currentGame.name} · 实机游戏画面截图`
+      };
 
       if (currentTab === 'overview') {
         body.innerHTML = `
@@ -1642,7 +1660,7 @@
               </div>
             `).join('')}
           </div>
-          <div class="feature-list">
+          <div class="feature-list" style="margin-bottom:8px;">
             ${currentGame.features.map((f) => `
               <div class="feature-item">
                 <h4>
@@ -1653,160 +1671,45 @@
               </div>
             `).join('')}
           </div>
-        `;
-      } else if (currentTab === 'gallery') {
-        body.innerHTML = `
-          <div style="font-size:0.76rem; color:var(--nexus-accent-cyan); font-weight:700; margin-bottom:6px;">
-            标准三层结构 SVG 矢量精灵贴图库 (12 项核心实体 · 点击可放大检视)
-          </div>
-          <div class="sprite-showcase-grid">
-            ${currentGame.sprites.map((sp) => `
-              <div class="sprite-cell" data-img-src="${sp.src}" data-img-title="${currentGame.name} · ${sp.name} (矢量精灵贴图)">
-                <img src="${sp.src}" alt="${sp.name}" />
-                <span>${sp.name}</span>
+          <div class="gallery-card" data-img-src="${primaryShot.src}" data-img-title="${primaryShot.title}" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+              <img src="${primaryShot.src}" alt="${primaryShot.title}" style="width:96px;height:46px;object-fit:cover;border-radius:6px;border:1px solid rgba(0,240,255,0.3);flex-shrink:0;" />
+              <div style="min-width:0;">
+                <div style="font-size:0.76rem;font-weight:700;color:var(--nexus-text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${primaryShot.title}</div>
+                <div style="font-size:0.68rem;color:var(--nexus-text-secondary);">点击放大检视实机画面截图 · 更多角色图鉴、设置、资材与局域网管理请点击下方【进入游戏菜单】</div>
               </div>
-            `).join('')}
-          </div>
-          ${currentGame.gallery.length ? `
-            <div style="font-size:0.76rem; color:var(--nexus-accent-gold); font-weight:700; margin:8px 0 6px;">
-              概念设计与实机蓝图预览
             </div>
-            <div class="gallery-grid">
-              ${currentGame.gallery.map((img) => `
-                <div class="gallery-card" data-img-src="${img.src}" data-img-title="${img.title}">
-                  <img src="${img.src}" alt="${img.title}" />
-                  <div class="gallery-caption">
-                    <span>${img.title}</span>
-                    <span style="color:var(--nexus-accent-cyan);">检视大图</span>
-                  </div>
+            <span style="font-size:0.72rem;color:var(--nexus-accent-cyan);font-weight:700;white-space:nowrap;">放大截图</span>
+          </div>
+        `;
+      } else {
+        body.innerHTML = `
+          <div style="font-size:0.76rem; color:var(--nexus-accent-cyan); font-weight:700; margin-bottom:8px;">
+            「${currentGame.name}」实机游玩画面与设计蓝图截图 (点击任意截图全屏放大预览)
+          </div>
+          <div class="gallery-grid">
+            ${(currentGame.gallery || [primaryShot]).map((img) => `
+              <div class="gallery-card" data-img-src="${img.src}" data-img-title="${img.title}">
+                <img src="${img.src}" alt="${img.title}" style="height:132px;" />
+                <div class="gallery-caption">
+                  <span>${img.title}</span>
+                  <span style="color:var(--nexus-accent-cyan);">放大检视</span>
                 </div>
-              `).join('')}
-            </div>
-          ` : ''}
-        `;
-        body.querySelectorAll('[data-img-src]').forEach((card) => {
-          card.addEventListener('click', () => {
-            NexusAudio.tap();
-            document.getElementById('img-modal-title').textContent = card.getAttribute('data-img-title');
-            document.getElementById('img-modal-target').src = card.getAttribute('data-img-src');
-            document.getElementById('img-modal').classList.add('active');
-          });
-        });
-      } else if (currentTab === 'multiplayer') {
-        const challengeUrl = buildChallengeUrl(currentGame);
-        body.innerHTML = `
-          <div class="info-grid" style="margin-bottom:8px;">
-            <div class="stat-box">
-              <div class="stat-label">局域网拓扑状态</div>
-              <div class="stat-val" style="color:var(--nexus-accent-green);">同 Wi-Fi / 手机热点就绪</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-label">防卡顿传输协议</div>
-              <div class="stat-val" style="color:var(--nexus-accent-cyan);">UDP 无序帧 (ordered: false)</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-label">预计内网物理延迟</div>
-              <div class="stat-val gold">1 ~ 5 ms (双向断线自愈)</div>
-            </div>
-          </div>
-          <div class="p2p-panel">
-            <div class="p2p-box">
-              <h4>
-                <svg class="nx-ico" style="color:var(--nexus-accent-cyan);" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-                <span>局域网 / 手机热点一人一机零延迟直连</span>
-              </h4>
-              <p>两台手机连接<strong>同一 Wi-Fi</strong> 或<strong>一人开手机热点另一人连接</strong>，数据包直接走内网路由器直传（不绕公网，彻底杜绝卡顿）：</p>
-              <div class="room-code-display" id="room-code-text">${currentRoomCode}</div>
-              <div class="inline-input-row" style="margin-bottom:6px;">
-                <input type="text" class="nexus-input" id="input-join-room" placeholder="输入同局域网 4 位房间号 或 粘贴热点握手码" />
-                <button class="pill-btn" id="btn-connect-room" style="border-color:var(--nexus-accent-cyan); color:var(--nexus-accent-cyan);">局域网直连</button>
-              </div>
-              <button class="pill-btn" id="btn-gen-lan-offer" style="width:100%; justify-content:center; font-size:0.74rem;">
-                生成纯离线手机热点 WebRTC 握手码 (Host)
-              </button>
-            </div>
-            <div class="p2p-box">
-              <h4>
-                <svg class="nx-ico" style="color:var(--nexus-accent-gold);" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                <span>异地好友方案：URL 幽灵残影 / 阵容挑战码</span>
-              </h4>
-              <p>当好友不在同一局域网时，无需忍受公网延迟！将本局地图种子与你的操作残影/阵容编码进网址，好友在自己手机上以 0ms 本地延迟同场较量：</p>
-              <div class="inline-input-row" style="margin-bottom:8px;">
-                <input type="text" class="nexus-input" id="input-challenge-url" readonly value="${challengeUrl}" />
-              </div>
-              <button class="pill-btn gold-badge" id="btn-copy-challenge" style="width:100%; justify-content:center;">
-                一键复制「${currentGame.name}」专属挑战链接
-              </button>
-            </div>
-          </div>
-        `;
-        document.getElementById('btn-connect-room')?.addEventListener('click', () => {
-          const val = document.getElementById('input-join-room').value.trim();
-          NexusAudio.success();
-          if (!val) {
-            showToast(`已在当前局域网广播房间 ${currentRoomCode} (UDP 无序零阻塞通道已就绪)`);
-          } else {
-            showToast(`正在通过局域网内网通道连接 [${val.slice(0, 12)}] (预计延迟 2ms)...`);
-          }
-        });
-        document.getElementById('btn-gen-lan-offer')?.addEventListener('click', async () => {
-          NexusAudio.tap();
-          try {
-            const pc = new RTCPeerConnection({ iceServers: [] });
-            pc.createDataChannel('lan-fast', { ordered: false, maxRetransmits: 0 });
-            pc.createDataChannel('lan-reliable', { ordered: true });
-            const offer = await pc.createOffer();
-            await pc.setLocalDescription(offer);
-            const compactToken = 'LAN-' + btoa(JSON.stringify({ r: currentRoomCode, g: currentGame.id, t: Date.now() })).slice(0, 24);
-            document.getElementById('input-join-room').value = compactToken;
-            navigator.clipboard?.writeText(compactToken).catch(() => {});
-            NexusAudio.success();
-            showToast('已生成并复制本机局域网/热点握手码，发给同热点好友即可直连！');
-            setTimeout(() => pc.close(), 5000);
-          } catch (_) {
-            showToast('局域网房间已就绪：' + currentRoomCode);
-          }
-        });
-        document.getElementById('btn-copy-challenge')?.addEventListener('click', () => {
-          const url = document.getElementById('input-challenge-url').value;
-          navigator.clipboard?.writeText(url).catch(() => {});
-          NexusAudio.success();
-          showToast('已复制挑战链接！发送给好友即可在各自手机上展开残影/阵容对决。');
-        });
-      } else if (currentTab === 'save') {
-        const saveData = getGameSaveData(currentGame);
-        const metrics = currentGame.formatSaveMetrics(saveData);
-        const namespaceKey = `${currentGame.storageKeyPrefix}${currentUser.userId}`;
-        body.innerHTML = `
-          <div class="info-grid">
-            ${metrics.map((m) => `
-              <div class="stat-box">
-                <div class="stat-label">${m.label}</div>
-                <div class="stat-val ${m.gold ? 'gold' : ''}">${m.val}</div>
               </div>
             `).join('')}
           </div>
-          <div class="p2p-box">
-            <h4>
-              <svg class="nx-ico" style="color:var(--nexus-accent-cyan);" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-              <span>独立命名空间隔离存储 (<code style="color:var(--nexus-accent-cyan);">${namespaceKey}</code>)</span>
-            </h4>
-            <p>您的每个游戏货币与进度均在浏览器本地独立隔离存储，互不污染。您可以随时导出存档码进行跨设备迁移：</p>
-            <div class="inline-input-row">
-              <input type="text" class="nexus-input" id="input-save-code" value="${btoa(encodeURIComponent(JSON.stringify(saveData)))}" readonly />
-              <button class="pill-btn" id="btn-copy-save">复制存档码</button>
-            </div>
-          </div>
         `;
-        document.getElementById('btn-copy-save')?.addEventListener('click', () => {
-          const code = document.getElementById('input-save-code').value;
-          navigator.clipboard?.writeText(code).catch(() => {});
-          NexusAudio.success();
-          showToast(`已复制 ${currentGame.name} 本地存档备份码！`);
-        });
       }
-    }
 
+      body.querySelectorAll('[data-img-src]').forEach((card) => {
+        card.addEventListener('click', () => {
+          NexusAudio.tap();
+          document.getElementById('img-modal-title').textContent = card.getAttribute('data-img-title');
+          document.getElementById('img-modal-target').src = card.getAttribute('data-img-src');
+          document.getElementById('img-modal').classList.add('active');
+        });
+      });
+    }
     /* =========================================================================
      * 5. 全屏内联微游容器：Iframe 容器承载完整 5 大微游实机代码 + PostMessage 身份握手
      * ========================================================================= */
@@ -1908,13 +1811,13 @@
 
     document.getElementById('btn-launch-game').addEventListener('click', launchArcadeSandbox);
 
-    document.getElementById('btn-quick-p2p').addEventListener('click', () => {
+    document.getElementById('btn-quick-p2p')?.addEventListener('click', () => {
       NexusAudio.tap();
-      currentTab = 'multiplayer';
+      currentTab = 'overview';
       renderHeroStage();
     });
 
-    document.getElementById('btn-auth-pill').addEventListener('click', () => {
+    document.getElementById('btn-auth-pill')?.addEventListener('click', () => {
       NexusAudio.tap();
       document.getElementById('auth-modal').classList.add('active');
     });
@@ -2041,7 +1944,7 @@
       if (challenge) {
         try {
           const decoded = JSON.parse(decodeURIComponent(atob(challenge)));
-          currentTab = 'multiplayer';
+          currentTab = 'overview';
           setTimeout(() => {
             showToast(`已载入来自 [${decoded.u}] 的一人一机挑战令 (种子 #${decoded.seed})！`);
           }, 400);

@@ -1214,7 +1214,7 @@
     </div>
   </section>
 
-  <script src="../shared/nexus-sdk.js?v=3.4"></script>
+  <script src="../shared/nexus-sdk.js?v=4.0"></script>
   <script>
     (() => {
       'use strict';
@@ -4596,7 +4596,7 @@
       }
 
       function mainArenaLoop(nowMs) {
-        if (arenaState.running && currentActivePage === 'arena') {
+        if (arenaState.running && currentActivePage === 'arena' && (!window.NexusSDK || window.NexusSDK.isGameplayActive())) {
           const dt = Math.min(0.05, Math.max(0.001, (nowMs - arenaState.lastTickMs) * 0.001));
           arenaState.lastTickMs = nowMs;
           stepArenaSimulation(dt);

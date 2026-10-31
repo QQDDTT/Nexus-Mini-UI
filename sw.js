@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v5.0-chroma-muse';
+const CACHE_NAME = 'nexus-mini-portal-v6.0-three-tier';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -12,14 +12,19 @@ const CORE_ASSETS = [
   './pudding/index.html',
   './genesis/index.html',
   './assets/tank-battle/icon.svg',
+  './assets/tank-battle/preview.png',
   './assets/star-defender/icon.svg',
+  './assets/star-defender/preview.png',
   './assets/star-defender/concept.jpg',
   './assets/star-defender/schematics.jpg',
   './assets/gold-miner/icon.svg',
+  './assets/gold-miner/preview.png',
   './assets/pudding-defense/icon.svg',
+  './assets/pudding-defense/preview.png',
   './assets/pudding-defense/combat.png',
   './assets/pudding-defense/levels.png',
   './assets/micro-genesis/icon.svg',
+  './assets/micro-genesis/preview.png',
   './assets/micro-genesis/ui-lab-preview.png',
   './assets/micro-genesis/ui-arena-preview.png',
   './assets/micro-genesis/ui-bestiary-preview.png'
@@ -42,17 +47,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetchPromise = fetch(event.request)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const copy = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-          }
-          return networkResponse;
-        })
-        .catch(() => cached);
-      return cached || fetchPromise;
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const copy = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        }
+        return networkResponse;
+      })
+      .catch(() => caches.match(event.request))
   );
 });

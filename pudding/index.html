@@ -178,7 +178,7 @@
     </footer>
   </div>
 
-  <script src="../shared/nexus-sdk.js?v=3.3"></script>
+  <script src="../shared/nexus-sdk.js?v=4.0"></script>
   <script>
     (() => {
       NexusSDK.initShellUI({ gameId: 'pudding-defense', gameTitle: '保卫布丁' });
@@ -371,6 +371,7 @@
       }
 
       function stepOnce() {
+        if (window.NexusSDK && !window.NexusSDK.isGameplayActive()) return;
         if (freezeTimer > 0) freezeTimer--;
 
         // Spawn monsters

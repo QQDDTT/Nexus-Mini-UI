@@ -200,7 +200,7 @@
     </div>
   </div>
 
-  <script src="../shared/nexus-sdk.js?v=3.3"></script>
+  <script src="../shared/nexus-sdk.js?v=4.0"></script>
   <script>
     (() => {
       NexusSDK.initShellUI({ gameId: 'star-defender', gameTitle: '星轨防线' });
@@ -458,6 +458,7 @@
       }
 
       function step() {
+        if (window.NexusSDK && !window.NexusSDK.isGameplayActive()) return;
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
         orbitAngle += 0.015;

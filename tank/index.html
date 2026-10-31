@@ -254,7 +254,7 @@
     </aside>
   </div>
 
-  <script src="../shared/nexus-sdk.js?v=3.3"></script>
+  <script src="../shared/nexus-sdk.js?v=4.0"></script>
   <script>
     (() => {
       NexusSDK.initShellUI({ gameId: 'tank-battle', gameTitle: '钢铁防线' });
@@ -541,6 +541,7 @@
       }
 
       function step() {
+        if (window.NexusSDK && !window.NexusSDK.isGameplayActive()) return;
         if (p1.cd > 0) p1.cd--;
         if (p2.cd > 0) p2.cd--;
         if (p1.shield > 0) p1.shield--;

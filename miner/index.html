@@ -163,7 +163,7 @@
     </div>
   </div>
 
-  <script src="../shared/nexus-sdk.js?v=3.3"></script>
+  <script src="../shared/nexus-sdk.js?v=4.0"></script>
   <script>
     (() => {
       NexusSDK.initShellUI({ gameId: 'gold-miner', gameTitle: '掘金先锋' });
@@ -282,7 +282,7 @@
 
       // Timer countdown
       setInterval(() => {
-        if (document.querySelector('.modal-backdrop.active')) return;
+        if (document.querySelector('.modal-backdrop.active') || (window.NexusSDK && !window.NexusSDK.isGameplayActive())) return;
         if (timeLeft > 0) {
           timeLeft--;
           if (timeLeft === 0 || minerals.length === 0) {
@@ -448,6 +448,7 @@
       }
 
       function step() {
+        if (window.NexusSDK && !window.NexusSDK.isGameplayActive()) return;
         tickCount++;
         const rig1X = canvas.width * 0.38;
         const rig2X = canvas.width * 0.62;
