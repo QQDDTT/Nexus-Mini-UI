@@ -218,7 +218,7 @@ function computePartLocalPose(part, animName, timeMs, context) {
   switch (animName) {
     case 'idle': {
       if (part.role === 'chassis') {
-        ty = 1.2 * Math.sin(phase);
+        ty = 0; // 飞船刚体稳固不摇晃
         if (RIG_SPEC.profile.includes('elastic-dessert')) {
           scaleX = 1 + 0.035 * Math.sin(phase);
           scaleY = 1 - 0.035 * Math.sin(phase);
@@ -228,7 +228,7 @@ function computePartLocalPose(part, animName, timeMs, context) {
       } else if (part.role === 'jaw') {
         rotDeg = openSign * 5.5 * (0.5 + 0.5 * Math.sin(phase));
       } else if (part.role === 'wing' || part.role === 'limb') {
-        rotDeg = signedSide * 6.0 * Math.sin(phase - order * 0.45);
+        rotDeg = 0; // 刚性机翼不摇晃
       } else if (part.role === 'flagella') {
         rotDeg = 6.0 * Math.sin(phase - order * 1.25);
       } else if (part.role === 'turret') {
@@ -239,7 +239,7 @@ function computePartLocalPose(part, animName, timeMs, context) {
         tx = 1.8 * Math.sin(phase);
         ty = 1.2 * Math.cos(phase);
       } else if (part.role === 'thruster') {
-        scaleY = 0.80 + 0.08 * Math.sin(phase * 4);
+        scaleY = 0.72 + 0.38 * Math.sin(phase * 8); scaleX = 0.94 + 0.12 * Math.cos(phase * 8);
       } else if (part.role === 'core') {
         scaleX = 1 + 0.05 * Math.sin(phase * 2);
         scaleY = 1 + 0.05 * Math.sin(phase * 2);
@@ -255,7 +255,7 @@ function computePartLocalPose(part, animName, timeMs, context) {
 
     case 'move': {
       if (part.role === 'chassis') {
-        ty = 2.0 * Math.sin(phase * 2);
+        ty = 0; // 飞船刚体稳固不摇晃
         if (RIG_SPEC.profile.includes('elastic-dessert')) {
           scaleX = 1 + 0.07 * Math.sin(phase * 2);
           scaleY = 1 - 0.07 * Math.sin(phase * 2);
@@ -264,7 +264,7 @@ function computePartLocalPose(part, animName, timeMs, context) {
         rotDeg = 5.0 * Math.sin(phase - order * 1.35);
         tx = 1.2 * Math.sin(phase - order * 1.35);
       } else if (part.role === 'wing') {
-        rotDeg = signedSide * 14.0 * Math.sin(phase - order * 0.45);
+        rotDeg = 0; // 刚性机翼不摇晃
       } else if (part.role === 'limb') {
         rotDeg = signedSide * 18.0 * Math.sin(phase + (order % 2) * Math.PI);
       } else if (part.role === 'flagella') {
@@ -273,7 +273,7 @@ function computePartLocalPose(part, animName, timeMs, context) {
         ty = 1.5 * Math.sin(phase * 4 + order * 0.9);
         rotDeg = 8.0 * Math.sin(phase * 2);
       } else if (part.role === 'thruster') {
-        scaleY = 0.92 + 0.10 * Math.sin(phase * 6);
+        scaleY = 0.78 + 0.42 * Math.sin(phase * 10);
         scaleX = 0.98 + 0.06 * Math.cos(phase * 6);
       } else if (part.role === 'jaw') {
         rotDeg = openSign * 8.0 * Math.sin(phase);

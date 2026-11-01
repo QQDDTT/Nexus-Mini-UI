@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 96" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="goldBezel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff4c7"/>
+      <stop offset="22%" stop-color="#e5be67"/>
+      <stop offset="50%" stop-color="#b5852b"/>
+      <stop offset="78%" stop-color="#f0cf7f"/>
+      <stop offset="100%" stop-color="#6e4c0e"/>
+    </linearGradient>
+    <linearGradient id="goldDark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8c6218"/>
+      <stop offset="50%" stop-color="#473007"/>
+      <stop offset="100%" stop-color="#9e7322"/>
+    </linearGradient>
+    <linearGradient id="enamelPlaque" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1c2230"/>
+      <stop offset="45%" stop-color="#0d111a"/>
+      <stop offset="100%" stop-color="#06080d"/>
+    </linearGradient>
+    <linearGradient id="sunGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff3bd"/>
+      <stop offset="55%" stop-color="#dfb252"/>
+      <stop offset="100%" stop-color="#9b6d1b"/>
+    </linearGradient>
+    <linearGradient id="starSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <radialGradient id="sapphireGem" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#93c5fd"/>
+      <stop offset="45%" stop-color="#2563eb"/>
+      <stop offset="85%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#091536"/>
+    </radialGradient>
+    <filter id="drop3d" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.9"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Arched Guilloche Gold Crown Ring -->
+  <g filter="url(#drop3d)">
+    <circle cx="340" cy="48" r="45" fill="url(#goldDark)" stroke="url(#goldBezel)" stroke-width="3"/>
+    <circle cx="340" cy="48" r="40.5" fill="none" stroke="#fce79c" stroke-width="1.6" stroke-dasharray="3.5 2" opacity="0.9"/>
+    <circle cx="340" cy="48" r="37" fill="#0d1322" stroke="url(#goldBezel)" stroke-width="1.8"/>
+  </g>
+
+  <!-- Main Horizontal Stepped Octagonal Enamel & 24K Gold Wing Plaque -->
+  <g filter="url(#drop3d)">
+    <polygon points="18,48 42,20 638,20 662,48 638,76 42,76" fill="url(#goldBezel)" stroke="#422c06" stroke-width="1.8"/>
+    <polygon points="25,48 46,24 634,24 655,48 634,72 46,72" fill="url(#goldDark)" stroke="#fde68a" stroke-width="0.9"/>
+    <polygon points="32,48 50,28 630,28 648,48 630,68 50,68" fill="url(#enamelPlaque)" stroke="url(#goldBezel)" stroke-width="1.5"/>
+    <line x1="54" y1="30" x2="626" y2="30" stroke="#ffffff" stroke-width="0.9" opacity="0.24"/>
+  </g>
+
+  <!-- Left Filigree Hinge & Right Sapphire Cabochon Gem -->
+  <g>
+    <circle cx="46" cy="48" r="8" fill="url(#goldBezel)" stroke="#3b2604" stroke-width="1.2"/>
+    <circle cx="46" cy="48" r="4.5" fill="#1e293b" stroke="#fde047" stroke-width="0.9"/>
+    <circle cx="634" cy="48" r="9" fill="url(#goldBezel)" stroke="#3b2604" stroke-width="1.2"/>
+    <circle cx="634" cy="48" r="6.2" fill="url(#sapphireGem)"/>
+    <ellipse cx="632" cy="46" rx="2.2" ry="1.4" fill="#ffffff" opacity="0.8"/>
+  </g>
+
+  <!-- Central Dual-Faction Yin-Yang Medallion (Helios SunGold + Glacies StarSilver) -->
+  <g filter="url(#drop3d)">
+    <circle cx="340" cy="48" r="33" fill="url(#goldBezel)" stroke="#3b2604" stroke-width="1.8"/>
+    <circle cx="340" cy="48" r="29" fill="#090d16" stroke="#fef08a" stroke-width="1"/>
+
+    <!-- Left Half: Helios 24K Brushed Sun Gold -->
+    <path d="M 340,19 A 29,29 0 0,0 340,77 A 14.5,14.5 0 0,1 340,48 A 14.5,14.5 0 0,0 340,19 Z" fill="url(#sunGold)"/>
+    <!-- Right Half: Glacies Platinum Silver -->
+    <path d="M 340,19 A 29,29 0 0,1 340,77 A 14.5,14.5 0 0,0 340,48 A 14.5,14.5 0 0,1 340,19 Z" fill="url(#starSilver)"/>
+    <!-- S-Curve Gold Divider -->
+    <path d="M 340,19 A 14.5,14.5 0 0,0 340,48 A 14.5,14.5 0 0,1 340,77" fill="none" stroke="#5c3d08" stroke-width="1.8"/>
+
+    <!-- Left Helios 8-Point Solar Emblem -->
+    <g transform="translate(325, 44)">
+      <polygon points="0,-10 2.2,-3.5 9,-7 3.5,-1.5 10,0 3.5,2 9,7 2.2,3.5 0,10 -2.2,3.5 -9,7 -3.5,2 -10,0 -3.5,-1.5 -9,-7 -2.2,-3.5" fill="#6b440b"/>
+      <circle cx="0" cy="0" r="3.6" fill="#fef08a" stroke="#6b440b" stroke-width="1"/>
+    </g>
+
+    <!-- Right Glacies 8-Point Cryo Star Emblem -->
+    <g transform="translate(355, 51)">
+      <polygon points="0,-10 2.5,-2.5 10,0 2.5,2.5 0,10 -2.5,2.5 -10,0 -2.5,-2.5" fill="#1e3a8a"/>
+      <polygon points="-6,-6 0,-1.8 6,-6 1.8,0 6,6 0,1.8 -6,6 -1.8,0" fill="#3b82f6"/>
+      <circle cx="0" cy="0" r="2.5" fill="#e0f2fe"/>
+    </g>
+  </g>
+</svg>

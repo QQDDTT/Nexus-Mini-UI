@@ -1,6 +1,6 @@
 /**
  * @file enemy-swarm.anim.js
- * @description 单角色骨骼贴图动作整合脚本：enemy-swarm (star-defender)
+ * @description 单角色骨骼贴图动作整合脚本：enemy-swarm (star-defender · Void Zerg Swarm)
  * 绑定贴图：../sprites/enemy-swarm.svg (15 个骨骼与光影图层组)
  * 遵循 Nexus-Mini v4.0 “一角色一脚本多动画”规范 (RIG_SPEC + 6 ANIMATIONS + 父子矩阵级联)
  */
@@ -16,20 +16,20 @@ export const RIG_SPEC = Object.freeze({
   hasAura: true,
   parts: [
     { id: 'part-shadow-cast', pivot: [64, 68], parent: 'root', zIndex: 1, blend: 'multiply', role: 'shadow', motion: 'shadow', side: 0, dirY: 1, order: 1 },
-    { id: 'part-aura-ring-outer', pivot: [64, 64], parent: 'root', zIndex: 4, blend: 'screen', role: 'aura-outer', motion: 'spin-cw', side: 0, dirY: -1, order: 1 },
-    { id: 'part-aura-ring-inner', pivot: [64, 64], parent: 'root', zIndex: 5, blend: 'screen', role: 'aura-inner', motion: 'spin-ccw', side: 1, dirY: -1, order: 1 },
-    { id: 'part-wing-outer-L', pivot: [50, 52], parent: 'part-torso-thorax', zIndex: 15, blend: 'normal', role: 'wing', motion: 'flap-fast-left', side: -1, dirY: -1, order: 2 },
-    { id: 'part-wing-outer-R', pivot: [78, 52], parent: 'part-torso-thorax', zIndex: 15, blend: 'normal', role: 'wing', motion: 'flap-fast-right', side: 1, dirY: -1, order: 2 },
-    { id: 'part-wing-inner-L', pivot: [52, 62], parent: 'part-torso-thorax', zIndex: 18, blend: 'normal', role: 'wing', motion: 'flap-sub-left', side: -1, dirY: 1, order: 2 },
-    { id: 'part-wing-inner-R', pivot: [76, 62], parent: 'part-torso-thorax', zIndex: 18, blend: 'normal', role: 'wing', motion: 'flap-sub-right', side: 1, dirY: 1, order: 2 },
-    { id: 'part-torso-abdomen', pivot: [64, 72], parent: 'part-torso-thorax', zIndex: 24, blend: 'normal', role: 'somite', motion: 'sway-abdomen', side: 0, dirY: 1, order: 2 },
-    { id: 'part-torso-thorax', pivot: [64, 56], parent: 'root', zIndex: 30, blend: 'normal', role: 'chassis', motion: 'chassis', side: 0, dirY: -1, order: 1 },
-    { id: 'part-mandible-L', pivot: [55, 30], parent: 'part-torso-head', zIndex: 35, blend: 'normal', role: 'jaw', motion: 'bite-left', side: -1, dirY: -1, order: 3 },
-    { id: 'part-mandible-R', pivot: [73, 30], parent: 'part-torso-head', zIndex: 35, blend: 'normal', role: 'jaw', motion: 'bite-right', side: 1, dirY: -1, order: 3 },
-    { id: 'part-torso-head', pivot: [64, 42], parent: 'part-torso-thorax', zIndex: 38, blend: 'normal', role: 'turret', motion: 'head-track', side: 0, dirY: -1, order: 2 },
-    { id: 'part-eye-pupils', pivot: [64, 36], parent: 'part-torso-head', zIndex: 42, blend: 'normal', role: 'eye', motion: 'pupil-track', side: 0, dirY: -1, order: 3 },
-    { id: 'part-light-rim-swarm', pivot: [64, 64], parent: 'part-torso-thorax', zIndex: 45, blend: 'plus-lighter', role: 'rim-light', motion: 'rim-light', side: 0, dirY: -1, order: 2 },
-    { id: 'part-aura-corona-top', pivot: [64, 64], parent: 'root', zIndex: 65, blend: 'screen', role: 'corona-top', motion: 'pulse-breathe', side: 0, dirY: -1, order: 1 }
+    { id: 'part-aura-ring-outer', pivot: [64, 64], parent: 'root', zIndex: 4, blend: 'screen', role: 'aura-outer', motion: 'spin-cw', side: 1, dirY: -1, order: 2 },
+    { id: 'part-aura-ring-inner', pivot: [64, 64], parent: 'root', zIndex: 5, blend: 'screen', role: 'aura-inner', motion: 'spin-ccw', side: 1, dirY: -1, order: 3 },
+    { id: 'part-wing-outer-L', pivot: [50, 52], parent: 'part-torso-thorax', zIndex: 15, blend: 'normal', role: 'wing', motion: 'flap-wing', side: -1, dirY: -1, order: 4 },
+    { id: 'part-wing-outer-R', pivot: [78, 52], parent: 'part-torso-thorax', zIndex: 15, blend: 'normal', role: 'wing', motion: 'flap-wing', side: 1, dirY: -1, order: 5 },
+    { id: 'part-wing-inner-L', pivot: [52, 62], parent: 'part-torso-thorax', zIndex: 18, blend: 'normal', role: 'wing', motion: 'flap-wing', side: -1, dirY: -1, order: 6 },
+    { id: 'part-wing-inner-R', pivot: [76, 62], parent: 'part-torso-thorax', zIndex: 18, blend: 'normal', role: 'wing', motion: 'flap-wing', side: 1, dirY: -1, order: 7 },
+    { id: 'part-torso-abdomen', pivot: [64, 72], parent: 'part-torso-thorax', zIndex: 24, blend: 'normal', role: 'somite', motion: 'spine-wave', side: 0, dirY: 1, order: 8 },
+    { id: 'part-torso-thorax', pivot: [64, 56], parent: 'root', zIndex: 30, blend: 'normal', role: 'chassis', motion: 'chassis', side: 0, dirY: -1, order: 9 },
+    { id: 'part-mandible-L', pivot: [55, 30], parent: 'part-torso-head', zIndex: 35, blend: 'normal', role: 'jaw', motion: 'bite-jaw', side: -1, dirY: -1, order: 10 },
+    { id: 'part-mandible-R', pivot: [73, 30], parent: 'part-torso-head', zIndex: 35, blend: 'normal', role: 'jaw', motion: 'bite-jaw', side: 1, dirY: -1, order: 11 },
+    { id: 'part-torso-head', pivot: [64, 42], parent: 'part-torso-thorax', zIndex: 38, blend: 'normal', role: 'turret', motion: 'head-track', side: 0, dirY: -1, order: 12 },
+    { id: 'part-eye-pupils', pivot: [64, 36], parent: 'part-torso-head', zIndex: 42, blend: 'normal', role: 'eye', motion: 'pupil-track', side: 0, dirY: -1, order: 13 },
+    { id: 'part-light-rim-swarm', pivot: [64, 64], parent: 'part-torso-thorax', zIndex: 45, blend: 'plus-lighter', role: 'rim-light', motion: 'rim-light', side: -1, dirY: -1, order: 14 },
+    { id: 'part-aura-corona-top', pivot: [64, 64], parent: 'root', zIndex: 65, blend: 'screen', role: 'corona-top', motion: 'pulse-breathe', side: 0, dirY: -1, order: 15 }
   ]
 });
 export const ANIMATIONS = Object.freeze({

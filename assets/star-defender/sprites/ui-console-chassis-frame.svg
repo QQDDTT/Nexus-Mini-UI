@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" preserveAspectRatio="none">
+  <defs>
+    <!-- 3D Brushed 24K Gold Outer Chassis Bezel -->
+    <linearGradient id="chassisGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff4c4"/>
+      <stop offset="18%" stop-color="#e5be64"/>
+      <stop offset="42%" stop-color="#966919"/>
+      <stop offset="68%" stop-color="#f0d58c"/>
+      <stop offset="88%" stop-color="#b88628"/>
+      <stop offset="100%" stop-color="#4d3305"/>
+    </linearGradient>
+    <linearGradient id="chassisRimDark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#292012"/>
+      <stop offset="50%" stop-color="#120e08"/>
+      <stop offset="100%" stop-color="#382a14"/>
+    </linearGradient>
+    <radialGradient id="consoleEnamelMat" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#121824" stop-opacity="0.95"/>
+      <stop offset="65%" stop-color="#0a0e17" stop-opacity="0.97"/>
+      <stop offset="100%" stop-color="#05070c" stop-opacity="0.99"/>
+    </radialGradient>
+    <filter id="consoleShadow" x="-4%" y="-4%" width="108%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.92"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#consoleShadow)">
+    <!-- 1. Outer Dark Anodized Titanium & Gold Base Rim -->
+    <rect x="6" y="18" width="948" height="414" rx="34" fill="url(#chassisRimDark)" stroke="#6e4d12" stroke-width="2"/>
+
+    <!-- 2. Main Heavy 3D-Stepped 24K Brushed Gold Console Bezel -->
+    <rect x="12" y="22" width="936" height="402" rx="30" fill="url(#chassisGold)" stroke="#2b1b02" stroke-width="2"/>
+    <!-- Inner Stepped Gold Bevel Groove -->
+    <rect x="18" y="28" width="924" height="390" rx="25" fill="#473007" stroke="#fff5cc" stroke-width="1"/>
+
+    <!-- 3. Grand Feu Black Enamel Console Deck Plate -->
+    <rect x="23" y="33" width="914" height="380" rx="21" fill="url(#consoleEnamelMat)" stroke="url(#chassisGold)" stroke-width="2"/>
+    <!-- Subtle Inner Gold Hairline Frame -->
+    <rect x="28" y="38" width="904" height="370" rx="17" fill="none" stroke="#c99e42" stroke-width="0.7" opacity="0.45"/>
+
+    <!-- 4. Top-Left & Top-Right Console Bezel Status LEDs & Gold Screws (Matches r3_menu_mat_d) -->
+    <!-- Top-Left Green Emerald Status LED -->
+    <circle cx="242" cy="25" r="5" fill="#1e293b" stroke="url(#chassisGold)" stroke-width="1.2"/>
+    <circle cx="242" cy="25" r="3.2" fill="#22c55e"/>
+    <circle cx="241" cy="24" r="1.2" fill="#bbf7d0"/>
+
+    <!-- Top-Right Amber/Ruby Armament Ready LED -->
+    <circle cx="718" cy="25" r="5" fill="#1e293b" stroke="url(#chassisGold)" stroke-width="1.2"/>
+    <circle cx="718" cy="25" r="3.2" fill="#ef4444"/>
+    <circle cx="717" cy="24" r="1.2" fill="#fecaca"/>
+
+    <!-- Corner & Bezel 24K Gold Screws -->
+    <g fill="url(#chassisGold)" stroke="#3b2604" stroke-width="1">
+      <circle cx="48" cy="52" r="4.5"/>
+      <line x1="45" y1="52" x2="51" y2="52" stroke="#3b2604" stroke-width="1"/>
+      <circle cx="246" cy="48" r="4"/>
+      <circle cx="714" cy="48" r="4"/>
+      <circle cx="912" cy="52" r="4.5"/>
+      <line x1="909" y1="52" x2="915" y2="52" stroke="#3b2604" stroke-width="1"/>
+      <circle cx="48" cy="392" r="4.5"/>
+      <circle cx="912" cy="392" r="4.5"/>
+    </g>
+  </g>
+</svg>
+

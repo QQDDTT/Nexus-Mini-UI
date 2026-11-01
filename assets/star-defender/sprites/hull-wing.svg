@@ -1,166 +1,235 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="hull-wing-rig" data-root-anchor="64,64" data-has-aura="true">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" data-rig-id="hull-wing-rig" data-root-anchor="64,64" data-faction="helios" data-has-aura="true">
   <defs>
-    <radialGradient id="hw-cast-shadow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#020617" stop-opacity="0.75" />
-      <stop offset="60%" stop-color="#030712" stop-opacity="0.35" />
-      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
+    <!-- 1. 赫利俄斯阳极氧化暗黑钛合金骨架 -->
+    <linearGradient id="hw-titanium-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="30%" stop-color="#334155"/>
+      <stop offset="70%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <!-- 2. NASA 哑光黑碳硅防热瓦 -->
+    <linearGradient id="hw-black-tile" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#27303f"/>
+      <stop offset="50%" stop-color="#141a24"/>
+      <stop offset="100%" stop-color="#070a10"/>
+    </linearGradient>
+    <!-- 3. NASA 高反射极白陶瓷隔热瓦 -->
+    <linearGradient id="hw-white-tile" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="45%" stop-color="#f1f5f9"/>
+      <stop offset="82%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <!-- 4. 24K 聚酰亚胺多面体褶皱金箔 -->
+    <linearGradient id="hw-kapton-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="22%" stop-color="#facc15"/>
+      <stop offset="50%" stop-color="#ca8a04"/>
+      <stop offset="78%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#713f12"/>
+    </linearGradient>
+    <!-- 5. 电磁导轨紫铜加速块 -->
+    <linearGradient id="hw-rail-copper" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#451a03"/>
+      <stop offset="30%" stop-color="#d97706"/>
+      <stop offset="50%" stop-color="#fde68a"/>
+      <stop offset="70%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#290f02"/>
+    </linearGradient>
+    <!-- 6. 聚变尾焰 -->
+    <linearGradient id="hw-plume-amber" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="28%" stop-color="#fef08a"/>
+      <stop offset="65%" stop-color="#f97316" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#7c2d12" stop-opacity="0"/>
+    </linearGradient>
+    <!-- 7. 核心辉光 -->
+    <radialGradient id="hw-core-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#fde047"/>
+      <stop offset="70%" stop-color="#ea580c" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#431407" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="hw-aura-field" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.28" />
-      <stop offset="55%" stop-color="#0284c7" stop-opacity="0.14" />
-      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
+    <!-- 8. 底部投影 -->
+    <radialGradient id="hw-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.9"/>
+      <stop offset="68%" stop-color="#020617" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="hw-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e293b" />
-      <stop offset="50%" stop-color="#0f172a" />
-      <stop offset="100%" stop-color="#050b18" />
-    </linearGradient>
-    <linearGradient id="hw-wing-plate" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#0284c7" />
-      <stop offset="50%" stop-color="#1e3a8a" />
-      <stop offset="100%" stop-color="#0f172a" />
-    </linearGradient>
-    <linearGradient id="hw-plume" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="30%" stop-color="#00f0ff" />
-      <stop offset="75%" stop-color="#0284c7" />
-      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
-    </linearGradient>
-    <linearGradient id="hw-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-      <stop offset="45%" stop-color="#00f0ff" stop-opacity="0.75" />
-      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
-    </linearGradient>
-    <radialGradient id="hw-joint-glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="45%" stop-color="#fbbf24" />
-      <stop offset="100%" stop-color="#ea580c" stop-opacity="0" />
-    </radialGradient>
+    <!-- 9. Pattern A: NASA 陶瓷瓦接缝网格 -->
+    <pattern id="hw-tile-grid" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="none" stroke="#475569" stroke-width="0.45" opacity="0.55"/>
+      <line x1="0" y1="4" x2="8" y2="4" stroke="#64748b" stroke-width="0.35" opacity="0.45"/>
+    </pattern>
+    <!-- 10. Pattern B: 24K Kapton 金箔立体折痕微肌理 -->
+    <pattern id="hw-kapton-crinkle" width="8" height="8" patternUnits="userSpaceOnUse">
+      <polygon points="0,0 5,0 3,4" fill="#fef08a" opacity="0.55"/>
+      <polygon points="5,0 8,0 8,5 3,4" fill="#ca8a04" opacity="0.5"/>
+      <polygon points="0,0 3,4 0,8" fill="#a16207" opacity="0.55"/>
+      <polygon points="3,4 8,5 5,8 0,8" fill="#eab308" opacity="0.45"/>
+      <polygon points="8,5 8,8 5,8" fill="#713f12" opacity="0.65"/>
+      <path d="M0,0 L3,4 L8,5 M5,0 L3,4 L0,8" fill="none" stroke="#fef9c3" stroke-width="0.4" opacity="0.7"/>
+    </pattern>
   </defs>
-  <!-- [光影层 1] 宽体接触软阴影贴图 (z=1, multiply) -->
-  <!-- [光影层 2A] 底层光环外环：顺时针旋转战术刻度环 (z=4, screen) -->
-  <!-- [光影层 2B] 底层光环内环：逆时针自转巡洋力场环 (z=5, screen) -->
-  <!-- [骨骼部件 1] 四联聚变推进器与差动尾焰组 (z=10) -->
-  <!-- [骨骼部件 2] 左侧独立重型掠翼 (z=20) -->
-  <!-- [骨骼部件 3] 右侧独立重型掠翼 (z=20) -->
-  <!-- [骨骼部件 4] 左翼滑动导弹井舱盖 (z=25) -->
-  <!-- [骨骼部件 5] 右翼滑动导弹井舱盖 (z=25) -->
-  <!-- [骨骼部件 6] 双体中央主舰体龙骨 (z=30) -->
-  <!-- [骨骼部件 7] 独立伸缩双联主炮管 (z=38) -->
-  <!-- [骨骼部件 8] 中央 360° 独立旋转主炮塔 (z=40) -->
-  <!-- [光影层 4] 舰体与双翼受光边缘高光映射贴图 (z=45, plus-lighter) -->
-  <!-- [光影层 5] 顶层体积辉光冕与翼尖电弧贴图 (z=65, screen) -->
+
+  <!-- 1. 底部投影 (z=1, <=3 nodes) -->
   <g id="part-shadow-cast" data-pivot="64,68" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
-    <ellipse cx="64" cy="70" rx="58" ry="46" fill="url(#hw-cast-shadow)" />
-    <ellipse cx="64" cy="66" rx="44" ry="32" fill="#020617" fill-opacity="0.45" />
+    <ellipse cx="64" cy="70" rx="60" ry="50" fill="url(#hw-shadow-grad)"/>
+    <polygon points="48,8 80,8 84,42 124,66 118,98 10,98 4,66 44,42" fill="#020617" opacity="0.48"/>
   </g>
-  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
-    <circle cx="64" cy="64" r="62" fill="url(#hw-aura-field)" />
-    <path fill="none" stroke="#00f0ff" stroke-width="1.3" stroke-opacity="0.72" d="M119.45,82.02 A58.3,58.3 0 0,1 82.02,119.45 M45.98,119.45 A58.3,58.3 0 0,1 8.55,82.02 M8.55,45.98 A58.3,58.3 0 0,1 45.98,8.55 M82.02,8.55 A58.3,58.3 0 0,1 119.45,45.98" stroke-linecap="square" />
-    <path fill="none" stroke="#38bdf8" stroke-width="0.65" stroke-opacity="0.52" d="M114.12,80.29 A52.7,52.7 0 0,1 80.29,114.12 M47.71,114.12 A52.7,52.7 0 0,1 13.88,80.29 M13.88,47.71 A52.7,52.7 0 0,1 47.71,13.88 M80.29,13.88 A52.7,52.7 0 0,1 114.12,47.71" stroke-linecap="square" />
-    <line x1="118.3" y1="64" x2="125.3" y2="64" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="102.4" y1="102.4" x2="107.3" y2="107.3" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="64" y1="118.3" x2="64" y2="125.3" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="25.6" y1="102.4" x2="20.7" y2="107.3" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="9.7" y1="64" x2="2.7" y2="64" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="25.6" y1="25.6" x2="20.7" y2="20.7" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="64" y1="9.7" x2="64" y2="2.7" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="102.4" y1="25.6" x2="107.3" y2="20.7" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
-    <polygon points="64,2.7 68,9.7 60,9.7" fill="#00f0ff" fill-opacity="0.82" />
-    <polygon points="64,125.3 68,118.3 60,118.3" fill="#00f0ff" fill-opacity="0.82" />
-    <polygon points="2.7,64 9.7,68 9.7,60" fill="#fbbf24" fill-opacity="0.82" />
-    <polygon points="125.3,64 118.3,68 118.3,60" fill="#fbbf24" fill-opacity="0.82" />
+
+  <!-- 2. 外圈航宇校准环 (z=4) -->
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="58" fill="none" stroke="#f59e0b" stroke-width="0.75" opacity="0.32"/>
+    <path d="M64,4 L64,8 M124,64 L120,64 M64,124 L64,120 M4,64 L8,64" stroke="#fde047" stroke-width="1.1" opacity="0.65"/>
   </g>
-  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
-    <path fill="none" stroke="#fbbf24" stroke-width="0.9" stroke-opacity="0.68" d="M106.42,77.78 A44.6,44.6 0 0,1 67.11,108.49 M30.86,93.84 A44.6,44.6 0 0,1 23.91,44.45 M54.73,20.37 A44.6,44.6 0 0,1 100.98,39.06" stroke-linecap="square" />
-    <rect x="107" y="62.4" width="3.2" height="3.2" fill="#00f0ff" />
-    <rect x="84.7" y="101" width="3.2" height="3.2" fill="#00f0ff" />
-    <rect x="40.1" y="101" width="3.2" height="3.2" fill="#00f0ff" />
-    <rect x="17.8" y="62.4" width="3.2" height="3.2" fill="#00f0ff" />
-    <rect x="40.1" y="23.8" width="3.2" height="3.2" fill="#00f0ff" />
-    <rect x="84.7" y="23.8" width="3.2" height="3.2" fill="#00f0ff" />
+
+  <!-- 3. 内圈火控校准环 (z=5) -->
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="46" fill="none" stroke="#38bdf8" stroke-width="0.55" opacity="0.24"/>
   </g>
-  <g id="part-quad-thrusters" data-pivot="64,88" data-parent="part-hull-main-body" data-z-index="10" data-blend="normal" data-motion="thrust-pulse">
-    <!-- 左外/左内/右内/右外 四联喷口 -->
-    <rect x="28" y="84" width="8" height="10" rx="2" fill="#0f172a" stroke="#00f0ff" stroke-width="1.2" />
-    <rect x="44" y="86" width="9" height="12" rx="2" fill="#0f172a" stroke="#00f0ff" stroke-width="1.2" />
-    <rect x="75" y="86" width="9" height="12" rx="2" fill="#0f172a" stroke="#00f0ff" stroke-width="1.2" />
-    <rect x="92" y="84" width="8" height="10" rx="2" fill="#0f172a" stroke="#00f0ff" stroke-width="1.2" />
-    <!-- 四联聚变尾焰 -->
-    <polygon points="29,94 32,116 35,94" fill="url(#hw-plume)" />
-    <polygon points="45,98 48.5,124 52,98" fill="url(#hw-plume)" />
-    <polygon points="76,98 79.5,124 83,98" fill="url(#hw-plume)" />
-    <polygon points="93,94 96,116 99,94" fill="url(#hw-plume)" />
-    <circle cx="64" cy="88" r="4" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
+
+  <!-- 4. 四联装 24K 褶皱金箔圆筒推进器组与高热尾焰 (z=10, 忠实还原 preview.png 金箔喷筒) -->
+  <g id="part-quad-thrusters" data-pivot="64,94" data-parent="part-hull-main-body" data-z-index="10" data-blend="normal">
+    <!-- 外侧双金箔喷筒 -->
+    <polygon points="22,88 38,88 36,104 24,104" fill="url(#hw-kapton-gold)" stroke="#090d16" stroke-width="1.5"/>
+    <polygon points="22,88 38,88 36,104 24,104" fill="url(#hw-kapton-crinkle)"/>
+    <polygon points="90,88 106,88 104,104 92,104" fill="url(#hw-kapton-gold)" stroke="#090d16" stroke-width="1.5"/>
+    <polygon points="90,88 106,88 104,104 92,104" fill="url(#hw-kapton-crinkle)"/>
+    <!-- 内侧双金箔主喷筒 -->
+    <polygon points="40,89 55,89 53,106 42,106" fill="url(#hw-kapton-gold)" stroke="#090d16" stroke-width="1.6"/>
+    <polygon points="40,89 55,89 53,106 42,106" fill="url(#hw-kapton-crinkle)"/>
+    <polygon points="73,89 88,89 86,106 75,106" fill="url(#hw-kapton-gold)" stroke="#090d16" stroke-width="1.6"/>
+    <polygon points="73,89 88,89 86,106 75,106" fill="url(#hw-kapton-crinkle)"/>
+    <!-- 金箔反光切面 -->
+    <polygon points="24,90 30,90 28,102 24,102" fill="#fef9c3" opacity="0.7"/>
+    <polygon points="42,91 48,91 46,104 42,104" fill="#fef9c3" opacity="0.7"/>
+    <polygon points="75,91 81,91 79,104 75,104" fill="#fef9c3" opacity="0.7"/>
+    <polygon points="92,90 98,90 96,102 92,102" fill="#fef9c3" opacity="0.7"/>
+    <!-- 喷口黑钛收口环与高频喷射尾焰 -->
+    <rect x="22" y="87" width="84" height="2.5" fill="url(#hw-titanium-dark)" stroke="#090d16" stroke-width="0.9"/>
+    <g transform="translate(30,104)"><g><animateTransform attributeName="transform" type="scale" values="1,0.58;1.08,1.16;0.94,0.7;1,0.58" dur="0.21s" repeatCount="indefinite"/><polygon points="-5,0 5,0 2,18 0,21 -2,18" fill="url(#hw-plume-amber)"/><ellipse cx="0" cy="5" rx="3.2" ry="1.2" fill="#ffffff"/></g></g>
+    <g transform="translate(47.5,106)"><g><animateTransform attributeName="transform" type="scale" values="1,0.62;1.1,1.2;0.92,0.72;1,0.62" dur="0.19s" repeatCount="indefinite"/><polygon points="-4.5,0 4.5,0 1.5,19 0,22 -1.5,19" fill="url(#hw-plume-amber)"/><ellipse cx="0" cy="5" rx="3.8" ry="1.4" fill="#ffffff"/></g></g>
+    <g transform="translate(80.5,106)"><g><animateTransform attributeName="transform" type="scale" values="1,0.65;1.08,1.18;0.94,0.68;1,0.65" dur="0.20s" repeatCount="indefinite"/><polygon points="-4.5,0 4.5,0 1.5,19 0,22 -1.5,19" fill="url(#hw-plume-amber)"/><ellipse cx="0" cy="5" rx="3.8" ry="1.4" fill="#ffffff"/></g></g>
+    <g transform="translate(98,104)"><g><animateTransform attributeName="transform" type="scale" values="1,0.6;1.08,1.15;0.94,0.72;1,0.6" dur="0.23s" repeatCount="indefinite"/><polygon points="-5,0 5,0 2,18 0,21 -2,18" fill="url(#hw-plume-amber)"/><ellipse cx="0" cy="5" rx="3.2" ry="1.2" fill="#ffffff"/></g></g>
   </g>
-  <g id="part-heavy-wing-L" data-pivot="44,58" data-parent="part-hull-main-body" data-z-index="20" data-blend="normal" data-motion="wing-flex-left">
-    <path d="M44 36 L10 50 L6 82 L24 90 L46 78 Z" fill="url(#hw-obsidian)" stroke="#00f0ff" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
-    <path d="M42 42 L16 54 L13 78 L26 84 L44 74 Z" fill="url(#hw-wing-plate)" stroke="#38bdf8" stroke-width="1.2" />
-    <!-- 工业警示斜纹与刻线 -->
-    <path d="M16 58 L38 50 M15 66 L38 58 M14 74 L38 66" stroke="#00f0ff" stroke-width="0.7" stroke-opacity="0.65" />
-    <polygon points="10,50 18,47 16,56 8,59" fill="#fbbf24" fill-opacity="0.82" />
-    <!-- 球头轴承盖 -->
-    <circle cx="44" cy="58" r="7" fill="#050b18" stroke="#00f0ff" stroke-width="1.2" />
-    <circle cx="44" cy="58" r="3.2" fill="url(#hw-joint-glow)" />
+
+  <!-- 5. 左舷宽体双联巡洋掠翼：白瓷砖矩阵 + 哑光黑前缘瓦 + 翼根 24K 金箔三角舱 (z=20) -->
+  <g id="part-heavy-wing-L" data-pivot="44,68" data-parent="part-hull-main-body" data-z-index="20" data-blend="normal">
+    <polygon points="48,42 6,62 4,90 52,90" fill="url(#hw-black-tile)" stroke="#090d16" stroke-width="2.0" stroke-linejoin="round"/>
+    <!-- 翼根大面积三角形 24K Kapton 褶皱金箔凹舱 (1:1 还原 preview.png 特征) -->
+    <polygon points="48,44 28,54 34,74 50,74" fill="url(#hw-kapton-gold)" stroke="#090d16" stroke-width="1.1"/>
+    <polygon points="48,44 28,54 34,74 50,74" fill="url(#hw-kapton-crinkle)"/>
+    <polygon points="46,47 31,55 38,65" fill="#fef9c3" opacity="0.75"/>
+    <polygon points="31,55 35,72 48,72 38,65" fill="#a16207" opacity="0.65"/>
+    <!-- 前缘斜列极白陶瓷瓦 (4块) -->
+    <polygon points="27,53 9,62 14,71 32,62" fill="url(#hw-white-tile)" stroke="#0f172a" stroke-width="1.1"/>
+    <line x1="22" y1="55.5" x2="27" y2="64.5" stroke="#0f172a" stroke-width="0.9"/>
+    <line x1="17" y1="58" x2="22" y2="67" stroke="#0f172a" stroke-width="0.9"/>
+    <line x1="12" y1="60.5" x2="17" y2="69.5" stroke="#0f172a" stroke-width="0.9"/>
+    <!-- 后部 2x4 极白陶瓷隔热瓦主矩阵 -->
+    <rect x="10" y="74" width="40" height="12" fill="url(#hw-white-tile)" stroke="#0f172a" stroke-width="1.15"/>
+    <rect x="10" y="74" width="40" height="12" fill="url(#hw-tile-grid)"/>
+    <line x1="20" y1="74" x2="20" y2="86" stroke="#0f172a" stroke-width="1.0"/>
+    <line x1="30" y1="74" x2="30" y2="86" stroke="#0f172a" stroke-width="1.0"/>
+    <line x1="40" y1="74" x2="40" y2="86" stroke="#0f172a" stroke-width="1.0"/>
+    <line x1="10" y1="80" x2="50" y2="80" stroke="#0f172a" stroke-width="0.95"/>
+    <!-- 机翼前缘双红色硬挂点色标块 ([Red Hardpoints]) -->
+    <polygon points="34,47 41,43 43,46 36,50" fill="#ef4444" stroke="#090d16" stroke-width="0.8"/>
+    <polygon points="18,55 25,51 27,54 20,58" fill="#ef4444" stroke="#090d16" stroke-width="0.8"/>
   </g>
-  <g id="part-heavy-wing-R" data-pivot="84,58" data-parent="part-hull-main-body" data-z-index="20" data-blend="normal" data-motion="wing-flex-right">
-    <path d="M84 36 L118 50 L122 82 L104 90 L82 78 Z" fill="url(#hw-obsidian)" stroke="#00f0ff" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
-    <path d="M86 42 L112 54 L115 78 L102 84 L84 74 Z" fill="url(#hw-wing-plate)" stroke="#38bdf8" stroke-width="1.2" />
-    <path d="M112 58 L90 50 M113 66 L90 58 M114 74 L90 66" stroke="#00f0ff" stroke-width="0.7" stroke-opacity="0.65" />
-    <polygon points="118,50 110,47 112,56 120,59" fill="#fbbf24" fill-opacity="0.82" />
-    <!-- 球头轴承盖 -->
-    <circle cx="84" cy="58" r="7" fill="#050b18" stroke="#00f0ff" stroke-width="1.2" />
-    <circle cx="84" cy="58" r="3.2" fill="url(#hw-joint-glow)" />
+
+  <!-- 6. 右舷宽体双联巡洋掠翼：白瓷砖矩阵 + 哑光黑前缘瓦 + 翼根 24K 金箔三角舱 (z=20) -->
+  <g id="part-heavy-wing-R" data-pivot="84,68" data-parent="part-hull-main-body" data-z-index="20" data-blend="normal">
+    <polygon points="80,42 122,62 124,90 76,90" fill="url(#hw-black-tile)" stroke="#090d16" stroke-width="2.0" stroke-linejoin="round"/>
+    <!-- 翼根大面积三角形 24K Kapton 褶皱金箔凹舱 -->
+    <polygon points="80,44 100,54 94,74 78,74" fill="url(#hw-kapton-gold)" stroke="#090d16" stroke-width="1.1"/>
+    <polygon points="80,44 100,54 94,74 78,74" fill="url(#hw-kapton-crinkle)"/>
+    <polygon points="82,47 97,55 90,65" fill="#fef9c3" opacity="0.75"/>
+    <polygon points="97,55 93,72 80,72 90,65" fill="#a16207" opacity="0.65"/>
+    <!-- 前缘斜列极白陶瓷瓦 (4块) -->
+    <polygon points="101,53 119,62 114,71 96,62" fill="url(#hw-white-tile)" stroke="#0f172a" stroke-width="1.1"/>
+    <line x1="106" y1="55.5" x2="101" y2="64.5" stroke="#0f172a" stroke-width="0.9"/>
+    <line x1="111" y1="58" x2="106" y2="67" stroke="#0f172a" stroke-width="0.9"/>
+    <line x1="116" y1="60.5" x2="111" y2="69.5" stroke="#0f172a" stroke-width="0.9"/>
+    <!-- 后部 2x4 极白陶瓷隔热瓦主矩阵 -->
+    <rect x="78" y="74" width="40" height="12" fill="url(#hw-white-tile)" stroke="#0f172a" stroke-width="1.15"/>
+    <rect x="78" y="74" width="40" height="12" fill="url(#hw-tile-grid)"/>
+    <line x1="88" y1="74" x2="88" y2="86" stroke="#0f172a" stroke-width="1.0"/>
+    <line x1="98" y1="74" x2="98" y2="86" stroke="#0f172a" stroke-width="1.0"/>
+    <line x1="108" y1="74" x2="108" y2="86" stroke="#0f172a" stroke-width="1.0"/>
+    <line x1="78" y1="80" x2="118" y2="80" stroke="#0f172a" stroke-width="0.95"/>
+    <!-- 机翼前缘双红色硬挂点色标块 ([Red Hardpoints]) -->
+    <polygon points="94,47 87,43 85,46 92,50" fill="#ef4444" stroke="#090d16" stroke-width="0.8"/>
+    <polygon points="110,55 103,51 101,54 108,58" fill="#ef4444" stroke="#090d16" stroke-width="0.8"/>
   </g>
-  <g id="part-missile-hatch-L" data-pivot="26,66" data-parent="part-heavy-wing-L" data-z-index="25" data-blend="normal" data-motion="slide-hatch-left">
-    <rect x="18" y="54" width="14" height="22" rx="2" fill="#091326" stroke="#fbbf24" stroke-width="1.2" />
-    <circle cx="22" cy="59" r="2" fill="#ef4444" />
-    <circle cx="28" cy="59" r="2" fill="#ef4444" />
-    <circle cx="22" cy="65" r="2" fill="#ef4444" />
-    <circle cx="28" cy="65" r="2" fill="#ef4444" />
-    <line x1="19" y1="71" x2="31" y2="71" stroke="#00f0ff" stroke-width="0.7" />
-    <circle cx="26" cy="66" r="3" fill="#fbbf24" />
-    <path d="M 20 66 H 32 M 26 60 V 72" stroke="#ffffff" stroke-width="0.65" stroke-opacity="0.8" />
+
+  <!-- 7. 左翼模块化弹舱百叶窗总成 (z=25) -->
+  <g id="part-missile-hatch-L" data-pivot="26,68" data-parent="part-heavy-wing-L" data-z-index="25" data-blend="normal">
+    <rect x="18" y="63" width="16" height="10" rx="1" fill="url(#hw-titanium-dark)" stroke="#090d16" stroke-width="1.2"/>
+    <rect x="20" y="65" width="12" height="6" fill="url(#hw-kapton-gold)"/>
+    <line x1="20" y1="68" x2="32" y2="68" stroke="#090d16" stroke-width="1.0"/>
+    <line x1="26" y1="65" x2="26" y2="71" stroke="#090d16" stroke-width="1.0"/>
   </g>
-  <g id="part-missile-hatch-R" data-pivot="102,66" data-parent="part-heavy-wing-R" data-z-index="25" data-blend="normal" data-motion="slide-hatch-right">
-    <rect x="96" y="54" width="14" height="22" rx="2" fill="#091326" stroke="#fbbf24" stroke-width="1.2" />
-    <circle cx="100" cy="59" r="2" fill="#ef4444" />
-    <circle cx="106" cy="59" r="2" fill="#ef4444" />
-    <circle cx="100" cy="65" r="2" fill="#ef4444" />
-    <circle cx="106" cy="65" r="2" fill="#ef4444" />
-    <line x1="97" y1="71" x2="109" y2="71" stroke="#00f0ff" stroke-width="0.7" />
-    <circle cx="102" cy="66" r="3" fill="#fbbf24" />
+
+  <!-- 8. 右翼模块化弹舱百叶窗总成 (z=25) -->
+  <g id="part-missile-hatch-R" data-pivot="102,68" data-parent="part-heavy-wing-R" data-z-index="25" data-blend="normal">
+    <rect x="94" y="63" width="16" height="10" rx="1" fill="url(#hw-titanium-dark)" stroke="#090d16" stroke-width="1.2"/>
+    <rect x="96" y="65" width="12" height="6" fill="url(#hw-kapton-gold)"/>
+    <line x1="96" y1="68" x2="108" y2="68" stroke="#090d16" stroke-width="1.0"/>
+    <line x1="102" y1="65" x2="102" y2="71" stroke="#090d16" stroke-width="1.0"/>
   </g>
+
+  <!-- 9. 中央重装钛合金舰脊与前伸双叉炮臂 (z=30, 1:1 还原 preview.png 构型) -->
   <g id="part-hull-main-body" data-pivot="64,64" data-parent="root" data-z-index="30" data-blend="normal">
-    <path d="M52 16 L64 26 L76 16 L86 44 L84 88 L64 80 L44 88 L42 44 Z" fill="url(#hw-obsidian)" stroke="#00f0ff" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
-    <polygon points="55,24 64,32 73,24 79,48 77,80 64,74 51,80 49,48" fill="url(#hw-wing-plate)" stroke="#38bdf8" stroke-width="1.2" />
-    <path d="M64 32 L64 74 M50 48 L78 48 M52 68 L76 68" stroke="#00f0ff" stroke-width="0.7" stroke-opacity="0.7" />
-    <!-- 舰桥装甲观察窗 -->
-    <polygon points="64,34 71,44 64,50 57,44" fill="#00f0ff" fill-opacity="0.75" stroke="#ffffff" stroke-width="0.7" />
+    <rect x="50" y="50" width="28" height="42" rx="1.5" fill="url(#hw-titanium-dark)" stroke="#090d16" stroke-width="2.0"/>
+    <rect x="54" y="54" width="20" height="34" fill="#1e293b" stroke="#475569" stroke-width="0.85"/>
+    <line x1="50" y1="64" x2="78" y2="64" stroke="#090d16" stroke-width="1.4"/>
+    <line x1="50" y1="82" x2="78" y2="82" stroke="#090d16" stroke-width="1.4"/>
+    <!-- 左前叉臂 (白陶瓷 + 金箔内嵌 + 红/青/琥珀色标块) -->
+    <polygon points="46,50 46,14 50,6 58,6 58,50" fill="url(#hw-titanium-dark)" stroke="#090d16" stroke-width="1.9" stroke-linejoin="round"/>
+    <polygon points="47,32 47,15 50,8 57,8 57,32" fill="url(#hw-white-tile)" stroke="#0f172a" stroke-width="1.0"/>
+    <rect x="50" y="11" width="4" height="18" fill="url(#hw-kapton-gold)" stroke="#090d16" stroke-width="0.75"/>
+    <rect x="43.5" y="40" width="3.5" height="5" rx="0.6" fill="#ef4444" stroke="#090d16" stroke-width="0.75"/>
+    <rect x="43.5" y="33.5" width="3.5" height="5" rx="0.6" fill="#06b6d4" stroke="#090d16" stroke-width="0.75"/>
+    <rect x="44" y="19" width="2.8" height="4.5" rx="0.5" fill="#f59e0b" stroke="#090d16" stroke-width="0.7"/>
+    <!-- 右前叉臂 -->
+    <polygon points="82,50 82,14 78,6 70,6 70,50" fill="url(#hw-titanium-dark)" stroke="#090d16" stroke-width="1.9" stroke-linejoin="round"/>
+    <polygon points="81,32 81,15 78,8 71,8 71,32" fill="url(#hw-white-tile)" stroke="#0f172a" stroke-width="1.0"/>
+    <rect x="74" y="11" width="4" height="18" fill="url(#hw-kapton-gold)" stroke="#090d16" stroke-width="0.75"/>
+    <rect x="81" y="40" width="3.5" height="5" rx="0.6" fill="#ef4444" stroke="#090d16" stroke-width="0.75"/>
+    <rect x="81" y="33.5" width="3.5" height="5" rx="0.6" fill="#06b6d4" stroke="#090d16" stroke-width="0.75"/>
+    <rect x="81.2" y="19" width="2.8" height="4.5" rx="0.5" fill="#f59e0b" stroke="#090d16" stroke-width="0.7"/>
+    <!-- 中央磁轨槽 -->
+    <rect x="58" y="14" width="12" height="36" fill="#090d16"/>
   </g>
-  <g id="part-main-cannon-barrels" data-pivot="64,54" data-parent="part-main-turret" data-z-index="38" data-blend="normal" data-motion="recoil-y">
-    <rect x="57" y="28" width="4.5" height="24" rx="1.5" fill="#0f172a" stroke="#00f0ff" stroke-width="1.2" />
-    <rect x="66.5" y="28" width="4.5" height="24" rx="1.5" fill="#0f172a" stroke="#00f0ff" stroke-width="1.2" />
-    <line x1="59.2" y1="30" x2="59.2" y2="48" stroke="#ffffff" stroke-width="0.7" />
-    <line x1="68.8" y1="30" x2="68.8" y2="48" stroke="#ffffff" stroke-width="0.7" />
-    <circle cx="64" cy="54" r="4" fill="#091326" stroke="#fbbf24" stroke-width="1.2" />
+
+  <!-- 10. 双联内嵌式模块化磁轨主炮管 (z=38) -->
+  <g id="part-main-cannon-barrels" data-pivot="64,50" data-parent="part-main-turret" data-z-index="38" data-blend="normal">
+    <rect x="58.5" y="12" width="4.8" height="38" fill="url(#hw-titanium-dark)" stroke="#090d16" stroke-width="0.9"/>
+    <rect x="64.7" y="12" width="4.8" height="38" fill="url(#hw-titanium-dark)" stroke="#090d16" stroke-width="0.9"/>
+    <path d="M59,16 H63 M59,22 H63 M59,28 H63 M59,34 H63 M59,40 H63 M65,16 H69 M65,22 H69 M65,28 H69 M65,34 H69 M65,40 H69" stroke="url(#hw-rail-copper)" stroke-width="3.0"/>
+    <line x1="60.9" y1="12" x2="60.9" y2="50" stroke="#94a3b8" stroke-width="0.65"/>
+    <line x1="67.1" y1="12" x2="67.1" y2="50" stroke="#94a3b8" stroke-width="0.65"/>
   </g>
-  <g id="part-main-turret" data-pivot="64,60" data-parent="part-hull-main-body" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
-    <circle cx="64" cy="60" r="11" fill="url(#hw-obsidian)" stroke="#fbbf24" stroke-width="2.2" />
-    <polygon points="64,49 73,56 71,67 57,67 55,56" fill="#1e293b" stroke="#00f0ff" stroke-width="1.2" />
-    <circle cx="64" cy="60" r="4.5" fill="url(#hw-joint-glow)" />
-    <circle cx="64" cy="60" r="1.8" fill="#ffffff" />
+
+  <!-- 11. 舰脊中央圆形旋转炮塔座 (z=40) -->
+  <g id="part-main-turret" data-pivot="64,73" data-parent="part-hull-main-body" data-z-index="40" data-blend="normal">
+    <polygon points="52,48 76,48 74,58 54,58" fill="url(#hw-titanium-dark)" stroke="#090d16" stroke-width="1.4"/>
+    <circle cx="64" cy="73" r="9.0" fill="url(#hw-titanium-dark)" stroke="#090d16" stroke-width="1.6"/>
+    <circle cx="64" cy="73" r="6.8" fill="#1e293b" stroke="#94a3b8" stroke-width="0.9"/>
+    <circle cx="64" cy="73" r="4.0" fill="#334155" stroke="#fde047" stroke-width="0.85"/>
+    <circle cx="64" cy="73" r="1.6" fill="#fde047"/>
   </g>
+
+  <!-- 12. 顶层高光反射 (z=45) -->
   <g id="part-light-rim-wings" data-pivot="64,64" data-parent="part-hull-main-body" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
-    <path d="M52 16 L42 44 L10 50 L6 82" stroke="url(#hw-rim-light)" stroke-width="2.2" stroke-linecap="round" />
-    <path d="M76 16 L86 44 L118 50 L122 82" stroke="url(#hw-rim-light)" stroke-width="2.2" stroke-linecap="round" />
-    <path d="M55 24 L64 32 L73 24" stroke="#ffffff" stroke-width="1.2" />
+    <path d="M46,14 L46,42 L6,62 M82,14 L82,42 L122,62" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" opacity="0.82"/>
+    <path d="M10,74 L50,74 M78,74 L118,74" fill="none" stroke="#ffffff" stroke-width="1.0" opacity="0.75"/>
   </g>
-  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
-    <path d="M8 50 L16 40 L12 30 M120 50 L112 40 L116 30" stroke="#00f0ff" stroke-width="1.2" stroke-linecap="round" />
-    <circle cx="10" cy="50" r="2.2" fill="#ffffff" />
-    <circle cx="118" cy="50" r="2.2" fill="#ffffff" />
-    <circle cx="52" cy="16" r="2" fill="#00f0ff" />
-    <circle cx="76" cy="16" r="2" fill="#00f0ff" />
+
+  <!-- 13. 顶层战术光斑 (z=65) -->
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" style="mix-blend-mode: screen">
+    <circle cx="64" cy="73" r="10" fill="url(#hw-core-glow)" opacity="0.45"/>
   </g>
 </svg>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 160" width="80" height="160">
+  <defs>
+    <!-- 3D Cylindrical Titanium-Ceramic & 24K Gold Missile Body -->
+    <linearGradient id="mwBodyHull" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="28%" stop-color="#f8fafc"/>
+      <stop offset="52%" stop-color="#cbd5e1"/>
+      <stop offset="78%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="mwGoldCollar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#785212"/>
+      <stop offset="35%" stop-color="#fde047"/>
+      <stop offset="65%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <linearGradient id="mwWarheadRed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#881337"/>
+      <stop offset="40%" stop-color="#fb7185"/>
+      <stop offset="65%" stop-color="#e11d48"/>
+      <stop offset="100%" stop-color="#4c0519"/>
+    </linearGradient>
+    <!-- Solid-Rocket Exhaust Plume -->
+    <linearGradient id="mwPlumeOuter" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="22%" stop-color="#fde047" stop-opacity="0.96"/>
+      <stop offset="52%" stop-color="#f97316" stop-opacity="0.82"/>
+      <stop offset="82%" stop-color="#e11d48" stop-opacity="0.38"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="rig-root">
+    <!-- L0: Rocket Motor Mach-Diamond Plume & Smoke Wake -->
+    <g id="exhaust-plume">
+      <polygon points="40,86 58,102 46,158 34,158 22,102" fill="url(#mwPlumeOuter)"/>
+      <polygon points="40,86 48,98 42,144 38,144 32,98" fill="#fef08a"/>
+      <!-- Mach Shock Diamonds -->
+      <polygon points="40,92 45,100 40,108 35,100" fill="#ffffff"/>
+      <polygon points="40,110 43.5,116 40,122 36.5,116" fill="#ffffff" opacity="0.85"/>
+      <polygon points="40,125 42,130 40,135 38,130" fill="#ffffff" opacity="0.65"/>
+    </g>
+
+    <!-- L1: Cruciform Swept Stabilizer Wings & Canards -->
+    <g id="missile-fins" fill="#1e293b" stroke="#fde047" stroke-width="1.2" stroke-linejoin="round">
+      <!-- Forward Guidance Canards -->
+      <polygon points="31,32 16,42 18,47 31,42"/>
+      <polygon points="49,32 64,42 62,47 49,42"/>
+      <!-- Main Rear Swept Delta Tail Fins -->
+      <polygon points="30,58 10,76 12,85 31,80"/>
+      <polygon points="50,58 70,76 68,85 49,80"/>
+      <!-- Wingtip Strobe Lights -->
+      <circle cx="13" cy="80" r="2" fill="#00f0ff" stroke="none"/>
+      <circle cx="67" cy="80" r="2" fill="#f43f5e" stroke="none"/>
+    </g>
+
+    <!-- L2: Cylindrical Armored Fuselage & Warhead Section -->
+    <g id="missile-body">
+      <!-- Main Fuselage Tube -->
+      <rect x="30" y="26" width="20" height="56" rx="4" fill="url(#mwBodyHull)" stroke="#0f172a" stroke-width="1.4"/>
+      <!-- 24K Gold Telemetry & Fuse Rings -->
+      <rect x="29.5" y="34" width="21" height="5" fill="url(#mwGoldCollar)"/>
+      <rect x="29.5" y="54" width="21" height="6" fill="url(#mwGoldCollar)"/>
+      <!-- High-Explosive / Fusion Ogive Nosecone -->
+      <path d="M 30,28 C 30,14 36,4 40,4 C 44,4 50,14 50,28 Z" fill="url(#mwWarheadRed)" stroke="#4c0519" stroke-width="1.2"/>
+      <!-- Optical / Radar Homing Seeker Dome -->
+      <circle cx="40" cy="15" r="4.5" fill="#090d16" stroke="#fde047" stroke-width="1"/>
+      <circle cx="40" cy="15" r="2.5" fill="#00f0ff"/>
+      <circle cx="39" cy="14" r="1" fill="#ffffff"/>
+      <!-- Rear Vectoring Thruster Bell -->
+      <polygon points="33,82 47,82 50,90 30,90" fill="#334155" stroke="#fde047" stroke-width="1"/>
+      <!-- Center Axial Fin Spine -->
+      <line x1="40" y1="26" x2="40" y2="82" stroke="#fde047" stroke-width="1.2" opacity="0.8"/>
+    </g>
+  </g>
+</svg>
+

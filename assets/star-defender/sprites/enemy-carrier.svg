@@ -1,163 +1,193 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="enemy-carrier-rig" data-root-anchor="64,64" data-has-aura="true">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
   <defs>
-    <radialGradient id="ec-cast-shadow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#020617" stop-opacity="0.8" />
-      <stop offset="65%" stop-color="#030712" stop-opacity="0.4" />
-      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
-    </radialGradient>
-    <radialGradient id="ec-aura-field" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.28" />
-      <stop offset="55%" stop-color="#d946ef" stop-opacity="0.14" />
-      <stop offset="100%" stop-color="#030712" stop-opacity="0" />
-    </radialGradient>
-    <linearGradient id="ec-keel-dark" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3b0764" />
-      <stop offset="50%" stop-color="#0f172a" />
-      <stop offset="100%" stop-color="#030712" />
+    <!-- Glossy Crimson-Violet Beetle Elytra Wing-Shells (Matches Showcase ENEMY-05) -->
+    <linearGradient id="ecr-chitin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="35%" stop-color="#be123c"/>
+      <stop offset="70%" stop-color="#4c0519"/>
+      <stop offset="100%" stop-color="#1a0315"/>
     </linearGradient>
-    <linearGradient id="ec-carapace-shell" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#7e22ce" />
-      <stop offset="50%" stop-color="#3b0764" />
-      <stop offset="100%" stop-color="#091326" />
+    <linearGradient id="ecr-chitin-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#881337"/>
+      <stop offset="55%" stop-color="#3b0726"/>
+      <stop offset="100%" stop-color="#0f0208"/>
     </linearGradient>
-    <radialGradient id="ec-bio-sac" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="35%" stop-color="#fbbf24" />
-      <stop offset="75%" stop-color="#ef4444" />
-      <stop offset="100%" stop-color="#450a0a" stop-opacity="0" />
+    <!-- Glowing Neon-Lime Hexagonal Honeycomb Brood-Egg Sacs -->
+    <radialGradient id="ecr-honeycomb-cell" cx="45%" cy="40%" r="58%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="38%" stop-color="#a3e635"/>
+      <stop offset="75%" stop-color="#4d7c0f"/>
+      <stop offset="100%" stop-color="#1a2e05"/>
     </radialGradient>
-    <linearGradient id="ec-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-      <stop offset="45%" stop-color="#fbbf24" stop-opacity="0.8" />
-      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0" />
-    </linearGradient>
+    <!-- Amber Compound Eye -->
+    <radialGradient id="ecr-amber-eye" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="45%" stop-color="#f59e0b"/>
+      <stop offset="85%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </radialGradient>
+    <radialGradient id="ecr-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a3e635" stop-opacity="0.32"/>
+      <stop offset="60%" stop-color="#be123c" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#0f0208" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="ecr-manga-hatch" width="5" height="5" patternUnits="userSpaceOnUse">
+      <path d="M 0 5 L 5 0 M -1 1 L 1 -1" stroke="#0f0208" stroke-width="0.65" opacity="0.48"/>
+    </pattern>
   </defs>
-  <!-- [光影层 1] 虫巢母舰深空接触软阴影贴图 (z=1, multiply) -->
-  <!-- [光影层 2A] 虫巢孵化场外环：顺时针旋转生物信息素光环 (z=4, screen) -->
-  <!-- [光影层 2B] 虫巢孵化场内环：逆时针旋转孵化脉冲环 (z=5, screen) -->
-  <!-- [骨骼部件 1] 尾部生物等离子喷口与推进焰 (z=12) -->
-  <!-- [骨骼部件 2] 前部左防卫触须 (z=18) -->
-  <!-- [骨骼部件 3] 前部右防卫触须 (z=18) -->
-  <!-- [骨骼部件 4] 重甲母体中轴龙骨与内部孵化巢穴 (z=24) -->
-  <!-- [骨骼部件 5] 左独立开合孵化舱甲壳 (z=32) -->
-  <!-- [骨骼部件 6] 右独立开合孵化舱甲壳 (z=32) -->
-  <!-- [骨骼部件 7] 背部生物脉冲反应腔 (z=40) -->
-  <!-- [光影层 4] 孵化舱甲壳与母体受光边缘高光映射贴图 (z=45, plus-lighter) -->
-  <!-- [光影层 5] 顶层孵化场孢子辉光冕与电弧贴图 (z=65, screen) -->
-  <g id="part-shadow-cast" data-pivot="64,68" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
-    <ellipse cx="64" cy="68" rx="58" ry="56" fill="url(#ec-cast-shadow)" />
+
+  <!-- 1. Ground Shadow -->
+  <g id="part-shadow-cast" data-pivot="64 68" data-parent="root" data-z-index="1" data-blend="multiply">
+    <ellipse cx="64" cy="68" rx="54" ry="50" fill="#090106" opacity="0.62"/>
   </g>
-  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
-    <circle cx="64" cy="64" r="62" fill="url(#ec-aura-field)" />
-    <path fill="none" stroke="#00f0ff" stroke-width="1.3" stroke-opacity="0.72" d="M119.45,82.02 A58.3,58.3 0 0,1 82.02,119.45 M45.98,119.45 A58.3,58.3 0 0,1 8.55,82.02 M8.55,45.98 A58.3,58.3 0 0,1 45.98,8.55 M82.02,8.55 A58.3,58.3 0 0,1 119.45,45.98" stroke-linecap="square" />
-    <path fill="none" stroke="#38bdf8" stroke-width="0.65" stroke-opacity="0.52" d="M114.12,80.29 A52.7,52.7 0 0,1 80.29,114.12 M47.71,114.12 A52.7,52.7 0 0,1 13.88,80.29 M13.88,47.71 A52.7,52.7 0 0,1 47.71,13.88 M80.29,13.88 A52.7,52.7 0 0,1 114.12,47.71" stroke-linecap="square" />
-    <line x1="118.3" y1="64" x2="125.3" y2="64" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="102.4" y1="102.4" x2="107.3" y2="107.3" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="64" y1="118.3" x2="64" y2="125.3" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="25.6" y1="102.4" x2="20.7" y2="107.3" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="9.7" y1="64" x2="2.7" y2="64" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="25.6" y1="25.6" x2="20.7" y2="20.7" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="64" y1="9.7" x2="64" y2="2.7" stroke="#00f0ff" stroke-width="1.2" stroke-opacity="0.82" />
-    <line x1="102.4" y1="25.6" x2="107.3" y2="20.7" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.82" />
-    <polygon points="64,2.7 68,9.7 60,9.7" fill="#00f0ff" fill-opacity="0.82" />
-    <polygon points="64,125.3 68,118.3 60,118.3" fill="#00f0ff" fill-opacity="0.82" />
-    <polygon points="2.7,64 9.7,68 9.7,60" fill="#fbbf24" fill-opacity="0.82" />
-    <polygon points="125.3,64 118.3,68 118.3,60" fill="#fbbf24" fill-opacity="0.82" />
+
+  <!-- 2. Outer Bio-Hazard Aura Ring -->
+  <g id="part-aura-ring-outer" data-pivot="64 64" data-parent="root" data-z-index="4" data-blend="screen">
+    <circle cx="64" cy="64" r="59" fill="url(#ecr-aura)"/>
+    <circle cx="64" cy="64" r="56" fill="none" stroke="#84cc16" stroke-width="0.7" opacity="0.35"/>
   </g>
-  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
-    <path fill="none" stroke="#fbbf24" stroke-width="0.9" stroke-opacity="0.68" d="M106.42,77.78 A44.6,44.6 0 0,1 67.11,108.49 M30.86,93.84 A44.6,44.6 0 0,1 23.91,44.45 M54.73,20.37 A44.6,44.6 0 0,1 100.98,39.06" stroke-linecap="square" />
-    <rect x="107" y="62.4" width="3.2" height="3.2" fill="#00f0ff" />
-    <rect x="84.7" y="101" width="3.2" height="3.2" fill="#00f0ff" />
-    <rect x="40.1" y="101" width="3.2" height="3.2" fill="#00f0ff" />
-    <rect x="17.8" y="62.4" width="3.2" height="3.2" fill="#00f0ff" />
-    <rect x="40.1" y="23.8" width="3.2" height="3.2" fill="#00f0ff" />
-    <rect x="84.7" y="23.8" width="3.2" height="3.2" fill="#00f0ff" />
+
+  <!-- 3. Inner Bio-Hazard Aura Ring -->
+  <g id="part-aura-ring-inner" data-pivot="64 64" data-parent="root" data-z-index="5" data-blend="screen">
+    <circle cx="64" cy="60" r="44" fill="none" stroke="#f43f5e" stroke-width="0.6" opacity="0.28"/>
   </g>
-  <g id="part-bio-plasma-vent" data-pivot="64,102" data-parent="part-mother-keel" data-z-index="12" data-blend="normal" data-motion="pulse-vent">
-    <path d="M50 96 L78 96 L72 110 L56 110 Z" fill="#1e1b4b" stroke="#00f0ff" stroke-width="1.2" />
-    <polygon points="54,108 64,126 74,108" fill="url(#ec-bio-sac)" />
-    <circle cx="64" cy="102" r="4" fill="#00f0ff" />
+
+  <!-- 4. Twin Blazing Neon-Lime Bio-Plasma Rear Thruster Plumes (part-bio-plasma-vent, Matching Showcase ENEMY-05) -->
+  <g id="part-bio-plasma-vent" data-pivot="64 102" data-parent="part-mother-keel" data-z-index="12" data-blend="normal">
+    <!-- Left & Right Crimson Bio-Thruster Nozzles -->
+    <path d="M 44 96 L 58 96 L 55 106 L 47 106 Z" fill="url(#ecr-chitin-dark)" stroke="#0f0208" stroke-width="1.5"/>
+    <path d="M 70 96 L 84 96 L 81 106 L 73 106 Z" fill="url(#ecr-chitin-dark)" stroke="#0f0208" stroke-width="1.5"/>
+    <!-- Twin Blazing Neon-Lime Bio-Plasma Jet Plumes -->
+    <path d="M 47 105 C 44 114, 48 125, 52 127 C 56 125, 58 114, 55 105 Z" fill="#84cc16" stroke="#365314" stroke-width="1"/>
+    <path d="M 49 105 C 48 112, 50 120, 52 122 C 54 120, 55 112, 53 105 Z" fill="#fef08a"/>
+    <path d="M 73 105 C 70 114, 74 125, 76 127 C 80 125, 84 114, 81 105 Z" fill="#84cc16" stroke="#365314" stroke-width="1"/>
+    <path d="M 75 105 C 74 112, 75 120, 77 122 C 79 120, 80 112, 79 105 Z" fill="#fef08a"/>
   </g>
-  <g id="part-aux-stabilizer-1" data-pivot="83.8,83.8" data-parent="root" data-z-index="17" data-blend="normal">
-    <circle cx="83.8" cy="83.8" r="3.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
-    <path d="M79.8 83.8 L83.8 77.8 L87.8 83.8 L83.8 89.8 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="0.85" />
+
+  <!-- 5~14. Lower Beetle Wing-Shells, Head Pincer Horns & Lateral Chitin Stabilizers -->
+  <!-- Lower-Right Beetle Wing-Shell (part-aux-stabilizer-1) -->
+  <g id="part-aux-stabilizer-1" data-pivot="83.8 83.8" data-parent="root" data-z-index="17" data-blend="normal">
+    <path d="M 88 64 C 110 66, 118 88, 96 102 C 84 106, 76 96, 80 80 Z" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M 88 64 C 110 66, 118 88, 96 102 C 84 106, 76 96, 80 80 Z" fill="url(#ecr-manga-hatch)"/>
   </g>
-  <g id="part-aux-stabilizer-2" data-pivot="64,92" data-parent="root" data-z-index="18" data-blend="normal">
-    <circle cx="64" cy="92" r="3.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
-    <path d="M60 92 L64 86 L68 92 L64 98 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="0.85" />
+  <!-- Rear Abdomen Carapace & Green Ganglion Node (part-aux-stabilizer-2) -->
+  <g id="part-aux-stabilizer-2" data-pivot="64 92" data-parent="root" data-z-index="18" data-blend="normal">
+    <path d="M 48 88 L 80 88 L 76 102 L 52 102 Z" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="1.8"/>
+    <ellipse cx="64" cy="95" rx="6" ry="4" fill="url(#ecr-honeycomb-cell)" stroke="#0f0208" stroke-width="1.2"/>
   </g>
-  <g id="part-feeler-right" data-pivot="78,24" data-parent="part-mother-keel" data-z-index="18" data-blend="normal" data-motion="sway-right">
-    <path d="M78 24 C94 18 100 8 86 4 L82 12 L90 16 L76 20 Z" fill="url(#ec-carapace-shell)" stroke="#00f0ff" stroke-width="1.8" />
-    <circle cx="78" cy="24" r="4" fill="#091326" stroke="#fbbf24" stroke-width="1.2" />
+  <!-- Top-Right Curved Beetle Pincer Horn & Antenna (part-feeler-right) -->
+  <g id="part-feeler-right" data-pivot="78 24" data-parent="part-mother-keel" data-z-index="18" data-blend="normal">
+    <path d="M 74 20 C 84 12, 96 8, 106 10" fill="none" stroke="#0f0208" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M 74 20 C 84 12, 96 8, 106 10" fill="none" stroke="#f43f5e" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M 68 20 C 78 12, 82 4, 70 3 C 73 9, 71 14, 65 17 Z" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="1.6"/>
   </g>
-  <g id="part-feeler-left" data-pivot="50,24" data-parent="part-mother-keel" data-z-index="18" data-blend="normal" data-motion="sway-left">
-    <path d="M50 24 C34 18 28 8 42 4 L46 12 L38 16 L52 20 Z" fill="url(#ec-carapace-shell)" stroke="#00f0ff" stroke-width="1.8" />
-    <circle cx="50" cy="24" r="4" fill="#091326" stroke="#fbbf24" stroke-width="1.2" />
+  <!-- Top-Left Curved Beetle Pincer Horn & Antenna (part-feeler-left) -->
+  <g id="part-feeler-left" data-pivot="50 24" data-parent="part-mother-keel" data-z-index="18" data-blend="normal">
+    <path d="M 54 20 C 44 12, 32 8, 22 10" fill="none" stroke="#0f0208" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M 54 20 C 44 12, 32 8, 22 10" fill="none" stroke="#f43f5e" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M 60 20 C 50 12, 46 4, 58 3 C 55 9, 57 14, 63 17 Z" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="1.6"/>
   </g>
-  <g id="part-aux-stabilizer-3" data-pivot="44.2,83.8" data-parent="root" data-z-index="19" data-blend="normal">
-    <circle cx="44.2" cy="83.8" r="3.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
-    <path d="M40.2 83.8 L44.2 77.8 L48.2 83.8 L44.2 89.8 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="0.85" />
+  <!-- Lower-Left Beetle Wing-Shell (part-aux-stabilizer-3) -->
+  <g id="part-aux-stabilizer-3" data-pivot="44.2 83.8" data-parent="root" data-z-index="19" data-blend="normal">
+    <path d="M 40 64 C 18 66, 10 88, 32 102 C 44 106, 52 96, 48 80 Z" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M 40 64 C 18 66, 10 88, 32 102 C 44 106, 52 96, 48 80 Z" fill="url(#ecr-manga-hatch)"/>
   </g>
-  <g id="part-aux-stabilizer-4" data-pivot="36,64" data-parent="root" data-z-index="20" data-blend="normal">
-    <circle cx="36" cy="64" r="3.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
-    <path d="M32 64 L36 58 L40 64 L36 70 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="0.85" />
+  <!-- Lateral Stabilizer Spines (part-aux-stabilizer-4..8) -->
+  <g id="part-aux-stabilizer-4" data-pivot="36 64" data-parent="root" data-z-index="20" data-blend="normal">
+    <polygon points="18,58 6,62 18,68" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="1.4"/>
   </g>
-  <g id="part-aux-stabilizer-5" data-pivot="44.2,44.2" data-parent="root" data-z-index="21" data-blend="normal">
-    <circle cx="44.2" cy="44.2" r="3.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
-    <path d="M40.2 44.2 L44.2 38.2 L48.2 44.2 L44.2 50.2 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="0.85" />
+  <g id="part-aux-stabilizer-5" data-pivot="44.2 44.2" data-parent="root" data-z-index="21" data-blend="normal">
+    <polygon points="22,32 10,24 18,40" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="1.4"/>
   </g>
-  <g id="part-aux-stabilizer-6" data-pivot="64,36" data-parent="root" data-z-index="22" data-blend="normal">
-    <circle cx="64" cy="36" r="3.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
-    <path d="M60 36 L64 30 L68 36 L64 42 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="0.85" />
+  <g id="part-aux-stabilizer-6" data-pivot="64 36" data-parent="root" data-z-index="22" data-blend="normal">
+    <!-- Beetle Head Carapace & Twin Amber Compound Eyes -->
+    <path d="M 46 24 C 54 16, 74 16, 82 24 C 80 32, 72 34, 64 34 C 56 34, 48 32, 46 24 Z" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="1.8"/>
+    <ellipse cx="54" cy="24" rx="4.2" ry="2.6" transform="rotate(18 54 24)" fill="url(#ecr-amber-eye)" stroke="#0f0208" stroke-width="1.1"/>
+    <ellipse cx="74" cy="24" rx="4.2" ry="2.6" transform="rotate(-18 74 24)" fill="url(#ecr-amber-eye)" stroke="#0f0208" stroke-width="1.1"/>
   </g>
-  <g id="part-aux-stabilizer-7" data-pivot="83.8,44.2" data-parent="root" data-z-index="23" data-blend="normal">
-    <circle cx="83.8" cy="44.2" r="3.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
-    <path d="M79.8 44.2 L83.8 38.2 L87.8 44.2 L83.8 50.2 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="0.85" />
+  <g id="part-aux-stabilizer-7" data-pivot="83.8 44.2" data-parent="root" data-z-index="23" data-blend="normal">
+    <polygon points="106,32 118,24 110,40" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="1.4"/>
   </g>
-  <g id="part-aux-stabilizer-8" data-pivot="92,64" data-parent="root" data-z-index="24" data-blend="normal">
-    <circle cx="92" cy="64" r="3.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
-    <path d="M88 64 L92 58 L96 64 L92 70 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="0.85" />
+  <g id="part-aux-stabilizer-8" data-pivot="92 64" data-parent="root" data-z-index="24" data-blend="normal">
+    <polygon points="110,58 122,62 110,68" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="1.4"/>
   </g>
-  <g id="part-mother-keel" data-pivot="64,64" data-parent="root" data-z-index="24" data-blend="normal">
-    <polygon points="64,14 90,32 94,78 78,100 50,100 34,78 38,32" fill="url(#ec-keel-dark)" stroke="#d946ef" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
-    <!-- 内部显露的高能幼体孵化卵室 -->
-    <circle cx="48" cy="52" r="5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.7" />
-    <circle cx="48" cy="68" r="5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.7" />
-    <circle cx="80" cy="52" r="5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.7" />
-    <circle cx="80" cy="68" r="5" fill="#fbbf24" stroke="#ffffff" stroke-width="0.7" />
-    <path d="M64 20 L64 94 M42 44 L86 44 M42 76 L86 76" stroke="#00f0ff" stroke-width="0.7" stroke-opacity="0.65" />
+
+  <!-- 15. Central Crimson-Violet Hive-Mother Keel & Honeycomb Frame (part-mother-keel) -->
+  <g id="part-mother-keel" data-pivot="64 64" data-parent="root" data-z-index="24" data-blend="normal">
+    <circle cx="64" cy="60" r="34" fill="url(#ecr-chitin-dark)" stroke="#0f0208" stroke-width="2.2"/>
   </g>
-  <g id="part-brood-shell-R" data-pivot="82,36" data-parent="part-mother-keel" data-z-index="32" data-blend="normal" data-motion="open-hatch-right">
-    <path d="M82 28 L114 44 L118 78 L94 94 L78 82 L80 36 Z" fill="url(#ec-carapace-shell)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
-    <path d="M108 50 L84 44 M110 62 L84 56 M112 74 L84 68" stroke="#00f0ff" stroke-width="0.7" stroke-opacity="0.8" />
-    <circle cx="82" cy="36" r="5.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
-    <circle cx="82" cy="36" r="2.2" fill="#fbbf24" />
+
+  <!-- 16. Upper-Left Rounded Beetle Carapace Wing-Shell (part-brood-shell-L, Matching Showcase ENEMY-05) -->
+  <g id="part-brood-shell-L" data-pivot="46 36" data-parent="part-mother-keel" data-z-index="32" data-blend="normal">
+    <path d="M 48 24 C 18 24, 6 52, 24 72 C 32 56, 38 40, 48 24 Z" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="2.1" stroke-linejoin="round"/>
+    <path d="M 48 24 C 18 24, 6 52, 24 72 C 32 56, 38 40, 48 24 Z" fill="url(#ecr-manga-hatch)"/>
+    <!-- Elytra Ridge Seam -->
+    <path d="M 42 28 C 24 34, 16 50, 24 66" fill="none" stroke="#fda4af" stroke-width="1.3" stroke-linecap="round" opacity="0.8"/>
   </g>
-  <g id="part-brood-shell-L" data-pivot="46,36" data-parent="part-mother-keel" data-z-index="32" data-blend="normal" data-motion="open-hatch-left">
-    <path d="M46 28 L14 44 L10 78 L34 94 L50 82 L48 36 Z" fill="url(#ec-carapace-shell)" stroke="#fbbf24" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
-    <path d="M20 50 L44 44 M18 62 L44 56 M16 74 L44 68" stroke="#00f0ff" stroke-width="0.7" stroke-opacity="0.8" />
-    <circle cx="46" cy="36" r="5.5" fill="#091326" stroke="#00f0ff" stroke-width="1.2" />
-    <circle cx="46" cy="36" r="2.2" fill="#fbbf24" />
+
+  <!-- 17. Upper-Right Rounded Beetle Carapace Wing-Shell (part-brood-shell-R, Matching Showcase ENEMY-05) -->
+  <g id="part-brood-shell-R" data-pivot="82 36" data-parent="part-mother-keel" data-z-index="32" data-blend="normal">
+    <path d="M 80 24 C 110 24, 122 52, 104 72 C 96 56, 90 40, 80 24 Z" fill="url(#ecr-chitin)" stroke="#0f0208" stroke-width="2.1" stroke-linejoin="round"/>
+    <path d="M 80 24 C 110 24, 122 52, 104 72 C 96 56, 90 40, 80 24 Z" fill="url(#ecr-manga-hatch)"/>
+    <!-- Elytra Ridge Seam -->
+    <path d="M 86 28 C 104 34, 112 50, 104 66" fill="none" stroke="#fda4af" stroke-width="1.3" stroke-linecap="round" opacity="0.8"/>
   </g>
-  <g id="part-bio-pulse-chamber" data-pivot="64,60" data-parent="part-mother-keel" data-z-index="40" data-blend="normal" data-motion="pulse-core">
-    <ellipse cx="64" cy="60" rx="13" ry="20" fill="url(#ec-bio-sac)" stroke="#ffffff" stroke-width="1.2" />
-    <ellipse cx="64" cy="60" rx="6" ry="11" fill="#ffffff" fill-opacity="0.82" />
+
+  <!-- 18. Central 7-Hexagon Honeycomb Rosette of Glowing Neon-Lime Brood-Egg Sacs (part-bio-pulse-chamber, 1:1 Match to Showcase ENEMY-05) -->
+  <g id="part-bio-pulse-chamber" data-pivot="64 60" data-parent="part-mother-keel" data-z-index="40" data-blend="normal">
+    <!-- Center Hexagon Cell -->
+    <polygon points="64,49 73,54.5 73,65.5 64,71 55,65.5 55,54.5" fill="url(#ecr-honeycomb-cell)" stroke="#4c0519" stroke-width="2.2"/>
+    <circle cx="64" cy="60" r="4" fill="#fef08a" opacity="0.75"/>
+    <circle cx="61" cy="58" r="1.5" fill="#ffffff"/>
+    <!-- Top Hexagon Cell -->
+    <polygon points="64,31 73,36.5 73,47.5 64,53 55,47.5 55,36.5" fill="url(#ecr-honeycomb-cell)" stroke="#4c0519" stroke-width="2.2"/>
+    <circle cx="64" cy="42" r="3.5" fill="#fef08a" opacity="0.7"/>
+    <!-- Bottom Hexagon Cell -->
+    <polygon points="64,67 73,72.5 73,83.5 64,89 55,83.5 55,72.5" fill="url(#ecr-honeycomb-cell)" stroke="#4c0519" stroke-width="2.2"/>
+    <circle cx="64" cy="78" r="3.5" fill="#fef08a" opacity="0.7"/>
+    <!-- Upper-Left Hexagon Cell -->
+    <polygon points="47,40 56,45.5 56,56.5 47,62 38,56.5 38,45.5" fill="url(#ecr-honeycomb-cell)" stroke="#4c0519" stroke-width="2.2"/>
+    <circle cx="47" cy="51" r="3.5" fill="#fef08a" opacity="0.7"/>
+    <!-- Lower-Left Hexagon Cell -->
+    <polygon points="47,58 56,63.5 56,74.5 47,80 38,74.5 38,63.5" fill="url(#ecr-honeycomb-cell)" stroke="#4c0519" stroke-width="2.2"/>
+    <circle cx="47" cy="69" r="3.5" fill="#fef08a" opacity="0.7"/>
+    <!-- Upper-Right Hexagon Cell -->
+    <polygon points="81,40 90,45.5 90,56.5 81,62 72,56.5 72,45.5" fill="url(#ecr-honeycomb-cell)" stroke="#4c0519" stroke-width="2.2"/>
+    <circle cx="81" cy="51" r="3.5" fill="#fef08a" opacity="0.7"/>
+    <!-- Lower-Right Hexagon Cell -->
+    <polygon points="81,58 90,63.5 90,74.5 81,80 72,74.5 72,63.5" fill="url(#ecr-honeycomb-cell)" stroke="#4c0519" stroke-width="2.2"/>
+    <circle cx="81" cy="69" r="3.5" fill="#fef08a" opacity="0.7"/>
+    <!-- Specular Highlights, Amniotic Bubbles & Larval Silhouettes Inside All 7 Hexagonal Brood Cells -->
+    <circle cx="62" cy="39" r="1.4" fill="#ffffff" opacity="0.85"/>
+    <circle cx="67" cy="45" r="1.1" fill="#ecfccb" opacity="0.75"/>
+    <circle cx="62" cy="75" r="1.4" fill="#ffffff" opacity="0.85"/>
+    <circle cx="67" cy="81" r="1.1" fill="#ecfccb" opacity="0.75"/>
+    <circle cx="45" cy="48" r="1.4" fill="#ffffff" opacity="0.85"/>
+    <circle cx="50" cy="54" r="1.1" fill="#ecfccb" opacity="0.75"/>
+    <circle cx="45" cy="66" r="1.4" fill="#ffffff" opacity="0.85"/>
+    <circle cx="50" cy="72" r="1.1" fill="#ecfccb" opacity="0.75"/>
+    <circle cx="79" cy="48" r="1.4" fill="#ffffff" opacity="0.85"/>
+    <circle cx="84" cy="54" r="1.1" fill="#ecfccb" opacity="0.75"/>
+    <circle cx="79" cy="66" r="1.4" fill="#ffffff" opacity="0.85"/>
+    <circle cx="84" cy="72" r="1.1" fill="#ecfccb" opacity="0.75"/>
+    <!-- Outer Partial Honeycomb Rim Cells & Carapace Rivet Nodes -->
+    <circle cx="34" cy="42" r="1.6" fill="#a3e635" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="94" cy="42" r="1.6" fill="#a3e635" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="34" cy="76" r="1.6" fill="#a3e635" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="94" cy="76" r="1.6" fill="#a3e635" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="26" cy="84" r="1.8" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="102" cy="84" r="1.8" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <path d="M 32 76 C 24 82, 26 92, 36 96" fill="none" stroke="#fda4af" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M 96 76 C 104 82, 102 92, 92 96" fill="none" stroke="#fda4af" stroke-width="1.2" stroke-linecap="round"/>
   </g>
-  <g id="part-light-rim-carrier" data-pivot="64,64" data-parent="part-mother-keel" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
-    <path d="M10 78 L14 44 L46 28 L64 14 L82 28 L114 44 L118 78" stroke="url(#ec-rim-light)" stroke-width="2.2" stroke-linecap="round" />
+
+  <!-- 19. Cel-Shaded Specular Rim Highlights -->
+  <g id="part-light-rim-carrier" data-pivot="64 64" data-parent="part-mother-keel" data-z-index="45" data-blend="plus-lighter">
+    <path d="M 46 26 C 28 30, 18 46, 22 64" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" opacity="0.78"/>
   </g>
-  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
-    <path d="M22 36 L32 28 M106 36 L96 28" stroke="#00f0ff" stroke-width="1.2" stroke-linecap="round" />
-    <circle cx="42" cy="4" r="2" fill="#ffffff" />
-    <circle cx="86" cy="4" r="2" fill="#ffffff" />
-    <circle cx="64" cy="14" r="2.5" fill="#fbbf24" />
-    <path d="M103.8 87 L106.9 88.8" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
-    <path d="M74.9 104.6 L75.8 107.9" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
-    <path d="M45 96.9 L43.3 99.9" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
-    <path d="M15.7 76.9 L12.3 77.8" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
-    <path d="M24.2 41 L21.1 39.2" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
-    <path d="M53.1 23.4 L52.2 20.1" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
-    <path d="M83 31.1 L84.8 28.1" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
-    <path d="M112.3 51.1 L115.7 50.2" stroke="#fbbf24" stroke-width="0.65" stroke-opacity="0.7" />
+
+  <!-- 20. Top Bio-Luminescent Glare -->
+  <g id="part-aura-corona-top" data-pivot="64 64" data-parent="root" data-z-index="65" data-blend="screen">
+    <circle cx="64" cy="60" r="22" fill="#a3e635" opacity="0.24"/>
   </g>
 </svg>

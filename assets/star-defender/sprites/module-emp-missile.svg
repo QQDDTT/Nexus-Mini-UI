@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" data-rig-id="module-emp-missile-rig" data-root-anchor="64,74" data-faction="glacies" data-slot-zone="weapon" data-slot-size="M-2x1">
+  <defs>
+    <pattern id="mem-carbon-weave" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#0d1522"/>
+      <polygon points="0,0 3,0 6,3 6,6 3,6 0,3" fill="#18263b"/>
+      <polygon points="3,0 6,0 6,3" fill="#283d5c"/>
+      <polygon points="0,3 3,6 0,6" fill="#070b12"/>
+    </pattern>
+    <linearGradient id="mem-ti-armor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="25%" stop-color="#475569"/>
+      <stop offset="55%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#050811"/>
+    </linearGradient>
+    <linearGradient id="mem-ceramic-white" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#e0f2fe"/>
+      <stop offset="80%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="mem-kapton-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="28%" stop-color="#fbbf24"/>
+      <stop offset="56%" stop-color="#b45309"/>
+      <stop offset="82%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <radialGradient id="mem-emp-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#38bdf8"/>
+      <stop offset="72%" stop-color="#4f46e5" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mem-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.92"/>
+      <stop offset="68%" stop-color="#020617" stop-opacity="0.44"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <g id="part-shadow-cast" data-pivot="64,74" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="76" rx="52" ry="46" fill="url(#mem-shadow-grad)"/>
+    <polygon points="40,34 88,34 104,50 104,94 88,110 40,110 24,94 24,50" fill="#020617" opacity="0.5"/>
+  </g>
+
+  <g id="part-aura-ring-outer" data-pivot="64,72" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <path d="M44,24 A50,50 0 0,1 84,24 M112,52 A50,50 0 0,1 112,92 M84,120 A50,50 0 0,1 44,120 M16,92 A50,50 0 0,1 16,52" fill="none" stroke="#38bdf8" stroke-width="1.25" stroke-linecap="square" opacity="0.72"/>
+    <path d="M64,20 L64,26 M116,72 L110,72 M64,124 L64,118 M12,72 L18,72" stroke="#818cf8" stroke-width="1.5" opacity="0.88"/>
+  </g>
+
+  <g id="part-aura-ring-inner" data-pivot="64,72" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path d="M34,42 A42,42 0 0,1 94,42 M94,102 A42,42 0 0,1 34,102" fill="none" stroke="#67e8f9" stroke-width="0.95" opacity="0.55"/>
+  </g>
+
+  <g id="part-pedestal-base" data-pivot="64,72" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="40,34 88,34 104,50 104,94 88,110 40,110 24,94 24,50" fill="url(#mem-carbon-weave)" stroke="#050811" stroke-width="2.2" stroke-linejoin="round"/>
+    <rect x="44" y="37" width="40" height="6" rx="1" fill="url(#mem-ceramic-white)" stroke="#1e293b" stroke-width="0.95"/>
+    <rect x="44" y="101" width="40" height="6" rx="1" fill="url(#mem-ceramic-white)" stroke="#1e293b" stroke-width="0.95"/>
+    <rect x="26" y="63" width="6" height="18" rx="1" fill="#38bdf8" stroke="#e0f2fe" stroke-width="0.75"/>
+    <rect x="96" y="63" width="6" height="18" rx="1" fill="#38bdf8" stroke="#e0f2fe" stroke-width="0.75"/>
+    <circle cx="38" cy="46" r="2.5" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="90" cy="46" r="2.5" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="38" cy="98" r="2.5" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="90" cy="98" r="2.5" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+  </g>
+
+  <g id="part-energy-coil-ring" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="22" data-blend="normal" data-motion="spin-cw">
+    <circle cx="64" cy="72" r="29" fill="url(#mem-kapton-gold)" stroke="#050811" stroke-width="1.75"/>
+    <circle cx="64" cy="72" r="23" fill="#091326" stroke="#38bdf8" stroke-width="1.4"/>
+    <path d="M44,52 L84,92 M84,52 L44,92" stroke="#67e8f9" stroke-width="0.95"/>
+  </g>
+
+  <g id="part-barrel-tube-R" data-pivot="75,54" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <rect x="65" y="14" width="20" height="40" rx="2" fill="#091326" stroke="#050811" stroke-width="1.65"/>
+    <!-- 2 枚电光蓝 EMP 电磁脉冲战斗部与特斯拉放电环 -->
+    <polygon points="71,6 75,16 67,16" fill="#38bdf8" stroke="#ffffff" stroke-width="0.75"/>
+    <polygon points="79,6 83,16 75,16" fill="#38bdf8" stroke="#ffffff" stroke-width="0.75"/>
+    <path d="M65,20 L85,20 M65,26 L85,26 M65,32 L85,32" stroke="#67e8f9" stroke-width="1.4"/>
+    <rect x="67" y="36" width="16" height="14" rx="1" fill="url(#mem-ceramic-white)" stroke="#1e293b" stroke-width="0.9"/>
+    <line x1="75" y1="36" x2="75" y2="50" stroke="#475569" stroke-width="0.75"/>
+  </g>
+
+  <g id="part-barrel-tube-L" data-pivot="53,54" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <rect x="43" y="14" width="20" height="40" rx="2" fill="#091326" stroke="#050811" stroke-width="1.65"/>
+    <!-- 2 枚电光蓝 EMP 电磁脉冲战斗部与特斯拉放电环 -->
+    <polygon points="49,6 53,16 45,16" fill="#38bdf8" stroke="#ffffff" stroke-width="0.75"/>
+    <polygon points="57,6 61,16 53,16" fill="#38bdf8" stroke="#ffffff" stroke-width="0.75"/>
+    <path d="M43,20 L63,20 M43,26 L63,26 M43,32 L63,32" stroke="#67e8f9" stroke-width="1.4"/>
+    <rect x="45" y="36" width="16" height="14" rx="1" fill="url(#mem-ceramic-white)" stroke="#1e293b" stroke-width="0.9"/>
+    <line x1="53" y1="36" x2="53" y2="50" stroke="#475569" stroke-width="0.75"/>
+  </g>
+
+  <g id="part-rail-jaw-R" data-pivot="86,52" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-right">
+    <polygon points="84,18 97,26 99,60 84,62" fill="url(#mem-ceramic-white)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <rect x="87" y="27" width="7" height="25" rx="1" fill="#1e1b4b" stroke="#38bdf8" stroke-width="0.85"/>
+    <path d="M87,33 L94,33 M87,39 L94,39 M87,45 L94,45" stroke="#67e8f9" stroke-width="0.9"/>
+    <circle cx="86" cy="52" r="2.4" fill="#091326" stroke="#67e8f9" stroke-width="0.8"/>
+  </g>
+
+  <g id="part-rail-jaw-L" data-pivot="42,52" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-left">
+    <polygon points="44,18 31,26 29,60 44,62" fill="url(#mem-ceramic-white)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <rect x="34" y="27" width="7" height="25" rx="1" fill="#1e1b4b" stroke="#38bdf8" stroke-width="0.85"/>
+    <path d="M34,33 L41,33 M34,39 L41,39 M34,45 L41,45" stroke="#67e8f9" stroke-width="0.9"/>
+    <circle cx="42" cy="52" r="2.4" fill="#091326" stroke="#67e8f9" stroke-width="0.8"/>
+  </g>
+
+  <g id="part-turret-housing" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <polygon points="41,48 87,48 93,64 89,94 76,102 52,102 39,94 35,64" fill="url(#mem-ti-armor)" stroke="#050811" stroke-width="2.2" stroke-linejoin="round"/>
+    <rect x="45" y="53" width="38" height="27" rx="2" fill="url(#mem-kapton-gold)" stroke="#451a03" stroke-width="1.1"/>
+    <circle cx="64" cy="66.5" r="10" fill="#091326" stroke="#e2e8f0" stroke-width="1.35"/>
+    <circle cx="64" cy="66.5" r="7" fill="url(#mem-emp-glow)"/>
+    <path d="M57,66.5 L61,62 L66,71 L71,66.5" fill="none" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round"/>
+    <!-- 3 枚深冷电容电压表盘 -->
+    <circle cx="53" cy="90" r="3.5" fill="#041326" stroke="#e0f2fe" stroke-width="0.9"/>
+    <circle cx="64" cy="90" r="3.5" fill="#041326" stroke="#e0f2fe" stroke-width="0.9"/>
+    <circle cx="75" cy="90" r="3.5" fill="#041326" stroke="#e0f2fe" stroke-width="0.9"/>
+  </g>
+
+  <g id="part-light-rim-turret" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M35,64 L41,48 L87,48 L93,64" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.92"/>
+    <path d="M45,53 L83,53" fill="none" stroke="#67e8f9" stroke-width="1.2" opacity="0.9"/>
+  </g>
+
+  <g id="part-aura-corona-top" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <circle cx="64" cy="66.5" r="14" fill="url(#mem-emp-glow)" opacity="0.7"/>
+    <path d="M64,53 L64,80 M51,66.5 L77,66.5" stroke="#ffffff" stroke-width="0.85" stroke-linecap="round" opacity="0.9"/>
+  </g>
+</svg>

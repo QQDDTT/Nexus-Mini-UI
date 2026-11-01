@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="cGoldFrame" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff2bd"/>
+      <stop offset="20%" stop-color="#e2ba62"/>
+      <stop offset="50%" stop-color="#9e7220"/>
+      <stop offset="78%" stop-color="#ebd089"/>
+      <stop offset="100%" stop-color="#5e400a"/>
+    </linearGradient>
+    <linearGradient id="cMeteorite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#525b6b"/>
+      <stop offset="50%" stop-color="#6c7687"/>
+      <stop offset="100%" stop-color="#2e3440"/>
+    </linearGradient>
+    <linearGradient id="brassCap" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f7dfa0"/>
+      <stop offset="30%" stop-color="#b88c38"/>
+      <stop offset="70%" stop-color="#5c400e"/>
+      <stop offset="100%" stop-color="#a87c28"/>
+    </linearGradient>
+    <linearGradient id="glassCylinder" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.42"/>
+      <stop offset="18%" stop-color="#93c5fd" stop-opacity="0.15"/>
+      <stop offset="55%" stop-color="#09101d" stop-opacity="0.55"/>
+      <stop offset="88%" stop-color="#38bdf8" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.3"/>
+    </linearGradient>
+    <pattern id="cWidman" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M-8,8 L56,44 M-8,36 L56,0 M8,-8 L40,56 M36,-8 L8,56" stroke="#b0bcd0" stroke-width="1.1" opacity="0.42"/>
+      <path d="M-4,20 L52,52 M20,-4 L48,52" stroke="#1e222a" stroke-width="1.2" opacity="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Corner Hex-Bolt Ears -->
+  <g fill="url(#cGoldFrame)" stroke="#3b2604" stroke-width="1.2">
+    <circle cx="14" cy="14" r="7.5"/>
+    <circle cx="266" cy="14" r="7.5"/>
+    <circle cx="14" cy="106" r="7.5"/>
+    <circle cx="266" cy="106" r="7.5"/>
+  </g>
+
+  <!-- Outer 24K Gold Frame -->
+  <polygon points="22,4 258,4 276,22 276,98 258,116 22,116 4,98 4,22" fill="url(#cGoldFrame)" stroke="#2b1b02" stroke-width="1.8"/>
+  <polygon points="25,10 255,10 270,25 270,95 255,110 25,110 10,95 10,25" fill="#1e2430" stroke="#fde68a" stroke-width="0.9"/>
+
+  <!-- Recessed Silver Widmanstätten Meteorite Well -->
+  <polygon points="28,17 252,17 263,28 263,92 252,103 28,103 17,92 17,28" fill="url(#cMeteorite)"/>
+  <polygon points="28,17 252,17 263,28 263,92 252,103 28,103 17,92 17,28" fill="url(#cWidman)"/>
+
+  <!-- Horizontal Cylindrical Borosilicate Glass Specimen Capsule Tube inside the Vault (Matches bottom-left of concept art) -->
+  <!-- Capsule Drop Shadow -->
+  <rect x="34" y="34" width="212" height="58" rx="28" fill="#000000" opacity="0.65"/>
+  <!-- Glass Cylinder Body -->
+  <rect x="36" y="28" width="208" height="56" rx="28" fill="url(#glassCylinder)" stroke="#94a3b8" stroke-width="1.2"/>
+  <!-- Left Domed Brass/Gold Vacuum End-Cap -->
+  <path d="M 56,27 L 76,27 L 76,85 L 56,85 A 28,29 0 0,1 56,27 Z" fill="url(#brassCap)" stroke="#2b1b02" stroke-width="1.2"/>
+  <rect x="72" y="26" width="6" height="60" rx="2" fill="#f7dfa0" stroke="#422c06" stroke-width="0.9"/>
+  <!-- Right Domed Glass End-Highlight -->
+  <path d="M 216,32 A 24,24 0 0,1 216,80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.45"/>
+  <!-- Top Cylindrical Specular Reflection Strip -->
+  <rect x="82" y="33" width="136" height="6" rx="3" fill="#ffffff" opacity="0.38"/>
+</svg>
+

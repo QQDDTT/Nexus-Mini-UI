@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="weapon-turret-glacies-rig" data-root-anchor="64,74" data-has-aura="true" data-faction="glacies">
+  <defs>
+    <radialGradient id="wtg-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#01060d" stop-opacity="0.86" />
+      <stop offset="65%" stop-color="#030b14" stop-opacity="0.44" />
+      <stop offset="100%" stop-color="#030b14" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="wtg-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#67e8f9" stop-opacity="0.34" />
+      <stop offset="55%" stop-color="#818cf8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#030b14" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="wtg-ceramic" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="28%" stop-color="#e2e8f0" />
+      <stop offset="62%" stop-color="#94a3b8" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="wtg-sapphire" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="32%" stop-color="#38bdf8" />
+      <stop offset="68%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <radialGradient id="wtg-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#67e8f9" />
+      <stop offset="80%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#030b14" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <g id="part-shadow-cast" data-pivot="64,74" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="76" rx="54" ry="50" fill="url(#wtg-shadow)" />
+  </g>
+  <g id="part-aura-ring-outer" data-pivot="64,72" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="72" r="54" fill="url(#wtg-aura)" />
+    <path fill="none" stroke="#67e8f9" stroke-width="1.4" stroke-opacity="0.82" d="M112.31,87.7 A50.8,50.8 0 0,1 79.7,120.31 M48.3,120.31 A50.8,50.8 0 0,1 15.69,87.7 M15.69,56.3 A50.8,50.8 0 0,1 48.3,23.69 M79.7,23.69 A50.8,50.8 0 0,1 112.31,56.3" stroke-linecap="square" />
+    <polygon points="64,18.5 68,25 60,25" fill="#67e8f9" />
+    <polygon points="64,125.5 68,119 60,119" fill="#67e8f9" />
+  </g>
+  <g id="part-aura-ring-inner" data-pivot="64,72" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#818cf8" stroke-width="1.0" stroke-opacity="0.78" d="M101,84.02 A38.9,38.9 0 0,1 66.71,110.81 M35.09,98.03 A38.9,38.9 0 0,1 29.04,54.95 M55.91,33.95 A38.9,38.9 0 0,1 96.25,50.25" stroke-linecap="square" />
+  </g>
+  <g id="part-pedestal-base" data-pivot="64,72" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="64,26 104,49 104,95 64,118 24,95 24,49" fill="url(#wtg-ceramic)" stroke="#38bdf8" stroke-width="2.2" />
+    <polygon points="64,33 96,52 96,92 64,111 32,92 32,52" fill="#071f36" stroke="#67e8f9" stroke-width="1.1" />
+    <path d="M32 52 L96 92 M96 52 L32 92" stroke="#38bdf8" stroke-width="0.75" stroke-opacity="0.6" />
+  </g>
+  <g id="part-energy-coil-ring" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="22" data-blend="normal" data-motion="spin-cw">
+    <polygon points="64,42 90,57 90,87 64,102 38,87 38,57" fill="none" stroke="#67e8f9" stroke-width="1.8" />
+    <circle cx="64" cy="42" r="2.5" fill="#ffffff" />
+    <circle cx="64" cy="102" r="2.5" fill="#ffffff" />
+  </g>
+  <g id="part-barrel-tube-R" data-pivot="75,58" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <polygon points="70,12 80,18 80,58 70,58" fill="url(#wtg-sapphire)" stroke="#ffffff" stroke-width="1.4" />
+    <line x1="75" y1="16" x2="75" y2="54" stroke="#67e8f9" stroke-width="2.0" />
+    <line x1="71" y1="28" x2="79" y2="28" stroke="#ffffff" stroke-width="0.8" />
+    <line x1="71" y1="40" x2="79" y2="40" stroke="#ffffff" stroke-width="0.8" />
+  </g>
+  <g id="part-barrel-tube-L" data-pivot="53,58" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <polygon points="58,12 48,18 48,58 58,58" fill="url(#wtg-sapphire)" stroke="#ffffff" stroke-width="1.4" />
+    <line x1="53" y1="16" x2="53" y2="54" stroke="#67e8f9" stroke-width="2.0" />
+    <line x1="49" y1="28" x2="57" y2="28" stroke="#ffffff" stroke-width="0.8" />
+    <line x1="49" y1="40" x2="57" y2="40" stroke="#ffffff" stroke-width="0.8" />
+  </g>
+  <g id="part-rail-jaw-R" data-pivot="83,48" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-right">
+    <polygon points="82,50 98,20 86,14 78,40" fill="url(#wtg-ceramic)" stroke="#67e8f9" stroke-width="1.3" />
+    <circle cx="88" cy="24" r="2.2" fill="#67e8f9" />
+  </g>
+  <g id="part-rail-jaw-L" data-pivot="45,48" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-left">
+    <polygon points="46,50 30,20 42,14 50,40" fill="url(#wtg-ceramic)" stroke="#67e8f9" stroke-width="1.3" />
+    <circle cx="40" cy="24" r="2.2" fill="#67e8f9" />
+  </g>
+  <g id="part-turret-housing" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <polygon points="64,44 92,62 84,94 44,94 36,62" fill="url(#wtg-ceramic)" stroke="#38bdf8" stroke-width="2.2" />
+    <polygon points="64,50 84,64 78,88 50,88 44,64" fill="url(#wtg-sapphire)" stroke="#ffffff" stroke-width="1.1" />
+    <circle cx="64" cy="72" r="11" fill="url(#wtg-core)" stroke="#ffffff" stroke-width="1.4" />
+    <polygon points="64,63 72,72 64,81 56,72" fill="#ffffff" />
+  </g>
+  <g id="part-light-rim-turret" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M36 62 L64 44 L92 62" stroke="#ffffff" stroke-width="2.0" stroke-linecap="round" />
+  </g>
+  <g id="part-aura-corona-top" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <circle cx="53" cy="12" r="3" fill="#ffffff" />
+    <circle cx="75" cy="12" r="3" fill="#ffffff" />
+  </g>
+</svg>

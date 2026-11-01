@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="station-core-glacies-rig" data-root-anchor="64,64" data-has-aura="true" data-faction="glacies">
+  <defs>
+    <radialGradient id="scg-cast-shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#01060d" stop-opacity="0.88" />
+      <stop offset="65%" stop-color="#030b14" stop-opacity="0.46" />
+      <stop offset="100%" stop-color="#030b14" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="scg-aura-field" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#67e8f9" stop-opacity="0.35" />
+      <stop offset="48%" stop-color="#38bdf8" stop-opacity="0.18" />
+      <stop offset="82%" stop-color="#818cf8" stop-opacity="0.10" />
+      <stop offset="100%" stop-color="#030b14" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="scg-cryo-carbon" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="22%" stop-color="#334155" />
+      <stop offset="55%" stop-color="#071f36" />
+      <stop offset="88%" stop-color="#030b14" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="scg-ring-plate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="22%" stop-color="#bae6fd" />
+      <stop offset="52%" stop-color="#0284c7" />
+      <stop offset="85%" stop-color="#071f36" />
+      <stop offset="100%" stop-color="#312e81" />
+    </linearGradient>
+    <linearGradient id="scg-cherenkov-coil" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="32%" stop-color="#67e8f9" />
+      <stop offset="72%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <radialGradient id="scg-core-sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="28%" stop-color="#e0f2fe" />
+      <stop offset="56%" stop-color="#67e8f9" />
+      <stop offset="82%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#312e81" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="scg-rim-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+      <stop offset="45%" stop-color="#bae6fd" stop-opacity="0.90" />
+      <stop offset="80%" stop-color="#67e8f9" stop-opacity="0.80" />
+      <stop offset="100%" stop-color="#818cf8" stop-opacity="0" />
+    </linearGradient>
+    <pattern id="scg-carbon-weave" width="6" height="6" patternUnits="userSpaceOnUse">
+      <path d="M0 3 L3 0 M3 6 L6 3" stroke="#bae6fd" stroke-width="0.38" stroke-opacity="0.28" />
+      <path d="M0 0 L6 6" stroke="#020617" stroke-width="0.45" stroke-opacity="0.45" />
+    </pattern>
+  </defs>
+
+  <!-- [光影层 1] 空间站母核底层深空接触阴影 (z=1, multiply) -->
+  <g id="part-shadow-cast" data-pivot="64,66" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <circle cx="64" cy="66" r="61" fill="url(#scg-cast-shadow)" />
+  </g>
+
+  <!-- [光影层 2A] 全屏级六角护盾外环：顺时针旋转深冷科研泊位与行星护盾场 (z=4, screen) -->
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="62" fill="url(#scg-aura-field)" />
+    <path fill="none" stroke="#67e8f9" stroke-width="1.5" stroke-opacity="0.82" d="M119.45,82.02 A58.3,58.3 0 0,1 82.02,119.45 M45.98,119.45 A58.3,58.3 0 0,1 8.55,82.02 M8.55,45.98 A58.3,58.3 0 0,1 45.98,8.55 M82.02,8.55 A58.3,58.3 0 0,1 119.45,45.98" stroke-linecap="square" />
+    <path fill="none" stroke="#818cf8" stroke-width="0.75" stroke-opacity="0.65" d="M114.12,80.29 A52.7,52.7 0 0,1 80.29,114.12 M47.71,114.12 A52.7,52.7 0 0,1 13.88,80.29 M13.88,47.71 A52.7,52.7 0 0,1 47.71,13.88 M80.29,13.88 A52.7,52.7 0 0,1 114.12,47.71" stroke-linecap="square" />
+    <line x1="118.3" y1="64" x2="125.3" y2="64" stroke="#67e8f9" stroke-width="1.3" stroke-opacity="0.88" />
+    <line x1="102.4" y1="102.4" x2="107.3" y2="107.3" stroke="#818cf8" stroke-width="1.3" stroke-opacity="0.88" />
+    <line x1="64" y1="118.3" x2="64" y2="125.3" stroke="#67e8f9" stroke-width="1.3" stroke-opacity="0.88" />
+    <line x1="25.6" y1="102.4" x2="20.7" y2="107.3" stroke="#818cf8" stroke-width="1.3" stroke-opacity="0.88" />
+    <line x1="9.7" y1="64" x2="2.7" y2="64" stroke="#67e8f9" stroke-width="1.3" stroke-opacity="0.88" />
+    <line x1="25.6" y1="25.6" x2="20.7" y2="20.7" stroke="#818cf8" stroke-width="1.3" stroke-opacity="0.88" />
+    <line x1="64" y1="9.7" x2="64" y2="2.7" stroke="#67e8f9" stroke-width="1.3" stroke-opacity="0.88" />
+    <line x1="102.4" y1="25.6" x2="107.3" y2="20.7" stroke="#818cf8" stroke-width="1.3" stroke-opacity="0.88" />
+    <polygon points="64,2.4 68.2,9.7 60,9.7" fill="#67e8f9" fill-opacity="0.92" />
+    <polygon points="64,125.6 68.2,118.3 60,118.3" fill="#67e8f9" fill-opacity="0.92" />
+    <polygon points="2.4,64 9.7,68.2 9.7,60" fill="#818cf8" fill-opacity="0.92" />
+    <polygon points="125.6,64 118.3,68.2 118.3,60" fill="#818cf8" fill-opacity="0.92" />
+  </g>
+
+  <!-- [光影层 2B] 全屏级六角护盾内环：逆时针旋转切伦科夫谐振网 (z=5, screen) -->
+  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path fill="none" stroke="#818cf8" stroke-width="0.95" stroke-opacity="0.76" d="M106.42,77.78 A44.6,44.6 0 0,1 67.11,108.49 M30.86,93.84 A44.6,44.6 0 0,1 23.91,44.45 M54.73,20.37 A44.6,44.6 0 0,1 100.98,39.06" stroke-linecap="square" />
+    <rect x="107" y="62.4" width="3.2" height="3.2" fill="#67e8f9" />
+    <rect x="84.7" y="101" width="3.2" height="3.2" fill="#818cf8" />
+    <rect x="40.1" y="101" width="3.2" height="3.2" fill="#67e8f9" />
+    <rect x="17.8" y="62.4" width="3.2" height="3.2" fill="#818cf8" />
+    <rect x="40.1" y="23.8" width="3.2" height="3.2" fill="#67e8f9" />
+    <rect x="84.7" y="23.8" width="3.2" height="3.2" fill="#818cf8" />
+  </g>
+
+  <!-- [骨骼部件 1] 外层顺时针旋转八角深冷碳纤防御环 (z=15) -->
+  <g id="part-defense-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="15" data-blend="normal" data-motion="spin-cw">
+    <polygon points="44.5,13 83.5,13 115,44.5 115,83.5 83.5,115 44.5,115 13,83.5 13,44.5" fill="url(#scg-cryo-carbon)" stroke="#67e8f9" stroke-width="2.2" stroke-linejoin="miter" stroke-miterlimit="3" />
+    <polygon points="44.5,13 83.5,13 115,44.5 115,83.5 83.5,115 44.5,115 13,83.5 13,44.5" fill="url(#scg-carbon-weave)" />
+    <polygon points="48,22 80,22 106,48 106,80 80,106 48,106 22,80 22,48" fill="#030b14" stroke="#bae6fd" stroke-width="1.2" />
+    <path d="M44.5 13 L48 22 M83.5 13 L80 22 M115 44.5 L106 48 M115 83.5 L106 80 M83.5 115 L80 106 M44.5 115 L48 106 M13 83.5 L22 80 M13 44.5 L22 48" stroke="url(#scg-cherenkov-coil)" stroke-width="1.6" />
+  </g>
+
+  <g id="part-aux-stabilizer-1" data-pivot="83.8,83.8" data-parent="root" data-z-index="17" data-blend="normal">
+    <circle cx="83.8" cy="83.8" r="3.8" fill="#030b14" stroke="#67e8f9" stroke-width="1.2" />
+    <path d="M79.8 83.8 L83.8 77.8 L87.8 83.8 L83.8 89.8 Z" fill="url(#scg-cherenkov-coil)" stroke="#ffffff" stroke-width="0.7" />
+  </g>
+  <g id="part-aux-stabilizer-2" data-pivot="64,92" data-parent="root" data-z-index="18" data-blend="normal">
+    <circle cx="64" cy="92" r="3.8" fill="#030b14" stroke="#67e8f9" stroke-width="1.2" />
+    <path d="M60 92 L64 86 L68 92 L64 98 Z" fill="url(#scg-cherenkov-coil)" stroke="#ffffff" stroke-width="0.7" />
+  </g>
+  <g id="part-aux-stabilizer-3" data-pivot="44.2,83.8" data-parent="root" data-z-index="19" data-blend="normal">
+    <circle cx="44.2" cy="83.8" r="3.8" fill="#030b14" stroke="#67e8f9" stroke-width="1.2" />
+    <path d="M40.2 83.8 L44.2 77.8 L48.2 83.8 L44.2 89.8 Z" fill="url(#scg-cherenkov-coil)" stroke="#ffffff" stroke-width="0.7" />
+  </g>
+  <g id="part-aux-stabilizer-4" data-pivot="36,64" data-parent="root" data-z-index="20" data-blend="normal">
+    <circle cx="36" cy="64" r="3.8" fill="#030b14" stroke="#67e8f9" stroke-width="1.2" />
+    <path d="M32 64 L36 58 L40 64 L36 70 Z" fill="url(#scg-cherenkov-coil)" stroke="#ffffff" stroke-width="0.7" />
+  </g>
+
+  <!-- [骨骼部件 2] 内层逆时针旋转超导蓝宝石能源环 (z=22) -->
+  <g id="part-energy-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="22" data-blend="normal" data-motion="spin-ccw">
+    <circle cx="64" cy="64" r="36" stroke="url(#scg-ring-plate)" stroke-width="7.5" />
+    <path fill="none" stroke="#67e8f9" stroke-width="1.3" stroke-opacity="0.82" d="M101.57,76.21 A39.5,39.5 0 0,1 66.76,103.4 M34.65,90.43 A39.5,39.5 0 0,1 28.5,46.68 M55.79,25.36 A39.5,39.5 0 0,1 96.75,41.91" stroke-linecap="square" />
+    <path fill="none" stroke="#818cf8" stroke-width="0.8" stroke-opacity="0.82" d="M94.91,74.04 A32.5,32.5 0 0,1 66.27,96.42 M39.85,85.75 A32.5,32.5 0 0,1 34.79,49.75 M57.24,32.21 A32.5,32.5 0 0,1 90.94,45.83" stroke-linecap="square" />
+  </g>
+
+  <!-- [骨骼部件 3~6] 4 片展开式深冷蓝宝石散热晶翼 (z=28) -->
+  <g id="part-radiator-wing-SW" data-pivot="46,82" data-parent="part-central-reactor" data-z-index="28" data-blend="normal" data-motion="deploy-wing">
+    <polygon points="23,105 46,92 46,82 36,82" fill="url(#scg-ring-plate)" stroke="#67e8f9" stroke-width="1.2" />
+    <circle cx="46" cy="82" r="3.6" fill="url(#scg-cherenkov-coil)" />
+  </g>
+  <g id="part-radiator-wing-SE" data-pivot="82,82" data-parent="part-central-reactor" data-z-index="28" data-blend="normal" data-motion="deploy-wing">
+    <polygon points="105,105 82,92 82,82 92,82" fill="url(#scg-ring-plate)" stroke="#67e8f9" stroke-width="1.2" />
+    <circle cx="82" cy="82" r="3.6" fill="url(#scg-cherenkov-coil)" />
+  </g>
+  <g id="part-radiator-wing-NW" data-pivot="46,46" data-parent="part-central-reactor" data-z-index="28" data-blend="normal" data-motion="deploy-wing">
+    <polygon points="23,23 46,36 46,46 36,46" fill="url(#scg-ring-plate)" stroke="#67e8f9" stroke-width="1.2" />
+    <circle cx="46" cy="46" r="3.6" fill="url(#scg-cherenkov-coil)" />
+  </g>
+  <g id="part-radiator-wing-NE" data-pivot="82,46" data-parent="part-central-reactor" data-z-index="28" data-blend="normal" data-motion="deploy-wing">
+    <polygon points="105,23 82,36 82,46 92,46" fill="url(#scg-ring-plate)" stroke="#67e8f9" stroke-width="1.2" />
+    <circle cx="82" cy="46" r="3.6" fill="url(#scg-cherenkov-coil)" />
+  </g>
+
+  <!-- [骨骼部件 7] 中央切伦科夫深冷反应堆母核基座 (z=34) -->
+  <g id="part-central-reactor" data-pivot="64,64" data-parent="root" data-z-index="34" data-blend="normal" data-motion="pulse-core">
+    <polygon points="64,37 87,50.5 87,77.5 64,91 41,77.5 41,50.5" fill="url(#scg-cryo-carbon)" stroke="url(#scg-cherenkov-coil)" stroke-width="2.2" />
+    <circle cx="64" cy="64" r="18.5" fill="url(#scg-core-sun)" stroke="#ffffff" stroke-width="1.3" />
+    <path d="M64 45 L64 83 M45 64 L83 64" stroke="#ffffff" stroke-width="0.75" stroke-opacity="0.88" />
+    <circle cx="64" cy="64" r="7.5" fill="#ffffff" />
+  </g>
+
+  <!-- [骨骼部件 8~11] 4 座独立 360° 深冷点防御 CIWS 副炮塔 (z=40) -->
+  <g id="part-ciws-turret-E" data-pivot="110,64" data-parent="part-defense-ring-outer" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <rect x="112" y="60.8" width="11" height="2.4" rx="0.8" fill="#67e8f9" />
+    <rect x="112" y="64.8" width="11" height="2.4" rx="0.8" fill="#67e8f9" />
+    <circle cx="110" cy="64" r="6.2" fill="#071f36" stroke="url(#scg-cherenkov-coil)" stroke-width="1.8" />
+    <circle cx="110" cy="64" r="2.6" fill="#67e8f9" />
+  </g>
+  <g id="part-ciws-turret-W" data-pivot="18,64" data-parent="part-defense-ring-outer" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <rect x="5" y="60.8" width="11" height="2.4" rx="0.8" fill="#67e8f9" />
+    <rect x="5" y="64.8" width="11" height="2.4" rx="0.8" fill="#67e8f9" />
+    <circle cx="18" cy="64" r="6.2" fill="#071f36" stroke="url(#scg-cherenkov-coil)" stroke-width="1.8" />
+    <circle cx="18" cy="64" r="2.6" fill="#67e8f9" />
+  </g>
+  <g id="part-ciws-turret-S" data-pivot="64,110" data-parent="part-defense-ring-outer" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <rect x="60.8" y="112" width="2.4" height="11" rx="0.8" fill="#67e8f9" />
+    <rect x="64.8" y="112" width="2.4" height="11" rx="0.8" fill="#67e8f9" />
+    <circle cx="64" cy="110" r="6.2" fill="#071f36" stroke="url(#scg-cherenkov-coil)" stroke-width="1.8" />
+    <circle cx="64" cy="110" r="2.6" fill="#67e8f9" />
+  </g>
+  <g id="part-ciws-turret-N" data-pivot="64,18" data-parent="part-defense-ring-outer" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <rect x="60.8" y="5" width="2.4" height="11" rx="0.8" fill="#67e8f9" />
+    <rect x="64.8" y="5" width="2.4" height="11" rx="0.8" fill="#67e8f9" />
+    <circle cx="64" cy="18" r="6.2" fill="#071f36" stroke="url(#scg-cherenkov-coil)" stroke-width="1.8" />
+    <circle cx="64" cy="18" r="2.6" fill="#67e8f9" />
+  </g>
+
+  <!-- [光影层 4] 空间站八角环与核心凝霜边缘高光贴图 (z=45, plus-lighter) -->
+  <g id="part-light-rim-station" data-pivot="64,64" data-parent="part-defense-ring-outer" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M13 44.5 L44.5 13 L83.5 13 L115 44.5" stroke="url(#scg-rim-light)" stroke-width="2.2" stroke-linecap="round" />
+    <path d="M41 50.5 L64 37 L87 50.5" stroke="#ffffff" stroke-width="1.3" />
+  </g>
+
+  <!-- [光影层 5] 顶层全息护盾折射电弧与冰晶辉光冕贴图 (z=65, screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <path d="M30 30 L40 24 L36 16 M98 30 L88 24 L92 16 M30 98 L40 104 L36 112 M98 98 L88 104 L92 112" stroke="#67e8f9" stroke-width="1.3" stroke-linecap="round" />
+    <circle cx="44.5" cy="13" r="2.3" fill="#ffffff" />
+    <circle cx="83.5" cy="13" r="2.3" fill="#ffffff" />
+  </g>
+</svg>
+

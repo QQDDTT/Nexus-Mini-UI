@@ -1,237 +1,727 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-faction="helios">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#050914" />
   <title>星轨防线 · STAR DEFENDER | Nexus-Mini</title>
   <link rel="icon" type="image/svg+xml" href="../assets/star-defender/icon.svg" />
-  <link rel="stylesheet" href="../assets/star-defender/style.css" />
+  <link rel="stylesheet" href="../assets/star-defender/style.css?v=20261102a" />
   <style>
     :root {
       --void: #050914;
-      --panel: rgba(11, 19, 41, 0.78);
-      --border: rgba(0, 240, 255, 0.24);
+      --panel: rgba(10, 20, 42, 0.84);
+      --border: rgba(56, 189, 248, 0.36);
       --cyan: #00f0ff;
       --gold: #fbbf24;
-      --red: #ef4444;
+      --red: #f43f5e;
       --green: #10b981;
+      --purple: #a855f7;
       --text: #f8fafc;
       --muted: #94a3b8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
     html, body {
       width: 100vw; height: 100dvh; overflow: hidden; overscroll-behavior: none;
-      background: var(--void); color: var(--text);
+      background: var(--sd-bg-void, #050914); color: var(--sd-text-telemetry, #f8fafc);
       font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     #space-canvas {
       position: fixed; inset: 0; width: 100%; height: 100%; display: block;
+      z-index: 1;
       touch-action: none;
     }
-    /* Top HUD Bar */
-    .top-hud {
+
+    /* ===== 第三层 · 4角无底框航宇遥测 HUD (4-Corner Frameless Aerospace Telemetry HUD) ===== */
+    .hud-top-bar {
       position: fixed;
-      top: max(10px, env(safe-area-inset-top));
-      left: max(14px, env(safe-area-inset-left));
-      right: 120px;
+      top: max(8px, env(safe-area-inset-top));
+      left: max(12px, env(safe-area-inset-left));
+      right: 176px;
       z-index: 100;
-      display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
       pointer-events: none;
     }
     .hud-pill {
       pointer-events: auto;
-      background: var(--panel);
+      background: var(--sd-hud-deck-bg, rgba(7, 15, 34, 0.84));
       backdrop-filter: blur(10px);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 6px 10px;
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.74rem;
+      border: 1px solid var(--sd-hud-border-cyan, rgba(56, 189, 248, 0.38));
+      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+      padding: 5px 9px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
       white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
     }
-    .hud-val { font-weight: 800; color: var(--cyan); }
-    .hud-val.gold { color: var(--gold); }
-    /* Bottom Controls */
-    .stick-zone {
+    .hud-val { font-weight: 800; font-family: 'Consolas', monospace; color: var(--sd-accent-ion-cyan, #00f0ff); }
+    .hud-val.gold { color: var(--sd-accent-warp-gold, #fbbf24); }
+    .hud-val.green { color: #10b981; }
+    .hud-val.red { color: #f43f5e; }
+
+    /* Top-Right Mini Radar Pod (placed cleanly to the left of .nx-return-pill) */
+    .radar-pod {
       position: fixed;
-      bottom: max(18px, env(safe-area-inset-bottom));
-      left: max(22px, env(safe-area-inset-left));
-      width: 132px; height: 132px;
-      border-radius: 50%;
-      background: rgba(13, 20, 36, 0.55);
-      border: 1.5px solid rgba(0, 240, 255, 0.35);
-      z-index: 120;
-      display: flex; align-items: center; justify-content: center;
-      touch-action: none;
-    }
-    .stick-knob {
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #00f0ff 0%, #0284c7 100%);
-      box-shadow: 0 0 16px rgba(0, 240, 255, 0.55);
-      pointer-events: none;
-      transition: transform 0.04s linear;
-    }
-    .right-controls {
-      position: fixed;
-      bottom: max(18px, env(safe-area-inset-bottom));
-      right: max(18px, env(safe-area-inset-right));
-      z-index: 120;
-      display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
-    }
-    .action-row { display: flex; gap: 8px; }
-    .tac-btn {
-      min-height: 46px; min-width: 46px;
-      padding: 0 14px;
-      border-radius: 10px;
-      background: var(--panel);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 0.78rem;
-      font-weight: 700;
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      top: max(8px, env(safe-area-inset-top));
+      right: calc(max(14px, env(safe-area-inset-right)) + 82px);
+      z-index: 105;
+      width: 78px;
+      height: 54px;
+      background: var(--sd-hud-deck-bg, rgba(7, 15, 34, 0.86));
+      border: 1px solid var(--sd-hud-border-cyan, rgba(56, 189, 248, 0.42));
+      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+      padding: 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
     }
-    .tac-btn:active { transform: scale(0.95); }
-    .tac-btn.primary {
-      min-height: 58px; padding: 0 20px;
-      background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
-      border-color: #67e8f9;
-      color: #030712;
-      font-size: 0.9rem; font-weight: 900;
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+    #radar-canvas {
+      width: 72px;
+      height: 48px;
+      display: block;
     }
-    .tac-btn.gold { border-color: rgba(251, 191, 36, 0.5); color: var(--gold); }
-    /* Dockyard Modal */
-    .modal-backdrop {
-      position: fixed; inset: 0; z-index: 8000;
-      background: rgba(3, 7, 18, 0.86);
+
+    /* Boss Health Telemetry Banner */
+    .boss-hud-banner {
+      position: fixed;
+      top: calc(max(8px, env(safe-area-inset-top)) + 42px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 95;
+      width: min(360px, 58vw);
+      background: rgba(15, 8, 26, 0.88);
+      border: 1px solid #a855f7;
+      border-top: 2px solid #a3e635;
+      border-radius: 4px;
+      padding: 4px 10px;
+      display: none;
+      flex-direction: column;
+      gap: 3px;
+      pointer-events: none;
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.45);
+    }
+    .boss-hud-banner.active { display: flex; }
+    .boss-bar-track {
+      width: 100%; height: 6px; background: rgba(0,0,0,0.75); border-radius: 2px; overflow: hidden;
+    }
+    .boss-bar-fill {
+      height: 100%; width: 100%;
+      background: linear-gradient(90deg, #a855f7 0%, #ef4444 50%, #a3e635 100%);
+      transition: width 0.1s linear;
+    }
+
+    /* Bottom-Left FCS Vector Stick & Ship Telemetry Strip */
+    .left-fcs-cluster {
+      position: fixed;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      left: max(14px, env(safe-area-inset-left));
+      z-index: 120;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .stick-zone {
+      pointer-events: auto;
+      width: 122px; height: 122px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, rgba(8, 16, 34, 0.68) 75%);
+      border: 1.5px solid var(--sd-hud-border-cyan, rgba(56, 189, 248, 0.42));
+      display: flex; align-items: center; justify-content: center;
+      touch-action: none;
+      position: relative;
+      box-shadow: inset 0 0 18px rgba(0, 240, 255, 0.14);
+    }
+    .stick-zone::after {
+      content: 'FCS 矢量推进';
+      position: absolute;
+      bottom: -16px;
+      font-size: 0.56rem;
+      font-family: 'Consolas', monospace;
+      color: var(--sd-text-muted, #94a3b8);
+      letter-spacing: 0.04em;
+    }
+    .stick-knob {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--sd-accent-ion-cyan, #00f0ff) 0%, #0284c7 100%);
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+      pointer-events: none;
+      transition: transform 0.03s linear;
+    }
+
+    .ship-telemetry-box {
+      pointer-events: auto;
+      background: var(--sd-hud-deck-bg, rgba(7, 15, 34, 0.84));
+      border: 1px solid var(--sd-hud-border-cyan, rgba(56, 189, 248, 0.36));
+      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+      padding: 6px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 142px;
+      font-size: 0.62rem;
+    }
+    .tele-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      font-family: 'Consolas', monospace;
+    }
+    .tele-bar {
+      flex: 1; height: 5px; background: rgba(0,0,0,0.65); border-radius: 2px; overflow: hidden;
+    }
+    .tele-fill { height: 100%; transition: width 0.12s ease; }
+
+    /* Bottom-Right WCS Weapon Fire Control & Outfitting Cluster */
+    .right-wcs-cluster {
+      position: fixed;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      right: max(14px, env(safe-area-inset-right));
+      z-index: 120;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 7px;
+    }
+    .wcs-top-row, .wcs-bot-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .tac-btn {
+      min-height: 46px; min-width: 46px;
+      padding: 0 11px;
+      border-radius: 8px;
+      background: var(--sd-hud-deck-bg, rgba(9, 18, 38, 0.88));
       backdrop-filter: blur(10px);
-      display: none; align-items: center; justify-content: center; padding: 16px;
+      border: 1px solid var(--sd-hud-border-cyan, rgba(56, 189, 248, 0.42));
+      color: var(--sd-text-telemetry, #f8fafc);
+      font-size: 0.7rem;
+      font-weight: 800;
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    }
+    .tac-btn:active { transform: scale(0.95); }
+    .tac-btn.gold {
+      border-color: var(--sd-accent-warp-gold, #fbbf24);
+      color: var(--sd-accent-warp-gold, #fbbf24);
+    }
+    .tac-btn.primary {
+      width: 64px; height: 64px; min-width: 64px; min-height: 64px;
+      padding: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--sd-accent-ion-cyan, #00f0ff) 0%, #0284c7 100%);
+      border: 2px solid #ffffff;
+      color: #030712;
+      font-weight: 900;
+      box-shadow: 0 0 22px rgba(0, 240, 255, 0.48);
+    }
+
+    /* ===== 3栏正交剖面星际船坞改装弹窗 (#dockyard-modal) ===== */
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 8600;
+      background: rgba(3, 8, 18, 0.90);
+      backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center;
+      padding:
+        max(8px, env(safe-area-inset-top))
+        max(12px, env(safe-area-inset-right))
+        max(8px, env(safe-area-inset-bottom))
+        max(12px, env(safe-area-inset-left));
     }
     .modal-backdrop.active { display: flex; }
-    .modal-card {
-      max-width: 620px; width: 100%;
-      background: rgba(9, 14, 26, 0.96);
-      border: 1px solid rgba(0, 240, 255, 0.55);
-      border-radius: 16px;
-      padding: 18px 20px;
-      display: flex; flex-direction: column; gap: 12px;
-      max-height: 88dvh; overflow-y: auto;
+    .dockyard-shell {
+      width: 100%; max-width: 828px;
+      height: min(370px, 94dvh);
+      background-color: transparent;
+      background-image: url('../assets/star-defender/sprites/ui-console-chassis-frame.svg');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      border: none;
+      border-radius: 24px;
+      padding: 18px 22px;
+      display: flex; flex-direction: column; gap: 6px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95);
+      overflow: hidden;
     }
-    .hull-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-    }
-    .hull-card {
-      background: rgba(5, 8, 17, 0.75);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
-      padding: 10px 8px;
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-      cursor: pointer; text-align: center;
-    }
-    .hull-card.active {
-      border-color: var(--cyan);
-      background: rgba(0, 240, 255, 0.12);
-    }
-    .hull-card img { width: 48px; height: 48px; object-fit: contain; }
-    .upgrade-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-    }
-    .up-box {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 10px;
+    .dock-header {
       display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      border-bottom: 1px solid rgba(250, 204, 21, 0.35);
+      padding-bottom: 5px;
+      flex-shrink: 0;
     }
+    .dock-3col {
+      flex: 1; min-height: 0;
+      display: grid;
+      grid-template-columns: 1.05fr 1.25fr 1.05fr;
+      gap: 8px;
+    }
+    .dock-col {
+      background: rgba(6, 10, 18, 0.86);
+      border: 1px solid rgba(226, 186, 98, 0.42);
+      border-radius: 8px;
+      padding: 6px 8px;
+      display: flex; flex-direction: column; gap: 5px;
+      overflow-y: auto; overscroll-behavior: contain;
+      min-height: 0;
+    }
+    .dock-col-title {
+      font-size: 0.64rem; font-weight: 800; color: #fde047;
+      letter-spacing: 0.02em; border-bottom: 1px solid rgba(250,204,21,0.22); padding-bottom: 3px;
+      display: flex; justify-content: space-between; align-items: center;
+      white-space: nowrap; gap: 4px;
+    }
+    .dock-hull-item {
+      min-height: 46px;
+      padding: 5px 12px;
+      background-color: transparent;
+      background-image: url('../assets/star-defender/sprites/ui-meteorite-vault-box.svg');
+      background-size: 100% 100%;
+      border: none;
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      cursor: pointer;
+    }
+    .dock-mod-item {
+      min-height: 46px;
+      padding: 5px 12px;
+      background-color: transparent;
+      background-image: url('../assets/star-defender/sprites/ui-capsule-vault-box.svg');
+      background-size: 100% 100%;
+      border: none;
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      cursor: pointer;
+    }
+    .dock-hull-item.active, .dock-mod-item.active {
+      filter: brightness(1.16) drop-shadow(0 0 6px rgba(253, 224, 71, 0.5));
+    }
+    .dock-hull-item img, .dock-mod-item img {
+      width: 34px; height: 34px; object-fit: contain; flex-shrink: 0;
+      filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.9));
+    }
+    .cutaway-stage {
+      flex: 1;
+      background-color: transparent;
+      background-image: url('../assets/star-defender/sprites/ui-raden-astrolabe-stage.svg');
+      background-size: 100% 100%;
+      border: none;
+      border-radius: 8px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 6px; position: relative; min-height: 110px;
+    }
+    .cutaway-stage img.main-hull-blueprint {
+      width: 84px; height: 84px; object-fit: contain;
+      filter: drop-shadow(0 0 14px rgba(0, 240, 255, 0.35));
+    }
+    .hardpoint-sockets-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;
+    }
+    .hp-socket-box {
+      min-height: 44px;
+      padding: 3px 5px;
+      border-radius: 4px;
+      background: rgba(6, 13, 28, 0.9);
+      display: flex; align-items: center; gap: 4px;
+      font-size: 0.54rem; font-family: 'Consolas', monospace;
+      white-space: nowrap; overflow: hidden;
+      cursor: pointer;
+    }
+    .hp-socket-box > div { min-width: 0; overflow: hidden; }
+    .hp-socket-box > div > div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hp-socket-box.zone-w { border: 1px solid #ef4444; color: #fca5a5; }
+    .hp-socket-box.zone-b { border: 1px solid #10b981; color: #6ee7b7; }
+    .hp-socket-box.zone-p { border: 1px solid #a855f7; color: #d8b4fe; }
+    .hp-socket-box img { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+
     @media (max-width: 720px) {
-      .hull-grid { grid-template-columns: repeat(2, 1fr); }
-      .upgrade-grid { grid-template-columns: 1fr; }
+      .ship-telemetry-box { display: none; }
+      .stick-zone { width: 106px; height: 106px; }
+      .dock-3col { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
+  <div class="sd-cosmos-backdrop"></div>
   <canvas id="space-canvas"></canvas>
 
-  <!-- 顶部战术仪表盘 -->
-  <header class="top-hud">
-    <div class="hud-pill sd-reticle-panel">
-      <img src="../assets/star-defender/icon.svg" alt="" width="20" height="20" />
-      <span style="font-weight:800;">星轨防线</span>
-      <span class="hud-val" id="hud-wave">WAVE 1 / 100</span>
+  <!-- 顶部航宇遥测状态栏 -->
+  <header class="hud-top-bar">
+    <div class="hud-pill">
+      <img src="../assets/star-defender/icon.svg" alt="" width="18" height="18" />
+      <span id="hud-faction-tag" style="font-weight:800;color:var(--sd-accent-warp-gold);">赫利俄斯</span>
+      <span class="hud-val" id="hud-wave">WAVE 1/100</span>
     </div>
-    <div class="hud-pill sd-reticle-panel">
-      <span>护盾</span>
-      <span class="hud-val" id="hud-station">100%</span>
+    <div class="hud-pill">
+      <span>核心站</span>
+      <span class="hud-val green" id="hud-station">100%</span>
     </div>
-    <div class="hud-pill sd-reticle-panel">
+    <div class="hud-pill">
       <span>战功</span>
       <span class="hud-val gold" id="hud-merits">1,200</span>
     </div>
-    <div class="hud-pill sd-reticle-panel">
+    <div class="hud-pill">
       <span>残骸</span>
-      <span class="hud-val gold" id="hud-scraps">150</span>
+      <span class="hud-val" id="hud-scraps">150</span>
     </div>
-    <div class="hud-pill sd-reticle-panel">
-      <span id="hud-lan" style="color:var(--green);">AI 护航中</span>
+    <div class="hud-pill">
+      <span id="hud-lan" style="color:#10b981;">AI 僚机护航</span>
     </div>
   </header>
 
-  <!-- 左手牛顿矢量推进摇杆 -->
-  <div class="stick-zone" id="stick-zone">
-    <div class="stick-knob" id="stick-knob"></div>
+  <!-- 右上角双模战术雷达微缩窗 (点击切换全扇区/近距缩放) -->
+  <div class="radar-pod" id="radar-pod" title="点击切换战术雷达量程">
+    <canvas id="radar-canvas" width="72" height="48"></canvas>
   </div>
 
-  <!-- 右手战术火控与底盘循环切换纯图标按钮 -->
-  <div class="right-controls">
-    <div class="action-row" style="align-items:center;gap:10px;">
-      <button class="tac-btn gold" id="btn-cycle-hull" aria-label="切换星舰底盘" title="切换星舰底盘" style="width:52px;height:52px;padding:0;border-radius:14px;">
+  <!-- 关底首领：克拉肯虚空利维坦血条 -->
+  <div class="boss-hud-banner" id="boss-banner">
+    <div style="display:flex;justify-content:space-between;font-size:0.64rem;font-weight:800;color:#e879f9;">
+      <span id="boss-name-lbl">⚠ 克拉肯虚空利维坦 · KRAKEN OVERMIND</span>
+      <span id="boss-hp-lbl" style="font-family:Consolas,monospace;color:#a3e635;">100%</span>
+    </div>
+    <div class="boss-bar-track">
+      <div class="boss-bar-fill" id="boss-bar-fill"></div>
+    </div>
+  </div>
+
+  <!-- 左下角：FCS 牛顿矢量推进摇杆 + 战舰实时遥测 -->
+  <div class="left-fcs-cluster">
+    <div class="stick-zone" id="stick-zone">
+      <div class="stick-knob" id="stick-knob"></div>
+    </div>
+    <div class="ship-telemetry-box">
+      <div class="tele-row">
+        <span>护盾 SHD</span>
+        <div class="tele-bar"><div class="tele-fill" id="bar-shield" style="width:100%;background:#00f0ff;"></div></div>
+        <span id="val-shield">100%</span>
+      </div>
+      <div class="tele-row">
+        <span>装甲 ARM</span>
+        <div class="tele-bar"><div class="tele-fill" id="bar-armor" style="width:100%;background:#10b981;"></div></div>
+        <span id="val-armor">100%</span>
+      </div>
+      <div class="tele-row">
+        <span>电网 PWR</span>
+        <div class="tele-bar"><div class="tele-fill" id="bar-power" style="width:76%;background:#fbbf24;"></div></div>
+        <span id="val-twr" style="color:#fbbf24;">TWR 1.9S</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右下角：WCS 武器火控、阵营/底盘切换与 3栏船坞改装入口 -->
+  <div class="right-wcs-cluster">
+    <div class="wcs-top-row">
+      <button class="tac-btn gold" id="btn-open-dock" title="打开星际船坞 3 栏正交改装台">
+        <img id="btn-mod-ico" src="../assets/star-defender/sprites/module-railgun.svg" alt="" style="width:22px;height:22px;object-fit:contain;" />
+        <span id="btn-mod-lbl">船坞改装</span>
+      </button>
+      <button class="tac-btn" id="btn-switch-faction" title="实时切换赫利俄斯/格拉基斯阵营涂装">
+        <span id="btn-fac-lbl">阵营: 金箔</span>
+      </button>
+    </div>
+    <div class="wcs-bot-row">
+      <button class="tac-btn gold" id="btn-cycle-hull" aria-label="切换星舰底盘" title="切换星舰底盘" style="width:50px;height:50px;padding:0;">
         <img id="btn-hull-ico" src="../assets/star-defender/sprites/hull-delta.svg" alt="Hull" style="width:32px;height:32px;object-fit:contain;" />
       </button>
-      <button class="tac-btn" id="btn-nova" aria-label="脉冲超新星" title="脉冲超新星" style="width:52px;height:52px;padding:0;border-radius:14px;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <button class="tac-btn" id="btn-nova" aria-label="脉冲超新星 EMP" title="释放超新星全屏EMP震荡" style="width:50px;height:50px;padding:0;">
+        <img src="../assets/star-defender/sprites/module-emp-missile.svg" alt="EMP" style="width:28px;height:28px;object-fit:contain;" />
       </button>
-      <button class="tac-btn primary" id="btn-burst" aria-label="锁定超载齐射" title="锁定超载齐射" style="width:68px;height:68px;min-height:68px;padding:0;border-radius:50%;">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+      <button class="tac-btn primary" id="btn-burst" aria-label="主炮超载齐射" title="触发全挂点超载齐射">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
       </button>
     </div>
   </div>
 
-  <script src="../shared/nexus-sdk.js?v=4.0"></script>
+  <!-- 3栏正交星际船坞改装弹窗 (#dockyard-modal) -->
+  <div class="modal-backdrop" id="dockyard-modal">
+    <div class="dockyard-shell">
+      <div class="dock-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <img src="../assets/star-defender/icon.svg" alt="" width="22" height="22" />
+          <div>
+            <div style="font-size:0.82rem;font-weight:900;color:var(--sd-text-telemetry);">星际船坞 · 3栏正交剖面改装台 (ORTHOGRAPHIC DOCKYARD)</div>
+            <div style="font-size:0.6rem;font-family:Consolas,monospace;color:var(--sd-accent-warp-gold);" id="dock-sub-metrics">
+              反应堆功率备份比: +28% SAFE · 推重比 TWR: 1.92 (S级) · 固定槽位体积恒定
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="tac-btn gold" id="dock-btn-upgrade" style="min-height:44px;">晋升火控 Lv.2 (200战功)</button>
+          <button class="tac-btn" id="dock-btn-close" style="min-height:44px;">返回战场</button>
+        </div>
+      </div>
+
+      <div class="dock-3col">
+        <!-- 左栏：双阵营主力星舰底盘选择 -->
+        <div class="dock-col">
+          <div class="dock-col-title">
+            <span>① 主力星舰底盘 (4×2 双阵营)</span>
+            <span id="dock-fac-badge" style="color:var(--sd-accent-ion-cyan);">HELIOS</span>
+          </div>
+          <div id="dock-hull-list" style="display:flex;flex-direction:column;gap:4px;"></div>
+        </div>
+
+        <!-- 中栏：正交工程剖面图与 [红W / 绿B / 紫P] 挂点插槽 -->
+        <div class="dock-col">
+          <div class="dock-col-title">
+            <span>② 舰体剖面与三色挂点</span>
+            <span id="dock-hull-title" style="color:var(--sd-text-telemetry);">Delta 截击舰</span>
+          </div>
+          <div class="cutaway-stage" style="position:relative;">
+            <div style="position:relative;width:82px;height:82px;margin:0 auto;">
+              <img id="dock-cutaway-img" class="main-hull-blueprint" src="../assets/star-defender/sprites/hull-delta.svg" alt="Blueprint" style="width:82px;height:82px;display:block;" />
+              <img id="dock-overlay-w" src="../assets/star-defender/sprites/module-railgun.svg" alt="Mounted Weapon" style="position:absolute;left:50%;top:54%;width:30px;height:30px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 0 4px rgba(239,68,68,0.65));" />
+              <img id="dock-overlay-b" src="../assets/star-defender/sprites/module-hangar.svg" alt="Mounted Bay" style="position:absolute;left:50%;top:32%;width:20px;height:20px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 0 3px rgba(16,185,129,0.65));" />
+              <img id="dock-overlay-p" src="../assets/star-defender/sprites/module-thruster.svg" alt="Mounted Engine" style="position:absolute;left:50%;top:82%;width:22px;height:22px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 0 3px rgba(168,85,247,0.65));" />
+            </div>
+            <div style="font-size:0.55rem;font-family:Consolas,monospace;color:var(--sd-text-vector);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;" id="dock-cutaway-desc">
+              NASA 白瓷热防护瓦 + 24K 聚酰亚胺金箔舱
+            </div>
+          </div>
+          <div class="hardpoint-sockets-row">
+            <div class="hp-socket-box zone-w" id="sock-w" title="点击切换主武器模块">
+              <img id="sock-w-img" src="../assets/star-defender/sprites/module-railgun.svg" alt="" />
+              <div>
+                <div style="font-weight:800;">[红 W] 火控</div>
+                <div id="sock-w-name" style="color:#f8fafc;">电磁轨道炮</div>
+              </div>
+            </div>
+            <div class="hp-socket-box zone-b" id="sock-b" title="点击切换内部 1×1 方舱">
+              <img id="sock-b-img" src="../assets/star-defender/sprites/module-hangar.svg" alt="" />
+              <div>
+                <div style="font-weight:800;">[绿 B] 内舱</div>
+                <div id="sock-b-name" style="color:#f8fafc;">无人机母舱</div>
+              </div>
+            </div>
+            <div class="hp-socket-box zone-p" id="sock-p" title="点击扩建轨道炮塔与尾喷">
+              <img id="sock-p-img" src="../assets/star-defender/sprites/module-thruster.svg" alt="" />
+              <div>
+                <div style="font-weight:800;">[紫 P] 引擎</div>
+                <div id="sock-p-name" style="color:#f8fafc;">霍尔推进器</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右栏：火控武器与方舱模块库 -->
+        <div class="dock-col">
+          <div class="dock-col-title">
+            <span>③ 航宇武器与内部方舱库</span>
+            <span>点击立即挂载</span>
+          </div>
+          <div id="dock-mod-list" style="display:flex;flex-direction:column;gap:4px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/nexus-sdk.js?v=20261102a"></script>
   <script>
     (() => {
       NexusSDK.initShellUI({ gameId: 'star-defender', gameTitle: '星轨防线' });
 
       const store = NexusSDK.createGameStorage('NEXUS_MINI_SD_', (isAdmin) => ({
         currency: { warMerits: isAdmin ? 999999 : 1200, scraps: isAdmin ? 99999 : 150 },
+        faction: 'helios',
         unlockedShips: 4,
         highestWave: isAdmin ? 100 : 1,
         weaponLv: isAdmin ? 5 : 1,
-        turretCount: isAdmin ? 4 : 2,
-        selectedHull: 'hullDelta'
+        engineLv: isAdmin ? 3 : 1,
+        engineType: 'thrusterCompound',
+        droneDoctrine: 'mixed',
+        turretCount: isAdmin ? 6 : 2,
+        selectedHull: 'hullDelta',
+        activeModule: 'railgun',
+        internalBay: 'hangar'
       }));
       let saveData = store.load();
+      if (!saveData.engineLv) saveData.engineLv = 1;
+      if (!saveData.engineType) saveData.engineType = 'thrusterCompound';
+      if (!saveData.droneDoctrine) saveData.droneDoctrine = 'mixed';
+      document.documentElement.setAttribute('data-faction', saveData.faction || 'helios');
 
+      // 预加载全部 32 项高精度 SVG 矢量贴图
       const sprites = NexusSDK.loadSprites('star-defender', {
         hullDelta: 'hull-delta.svg',
         hullWing: 'hull-wing.svg',
         hullRing: 'hull-ring.svg',
         hullCross: 'hull-cross.svg',
+        hullDeltaGlacies: 'hull-delta-glacies.svg',
+        hullWingGlacies: 'hull-wing-glacies.svg',
+        hullRingGlacies: 'hull-ring-glacies.svg',
+        hullCrossGlacies: 'hull-cross-glacies.svg',
         station: 'station-core.svg',
+        stationGlacies: 'station-core-glacies.svg',
         turret: 'weapon-turret.svg',
+        turretGlacies: 'weapon-turret-glacies.svg',
         asteroidIron: 'asteroid-iron.svg',
         asteroidCrystal: 'asteroid-crystal.svg',
         swarm: 'enemy-swarm.svg',
+        bomber: 'enemy-bomber.svg',
         lurker: 'enemy-lurker.svg',
+        stalker: 'enemy-stalker.svg',
         carrier: 'enemy-carrier.svg',
-        leviathan: 'boss-leviathan.svg'
+        leviathan: 'boss-leviathan.svg',
+        modRailgun: 'module-railgun.svg',
+        modLaser: 'module-laser.svg',
+        modPlasma: 'module-plasma.svg',
+        modMissile: 'module-missile.svg',
+        modSwarm: 'module-swarm-missile.svg',
+        modCryo: 'module-cryo-missile.svg',
+        modEmp: 'module-emp-missile.svg',
+        modHellfire: 'module-hellfire-missile.svg',
+        modTorpedo: 'module-torpedo.svg',
+        modHangar: 'module-hangar.svg',
+        modShield: 'module-shield.svg',
+        modThruster: 'module-thruster.svg',
+        modHallThruster: 'module-hall-thruster.svg',
+        projTracerKinetic: 'proj-tracer-kinetic.svg',
+        projTracer: 'proj-tracer-kinetic.svg',
+        projPlasmaBolt: 'proj-plasma-bolt.svg',
+        projPlasma: 'proj-plasma-bolt.svg',
+        projLaserBeam: 'proj-laser-beam.svg',
+        projLaser: 'proj-laser-beam.svg',
+        projMissileWarhead: 'proj-missile-warhead.svg',
+        projMissile: 'proj-missile-warhead.svg',
+        unitFighterDrone: 'unit-fighter-drone.svg',
+        fighterDrone: 'unit-fighter-drone.svg'
       });
+
+      // 法则1 & 法则2：重装星舰牛顿角惯性体系 + 体积/吨位与综合机动反比定律 + 四大舰型差异化运动专精
+      // - hullDelta (14格·2.5t): 体积最小，直线加速与回转角速度双优 (maxTurnRate = 0.022 rad/f ≈ 1.32 rad/s)
+      // - hullWing  (22格·4.2t): 直线加速特化 (双发大推力 linearAccel = 0.056)，但宽翼展大转动惯量使转向偏慢 (maxTurnRate = 0.013 rad/f ≈ 0.78 rad/s)
+      // - hullRing  (28格·5.4t): 环形陀螺转向特化 (maxTurnRate = 0.0175 rad/f ≈ 1.05 rad/s 反超 Wing 舰)，但直线加速与极速较低
+      // - hullCross (36格·8.5t): 超重型无畏移动要塞，体积最大最笨重，直线加速与回转角速度均极度迟缓 (maxTurnRate = 0.0085 rad/f ≈ 0.51 rad/s)
+      const HULL_SPECS = {
+        hullDelta: {
+          name: 'Delta 截击舰', volumeGrid: 14, mass: 2.5, hp: 420, shield: 320,
+          linearAccel: 0.062, strafeAccel: 0.018, maxSpeed: 2.65, turnAccel: 0.0038, maxTurnRate: 0.022,
+          accel: 0.062, twr: '1.92·S', specialty: '高敏截击·加速转向双优',
+          maxPwr: 120, basePwr: 52, desc: '14格·2.5t 轻型三角截击舰 · 体积最小机动最高 | W:2S+1M',
+          heliosFile: 'hull-delta.svg', glaciesFile: 'hull-delta-glacies.svg'
+        },
+        hullWing: {
+          name: 'Wing 巡洋舰', volumeGrid: 22, mass: 4.2, hp: 680, shield: 480,
+          linearAccel: 0.068, strafeAccel: 0.011, maxSpeed: 2.38, turnAccel: 0.0020, maxTurnRate: 0.013,
+          accel: 0.068, twr: '1.48·A', specialty: '★直线加速特化·宽翼转向偏慢',
+          maxPwr: 185, basePwr: 78, desc: '22格·4.2t 双发直线冲刺巡洋舰 · 直线加速强但宽翼展回转较慢',
+          heliosFile: 'hull-wing.svg', glaciesFile: 'hull-wing-glacies.svg'
+        },
+        hullRing: {
+          name: 'Ring 环轨舰', volumeGrid: 28, mass: 5.4, hp: 920, shield: 760,
+          linearAccel: 0.036, strafeAccel: 0.016, maxSpeed: 1.72, turnAccel: 0.0030, maxTurnRate: 0.0175,
+          accel: 0.036, twr: '1.22·B', specialty: '★环形转向特化·直线偏慢',
+          maxPwr: 260, basePwr: 105, desc: '28格·5.4t 轴对称环形母舰 · 360°周向矢量喷嘴转向反超巡洋舰',
+          heliosFile: 'hull-ring.svg', glaciesFile: 'hull-ring-glacies.svg'
+        },
+        hullCross: {
+          name: 'Cross 歼星舰', volumeGrid: 36, mass: 8.5, hp: 1450, shield: 980,
+          linearAccel: 0.026, strafeAccel: 0.007, maxSpeed: 1.35, turnAccel: 0.0013, maxTurnRate: 0.0085,
+          accel: 0.026, twr: '1.08·C', specialty: '超重型要塞·极高惯性极慢转向',
+          maxPwr: 340, basePwr: 138, desc: '36格·8.5t 泰坦十字无畏舰 · 极其笨重迟缓，依赖多炮塔与机群',
+          heliosFile: 'hull-cross.svg', glaciesFile: 'hull-cross-glacies.svg'
+        }
+      };
+
+      // 法则3：舰艉推进引擎加装与升级 (Lv.1 ~ Lv.5) 的有界边际递减增益模型 (严禁跨舰级膨胀，上限 +18% ~ +30%)
+      const ENGINE_SPECS = {
+        thrusterCruise: {
+          name: '脉冲巡航引擎', zone: 'P', pwr: 18, file: 'module-thruster.svg',
+          baseLinearBonus: 0.10, perLvLinear: 0.04, baseTurnBonus: 0.04, perLvTurn: 0.01,
+          desc: '直线巡航特化引擎 · Lv.1~5 直线加速/极速提升 +10%~+26% (受限上限)'
+        },
+        thrusterVector: {
+          name: '多维矢量引擎', zone: 'P', pwr: 20, file: 'module-thruster.svg',
+          baseLinearBonus: 0.04, perLvLinear: 0.01, baseTurnBonus: 0.12, perLvTurn: 0.045,
+          desc: '姿控回转特化引擎 · Lv.1~5 转向角速度提升 +12%~+30% (受限上限)'
+        },
+        thrusterCompound: {
+          name: '霍尔复合引擎', zone: 'P', pwr: 22, file: 'module-thruster.svg',
+          baseLinearBonus: 0.08, perLvLinear: 0.025, baseTurnBonus: 0.08, perLvTurn: 0.025,
+          desc: '双维均衡复合引擎 · Lv.1~5 直线与转向同步提升 +8%~+18% (受限上限)'
+        }
+      };
+
+      function getEffectiveShipKinematics(hullKey, engineKey, engineLv) {
+        const hs = HULL_SPECS[hullKey] || HULL_SPECS.hullDelta;
+        const es = ENGINE_SPECS[engineKey] || ENGINE_SPECS.thrusterCompound;
+        const lv = Math.max(1, Math.min(5, engineLv || 1));
+        // 严格受限边际递减上限：直线最高 +26%，转向最高 +30%
+        const linearMult = Math.min(1.28, 1 + es.baseLinearBonus + (lv - 1) * es.perLvLinear);
+        const turnMult = Math.min(1.32, 1 + es.baseTurnBonus + (lv - 1) * es.perLvTurn);
+        return {
+          linearMult,
+          turnMult,
+          linearAccel: hs.linearAccel * linearMult,
+          strafeAccel: hs.strafeAccel * linearMult,
+          maxSpeed: hs.maxSpeed * linearMult,
+          turnAccel: hs.turnAccel * turnMult,
+          maxTurnRate: hs.maxTurnRate * turnMult
+        };
+      }
+
+      // 法则6：舰载无人机三大谱系 —— 严格遵循「载弹量(火力载荷)与机动能力成反比」定律 + 可被敌方防御火力击落重构
+      const DRONE_SPECS = {
+        interceptor: {
+          code: 'interceptor', model: 'FD-01 苍鹰', role: '轻型格斗截击机',
+          payloadClass: '轻载弹(14伤)', dmg: 14, fireCd: 15, projSpeed: 15.5, aoe: 0,
+          maxSpeed: 4.3, turnRate: 0.16, maxHp: 45, pdEvade: 0.35, respawnFrames: 330, drawSize: 21,
+          color: '#38bdf8', desc: '载弹最小·机动最强(4.3速/0.16转)·近防规避35%·45HP'
+        },
+        multirole: {
+          code: 'multirole', model: 'FD-02 猎隼', role: '中型多用途战机',
+          payloadClass: '中载弹(28伤)', dmg: 28, fireCd: 22, projSpeed: 13.0, aoe: 18,
+          maxSpeed: 3.4, turnRate: 0.11, maxHp: 75, pdEvade: 0.15, respawnFrames: 480, drawSize: 24,
+          color: '#fbbf24', desc: '载弹与机动均衡(3.4速/0.11转)·双联机炮+微火箭·75HP'
+        },
+        bomber: {
+          code: 'bomber', model: 'FD-03 重锤', role: '重型鱼雷轰炸机',
+          payloadClass: '重载弹(68伤AOE)', dmg: 68, fireCd: 36, projSpeed: 8.5, aoe: 44,
+          maxSpeed: 2.4, turnRate: 0.065, maxHp: 125, pdEvade: 0.0, respawnFrames: 690, drawSize: 28,
+          color: '#f43f5e', desc: '载弹最大(重型微鱼雷)·机动最慢(2.4速/0.065转)·125HP'
+        }
+      };
+
+      // 法则4 & 法则5：
+      // - 火炮 (railgun / plasma): 投射物速度最快 (13.2 ~ 16.5 px/f)，零转向 (homing: false)，灵敏目标可横向闪避
+      // - 导弹 (missile / swarmMissile / cryoMissile / empMissile / torpedo): 速度快 (6.0 ~ 7.8 px/f)，转向敏捷追踪，但拥有实体 HP 可被敌方防御火力 (Point-Defense) 拦截摧毁
+      const MODULE_SPECS = {
+        railgun:          { name: '电磁轨道炮', zone: 'W', spriteKey: 'modRailgun', pwr: 28, cd: 15, speed: 16.5, dmg: 28, color: '#fde047', projType: 'tracer',  projKey: 'projTracerKinetic', file: 'module-railgun.svg', desc: '火炮极速(16.5)·无制导直线穿甲 (高敏目标可闪避)' },
+        laser:            { name: '高能激光塔', zone: 'W', spriteKey: 'modLaser',   pwr: 24, cd: 11, speed: 20,   dmg: 18, color: '#00f0ff', projType: 'laser',   projKey: 'projLaserBeam',     file: 'module-laser.svg',   desc: '高频光速相干脉冲激光束 (克制高敏闪避飞蝗)' },
+        plasma:           { name: '电浆重炮',   zone: 'W', spriteKey: 'modPlasma',  pwr: 34, cd: 19, speed: 13.2, dmg: 38, color: '#e879f9', projType: 'plasma',  projKey: 'projPlasmaBolt',    file: 'module-plasma.svg',  desc: '高速(13.2)无制导电浆重炮 (高敏虫群可侧闪规避)' },
+        missile:          { name: '制导导弹井', zone: 'W', spriteKey: 'modMissile', pwr: 26, cd: 22, speed: 7.4,  dmg: 34, missileHp: 18, turnRate: 0.15, color: '#fbbf24', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-missile.svg', desc: '高敏追踪导弹(7.4速/18HP·可被敌方近防拦截)', homing: true },
+        swarmMissile:     { name: '蜂群微导舱', zone: 'W', spriteKey: 'modSwarm',   pwr: 30, cd: 24, speed: 7.8,  dmg: 18, missileHp: 8,  turnRate: 0.18, color: '#f59e0b', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-swarm-missile.svg', desc: '5发齐射饱和突防微导(7.8速/8HP·克制近防网)', homing: true, burst: 5 },
+        cryoMissile:      { name: '深冷冰霜弹', zone: 'W', spriteKey: 'modCryo',    pwr: 28, cd: 20, speed: 7.2,  dmg: 24, missileHp: 18, turnRate: 0.15, color: '#67e8f9', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-cryo-missile.svg', desc: '深冷追踪导弹(18HP·命中减速45%防闪避)', homing: true, cryo: true },
+        empMissile:       { name: '电磁脉冲弹', zone: 'W', spriteKey: 'modEmp',     pwr: 30, cd: 24, speed: 7.5,  dmg: 22, missileHp: 18, turnRate: 0.15, color: '#818cf8', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-emp-missile.svg', desc: 'EMP瘫痪导弹(18HP·震荡麻痹敌近防与闪避)', homing: true, emp: true },
+        hellfireMissile:  { name: '地狱火温压弹', zone: 'W', spriteKey: 'modHellfire', pwr: 36, cd: 26, speed: 7.1, dmg: 46, missileHp: 24, turnRate: 0.14, color: '#f97316', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-hellfire-missile.svg', desc: '高热铝热剂温压弹(24HP·广域热辐射爆破)', homing: true, aoe: 46 },
+        torpedo:          { name: '重型聚变鱼雷', zone: 'W', spriteKey: 'modTorpedo', pwr: 48, cd: 32, speed: 6.0,  dmg: 78, missileHp: 55, turnRate: 0.09, color: '#f43f5e', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-torpedo.svg', desc: '重甲聚变鱼雷(6.0速/55HP·硬抗近防强行突防)', homing: true, aoe: 58, isTorpedo: true },
+        hangar:           { name: '无人机母舱(混编)', zone: 'B', spriteKey: 'modHangar', pwr: 22, droneDoctrine: 'mixed', file: 'module-hangar.svg', desc: '混编苍鹰(轻)/猎隼(中)/重锤(重) 4机编队' },
+        hangarInterceptor:{ name: '苍鹰轻截击机库', zone: 'B', spriteKey: 'modHangar', pwr: 20, droneDoctrine: 'interceptor', file: 'module-hangar.svg', desc: '专精 FD-01 苍鹰：轻载弹·最高机动与防空闪避' },
+        hangarBomber:     { name: '重锤重鱼雷机库', zone: 'B', spriteKey: 'modHangar', pwr: 26, droneDoctrine: 'bomber', file: 'module-hangar.svg', desc: '专精 FD-03 重锤：最大载弹鱼雷·低机动重甲' },
+        shield:           { name: '偏导护盾舱', zone: 'B', spriteKey: 'modShield', pwr: 25, file: 'module-shield.svg', desc: '护盾上限 +350 且自愈翻倍' },
+        thrusterCruise:   ENGINE_SPECS.thrusterCruise,
+        thrusterVector:   ENGINE_SPECS.thrusterVector,
+        thrusterCompound: ENGINE_SPECS.thrusterCompound
+      };
 
       const canvas = document.getElementById('space-canvas');
       const ctx = canvas.getContext('2d');
+      const radarCanvas = document.getElementById('radar-canvas');
+      const rCtx = radarCanvas.getContext('2d');
+      let radarZoom = 1.0;
+
+      document.getElementById('radar-pod').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        radarZoom = radarZoom === 1.0 ? 0.65 : 1.0;
+      });
 
       function resize() {
         canvas.width = window.innerWidth;
@@ -241,78 +731,279 @@
       window.addEventListener('resize', resize);
 
       let wave = 1;
-      let stationHp = 1000;
+      let stationMaxHp = 1500;
+      let stationHp = 1500;
       let stationHitTimer = 0;
-      let lastFramePerfMs = performance.now();
-      let stationMaxHp = 1000;
       let orbitAngle = 0;
+      let lastFramePerfMs = performance.now();
+
+      // 物理与防空拦截统计遥测 (用于 HUD 与自动化审计验证)
+      const combatTelemetry = {
+        cannonDodges: 0,
+        missilesIntercepted: 0,
+        dronesShotDown: 0,
+        pdShotsFired: 0
+      };
+
+      // 四大舰型物理外挂点局部工程坐标 (对齐 10-WARSHIPS-HULLS-SPEC.md & 11-WEAPONS-EQUIPMENT-SPEC.md)
+      const HULL_HARDPOINTS = {
+        hullDelta: {
+          mainTurret: { x: 0, y: 6, size: 22 },
+          sideWeapons: [{ x: -12, y: 8, size: 15 }, { x: 12, y: 8, size: 15 }],
+          bayMount: { x: 0, y: -9, size: 15 },
+          engineMount: { x: 0, y: 21, size: 16 }
+        },
+        hullWing: {
+          mainTurret: { x: 0, y: 5, size: 23 },
+          sideWeapons: [{ x: -16, y: 3, size: 17 }, { x: 16, y: 3, size: 17 }],
+          bayMount: { x: 0, y: -9, size: 16 },
+          engineMount: { x: 0, y: 21, size: 17 }
+        },
+        hullRing: {
+          mainTurret: { x: 0, y: 0, size: 24 },
+          sideWeapons: [{ x: -17, y: 0, size: 16 }, { x: 17, y: 0, size: 16 }],
+          bayMount: { x: 0, y: -15, size: 16 },
+          engineMount: { x: 0, y: 20, size: 16 }
+        },
+        hullCross: {
+          mainTurret: { x: 0, y: 1, size: 25 },
+          sideWeapons: [{ x: -19, y: 1, size: 18 }, { x: 19, y: 1, size: 18 }],
+          bayMount: { x: 0, y: -13, size: 17 },
+          engineMount: { x: 0, y: 22, size: 18 }
+        }
+      };
+
+      // 舰载武器与装备挂载计数遥测 (用于自动化审计核验舰体挂载武器贴图与炮塔转向瞄准状态)
+      const weaponMountTelemetry = {
+        playerMountedSpritesDrawn: 0,
+        wingmanMountedSpritesDrawn: 0,
+        activeMainWeaponKey: 'modRailgun',
+        activeBaySpriteKey: 'modHangar',
+        activeEngineSpriteKey: 'modThruster',
+        mainTurretTrackingErrDeg: 0,
+        laserTurretTrackingErrDeg: 0,
+        defenseTurretsTrackingErrDeg: []
+      };
+
+      // 远端星轨核心站世界坐标（不在屏幕中心，屏幕中心始终锁定为玩家飞船）
+      const stationPos = { x: -480, y: -340 };
 
       const ship = {
-        x: window.innerWidth * 0.5,
-        y: window.innerHeight * 0.68,
+        x: 0,
+        y: 0,
         vx: 0, vy: 0,
         angle: 0,
+        angVel: 0,
+        aimAngle: 0,
+        mainTurretAngle: 0,
+        laserTurretAngle: 0,
+        missileTurretAngle: 0,
         hull: saveData.selectedHull || 'hullDelta',
-        fireCd: 0
+        hp: 420, maxHp: 420,
+        shield: 320, maxShield: 320,
+        fireCd: 0,
+        auxLaserCd: 10,
+        auxMissileCd: 22,
+        ciwsCd: 0
       };
 
       const wingman = {
-        x: window.innerWidth * 0.38,
-        y: window.innerHeight * 0.5,
+        x: -118,
+        y: -42,
         angle: 0,
+        aimAngle: 0,
         hull: 'hullWing',
         fireCd: 0,
         isRemote: false
       };
 
-      let enemies = [];
-      let projectiles = [];
-      let sparks = [];
-      let stars = Array.from({ length: 70 }, () => ({
-        x: Math.random() * 2000,
-        y: Math.random() * 1200,
-        s: 1 + Math.random() * 2,
-        a: 0.25 + Math.random() * 0.6
+      // 环绕玩家飞船的防御武器炮塔群每个炮塔的独立伺服瞄准角与冷却状态
+      const defenseTurretStates = Array.from({ length: 6 }, () => ({
+        aimAngle: 0,
+        fireCd: Math.floor(Math.random() * 14)
       }));
 
+      // 局部挂点坐标转换至世界坐标
+      function getHardpointWorldPos(entity, localOffset) {
+        if (!localOffset) return { x: entity.x, y: entity.y };
+        const cosA = Math.cos(entity.angle || 0);
+        const sinA = Math.sin(entity.angle || 0);
+        return {
+          x: entity.x + localOffset.x * cosA - localOffset.y * sinA,
+          y: entity.y + localOffset.x * sinA + localOffset.y * cosA
+        };
+      }
+
+      // 二阶提前量拦截角解算 (Lead Pursuit，供动能火炮炮塔瞄准高速移动目标)
+      function computeLeadAimAngle(srcX, srcY, target, projSpeed) {
+        if (!target) return null;
+        let tx = target.x;
+        let ty = target.y;
+        if (projSpeed && projSpeed > 0 && target.speed) {
+          const toShipAng = Math.atan2(ship.y - target.y, ship.x - target.x);
+          const tvx = Math.cos(toShipAng) * (target.speed || 0) + (target.vxEvade || 0);
+          const tvy = Math.sin(toShipAng) * (target.speed || 0) + (target.vyEvade || 0);
+          const dist = Math.hypot(target.x - srcX, target.y - srcY);
+          const tLead = Math.min(24, dist / projSpeed);
+          tx += tvx * tLead;
+          ty += tvy * tLead;
+        }
+        return Math.atan2(ty - srcY, tx - srcX) + Math.PI / 2;
+      }
+
+      // 炮塔伺服角速度平滑转向目标角度
+      function stepTurretAngle(curAngle, desiredAngle, maxSlewRate) {
+        const diff = normalizeAngleRad(desiredAngle - curAngle);
+        if (Math.abs(diff) <= maxSlewRate) return normalizeAngleRad(desiredAngle);
+        return normalizeAngleRad(curAngle + Math.sign(diff) * maxSlewRate);
+      }
+
+      // 4架舰载无人战机编队 (支持 FD-01 苍鹰轻截击机 / FD-02 猎隼多用途机 / FD-03 重锤鱼雷轰炸机，载弹量与机动成反比，可被敌近防火力击落重构)
+      const MIXED_DOCTRINE_ORDER = ['interceptor', 'multirole', 'bomber', 'interceptor'];
+      function resolveDroneSpecForSlot(idx) {
+        const doc = saveData.droneDoctrine || 'mixed';
+        const key = doc === 'mixed' ? MIXED_DOCTRINE_ORDER[idx % MIXED_DOCTRINE_ORDER.length] : (DRONE_SPECS[doc] ? doc : 'interceptor');
+        return DRONE_SPECS[key];
+      }
+
+      const fighterSquadron = Array.from({ length: 4 }, (_, idx) => {
+        const ds = resolveDroneSpecForSlot(idx);
+        return {
+          id: `${ds.model.split(' ')[0]}-${idx + 1}`,
+          archetype: ds.code,
+          modelName: ds.model,
+          x: Math.cos((Math.PI * 2 * idx) / 4) * 92,
+          y: Math.sin((Math.PI * 2 * idx) / 4) * 92,
+          vx: 0,
+          vy: 0,
+          angle: (Math.PI * 2 * idx) / 4,
+          orbitPhase: (Math.PI * 2 * idx) / 4,
+          hp: ds.maxHp,
+          maxHp: ds.maxHp,
+          alive: true,
+          respawnCd: 0,
+          fireCd: 8 + idx * 7,
+          trail: []
+        };
+      });
+
+      function syncDroneSquadronArchetypes() {
+        fighterSquadron.forEach((f, idx) => {
+          const ds = resolveDroneSpecForSlot(idx);
+          f.archetype = ds.code;
+          f.modelName = ds.model;
+          f.id = `${ds.model.split(' ')[0]}-${idx + 1}`;
+          f.maxHp = ds.maxHp;
+          if (f.alive) f.hp = Math.min(f.maxHp, f.hp || ds.maxHp);
+        });
+      }
+
+      let enemies = [];
+      let lockedEnemy = null;
+      let projectiles = [];
+      let laserBeams = [];
+      let pdBeams = []; // 近防拦截火力光束 (Point-Defense / CIWS Beams)
+      let sparks = [];
+      let floatTexts = [];
+      let stars = Array.from({ length: 95 }, () => ({
+        x: Math.random() * 2400,
+        y: Math.random() * 1600,
+        s: 1 + Math.random() * 2.2,
+        a: 0.25 + Math.random() * 0.65,
+        p: 0.25 + Math.random() * 0.65
+      }));
+
+      function syncShipSpecs() {
+        const spec = HULL_SPECS[saveData.selectedHull] || HULL_SPECS.hullDelta;
+        ship.hull = saveData.selectedHull || 'hullDelta';
+        ship.maxHp = spec.hp;
+        ship.hp = Math.min(ship.maxHp, ship.hp || spec.hp);
+        const bonusShield = saveData.internalBay === 'shield' ? 350 : 0;
+        ship.maxShield = spec.shield + bonusShield;
+        ship.shield = Math.min(ship.maxShield, ship.shield || ship.maxShield);
+
+        const baySpec = MODULE_SPECS[saveData.internalBay];
+        if (baySpec && baySpec.droneDoctrine) {
+          saveData.droneDoctrine = baySpec.droneDoctrine;
+        }
+        syncDroneSquadronArchetypes();
+
+        const isGlacies = (saveData.faction || 'helios') === 'glacies';
+        document.documentElement.setAttribute('data-faction', isGlacies ? 'glacies' : 'helios');
+        document.getElementById('hud-faction-tag').textContent = isGlacies ? '格拉基斯' : '赫利俄斯';
+        document.getElementById('btn-fac-lbl').textContent = isGlacies ? '阵营: 深冷' : '阵营: 金箔';
+        document.getElementById('btn-hull-ico').src = `../assets/star-defender/sprites/${isGlacies ? spec.glaciesFile : spec.heliosFile}?v=20261101`;
+
+        const mod = MODULE_SPECS[saveData.activeModule] || MODULE_SPECS.railgun;
+        document.getElementById('btn-mod-ico').src = `../assets/star-defender/sprites/${mod.file}?v=20261101`;
+        document.getElementById('btn-mod-lbl').textContent = mod.name;
+        updateHud();
+      }
+
+      window.addEventListener('nexus:star-config-changed', (e) => {
+        saveData = Object.assign(saveData, e.detail || store.load());
+        syncShipSpecs();
+      });
+
       function spawnWave(w) {
-        const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
-        const count = 7 + Math.min(18, w * 2);
+        const count = 8 + Math.min(20, w * 2);
+        const archetypes = ['swarm', 'bomber', 'lurker', 'stalker', 'carrier', 'asteroidIron', 'asteroidCrystal'];
+
         for (let i = 0; i < count; i++) {
-          const ang = (Math.PI * 2 * i) / count + Math.random() * 0.4;
-          const dist = Math.max(canvas.width, canvas.height) * (0.58 + Math.random() * 0.35);
-          const pool = ['asteroidIron', 'asteroidCrystal', 'swarm', 'lurker', 'carrier'];
-          const type = pool[(i + w) % pool.length];
-          const hpBase = type === 'carrier' ? 90 : (type === 'asteroidCrystal' ? 45 : 28);
+          const ang = (Math.PI * 2 * i) / count + Math.random() * 0.35;
+          const dist = Math.max(canvas.width, canvas.height) * (0.42 + Math.random() * 0.32);
+          const type = archetypes[(i + w) % archetypes.length];
+          const hpMap = { swarm: 36, bomber: 46, lurker: 85, stalker: 112, carrier: 240, asteroidIron: 55, asteroidCrystal: 65 };
+          const spdMap = { swarm: 1.95, bomber: 1.62, lurker: 1.48, stalker: 1.82, carrier: 0.78, asteroidIron: 0.68, asteroidCrystal: 0.74 };
+          const rMap = { swarm: 18, bomber: 20, lurker: 23, stalker: 24, carrier: 34, asteroidIron: 22, asteroidCrystal: 22 };
+          const baseHp = (hpMap[type] || 40) + w * 9;
+
           enemies.push({
             type,
-            x: cx + Math.cos(ang) * dist,
-            y: cy + Math.sin(ang) * dist,
-            hp: hpBase + w * 8,
-            maxHp: hpBase + w * 8,
-            speed: type === 'swarm' ? 1.85 : (type === 'lurker' ? 1.55 : 0.95),
-            r: type === 'carrier' ? 32 : 22,
-            rot: Math.random() * Math.PI * 2
+            x: ship.x + Math.cos(ang) * dist,
+            y: ship.y + Math.sin(ang) * dist,
+            vxEvade: 0,
+            vyEvade: 0,
+            evadeCd: 15 + (i % 4) * 12,
+            pdCd: 12 + (i % 5) * 6,
+            hp: baseHp,
+            maxHp: baseHp,
+            speed: spdMap[type] || 1.2,
+            r: rMap[type] || 22,
+            rot: Math.random() * Math.PI * 2,
+            phaseCd: 90 + Math.floor(Math.random() * 90),
+            spawnCd: 160,
+            slowTimer: 0,
+            empTimer: 0
           });
         }
-        // Spawn Void Leviathan Boss every 5 waves or on wave 1 preview
-        if (w % 3 === 0) {
+
+        // Spawn Kraken Overmind Leviathan Boss on Wave 1 (showcase) and every 3rd wave
+        if (w === 1 || w % 3 === 0) {
+          const bossHp = 560 + w * 90;
           enemies.push({
             type: 'leviathan',
-            x: cx + Math.cos(w) * (canvas.width * 0.65),
-            y: cy - canvas.height * 0.58,
-            hp: 360 + w * 60,
-            maxHp: 360 + w * 60,
-            speed: 0.65,
+            x: ship.x + Math.cos(w) * (canvas.width * 0.42),
+            y: ship.y - canvas.height * 0.38,
+            vxEvade: 0,
+            vyEvade: 0,
+            evadeCd: 999,
+            pdCd: 10,
+            hp: bossHp,
+            maxHp: bossHp,
+            speed: 0.58,
             r: 48,
-            rot: Math.PI
+            rot: Math.PI,
+            phaseCd: 150,
+            spawnCd: 180,
+            slowTimer: 0,
+            empTimer: 0
           });
         }
         updateHud();
       }
 
-      // Joystick & Keyboard Input
+      // FCS Joystick & Keyboard Input
       let joyVec = { x: 0, y: 0 };
       const stickZone = document.getElementById('stick-zone');
       const stickKnob = document.getElementById('stick-knob');
@@ -358,67 +1049,235 @@
       });
       window.addEventListener('keyup', (e) => { keys[e.code] = false; });
 
-      function findNearestEnemy(x, y) {
-        let best = null;
+      // Manual click-to-lock target (将屏幕点击坐标转换为以玩家飞船为中心的世界坐标)
+      canvas.addEventListener('pointerdown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const wx = ship.x + (mx - canvas.width / 2);
+        const wy = ship.y + (my - canvas.height / 2);
+        let hitTarget = null;
         let minD = Infinity;
         for (const en of enemies) {
-          const d = Math.hypot(en.x - x, en.y - y);
-          if (d < minD) {
+          const hitR = Math.max(en.r, 36);
+          const d = Math.hypot(en.x - wx, en.y - wy);
+          if (d <= hitR && d < minD) {
             minD = d;
+            hitTarget = en;
+          }
+        }
+        if (hitTarget) {
+          lockedEnemy = lockedEnemy === hitTarget ? null : hitTarget;
+          NexusSDK.audio.tap();
+        }
+      });
+
+      function findPriorityTarget(x, y) {
+        if (lockedEnemy && enemies.includes(lockedEnemy) && lockedEnemy.hp > 0) {
+          return lockedEnemy;
+        }
+        let best = null;
+        let bestScore = -Infinity;
+        for (const en of enemies) {
+          if (en.hp <= 0) continue;
+          const d = Math.max(50, Math.hypot(en.x - x, en.y - y));
+          const wType = en.type === 'leviathan' ? 3.0 : (en.type === 'carrier' || en.type === 'stalker' ? 2.0 : (en.type.startsWith('asteroid') ? 1.5 : 1.0));
+          const dShip = Math.hypot(en.x - ship.x, en.y - ship.y);
+          const score = wType * (500 / d) + (dShip < 240 ? 2.0 : 0) + (en.type === 'stalker' ? 1.0 : 0);
+          if (score > bestScore) {
+            bestScore = score;
             best = en;
           }
         }
         return best;
       }
 
+      function spawnLaserBeam(x1, y1, target, dmg, color = '#00f0ff', width = 1.7, maxLife = 13, sourceFn = null) {
+        if (!target) return;
+        target.hp -= dmg;
+        laserBeams.push({
+          x1,
+          y1,
+          x2: target.x,
+          y2: target.y,
+          target,
+          sourceFn,
+          shooterX: x1,
+          shooterY: y1,
+          color,
+          width,
+          life: maxLife,
+          maxLife
+        });
+        for (let k = 0; k < 3; k++) {
+          sparks.push({
+            x: target.x + (Math.random() - 0.5) * 6,
+            y: target.y + (Math.random() - 0.5) * 6,
+            vx: (Math.random() - 0.5) * 3.2,
+            vy: (Math.random() - 0.5) * 3.2,
+            life: 10,
+            color
+          });
+        }
+      }
+
+      // 法则5：制导导弹投射物速度快(6.0~7.8 px/f，低于火炮的13.2~16.5 px/f)、转向敏捷追踪目标，恒速纯角度偏转不掉速，但拥有实体 HP 可被防御火力(Point-Defense)摧毁
+      function spawnGuidedMissile(x, y, launchAngle, dmg, color = '#fbbf24', aoe = 32, isTorpedo = false, customHp = null, customSpeed = null, customTurn = null) {
+        const spd = customSpeed || (isTorpedo ? 6.0 : 7.4);
+        const mHp = customHp || (isTorpedo ? 55 : 18);
+        const tRate = customTurn || (isTorpedo ? 0.09 : 0.15);
+        projectiles.push({
+          x,
+          y,
+          vx: Math.cos(launchAngle) * spd,
+          vy: Math.sin(launchAngle) * spd,
+          cruiseSpeed: spd,
+          heading: launchAngle,
+          rot: launchAngle + Math.PI / 2,
+          dmg,
+          hp: mHp,
+          maxHp: mHp,
+          turnRate: tRate,
+          color,
+          projKey: 'projMissile',
+          projType: 'missile',
+          isTorpedo: !!isTorpedo,
+          homing: true,
+          aoe,
+          seed: Math.random() * 100,
+          trail: [{ x, y }],
+          life: 125
+        });
+      }
+
       function fireShipWeapons(s, isMain) {
-        const target = findNearestEnemy(s.x, s.y);
-        const ang = target ? Math.atan2(target.y - s.y, target.x - s.x) : (s.angle - Math.PI / 2);
-        if (target) s.angle = ang + Math.PI / 2;
+        const hpLayout = HULL_HARDPOINTS[s.hull] || HULL_HARDPOINTS.hullDelta;
+        const mPos = getHardpointWorldPos(s, hpLayout.mainTurret);
+        const target = findPriorityTarget(mPos.x, mPos.y);
+        const mod = isMain ? (MODULE_SPECS[saveData.activeModule] || MODULE_SPECS.railgun) : MODULE_SPECS.laser;
+
+        // 发射方向严格对齐当前炮塔已伺服旋转到的瞄准角 (turretAngle - Math.PI / 2)
+        const turretAngle = isMain
+          ? (typeof s.mainTurretAngle === 'number' ? s.mainTurretAngle : (s.aimAngle || s.angle))
+          : (typeof s.aimAngle === 'number' ? s.aimAngle : s.angle);
+        const ang = turretAngle - Math.PI / 2;
+
         const wLv = saveData.weaponLv || 1;
-        const barrels = Math.min(4, 1 + Math.floor(wLv / 2));
+        const scaledDmg = Math.round(mod.dmg * (1 + (wLv - 1) * 0.22));
+
+        if (mod.projType === 'laser' && target) {
+          spawnLaserBeam(
+            mPos.x + Math.cos(ang) * 12,
+            mPos.y + Math.sin(ang) * 12,
+            target,
+            scaledDmg,
+            isMain ? '#00f0ff' : '#38bdf8',
+            isMain ? 1.85 : 1.25,
+            isMain ? 14 : 11
+          );
+          if (isMain) NexusSDK.audio.laser();
+          return;
+        }
+
+        if (mod.projType === 'missile') {
+          const count = mod.burst || (mod.isTorpedo ? 2 : 3);
+          for (let b = 0; b < count; b++) {
+            const sideSpread = (b - (count - 1) / 2) * 0.42;
+            spawnGuidedMissile(
+              mPos.x + Math.cos(ang + sideSpread) * 12,
+              mPos.y + Math.sin(ang + sideSpread) * 12,
+              ang + sideSpread,
+              scaledDmg,
+              mod.color,
+              mod.aoe || 36,
+              !!mod.isTorpedo,
+              mod.missileHp || (mod.isTorpedo ? 55 : 18),
+              mod.speed || (mod.isTorpedo ? 6.0 : 7.4),
+              mod.turnRate || 0.15
+            );
+          }
+          if (isMain) NexusSDK.audio.shoot();
+          return;
+        }
+
+        // 法则4：动能火炮炮塔可独立转向并按二阶提前量瞄准目标，发射后炮弹初速最快 (13.2 ~ 16.5 px/f) 且直线飞行 (homing: false)，高敏目标可横向闪避
+        const barrels = mod.burst || Math.min(4, 1 + Math.floor(wLv / 2));
         for (let b = 0; b < barrels; b++) {
-          const spread = (b - (barrels - 1) / 2) * 0.12;
+          const spread = (b - (barrels - 1) / 2) * 0.06;
           const a = ang + spread;
+          const sx = mPos.x + Math.cos(a) * 14;
+          const sy = mPos.y + Math.sin(a) * 14;
           projectiles.push({
-            x: s.x + Math.cos(a) * 18,
-            y: s.y + Math.sin(a) * 18,
-            vx: Math.cos(a) * 11,
-            vy: Math.sin(a) * 11,
-            dmg: 14 + wLv * 5,
-            color: isMain ? '#00f0ff' : '#fbbf24',
-            life: 75
+            x: sx,
+            y: sy,
+            vx: Math.cos(a) * mod.speed,
+            vy: Math.sin(a) * mod.speed,
+            rot: a + Math.PI / 2,
+            dmg: scaledDmg,
+            color: isMain ? mod.color : '#38bdf8',
+            projKey: mod.projKey || 'projTracer',
+            projType: mod.projType || 'tracer',
+            homing: false,
+            cryo: !!mod.cryo,
+            emp: !!mod.emp,
+            aoe: mod.aoe || 0,
+            seed: Math.random() * 100,
+            trail: [{ x: sx, y: sy }],
+            life: 84
           });
         }
         if (isMain) NexusSDK.audio.shoot();
       }
 
-      function fireOverloadBurst() {
+      let burstCd = 0;
+      let novaCd = 0;
+
+      function fireOverloadBurst(force = false) {
+        if (!force && burstCd > 0) {
+          NexusSDK.audio.warn();
+          return false;
+        }
+        burstCd = 180; // 3.0s 战术冷却保护
         NexusSDK.audio.laser();
+        const wLv = saveData.weaponLv || 1;
+        // 12枚环形垂发制导导弹 + 3道过载相控阵主激光
         for (let i = 0; i < 12; i++) {
           const a = (Math.PI * 2 * i) / 12;
-          projectiles.push({
-            x: ship.x, y: ship.y,
-            vx: Math.cos(a) * 12, vy: Math.sin(a) * 12,
-            dmg: 28 + (saveData.weaponLv || 1) * 6,
-            color: '#00f0ff',
-            life: 80
-          });
+          spawnGuidedMissile(
+            ship.x + Math.cos(a) * 16,
+            ship.y + Math.sin(a) * 16,
+            a,
+            34 + wLv * 8,
+            i % 2 === 0 ? '#fbbf24' : '#00f0ff',
+            42,
+            false
+          );
         }
+        enemies.filter(en => en.hp > 0).slice(0, 3).forEach((en) => {
+          spawnLaserBeam(ship.x, ship.y, en, 45 + wLv * 10, '#00f0ff', 2.1, 16, () => ({ x: ship.x, y: ship.y }));
+        });
+        return true;
       }
 
-      function triggerSupernova() {
+      function triggerSupernova(force = false) {
+        if (!force && novaCd > 0) {
+          NexusSDK.audio.warn();
+          return false;
+        }
+        novaCd = 300; // 5.0s 战术冷却保护
         NexusSDK.audio.explosion();
         enemies.forEach((en) => {
-          en.hp -= 85;
-          for (let i = 0; i < 5; i++) {
+          en.hp -= 95;
+          en.empTimer = 150;
+          for (let i = 0; i < 6; i++) {
             sparks.push({
               x: en.x, y: en.y,
-              vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6,
-              life: 24, color: '#fbbf24'
+              vx: (Math.random() - 0.5) * 6.5, vy: (Math.random() - 0.5) * 6.5,
+              life: 24, color: '#67e8f9'
             });
           }
         });
+        return true;
       }
 
       document.getElementById('btn-burst').addEventListener('pointerdown', (e) => {
@@ -430,40 +1289,285 @@
         triggerSupernova();
       });
 
+      document.getElementById('btn-switch-faction').addEventListener('click', () => {
+        NexusSDK.audio.upgrade();
+        saveData.faction = (saveData.faction || 'helios') === 'helios' ? 'glacies' : 'helios';
+        store.save(saveData);
+        syncShipSpecs();
+        renderDockyard();
+      });
+
+      const HULL_ORDER = ['hullDelta', 'hullWing', 'hullRing', 'hullCross'];
+      document.getElementById('btn-cycle-hull').addEventListener('click', () => {
+        NexusSDK.audio.upgrade();
+        const idx = (HULL_ORDER.indexOf(saveData.selectedHull) + 1) % HULL_ORDER.length;
+        saveData.selectedHull = HULL_ORDER[idx];
+        store.save(saveData);
+        syncShipSpecs();
+        renderDockyard();
+      });
+
+      // 点击 [红 W] 火控插槽可循环切换全部 9 款主武器模块
+      const WEAPON_ORDER = ['railgun', 'laser', 'plasma', 'missile', 'swarmMissile', 'cryoMissile', 'empMissile', 'hellfireMissile', 'torpedo'];
+      document.getElementById('sock-w').addEventListener('click', () => {
+        NexusSDK.audio.upgrade();
+        const idx = (WEAPON_ORDER.indexOf(saveData.activeModule) + 1) % WEAPON_ORDER.length;
+        saveData.activeModule = WEAPON_ORDER[idx];
+        store.save(saveData);
+        syncShipSpecs();
+        renderDockyard();
+      });
+
+      // 点击 [绿 B] 内舱插槽可循环切换机库编队与偏导护盾舱
+      const BAY_ORDER = ['hangar', 'hangarInterceptor', 'hangarBomber', 'shield'];
+      document.getElementById('sock-b').addEventListener('click', () => {
+        NexusSDK.audio.upgrade();
+        const idx = (BAY_ORDER.indexOf(saveData.internalBay) + 1) % BAY_ORDER.length;
+        saveData.internalBay = BAY_ORDER[idx];
+        const bs = MODULE_SPECS[saveData.internalBay];
+        if (bs && bs.droneDoctrine) saveData.droneDoctrine = bs.droneDoctrine;
+        store.save(saveData);
+        syncShipSpecs();
+        renderDockyard();
+      });
+
+      // 点击 [紫 P] 引擎插槽可升级引擎等级 (Lv.1 -> Lv.5，严格受限边际收益)
+      document.getElementById('sock-p').addEventListener('click', () => {
+        const curEngLv = saveData.engineLv || 1;
+        const cost = curEngLv * 200;
+        if (curEngLv < 5 && (saveData.currency?.warMerits ?? 0) >= cost) {
+          saveData.currency.warMerits -= cost;
+          saveData.engineLv = curEngLv + 1;
+          NexusSDK.audio.upgrade();
+        } else {
+          // 切换三款引擎型号
+          const engOrder = ['thrusterCompound', 'thrusterCruise', 'thrusterVector'];
+          saveData.engineType = engOrder[(engOrder.indexOf(saveData.engineType) + 1) % engOrder.length];
+          NexusSDK.audio.tap();
+        }
+        store.save(saveData);
+        syncShipSpecs();
+        renderDockyard();
+      });
+
+      // ===== 3栏星际船坞改装弹窗逻辑 (#dockyard-modal) =====
+      const dockModal = document.getElementById('dockyard-modal');
+      function renderDockyard() {
+        const isGlacies = (saveData.faction || 'helios') === 'glacies';
+        const curSpec = HULL_SPECS[saveData.selectedHull] || HULL_SPECS.hullDelta;
+        const curMod = MODULE_SPECS[saveData.activeModule] || MODULE_SPECS.railgun;
+        const curBay = MODULE_SPECS[saveData.internalBay] || MODULE_SPECS.hangar;
+        const curEng = ENGINE_SPECS[saveData.engineType] || ENGINE_SPECS.thrusterCompound;
+        const kin = getEffectiveShipKinematics(saveData.selectedHull, saveData.engineType, saveData.engineLv);
+
+        const usedPwr = curSpec.basePwr + curMod.pwr + (curBay.pwr || 22) + (curEng.pwr || 20);
+        const marginPct = Math.max(5, Math.round(((curSpec.maxPwr - usedPwr) / curSpec.maxPwr) * 100));
+        const linBonusPct = Math.round((kin.linearMult - 1) * 100);
+        const turnBonusPct = Math.round((kin.turnMult - 1) * 100);
+
+        document.getElementById('dock-fac-badge').textContent = isGlacies ? 'GLACIES 深冷' : 'HELIOS 金箔';
+        document.getElementById('dock-hull-title').textContent = `${curSpec.name} (${curSpec.volumeGrid}格·${curSpec.mass}t)`;
+        document.getElementById('dock-cutaway-img').src = `../assets/star-defender/sprites/${isGlacies ? curSpec.glaciesFile : curSpec.heliosFile}?v=20261101`;
+        document.getElementById('dock-cutaway-desc').textContent = `${curSpec.specialty} · 极速 ${kin.maxSpeed.toFixed(2)} / 回转 ${(kin.maxTurnRate * 60).toFixed(2)} rad/s`;
+        document.getElementById('dock-sub-metrics').textContent =
+          `功率备份: +${marginPct}% (${usedPwr}/${curSpec.maxPwr}MW) · 引擎增益: 直线+${linBonusPct}%/转向+${turnBonusPct}% (受限上限) · 战功: ${(saveData.currency?.warMerits ?? 0).toLocaleString()}`;
+
+        document.getElementById('sock-w-img').src = `../assets/star-defender/sprites/${curMod.file}?v=20261101`;
+        document.getElementById('sock-w-name').textContent = curMod.name;
+        document.getElementById('sock-b-img').src = `../assets/star-defender/sprites/${curBay.file}?v=20261101`;
+        document.getElementById('sock-b-name').textContent = curBay.name;
+        document.getElementById('sock-p-img').src = `../assets/star-defender/sprites/${curEng.file || 'module-thruster.svg'}?v=20261101`;
+        document.getElementById('sock-p-name').textContent = `${curEng.name} Lv.${saveData.engineLv || 1} (+${linBonusPct}%/+${turnBonusPct}%)`;
+        const ovW = document.getElementById('dock-overlay-w');
+        const ovB = document.getElementById('dock-overlay-b');
+        const ovP = document.getElementById('dock-overlay-p');
+        if (ovW) ovW.src = `../assets/star-defender/sprites/${curMod.file}?v=20261101`;
+        if (ovB) ovB.src = `../assets/star-defender/sprites/${curBay.file}?v=20261101`;
+        if (ovP) ovP.src = `../assets/star-defender/sprites/${curEng.file || 'module-thruster.svg'}?v=20261101`;
+
+        const upCost = (saveData.weaponLv || 1) * 250;
+        document.getElementById('dock-btn-upgrade').textContent =
+          (saveData.weaponLv || 1) >= 5 ? '火控已达满阶 Lv.5' : `晋升火控 Lv.${(saveData.weaponLv || 1) + 1} (${upCost}战功)`;
+
+        // Column 1: Hulls (展示体积/吨位反比与加速/转向专精)
+        const hullListEl = document.getElementById('dock-hull-list');
+        hullListEl.innerHTML = HULL_ORDER.map((hk) => {
+          const hs = HULL_SPECS[hk];
+          const f = isGlacies ? hs.glaciesFile : hs.heliosFile;
+          return `
+            <div class="dock-hull-item ${saveData.selectedHull === hk ? 'active' : ''}" data-dock-hull="${hk}">
+              <div style="display:flex;align-items:center;gap:6px;min-width:0;">
+                <img src="../assets/star-defender/sprites/${f}?v=20261101" alt="${hs.name}" />
+                <div style="min-width:0;">
+                  <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;white-space:nowrap;">${hs.name} <span style="font-size:0.54rem;color:#fbbf24;">${hs.volumeGrid}格·${hs.mass}t</span></div>
+                  <div style="font-size:0.53rem;font-family:Consolas,monospace;color:#7dd3fc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${hs.specialty}</div>
+                </div>
+              </div>
+              <span style="font-size:0.58rem;font-family:Consolas,monospace;color:#fbbf24;white-space:nowrap;flex-shrink:0;">${hs.twr}</span>
+            </div>
+          `;
+        }).join('');
+
+        hullListEl.querySelectorAll('[data-dock-hull]').forEach((el) => {
+          el.addEventListener('click', () => {
+            NexusSDK.audio.upgrade();
+            saveData.selectedHull = el.getAttribute('data-dock-hull');
+            store.save(saveData);
+            syncShipSpecs();
+            renderDockyard();
+          });
+        });
+
+        // Column 3: Modules (Weapons [W], Drone Hangars & Shields [B], Thruster Engines [P])
+        const modKeys = [
+          'railgun', 'laser', 'plasma', 'missile', 'swarmMissile', 'cryoMissile', 'empMissile', 'hellfireMissile', 'torpedo',
+          'hangar', 'hangarInterceptor', 'hangarBomber', 'shield',
+          'thrusterCruise', 'thrusterVector', 'thrusterCompound'
+        ];
+        const modListEl = document.getElementById('dock-mod-list');
+        modListEl.innerHTML = modKeys.map((mk) => {
+          const ms = MODULE_SPECS[mk];
+          const isAct =
+            (ms.zone === 'W' && saveData.activeModule === mk) ||
+            (ms.zone === 'B' && saveData.internalBay === mk) ||
+            (ms.zone === 'P' && saveData.engineType === mk);
+          return `
+            <div class="dock-mod-item ${isAct ? 'active' : ''}" data-dock-mod="${mk}">
+              <div style="display:flex;align-items:center;gap:7px;min-width:0;">
+                <img src="../assets/star-defender/sprites/${ms.file}?v=20261101" alt="${ms.name}" />
+                <div style="min-width:0;">
+                  <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;">[${ms.zone}] ${ms.name}</div>
+                  <div style="font-size:0.55rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ms.desc}</div>
+                </div>
+              </div>
+              <span style="font-size:0.58rem;font-family:Consolas,monospace;white-space:nowrap;flex-shrink:0;color:${isAct ? '#10b981' : '#fbbf24'};">${isAct ? '已挂载' : ms.pwr + 'MW'}</span>
+            </div>
+          `;
+        }).join('');
+
+        modListEl.querySelectorAll('[data-dock-mod]').forEach((el) => {
+          el.addEventListener('click', () => {
+            NexusSDK.audio.upgrade();
+            const mk = el.getAttribute('data-dock-mod');
+            const ms = MODULE_SPECS[mk];
+            if (ms.zone === 'B') {
+              saveData.internalBay = mk;
+              if (ms.droneDoctrine) saveData.droneDoctrine = ms.droneDoctrine;
+            } else if (ms.zone === 'P') {
+              saveData.engineType = mk;
+            } else {
+              saveData.activeModule = mk;
+            }
+            store.save(saveData);
+            syncShipSpecs();
+            renderDockyard();
+          });
+        });
+      }
+
+      document.getElementById('btn-open-dock').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        renderDockyard();
+        dockModal.classList.add('active');
+      });
+      document.getElementById('dock-btn-close').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        dockModal.classList.remove('active');
+      });
+      document.getElementById('dock-btn-upgrade').addEventListener('click', () => {
+        const curLv = saveData.weaponLv || 1;
+        const cost = curLv * 250;
+        if (curLv < 5 && (saveData.currency?.warMerits ?? 0) >= cost) {
+          saveData.currency.warMerits -= cost;
+          saveData.weaponLv = curLv + 1;
+          saveData.turretCount = Math.min(6, (saveData.turretCount || 2) + 1);
+          NexusSDK.audio.win();
+          store.save(saveData);
+          syncShipSpecs();
+          renderDockyard();
+        } else {
+          NexusSDK.audio.warn();
+        }
+      });
+
       // LAN Co-op Session
       const lan = NexusSDK.createLanSession('star-defender', store.getAuth().room);
       lan.onStatus((st) => {
         const el = document.getElementById('hud-lan');
         if (st.connected) {
-          el.textContent = `LAN 双舰已直连 (${st.peerLatencyMs}ms)`;
+          el.textContent = `LAN 双舰直连 (${st.peerLatencyMs}ms)`;
           el.style.color = '#00f0ff';
           wingman.isRemote = true;
         } else {
-          el.textContent = st.failoverActive ? 'AI 护航已无缝接管' : 'AI 护航僚机就绪';
+          el.textContent = st.failoverActive ? 'AI 僚机已接管' : 'AI 僚机护航';
           el.style.color = '#10b981';
           wingman.isRemote = false;
         }
       });
       lan.onFast((msg) => {
-        if (msg.type === 'ship') {
-          wingman.x = msg.x; wingman.y = msg.y; wingman.angle = msg.angle; wingman.hull = msg.hull;
+        if (msg && msg.type === 'ship') {
+          if (Number.isFinite(msg.x)) wingman.x = Math.max(-200, Math.min(4000, msg.x));
+          if (Number.isFinite(msg.y)) wingman.y = Math.max(-200, Math.min(4000, msg.y));
+          if (Number.isFinite(msg.angle)) wingman.angle = msg.angle % (Math.PI * 2);
+          if (typeof msg.hull === 'string' && Object.prototype.hasOwnProperty.call(HULL_SPECS, msg.hull)) {
+            wingman.hull = msg.hull;
+          }
         }
       });
 
       function updateHud() {
-        document.getElementById('hud-wave').textContent = `WAVE ${wave} / 100`;
+        const spec = HULL_SPECS[saveData.selectedHull] || HULL_SPECS.hullDelta;
+        const curMod = MODULE_SPECS[saveData.activeModule] || MODULE_SPECS.railgun;
+        const curBay = MODULE_SPECS[saveData.internalBay] || MODULE_SPECS.hangar;
+        const curEng = ENGINE_SPECS[saveData.engineType] || ENGINE_SPECS.thrusterCompound;
+        const kin = getEffectiveShipKinematics(saveData.selectedHull, saveData.engineType, saveData.engineLv);
+        document.getElementById('hud-wave').textContent = `WAVE ${wave}/100`;
         document.getElementById('hud-station').textContent = `${Math.max(0, Math.round((stationHp / stationMaxHp) * 100))}%`;
         document.getElementById('hud-merits').textContent = (saveData.currency?.warMerits ?? 0).toLocaleString();
         document.getElementById('hud-scraps').textContent = (saveData.currency?.scraps ?? 0).toLocaleString();
+
+        const shdPct = Math.max(0, Math.round((ship.shield / ship.maxShield) * 100));
+        const armPct = Math.max(0, Math.round((ship.hp / ship.maxHp) * 100));
+        const usedPwr = spec.basePwr + curMod.pwr + (curBay.pwr || 22) + (curEng.pwr || 20);
+        const pwrLoadPct = Math.max(10, Math.min(100, Math.round((usedPwr / spec.maxPwr) * 100)));
+        document.getElementById('bar-shield').style.width = `${shdPct}%`;
+        document.getElementById('val-shield').textContent = `${shdPct}%`;
+        document.getElementById('bar-armor').style.width = `${armPct}%`;
+        document.getElementById('val-armor').textContent = `${armPct}%`;
+        document.getElementById('bar-power').style.width = `${pwrLoadPct}%`;
+        document.getElementById('val-twr').textContent = `${spec.twr} · 极速${kin.maxSpeed.toFixed(1)} · 转${(kin.maxTurnRate * 60).toFixed(2)}r/s`;
+
+        const boss = enemies.find((e) => e.type === 'leviathan');
+        const banner = document.getElementById('boss-banner');
+        if (boss) {
+          banner.classList.add('active');
+          const bPct = Math.max(0, Math.round((boss.hp / boss.maxHp) * 100));
+          document.getElementById('boss-hp-lbl').textContent = `${bPct}% (${Math.max(0, Math.round(boss.hp))} HP)`;
+          document.getElementById('boss-bar-fill').style.width = `${bPct}%`;
+        } else {
+          banner.classList.remove('active');
+        }
+      }
+
+      function normalizeAngleRad(a) {
+        let r = a % (Math.PI * 2);
+        if (r > Math.PI) r -= Math.PI * 2;
+        if (r <= -Math.PI) r += Math.PI * 2;
+        return r;
       }
 
       function step() {
         if (window.NexusSDK && !window.NexusSDK.isGameplayActive()) return;
-        const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
-        orbitAngle += 0.015;
+        if (dockModal.classList.contains('active')) return;
 
-        // Keyboard vector fallback
+        orbitAngle += 0.015;
+        if (burstCd > 0) burstCd--;
+        if (novaCd > 0) novaCd--;
+        const btnBurstEl = document.getElementById('btn-burst');
+        const btnNovaEl = document.getElementById('btn-nova');
+        if (btnBurstEl) btnBurstEl.style.opacity = burstCd > 0 ? '0.55' : '1';
+        if (btnNovaEl) btnNovaEl.style.opacity = novaCd > 0 ? '0.55' : '1';
+
         let kx = joyVec.x;
         let ky = joyVec.y;
         if (keys['KeyW'] || keys['ArrowUp']) ky = -1;
@@ -471,113 +1575,724 @@
         if (keys['KeyA'] || keys['ArrowLeft']) kx = -1;
         if (keys['KeyD'] || keys['ArrowRight']) kx = 1;
 
-        // Newtonian Thrust + Inertial Damping
-        ship.vx = ship.vx * 0.90 + kx * 0.65;
-        ship.vy = ship.vy * 0.90 + ky * 0.65;
-        ship.x = Math.max(36, Math.min(canvas.width - 36, ship.x + ship.vx));
-        ship.y = Math.max(36, Math.min(canvas.height - 36, ship.y + ship.vy));
+        // ===== 法则1、法则2、法则3：重装星舰高惯性运动系统（大幅削弱移动与转向 + 体积反比 + 引擎有界增益） =====
+        const kin = getEffectiveShipKinematics(saveData.selectedHull, saveData.engineType, saveData.engineLv);
+        const inputMag = Math.min(1.0, Math.hypot(kx, ky));
 
-        if (Math.hypot(kx, ky) > 0.1) {
-          ship.angle = Math.atan2(ky, kx) + Math.PI / 2;
+        // 1. 战舰角动量与高转动惯量回转 (严禁瞬时对齐摇杆角度!)
+        let torqueDir = 0;
+        if (keys['KeyQ']) {
+          torqueDir = -1;
+        } else if (inputMag > 0.08) {
+          const cmdAngle = Math.atan2(ky, kx) + Math.PI / 2;
+          const angleDiff = normalizeAngleRad(cmdAngle - ship.angle);
+          if (Math.abs(angleDiff) > 0.015) {
+            // 接近目标航向时比例减速阻尼，防止过冲震荡
+            const propScale = Math.min(1.0, Math.abs(angleDiff) / 0.32);
+            torqueDir = Math.sign(angleDiff) * propScale;
+          }
+        }
+        ship.angVel = (ship.angVel || 0) * 0.86 + torqueDir * kin.turnAccel;
+        ship.angVel = Math.max(-kin.maxTurnRate, Math.min(kin.maxTurnRate, ship.angVel));
+        ship.angle = normalizeAngleRad(ship.angle + ship.angVel);
+
+        // 2. 战舰线动量：主推力严格沿当前舰艏朝向 (noseX, noseY) 输出，侧向仅靠微弱姿控微喷嘴 (strafeAccel)
+        const noseX = Math.sin(ship.angle);
+        const noseY = -Math.cos(ship.angle);
+        const rightX = Math.cos(ship.angle);
+        const rightY = Math.sin(ship.angle);
+
+        let thrustAx = 0;
+        let thrustAy = 0;
+        if (inputMag > 0.08) {
+          const ux = kx / inputMag;
+          const uy = ky / inputMag;
+          // 投影到当前舰艏轴与侧轴：若船头尚未转过去，主引擎只能输出折减推力，还原笨重战舰调头加速感
+          const forwardAlign = Math.max(-0.32, ux * noseX + uy * noseY);
+          const strafeAlign = ux * rightX + uy * rightY;
+          thrustAx = (noseX * forwardAlign * kin.linearAccel + rightX * strafeAlign * kin.strafeAccel) * inputMag;
+          thrustAy = (noseY * forwardAlign * kin.linearAccel + rightY * strafeAlign * kin.strafeAccel) * inputMag;
+        }
+
+        ship.vx = ship.vx * 0.965 + thrustAx;
+        ship.vy = ship.vy * 0.965 + thrustAy;
+        const curSpd = Math.hypot(ship.vx, ship.vy);
+        if (curSpd > kin.maxSpeed) {
+          ship.vx = (ship.vx / curSpd) * kin.maxSpeed;
+          ship.vy = (ship.vy / curSpd) * kin.maxSpeed;
+        }
+        ship.x = Math.max(-2400, Math.min(2400, ship.x + ship.vx));
+        ship.y = Math.max(-2400, Math.min(2400, ship.y + ship.vy));
+
+        if (ship.shield < ship.maxShield) {
+          ship.shield = Math.min(ship.maxShield, ship.shield + (saveData.internalBay === 'shield' ? 0.35 : 0.16));
         }
 
         if (lan.isConnected()) {
           lan.sendFast({ type: 'ship', x: ship.x, y: ship.y, angle: ship.angle, hull: ship.hull });
         }
 
-        // Auto Fire Control
+        // ===== 动能武器（火炮）、激光武器、导弹发射器 360° 全向独立伺服转向与瞄准解算 =====
+        const curMod = MODULE_SPECS[saveData.activeModule] || MODULE_SPECS.railgun;
+        const hpLayout = HULL_HARDPOINTS[ship.hull] || HULL_HARDPOINTS.hullDelta;
+        const mainMountPos = getHardpointWorldPos(ship, hpLayout.mainTurret);
+        const sideLaserPos = getHardpointWorldPos(ship, hpLayout.sideWeapons?.[0] || { x: -12, y: 8 });
+        const sideMissilePos = getHardpointWorldPos(ship, hpLayout.sideWeapons?.[1] || { x: 12, y: 8 });
+
+        // 1. 主武器炮塔 (动能火炮 / 激光武器 / 导弹井) 独立伺服转向并瞄准目标 (含火炮二阶提前量 Lead Pursuit)
+        const mainTarget = findPriorityTarget(mainMountPos.x, mainMountPos.y);
+        const isBallisticCannon = !curMod.homing && curMod.projType !== 'laser';
+        const desiredMainAngle = mainTarget
+          ? (isBallisticCannon
+              ? computeLeadAimAngle(mainMountPos.x, mainMountPos.y, mainTarget, curMod.speed || 15.5)
+              : (Math.atan2(mainTarget.y - mainMountPos.y, mainTarget.x - mainMountPos.x) + Math.PI / 2))
+          : ship.angle;
+        const mainSlewRate = curMod.projType === 'laser' ? 0.28 : 0.22;
+        ship.mainTurretAngle = stepTurretAngle(
+          typeof ship.mainTurretAngle === 'number' ? ship.mainTurretAngle : ship.angle,
+          desiredMainAngle,
+          mainSlewRate
+        );
+        ship.aimAngle = ship.mainTurretAngle;
+        weaponMountTelemetry.mainTurretTrackingErrDeg = Number(
+          (Math.abs(normalizeAngleRad(desiredMainAngle - ship.mainTurretAngle)) * (180 / Math.PI)).toFixed(2)
+        );
+
+        // 2. 左舷激光武器炮塔 (W2 相控阵副激光塔) 独立伺服转向并瞄准高机动目标
+        const laserTarget = findPriorityTarget(sideLaserPos.x, sideLaserPos.y);
+        const desiredLaserAngle = laserTarget
+          ? (Math.atan2(laserTarget.y - sideLaserPos.y, laserTarget.x - sideLaserPos.x) + Math.PI / 2)
+          : ship.angle;
+        ship.laserTurretAngle = stepTurretAngle(
+          typeof ship.laserTurretAngle === 'number' ? ship.laserTurretAngle : ship.angle,
+          desiredLaserAngle,
+          0.30
+        );
+        weaponMountTelemetry.laserTurretTrackingErrDeg = Number(
+          (Math.abs(normalizeAngleRad(desiredLaserAngle - ship.laserTurretAngle)) * (180 / Math.PI)).toFixed(2)
+        );
+
+        // 3. 右舷导弹发射塔 (W3 垂发导弹炮塔) 独立伺服转向并瞄准目标
+        const missileTarget = findPriorityTarget(sideMissilePos.x, sideMissilePos.y);
+        const desiredMissileAngle = missileTarget
+          ? (Math.atan2(missileTarget.y - sideMissilePos.y, missileTarget.x - sideMissilePos.x) + Math.PI / 2)
+          : ship.angle;
+        ship.missileTurretAngle = stepTurretAngle(
+          typeof ship.missileTurretAngle === 'number' ? ship.missileTurretAngle : ship.angle,
+          desiredMissileAngle,
+          0.22
+        );
+
         ship.fireCd--;
-        if (ship.fireCd <= 0 && enemies.length > 0) {
+        if (ship.fireCd <= 0 && enemies.length > 0 && weaponMountTelemetry.mainTurretTrackingErrDeg <= 18) {
           fireShipWeapons(ship, true);
-          ship.fireCd = Math.max(10, 24 - (saveData.weaponLv || 1) * 2);
+          ship.fireCd = Math.max(7, curMod.cd - (saveData.weaponLv || 1));
         }
 
-        // Wingman AI Orbit & Fire
-        if (!wingman.isRemote) {
-          wingman.x = cx + Math.cos(orbitAngle * 1.3) * 145;
-          wingman.y = cy + Math.sin(orbitAngle * 1.3) * 145;
+        // 旗舰舰艉尾焰火星喷射粒子 (随推力与速度动态喷出)
+        if (sparks.length < 130 && Math.random() < 0.75) {
+          const sternAng = ship.angle + Math.PI / 2;
+          const sideOff = (Math.random() < 0.5 ? -1 : 1) * 6.5;
+          const perpAng = ship.angle;
+          const exX = ship.x + Math.cos(sternAng) * 24 + Math.cos(perpAng) * sideOff;
+          const exY = ship.y + Math.sin(sternAng) * 24 + Math.sin(perpAng) * sideOff;
+          const jetSpd = 2.2 + Math.hypot(ship.vx, ship.vy) * 0.45 + Math.random() * 1.4;
+          sparks.push({
+            x: exX,
+            y: exY,
+            vx: Math.cos(sternAng + (Math.random() - 0.5) * 0.28) * jetSpd,
+            vy: Math.sin(sternAng + (Math.random() - 0.5) * 0.28) * jetSpd,
+            life: 10 + Math.floor(Math.random() * 6),
+            maxLife: 15,
+            size: 2.2,
+            isFlame: true,
+            color: Math.random() < 0.45 ? '#fde047' : '#f97316'
+          });
         }
+
+        // 旗舰 W2 相控阵副激光火控 (从左舷激光炮塔挂点沿已瞄准方向发射高相干细光束)
+        ship.auxLaserCd = (ship.auxLaserCd || 0) - 1;
+        if (ship.auxLaserCd <= 0 && laserTarget && weaponMountTelemetry.laserTurretTrackingErrDeg <= 16) {
+          const la = ship.laserTurretAngle - Math.PI / 2;
+          spawnLaserBeam(
+            sideLaserPos.x + Math.cos(la) * 9,
+            sideLaserPos.y + Math.sin(la) * 9,
+            laserTarget,
+            18 + (saveData.weaponLv || 1) * 4,
+            '#00f0ff',
+            1.65,
+            14
+          );
+          ship.auxLaserCd = 22;
+        }
+
+        // 旗舰 W3 垂发制导导弹火控 (从右舷导弹井挂点沿炮塔方向齐射)
+        ship.auxMissileCd = (ship.auxMissileCd || 0) - 1;
+        if (ship.auxMissileCd <= 0 && enemies.length > 0) {
+          const baseAng = ship.missileTurretAngle - Math.PI / 2;
+          [-0.42, 0.42].forEach((offset) => {
+            spawnGuidedMissile(
+              sideMissilePos.x + Math.cos(baseAng + offset) * 9,
+              sideMissilePos.y + Math.sin(baseAng + offset) * 9,
+              baseAng + offset,
+              28 + (saveData.weaponLv || 1) * 6,
+              '#fbbf24',
+              34,
+              false
+            );
+          });
+          ship.auxMissileCd = 34;
+        }
+
+        // Autonomous Wingman (围绕玩家飞船伴飞护航，僚机激光炮塔同样独立 360° 伺服转向瞄准目标)
+        const wTgt = findPriorityTarget(wingman.x, wingman.y);
+        if (!wingman.isRemote) {
+          wingman.x = ship.x + Math.cos(orbitAngle * 0.85) * 116;
+          wingman.y = ship.y + Math.sin(orbitAngle * 0.85) * 116;
+          if (wTgt) {
+            const desiredWAng = Math.atan2(wTgt.y - wingman.y, wTgt.x - wingman.x) + Math.PI / 2;
+            const wDiff = normalizeAngleRad(desiredWAng - wingman.angle);
+            wingman.angle = normalizeAngleRad(wingman.angle + Math.sign(wDiff) * Math.min(Math.abs(wDiff), 0.016));
+          }
+        }
+        const desiredWingmanTurret = wTgt
+          ? (Math.atan2(wTgt.y - wingman.y, wTgt.x - wingman.x) + Math.PI / 2)
+          : wingman.angle;
+        wingman.aimAngle = stepTurretAngle(
+          typeof wingman.aimAngle === 'number' ? wingman.aimAngle : wingman.angle,
+          desiredWingmanTurret,
+          0.26
+        );
         wingman.fireCd--;
         if (wingman.fireCd <= 0 && enemies.length > 0) {
           fireShipWeapons(wingman, false);
-          wingman.fireCd = 26;
+          wingman.fireCd = saveData.internalBay.startsWith('hangar') ? 16 : 22;
         }
 
-        // Orbital Station Turrets Fire
-        const tCount = saveData.turretCount || 2;
-        if (Math.random() < 0.08 && enemies.length > 0) {
-          const idx = Math.floor(Math.random() * tCount);
-          const ta = orbitAngle + (Math.PI * 2 * idx) / tCount;
-          const tx = cx + Math.cos(ta) * 72;
-          const ty = cy + Math.sin(ta) * 72;
-          const target = findNearestEnemy(tx, ty);
-          if (target) {
-            const a = Math.atan2(target.y - ty, target.x - tx);
-            projectiles.push({
-              x: tx, y: ty, vx: Math.cos(a) * 9.5, vy: Math.sin(a) * 9.5,
-              dmg: 12, color: '#38bdf8', life: 65
+        // ===== 法则6：舰载无人机编队（中等航速、敏捷转向、载弹量与机动性成反比三大机型 + 可被防御火力击落并机库重构） =====
+        const hangarBoost = saveData.internalBay.startsWith('hangar') ? 1.15 : 1.0;
+        fighterSquadron.forEach((f, idx) => {
+          const dSpec = DRONE_SPECS[f.archetype] || DRONE_SPECS.interceptor;
+          if (!f.alive) {
+            f.respawnCd--;
+            if (f.respawnCd <= 0) {
+              f.alive = true;
+              f.hp = dSpec.maxHp;
+              f.maxHp = dSpec.maxHp;
+              f.x = ship.x + Math.cos((Math.PI * 2 * idx) / 4) * 32;
+              f.y = ship.y + Math.sin((Math.PI * 2 * idx) / 4) * 32;
+              f.vx = 0;
+              f.vy = 0;
+              f.trail = [];
+              floatTexts.push({ x: ship.x, y: ship.y - 22, text: `✈ ${f.id} 重构升空`, color: dSpec.color, life: 26 });
+            }
+            return;
+          }
+
+          // 航速与回转角速度严格按机型反比参数执行：FD-01苍鹰(4.3速/0.16转) > FD-02猎隼(3.4速/0.11转) > FD-03重锤(2.4速/0.065转)
+          const maxSpd = dSpec.maxSpeed * hangarBoost;
+          const turnRate = dSpec.turnRate;
+          f.orbitPhase += (0.022 + turnRate * 0.14);
+
+          const fTarget = enemies.length > 0 ? enemies[(idx + Math.floor(orbitAngle * 2)) % enemies.length] : null;
+          let desiredX;
+          let desiredY;
+          if (fTarget && Math.hypot(fTarget.x - ship.x, fTarget.y - ship.y) < 480) {
+            const combatRadius = f.archetype === 'bomber' ? 88 : (f.archetype === 'multirole' ? 68 : 52);
+            desiredX = fTarget.x + Math.cos(f.orbitPhase + idx * 1.5) * combatRadius;
+            desiredY = fTarget.y + Math.sin(f.orbitPhase + idx * 1.5) * combatRadius;
+          } else {
+            desiredX = ship.x + Math.cos(f.orbitPhase + (Math.PI * idx) / 2) * 86;
+            desiredY = ship.y + Math.sin(f.orbitPhase + (Math.PI * idx) / 2) * 86;
+          }
+
+          const desiredHeading = Math.atan2(desiredY - f.y, desiredX - f.x);
+          const curHeading = f.angle - Math.PI / 2;
+          const hDiff = normalizeAngleRad(desiredHeading - curHeading);
+          const nextHeading = curHeading + Math.sign(hDiff) * Math.min(Math.abs(hDiff), turnRate);
+          f.angle = normalizeAngleRad(nextHeading + Math.PI / 2);
+
+          // 无人机始终沿机头朝向维持恒定巡航航速，避免急转弯时矢量抵消降速
+          f.vx = Math.cos(nextHeading) * maxSpd;
+          f.vy = Math.sin(nextHeading) * maxSpd;
+          f.x += f.vx;
+          f.y += f.vy;
+
+          f.trail.push({ x: f.x, y: f.y });
+          if (f.trail.length > 8) f.trail.shift();
+
+          // 战机尾部火光火星喷射
+          if (sparks.length < 130 && Math.random() < 0.45) {
+            const fStern = f.angle + Math.PI / 2;
+            sparks.push({
+              x: f.x + Math.cos(fStern) * 9,
+              y: f.y + Math.sin(fStern) * 9,
+              vx: Math.cos(fStern + (Math.random() - 0.5) * 0.3) * 2.0,
+              vy: Math.sin(fStern + (Math.random() - 0.5) * 0.3) * 2.0,
+              life: 7,
+              maxLife: 7,
+              size: 1.5,
+              isFlame: true,
+              color: Math.random() < 0.5 ? '#fde047' : '#fb923c'
             });
           }
-        }
 
-        // Update Enemies
+          f.fireCd--;
+          if (f.fireCd <= 0 && fTarget) {
+            const fa = Math.atan2(fTarget.y - f.y, fTarget.x - f.x);
+            if (f.archetype === 'interceptor') {
+              // FD-01 苍鹰：轻载弹高频微脉冲激光
+              spawnLaserBeam(
+                f.x + Math.cos(fa) * 10,
+                f.y + Math.sin(fa) * 10,
+                fTarget,
+                dSpec.dmg,
+                '#38bdf8',
+                1.05,
+                9
+              );
+            } else if (f.archetype === 'bomber') {
+              // FD-03 重锤：重载弹高爆微型反舰鱼雷 (含AOE)
+              spawnGuidedMissile(
+                f.x + Math.cos(fa) * 10,
+                f.y + Math.sin(fa) * 10,
+                fa,
+                dSpec.dmg,
+                '#f43f5e',
+                dSpec.aoe,
+                true,
+                32,
+                6.4,
+                0.10
+              );
+            } else {
+              // FD-02 猎隼：中型多用途双联穿甲机炮 + 微爆破
+              const sx = f.x + Math.cos(fa) * 10;
+              const sy = f.y + Math.sin(fa) * 10;
+              projectiles.push({
+                x: sx,
+                y: sy,
+                vx: Math.cos(fa) * dSpec.projSpeed,
+                vy: Math.sin(fa) * dSpec.projSpeed,
+                rot: fa + Math.PI / 2,
+                dmg: dSpec.dmg,
+                color: '#fde047',
+                projKey: 'projTracer',
+                projType: 'tracer',
+                homing: false,
+                aoe: dSpec.aoe,
+                isMicro: true,
+                seed: Math.random() * 100,
+                trail: [{ x: sx, y: sy }],
+                life: 52
+              });
+            }
+            f.fireCd = dSpec.fireCd;
+          }
+        });
+
+        // 旗舰近防卫戍浮游炮塔群 (防御武器：每个炮塔独立 360° 伺服转向瞄准目标，并沿已瞄准方向发射动能火炮或拦截激光)
+        const tCount = saveData.turretCount || 2;
+        const defTrackingErrs = [];
+        for (let idx = 0; idx < tCount; idx++) {
+          const ta = orbitAngle + (Math.PI * 2 * idx) / tCount;
+          const tx = ship.x + Math.cos(ta) * 64;
+          const ty = ship.y + Math.sin(ta) * 64;
+          const tState = defenseTurretStates[idx] || (defenseTurretStates[idx] = { aimAngle: ta + Math.PI / 2, fireCd: 10 });
+          const target = findPriorityTarget(tx, ty);
+          const isLaserTurret = idx % 2 === 0;
+          const desiredTurretAng = target
+            ? (isLaserTurret
+                ? (Math.atan2(target.y - ty, target.x - tx) + Math.PI / 2)
+                : computeLeadAimAngle(tx, ty, target, 15.5))
+            : (ta + Math.PI / 2);
+
+          tState.aimAngle = stepTurretAngle(
+            typeof tState.aimAngle === 'number' ? tState.aimAngle : desiredTurretAng,
+            desiredTurretAng,
+            0.32
+          );
+          const errDeg = Math.abs(normalizeAngleRad(desiredTurretAng - tState.aimAngle)) * (180 / Math.PI);
+          defTrackingErrs.push(Number(errDeg.toFixed(2)));
+
+          tState.fireCd = (tState.fireCd || 0) - 1;
+          if (tState.fireCd <= 0 && target && errDeg <= 15) {
+            const fireAng = tState.aimAngle - Math.PI / 2;
+            if (isLaserTurret) {
+              spawnLaserBeam(tx + Math.cos(fireAng) * 10, ty + Math.sin(fireAng) * 10, target, 15, '#38bdf8', 1.15, 11);
+            } else {
+              projectiles.push({
+                x: tx + Math.cos(fireAng) * 11,
+                y: ty + Math.sin(fireAng) * 11,
+                vx: Math.cos(fireAng) * 15.5,
+                vy: Math.sin(fireAng) * 15.5,
+                rot: tState.aimAngle,
+                dmg: 16,
+                color: '#fbbf24',
+                projKey: 'projTracer',
+                projType: 'tracer',
+                homing: false,
+                isMicro: true,
+                seed: Math.random() * 100,
+                trail: [{ x: tx, y: ty }],
+                life: 60
+              });
+            }
+            tState.fireCd = isLaserTurret ? 24 : 20;
+          }
+        }
+        weaponMountTelemetry.defenseTurretsTrackingErrDeg = defTrackingErrs;
+
+        // ===== Update 6 Void Zerg Archetypes + 法则4(高敏目标躲避无制导火炮) + 法则5/6(敌方近防拦截火力击毁导弹与无人机) =====
         for (let i = enemies.length - 1; i >= 0; i--) {
           const en = enemies[i];
-          const ang = Math.atan2(cy - en.y, cx - en.x);
-          en.x += Math.cos(ang) * en.speed;
-          en.y += Math.sin(ang) * en.speed;
+          if (en.hp <= 0) {
+            NexusSDK.audio.explosion();
+            const isBoss = en.type === 'leviathan';
+            for (let k = 0; k < (isBoss ? 18 : 8); k++) {
+              sparks.push({
+                x: en.x, y: en.y,
+                vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6,
+                life: 22, color: en.type === 'asteroidCrystal' ? '#00f0ff' : (isBoss ? '#a3e635' : '#fbbf24')
+              });
+            }
+            const meritGain = isBoss ? 450 : (en.type === 'carrier' ? 90 : 38);
+            const scrapGain = en.type === 'asteroidCrystal' ? 16 : (isBoss ? 60 : 6);
+            saveData.currency.warMerits += meritGain;
+            saveData.currency.scraps += scrapGain;
+            floatTexts.push({ x: en.x, y: en.y, text: `+${meritGain} 战功`, color: '#fbbf24', life: 28 });
+            store.save(saveData);
+            enemies.splice(i, 1);
+            updateHud();
+            continue;
+          }
+          if (en.empTimer > 0) {
+            en.empTimer--;
+            continue;
+          }
+          const slowMul = en.slowTimer > 0 ? (en.slowTimer--, 0.55) : 1.0;
+
+          const destX = ship.x;
+          const destY = ship.y;
+          const ang = Math.atan2(destY - en.y, destX - en.x);
+
+          // 法则4：高敏目标 (swarm 飞蝗 / lurker 潜行者 / stalker 螳螂) 预判无制导火炮弹道并横向机动闪避
+          if (en.evadeCd > 0) en.evadeCd--;
+          en.vxEvade = (en.vxEvade || 0) * 0.82;
+          en.vyEvade = (en.vyEvade || 0) * 0.82;
+          const isAgileEnemy = en.type === 'swarm' || en.type === 'lurker' || en.type === 'stalker';
+          if (isAgileEnemy && en.evadeCd <= 0 && en.slowTimer <= 0) {
+            for (let pi = 0; pi < projectiles.length; pi++) {
+              const p = projectiles[pi];
+              if (p.homing || p.projType === 'missile') continue; // 仅对无制导直线火炮可预判闪避
+              const rx = en.x - p.x;
+              const ry = en.y - p.y;
+              const distSq = rx * rx + ry * ry;
+              if (distSq > 145 * 145) continue;
+              const vSq = p.vx * p.vx + p.vy * p.vy;
+              if (vSq < 1) continue;
+              const tCPA = (rx * p.vx + ry * p.vy) / vSq;
+              if (tCPA > 0 && tCPA <= 16) {
+                const missX = rx - p.vx * tCPA;
+                const missY = ry - p.vy * tCPA;
+                const missDist = Math.hypot(missX, missY);
+                if (missDist < en.r + 18) {
+                  const pSpd = Math.sqrt(vSq);
+                  const perpX = -p.vy / pSpd;
+                  const perpY = p.vx / pSpd;
+                  const sideSign = (rx * perpX + ry * perpY) >= 0 ? 1 : -1;
+                  const jinkImpulse = en.type === 'swarm' ? 5.2 : 4.2;
+                  en.vxEvade = perpX * sideSign * jinkImpulse;
+                  en.vyEvade = perpY * sideSign * jinkImpulse;
+                  en.evadeCd = en.type === 'swarm' ? 52 : 72;
+                  combatTelemetry.cannonDodges++;
+                  if (floatTexts.length < 18) {
+                    floatTexts.push({ x: en.x, y: en.y - en.r - 4, text: '闪避!', color: '#7dd3fc', life: 16 });
+                  }
+                  break;
+                }
+              }
+            }
+          }
+
+          // 法则5 & 法则6：敌方生物近防拦截火力系统 (Point-Defense Spines) —— 自动拦截摧毁进入防空圈的玩家导弹与舰载无人机
+          if (en.type === 'carrier' || en.type === 'leviathan' || en.type === 'lurker') {
+            en.pdCd = (en.pdCd || 0) - 1;
+            if (en.pdCd <= 0) {
+              const pdRange = en.type === 'leviathan' ? 195 : (en.type === 'carrier' ? 175 : 135);
+              const pdDmg = en.type === 'leviathan' ? 12 : (en.type === 'carrier' ? 9 : 6);
+              let intercepted = false;
+
+              // 优先级1：拦截来袭制导导弹
+              for (let mi = projectiles.length - 1; mi >= 0; mi--) {
+                const mp = projectiles[mi];
+                if (mp.projType !== 'missile') continue;
+                const md = Math.hypot(mp.x - en.x, mp.y - en.y);
+                if (md <= pdRange) {
+                  mp.hp = (mp.hp || 18) - pdDmg;
+                  pdBeams.push({
+                    x1: en.x, y1: en.y, x2: mp.x, y2: mp.y,
+                    color: en.type === 'leviathan' ? '#a3e635' : '#e879f9',
+                    life: 7, maxLife: 7
+                  });
+                  combatTelemetry.pdShotsFired++;
+                  if (mp.hp <= 0) {
+                    combatTelemetry.missilesIntercepted++;
+                    for (let k = 0; k < 5; k++) {
+                      sparks.push({
+                        x: mp.x, y: mp.y,
+                        vx: (Math.random() - 0.5) * 4.5, vy: (Math.random() - 0.5) * 4.5,
+                        life: 11, color: '#a3e635'
+                      });
+                    }
+                    if (floatTexts.length < 18) {
+                      floatTexts.push({ x: mp.x, y: mp.y - 6, text: '近防击毁导弹!', color: '#a3e635', life: 18 });
+                    }
+                    projectiles.splice(mi, 1);
+                  }
+                  intercepted = true;
+                  break;
+                }
+              }
+
+              // 优先级2：若无导弹，近防火力扫射防空圈内的舰载无人机
+              if (!intercepted) {
+                for (let fi = 0; fi < fighterSquadron.length; fi++) {
+                  const f = fighterSquadron[fi];
+                  if (!f.alive) continue;
+                  const fd = Math.hypot(f.x - en.x, f.y - en.y);
+                  if (fd <= pdRange) {
+                    const dSpec = DRONE_SPECS[f.archetype] || DRONE_SPECS.interceptor;
+                    const actualDmg = Math.max(2, Math.round(pdDmg * (1 - (dSpec.pdEvade || 0))));
+                    f.hp -= actualDmg;
+                    pdBeams.push({
+                      x1: en.x, y1: en.y, x2: f.x, y2: f.y,
+                      color: '#f43f5e',
+                      life: 7, maxLife: 7
+                    });
+                    combatTelemetry.pdShotsFired++;
+                    if (f.hp <= 0) {
+                      f.alive = false;
+                      f.respawnCd = dSpec.respawnFrames;
+                      combatTelemetry.dronesShotDown++;
+                      for (let k = 0; k < 7; k++) {
+                        sparks.push({
+                          x: f.x, y: f.y,
+                          vx: (Math.random() - 0.5) * 5.0, vy: (Math.random() - 0.5) * 5.0,
+                          life: 14, color: '#fbbf24'
+                        });
+                      }
+                      floatTexts.push({ x: f.x, y: f.y - 8, text: `⚠ ${f.id} 被防空击落 (重构中)`, color: '#f43f5e', life: 28 });
+                    }
+                    intercepted = true;
+                    break;
+                  }
+                }
+              }
+
+              en.pdCd = intercepted ? (en.type === 'leviathan' ? 14 : (en.type === 'carrier' ? 18 : 26)) : 10;
+            }
+          }
+
+          // Lurker phase blink
+          if (en.type === 'lurker') {
+            en.phaseCd--;
+            if (en.phaseCd <= 0) {
+              en.phaseCd = 135;
+              const side = (Math.random() < 0.5 ? 1 : -1) * (Math.PI / 2);
+              en.x += Math.cos(ang + side) * 42;
+              en.y += Math.sin(ang + side) * 42;
+            }
+          }
+
+          // Carrier brood-hive spawns Razor-Sting Hornets
+          if ((en.type === 'carrier' || en.type === 'leviathan') && enemies.length < 32) {
+            en.spawnCd--;
+            if (en.spawnCd <= 0) {
+              en.spawnCd = en.type === 'leviathan' ? 150 : 210;
+              enemies.push({
+                type: 'swarm',
+                x: en.x + (Math.random() - 0.5) * 30,
+                y: en.y + (Math.random() - 0.5) * 30,
+                vxEvade: 0, vyEvade: 0, evadeCd: 20, pdCd: 999,
+                hp: 32 + wave * 4, maxHp: 32 + wave * 4,
+                speed: 2.0, r: 17, rot: ang, phaseCd: 999, spawnCd: 999, slowTimer: 0, empTimer: 0
+              });
+            }
+          }
+
+          en.x += Math.cos(ang) * en.speed * slowMul + (en.vxEvade || 0);
+          en.y += Math.sin(ang) * en.speed * slowMul + (en.vyEvade || 0);
           en.rot = ang + Math.PI / 2;
 
-          // Collide with Station Core
-          if (Math.hypot(en.x - cx, en.y - cy) < 48 + en.r * 0.5) {
-            stationHp = Math.max(100, stationHp - 35);
+          // Collide with Player Ship
+          if (Math.hypot(en.x - ship.x, en.y - ship.y) < 26 + en.r * 0.5) {
+            const dmg = en.type === 'bomber' ? 65 : 22;
+            if (ship.shield >= dmg) ship.shield -= dmg;
+            else {
+              ship.hp = Math.max(0, ship.hp - (dmg - ship.shield));
+              ship.shield = 0;
+            }
+            if (en.type === 'bomber' || en.type === 'swarm') {
+              en.hp = 0;
+            } else {
+              // 弹开重型异虫避免贴脸重叠
+              en.x -= Math.cos(ang) * 42;
+              en.y -= Math.sin(ang) * 42;
+            }
+            if (ship.hp <= 0) {
+              ship.hp = Math.round(ship.maxHp * 0.65);
+              ship.shield = ship.maxShield;
+              triggerSupernova(true);
+              floatTexts.push({ x: ship.x, y: ship.y - 28, text: '⚡ 应急折跃护盾重塑!', color: '#00f0ff', life: 42 });
+              updateHud();
+            }
+          }
+
+          // Collide with Distant Orbital Station Core (stationPos)
+          if (Math.hypot(en.x - stationPos.x, en.y - stationPos.y) < 48 + en.r * 0.5) {
+            const sDmg = en.type === 'bomber' ? 75 : 35;
+            stationHp = Math.max(0, stationHp - sDmg);
             stationHitTimer = 24;
             NexusSDK.audio.warn();
             enemies.splice(i, 1);
+            if (stationHp <= 0) {
+              stationHp = stationMaxHp;
+              enemies.length = 0;
+              saveData.currency.warMerits = Math.max(0, (saveData.currency.warMerits || 0) - 120);
+              store.save(saveData);
+              floatTexts.push({ x: ship.x, y: ship.y - 36, text: '⚠ 远端空间站护盾重构 · 重启当前波次!', color: '#f43f5e', life: 52 });
+              spawnWave(wave);
+              break;
+            }
             updateHud();
             continue;
           }
 
           if (en.hp <= 0) {
             NexusSDK.audio.explosion();
-            for (let k = 0; k < 8; k++) {
+            const isBoss = en.type === 'leviathan';
+            for (let k = 0; k < (isBoss ? 18 : 8); k++) {
               sparks.push({
                 x: en.x, y: en.y,
-                vx: (Math.random() - 0.5) * 5, vy: (Math.random() - 0.5) * 5,
-                life: 20, color: en.type === 'asteroidCrystal' ? '#00f0ff' : '#fbbf24'
+                vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6,
+                life: 22, color: en.type === 'asteroidCrystal' ? '#00f0ff' : (isBoss ? '#a3e635' : '#fbbf24')
               });
             }
-            saveData.currency.warMerits += en.type === 'leviathan' ? 400 : 35;
-            saveData.currency.scraps += en.type === 'asteroidCrystal' ? 12 : 5;
+            const meritGain = isBoss ? 450 : (en.type === 'carrier' ? 90 : 38);
+            const scrapGain = en.type === 'asteroidCrystal' ? 16 : (isBoss ? 60 : 6);
+            saveData.currency.warMerits += meritGain;
+            saveData.currency.scraps += scrapGain;
+            floatTexts.push({ x: en.x, y: en.y, text: `+${meritGain} 战功`, color: '#fbbf24', life: 28 });
             store.save(saveData);
             enemies.splice(i, 1);
             updateHud();
           }
         }
 
-        // Update Projectiles
+        // Update Projectiles (with Constant-Speed Angular Homing for Missiles, Straight Ballistics for Cannons, Trail Recording & AOE support)
         for (let i = projectiles.length - 1; i >= 0; i--) {
           const p = projectiles[i];
-          p.x += p.vx; p.y += p.vy; p.life--;
+          if (p.homing || p.projType === 'missile') {
+            const cruiseSpd = p.cruiseSpeed || Math.max(6.0, Math.hypot(p.vx, p.vy));
+            p.cruiseSpeed = cruiseSpd;
+            let curHeading = typeof p.heading === 'number' ? p.heading : Math.atan2(p.vy, p.vx);
+            const tgt = enemies.length > 0 ? findPriorityTarget(p.x, p.y) : null;
+            if (tgt) {
+              const desired = Math.atan2(tgt.y - p.y, tgt.x - p.x);
+              const turnRate = p.turnRate || (p.projType === 'missile' ? 0.15 : 0.12);
+              const diff = normalizeAngleRad(desired - curHeading);
+              curHeading = normalizeAngleRad(curHeading + Math.sign(diff) * Math.min(Math.abs(diff), turnRate));
+            }
+            p.heading = curHeading;
+            p.vx = Math.cos(curHeading) * cruiseSpd;
+            p.vy = Math.sin(curHeading) * cruiseSpd;
+            p.rot = curHeading + Math.PI / 2;
+          }
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life--;
+          if (!p.trail) p.trail = [];
+          p.trail.push({ x: p.x, y: p.y });
+          const maxTrail = p.projType === 'missile' ? 11 : 5;
+          if (p.trail.length > maxTrail) p.trail.shift();
+
+          // 制导导弹尾部火箭火光火星喷射动画
+          if (p.projType === 'missile' && sparks.length < 140 && Math.random() < 0.65) {
+            const backAng = Math.atan2(-p.vy, -p.vx);
+            sparks.push({
+              x: p.x + Math.cos(backAng) * 6,
+              y: p.y + Math.sin(backAng) * 6,
+              vx: Math.cos(backAng + (Math.random() - 0.5) * 0.45) * (1.6 + Math.random() * 1.2),
+              vy: Math.sin(backAng + (Math.random() - 0.5) * 0.45) * (1.6 + Math.random() * 1.2),
+              life: 6 + Math.floor(Math.random() * 4),
+              maxLife: 9,
+              size: 1.4,
+              isFlame: true,
+              color: Math.random() < 0.5 ? '#fde047' : '#f97316'
+            });
+          }
+
           let hit = false;
           for (let j = enemies.length - 1; j >= 0; j--) {
             const en = enemies[j];
-            if (Math.hypot(p.x - en.x, p.y - en.y) < en.r + 6) {
+            if (Math.hypot(p.x - en.x, p.y - en.y) < en.r + 7) {
               en.hp -= p.dmg;
+              if (p.cryo) en.slowTimer = 140;
+              if (p.emp) en.empTimer = 90;
+              if (p.aoe > 0) {
+                enemies.forEach((other) => {
+                  if (other !== en && Math.hypot(other.x - p.x, other.y - p.y) < p.aoe) {
+                    other.hp -= p.dmg * 0.55;
+                  }
+                });
+              }
               hit = true;
-              sparks.push({ x: p.x, y: p.y, vx: (Math.random() - 0.5) * 3, vy: (Math.random() - 0.5) * 3, life: 12, color: p.color });
+              const sparkCount = p.projType === 'missile' ? 5 : 2;
+              for (let sc = 0; sc < sparkCount; sc++) {
+                sparks.push({
+                  x: p.x,
+                  y: p.y,
+                  vx: (Math.random() - 0.5) * 3.8,
+                  vy: (Math.random() - 0.5) * 3.8,
+                  life: 12,
+                  color: p.color
+                });
+              }
               break;
             }
           }
           if (hit || p.life <= 0) projectiles.splice(i, 1);
         }
 
-        // Next Wave Check
+        // Update Coherent Laser Beams & Point-Defense Interception Beams
+        for (let i = laserBeams.length - 1; i >= 0; i--) {
+          const lb = laserBeams[i];
+          if (typeof lb.sourceFn === 'function') {
+            const src = lb.sourceFn();
+            if (src && Number.isFinite(src.x) && Number.isFinite(src.y)) {
+              lb.x1 = src.x;
+              lb.y1 = src.y;
+            }
+          }
+          if (lb.target && enemies.includes(lb.target)) {
+            lb.x2 = lb.target.x;
+            lb.y2 = lb.target.y;
+          }
+          lb.life--;
+          if (lb.life <= 0) laserBeams.splice(i, 1);
+        }
+        for (let i = pdBeams.length - 1; i >= 0; i--) {
+          pdBeams[i].life--;
+          if (pdBeams[i].life <= 0) pdBeams.splice(i, 1);
+        }
+
+        // Next Wave Progression
         if (enemies.length === 0) {
           NexusSDK.audio.win();
           wave = Math.min(100, wave + 1);
           if (wave > (saveData.highestWave || 1)) saveData.highestWave = wave;
-          stationHp = Math.min(stationMaxHp, stationHp + 150);
+          stationHp = Math.min(stationMaxHp, stationHp + 180);
           store.save(saveData);
           spawnWave(wave);
         }
@@ -585,132 +2300,972 @@
         const nowPerf = performance.now();
         const frameDt = nowPerf - lastFramePerfMs;
         lastFramePerfMs = nowPerf;
-        if (frameDt > 22 && sparks.length > 120) { sparks.splice(0, sparks.length - 120); }
+        if (frameDt > 22 && sparks.length > 100) sparks.splice(0, sparks.length - 100);
         for (let i = sparks.length - 1; i >= 0; i--) {
           const sp = sparks[i];
           sp.x += sp.vx; sp.y += sp.vy; sp.life--;
           if (sp.life <= 0) sparks.splice(i, 1);
         }
+        for (let i = floatTexts.length - 1; i >= 0; i--) {
+          const ft = floatTexts[i];
+          ft.y -= 0.7; ft.life--;
+          if (ft.life <= 0) floatTexts.splice(i, 1);
+        }
+      }
+
+      // 雷达：以玩家飞船为圆心 (04-CONTROLS-UI-FLOW §3)
+      function renderRadar() {
+        const rw = radarCanvas.width;
+        const rh = radarCanvas.height;
+        const rcx = rw / 2;
+        const rcy = rh / 2;
+        rCtx.clearRect(0, 0, rw, rh);
+        rCtx.strokeStyle = 'rgba(56, 189, 248, 0.28)';
+        rCtx.lineWidth = 1;
+        rCtx.beginPath(); rCtx.arc(rcx, rcy, 18, 0, Math.PI * 2); rCtx.stroke();
+
+        const scale = (0.032 * radarZoom);
+
+        // Distant Station dot relative to Player Ship
+        const sx = Math.max(2, Math.min(rw - 2, rcx + (stationPos.x - ship.x) * scale));
+        const sy = Math.max(2, Math.min(rh - 2, rcy + (stationPos.y - ship.y) * scale));
+        rCtx.fillStyle = '#00f0ff';
+        rCtx.fillRect(sx - 2, sy - 2, 4, 4);
+
+        // Player Ship dot at Radar Center
+        rCtx.fillStyle = '#10b981';
+        rCtx.fillRect(rcx - 2, rcy - 2, 4, 4);
+
+        // Strike Fighter Squadron dots
+        rCtx.fillStyle = '#fbbf24';
+        fighterSquadron.forEach((f) => {
+          const fx = Math.max(2, Math.min(rw - 2, rcx + (f.x - ship.x) * scale));
+          const fy = Math.max(2, Math.min(rh - 2, rcy + (f.y - ship.y) * scale));
+          rCtx.fillRect(fx - 1, fy - 1, 2, 2);
+        });
+
+        // Enemy dots relative to Player Ship
+        enemies.forEach((en) => {
+          const ex = Math.max(2, Math.min(rw - 2, rcx + (en.x - ship.x) * scale));
+          const ey = Math.max(2, Math.min(rh - 2, rcy + (en.y - ship.y) * scale));
+          rCtx.fillStyle = en.type === 'leviathan' ? '#a3e635' : '#f43f5e';
+          const sz = en.type === 'leviathan' ? 4 : 2.2;
+          rCtx.fillRect(ex - sz / 2, ey - sz / 2, sz, sz);
+        });
+      }
+
+      // 动态高频尾焰火光喷射动画绘制器 (在局部坐标系 +Y 喷口方向绘制三层跳动火舌与马赫环)
+      function drawEngineFlameJet(localX, localY, baseWidth, baseLength, thrustPower = 1.0, phaseSeed = 0) {
+        const t = performance.now() * 0.042 + phaseSeed;
+        const pulse = 1.0 + 0.32 * Math.sin(t) + 0.18 * Math.cos(t * 2.35);
+        const sway = Math.sin(t * 1.7) * (baseWidth * 0.36);
+        const len = baseLength * thrustPower * pulse;
+        const w = baseWidth * (0.92 + 0.18 * Math.sin(t * 1.9));
+
+        ctx.save();
+        // 1. 外层赤橙/琥珀热浪火舌 (Outer Combustion Flame)
+        const gradOuter = ctx.createLinearGradient(localX, localY, localX + sway, localY + len * 1.25);
+        gradOuter.addColorStop(0, 'rgba(251, 146, 60, 0.92)');
+        gradOuter.addColorStop(0.55, 'rgba(239, 68, 68, 0.68)');
+        gradOuter.addColorStop(1, 'rgba(239, 68, 68, 0)');
+        ctx.fillStyle = gradOuter;
+        ctx.beginPath();
+        ctx.moveTo(localX - w * 0.85, localY);
+        ctx.quadraticCurveTo(localX - w * 0.55, localY + len * 0.62, localX + sway, localY + len * 1.25);
+        ctx.quadraticCurveTo(localX + w * 0.55, localY + len * 0.62, localX + w * 0.85, localY);
+        ctx.closePath();
+        ctx.fill();
+
+        // 2. 中层高能金黄喷射火炬 (Mid Blazing Gold Flame)
+        const gradMid = ctx.createLinearGradient(localX, localY, localX + sway * 0.6, localY + len * 0.92);
+        gradMid.addColorStop(0, 'rgba(254, 240, 138, 0.96)');
+        gradMid.addColorStop(0.6, 'rgba(251, 191, 36, 0.85)');
+        gradMid.addColorStop(1, 'rgba(245, 158, 11, 0)');
+        ctx.fillStyle = gradMid;
+        ctx.beginPath();
+        ctx.moveTo(localX - w * 0.54, localY);
+        ctx.lineTo(localX + sway * 0.6, localY + len * 0.92);
+        ctx.lineTo(localX + w * 0.54, localY);
+        ctx.closePath();
+        ctx.fill();
+
+        // 3. 内层白炽超音速马赫激波核 (Inner White-Hot Core & Mach Diamonds)
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(localX - w * 0.28, localY);
+        ctx.lineTo(localX + sway * 0.25, localY + len * 0.52);
+        ctx.lineTo(localX + w * 0.28, localY);
+        ctx.closePath();
+        ctx.fill();
+
+        // 动态脉动马赫环节点 (Mach Shock Diamond)
+        const machY = localY + len * (0.28 + 0.14 * Math.sin(t * 2.1));
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.beginPath();
+        ctx.ellipse(localX + sway * 0.15, machY, Math.max(0.8, w * 0.26), Math.max(1.2, len * 0.11), 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
 
       function render() {
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = '#050914';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const isGlacies = (saveData.faction || 'helios') === 'glacies';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Deep Space Starfield
+        // Deep Space Parallax Starfield (随玩家飞船移动产生深空视差滚动)
         stars.forEach((st) => {
-          ctx.fillStyle = `rgba(148, 163, 184, ${st.a})`;
-          ctx.fillRect(st.x % canvas.width, st.y % canvas.height, st.s, st.s);
+          const sx = ((st.x - ship.x * (st.p || 0.45)) % canvas.width + canvas.width) % canvas.width;
+          const sy = ((st.y - ship.y * (st.p || 0.45)) % canvas.height + canvas.height) % canvas.height;
+          ctx.fillStyle = `rgba(186, 230, 253, ${st.a})`;
+          ctx.fillRect(sx, sy, st.s, st.s);
         });
 
-        // Orbital Defense Rings
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.12)';
+        // 屏幕中心旗舰火控/护航罗盘环 (以画面正中心的玩家飞船为圆心)
+        ctx.strokeStyle = isGlacies ? 'rgba(56, 189, 248, 0.16)' : 'rgba(251, 191, 36, 0.14)';
         ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.arc(cx, cy, 72, 0, Math.PI * 2); ctx.stroke();
-        ctx.beginPath(); ctx.arc(cx, cy, 145, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, 64, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, 116, 0, Math.PI * 2); ctx.stroke();
 
-        // Central Station Core SVG Sprite
-        if (stationHitTimer > 0) {
-          stationHitTimer--;
-          ctx.save();
-          ctx.strokeStyle = stationHitTimer % 2 === 0 ? '#00f0ff' : '#e879f9';
-          ctx.lineWidth = 2.5;
-          ctx.globalAlpha = stationHitTimer / 24;
-          ctx.beginPath();
-          ctx.arc(cx, cy, 52 + (24 - stationHitTimer) * 0.8, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.restore();
-        }
-        if (sprites.station?.complete) {
-          ctx.save();
-          ctx.translate(cx, cy);
-          ctx.rotate(orbitAngle * 0.25);
-          ctx.drawImage(sprites.station, -46, -46, 92, 92);
-          ctx.restore();
-        }
+        // ===== 开启以玩家飞船 (ship.x, ship.y) 为画面中心 (cx, cy) 的世界坐标摄像机变换 =====
+        ctx.save();
+        ctx.translate(cx - ship.x, cy - ship.y);
 
-        // Orbital Weapon Turret SVG Sprites
-        const tCount = saveData.turretCount || 2;
-        for (let i = 0; i < tCount; i++) {
-          const ta = orbitAngle + (Math.PI * 2 * i) / tCount;
-          const tx = cx + Math.cos(ta) * 72;
-          const ty = cy + Math.sin(ta) * 72;
-          if (sprites.turret?.complete) {
+        // 远端星轨核心站 (位于世界坐标 stationPos，不在屏幕中央)
+        const stScreenX = cx + (stationPos.x - ship.x);
+        const stScreenY = cy + (stationPos.y - ship.y);
+        if (stScreenX >= -80 && stScreenX <= canvas.width + 80 && stScreenY >= -80 && stScreenY <= canvas.height + 80) {
+          if (stationHitTimer > 0) {
+            stationHitTimer--;
             ctx.save();
-            ctx.translate(tx, ty);
-            ctx.rotate(ta + Math.PI / 2);
-            ctx.drawImage(sprites.turret, -16, -16, 32, 32);
+            ctx.strokeStyle = stationHitTimer % 2 === 0 ? '#00f0ff' : '#e879f9';
+            ctx.lineWidth = 2.5;
+            ctx.globalAlpha = stationHitTimer / 24;
+            ctx.beginPath();
+            ctx.arc(stationPos.x, stationPos.y, 44 + (24 - stationHitTimer) * 0.9, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          }
+          const stSprite = isGlacies ? (sprites.stationGlacies || sprites.station) : sprites.station;
+          if (stSprite?.complete) {
+            ctx.save();
+            ctx.translate(stationPos.x, stationPos.y);
+            ctx.rotate(orbitAngle * 0.22);
+            ctx.drawImage(stSprite, -38, -38, 76, 76);
             ctx.restore();
           }
         }
 
-        // Enemies & Off-Screen Boundary Projection Arrows
+        // 环绕玩家飞船的近防浮游卫戍炮塔 (Orbiting Player Flagship at r=64px · 实时沿各自伺服瞄准角 aimAngle 旋转指向目标)
+        const tCount = saveData.turretCount || 2;
+        const turSprite = isGlacies ? (sprites.turretGlacies || sprites.turret) : sprites.turret;
+        for (let i = 0; i < tCount; i++) {
+          const ta = orbitAngle + (Math.PI * 2 * i) / tCount;
+          const tx = ship.x + Math.cos(ta) * 64;
+          const ty = ship.y + Math.sin(ta) * 64;
+          const tState = defenseTurretStates[i];
+          const drawAng = (tState && typeof tState.aimAngle === 'number') ? tState.aimAngle : (ta + Math.PI / 2);
+          if (turSprite?.complete) {
+            ctx.save();
+            ctx.translate(tx, ty);
+            ctx.rotate(drawAng);
+            // 防御武器火控瞄准线 (直观标示卫戍炮塔旋转朝向目标的方向)
+            ctx.strokeStyle = isGlacies ? 'rgba(186, 230, 253, 0.36)' : 'rgba(56, 189, 248, 0.36)';
+            ctx.lineWidth = 0.85;
+            ctx.beginPath();
+            ctx.moveTo(0, -10);
+            ctx.lineTo(0, -24);
+            ctx.stroke();
+            ctx.drawImage(turSprite, -13, -13, 26, 26);
+            ctx.restore();
+          }
+        }
+
+        // Enemies in World Space
         enemies.forEach((en) => {
           const sp = sprites[en.type] || sprites.swarm;
-          const sz = en.r * 2.2;
-          if (en.x >= -40 && en.x <= canvas.width + 40 && en.y >= -40 && en.y <= canvas.height + 40) {
+          const sz = en.r * 2.25;
+          const esx = cx + (en.x - ship.x);
+          const esy = cy + (en.y - ship.y);
+          if (esx >= -56 && esx <= canvas.width + 56 && esy >= -56 && esy <= canvas.height + 56) {
             ctx.save();
             ctx.translate(en.x, en.y);
             ctx.rotate(en.rot);
             if (sp?.complete) ctx.drawImage(sp, -sz / 2, -sz / 2, sz, sz);
             ctx.restore();
 
+            // Locked Target Reticle
+            if (lockedEnemy === en) {
+              ctx.save();
+              ctx.strokeStyle = '#00f0ff';
+              ctx.lineWidth = 1.6;
+              ctx.beginPath();
+              ctx.arc(en.x, en.y, en.r + 8, 0, Math.PI * 2);
+              ctx.stroke();
+              ctx.restore();
+            }
+
             // Health bar
-            ctx.fillStyle = 'rgba(0,0,0,0.65)';
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
             ctx.fillRect(en.x - 18, en.y - en.r - 8, 36, 4);
-            ctx.fillStyle = en.type === 'leviathan' ? '#fbbf24' : '#ef4444';
+            ctx.fillStyle = en.type === 'leviathan' ? '#a3e635' : (en.slowTimer > 0 ? '#38bdf8' : '#ef4444');
             ctx.fillRect(en.x - 18, en.y - en.r - 8, 36 * Math.max(0, en.hp / en.maxHp), 4);
+          }
+        });
+
+        // 2. 高相干性激光武器细光束渲染 (真实航宇比例：纤细锐利相干光束 + 靶点电离光环)
+        laserBeams.forEach((lb) => {
+          const alpha = Math.max(0.12, lb.life / lb.maxLife);
+          const dx = lb.x2 - lb.x1;
+          const dy = lb.y2 - lb.y1;
+          const dist = Math.hypot(dx, dy);
+          const beamAng = Math.atan2(dy, dx);
+
+          ctx.save();
+          // Outer Ionized Halo (纤细光晕)
+          ctx.strokeStyle = lb.color || '#00f0ff';
+          ctx.globalAlpha = 0.26 * alpha;
+          ctx.lineWidth = lb.width * 2.2;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(lb.x1, lb.y1);
+          ctx.lineTo(lb.x2, lb.y2);
+          ctx.stroke();
+
+          // Mid Coherent Waveguide
+          ctx.strokeStyle = '#38bdf8';
+          ctx.globalAlpha = 0.82 * alpha;
+          ctx.lineWidth = lb.width * 1.15;
+          ctx.beginPath();
+          ctx.moveTo(lb.x1, lb.y1);
+          ctx.lineTo(lb.x2, lb.y2);
+          ctx.stroke();
+
+          // Incandescent White Core
+          ctx.strokeStyle = '#ffffff';
+          ctx.globalAlpha = 0.98 * alpha;
+          ctx.lineWidth = Math.max(0.65, lb.width * 0.52);
+          ctx.beginPath();
+          ctx.moveTo(lb.x1, lb.y1);
+          ctx.lineTo(lb.x2, lb.y2);
+          ctx.stroke();
+
+          // Stretch proj-laser-beam.svg along the beam vector (纤细 7px 宽波导纹理)
+          if (sprites.projLaser?.complete && dist > 16) {
+            ctx.translate((lb.x1 + lb.x2) / 2, (lb.y1 + lb.y2) / 2);
+            ctx.rotate(beamAng + Math.PI / 2);
+            ctx.globalAlpha = Math.min(0.95, alpha * 1.05);
+            ctx.drawImage(sprites.projLaser, -3.5, -dist / 2, 7, dist);
+          }
+          ctx.restore();
+
+          // Target Thermal Ionization Ring
+          ctx.save();
+          ctx.strokeStyle = '#fde047';
+          ctx.globalAlpha = 0.85 * alpha;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.arc(lb.x2, lb.y2, 3.5 + (1 - alpha) * 4.5, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        });
+
+        // 近防拦截火力光束渲染 (Point-Defense / CIWS Interception Beams)
+        pdBeams.forEach((pb) => {
+          const alpha = Math.max(0.2, pb.life / pb.maxLife);
+          ctx.save();
+          ctx.strokeStyle = pb.color || '#a3e635';
+          ctx.globalAlpha = 0.85 * alpha;
+          ctx.lineWidth = 1.6;
+          ctx.setLineDash([4, 3]);
+          ctx.beginPath();
+          ctx.moveTo(pb.x1, pb.y1);
+          ctx.lineTo(pb.x2, pb.y2);
+          ctx.stroke();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(pb.x2, pb.y2, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+
+        // 4. 舰载无人战机编队渲染 (FD-01 苍鹰轻截击机 / FD-02 猎隼多用途机 / FD-03 重锤重鱼雷机：载弹量与机动成反比 + 防空击落重构显示)
+        fighterSquadron.forEach((f, fIdx) => {
+          const dSpec = DRONE_SPECS[f.archetype] || DRONE_SPECS.interceptor;
+          if (!f.alive) {
+            // 战机被敌方近防火力击落后，在母舰机库旁显示纳米重构进度环
+            const rx = ship.x + Math.cos((Math.PI * 2 * fIdx) / 4) * 34;
+            const ry = ship.y + Math.sin((Math.PI * 2 * fIdx) / 4) * 34;
+            const pct = Math.max(0, 1 - f.respawnCd / dSpec.respawnFrames);
+            ctx.save();
+            ctx.strokeStyle = 'rgba(244, 63, 94, 0.75)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(rx, ry, 7, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * pct);
+            ctx.stroke();
+            ctx.fillStyle = '#fca5a5';
+            ctx.font = 'bold 6.5px Consolas, monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`重构${Math.ceil(f.respawnCd / 60)}s`, rx, ry + 13);
+            ctx.restore();
+            return;
+          }
+
+          if (f.trail && f.trail.length > 1) {
+            ctx.save();
+            ctx.strokeStyle = dSpec.color + '5c';
+            ctx.lineWidth = f.archetype === 'bomber' ? 1.8 : 1.2;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(f.trail[0].x, f.trail[0].y);
+            for (let t = 1; t < f.trail.length; t++) {
+              ctx.lineTo(f.trail[t].x, f.trail[t].y);
+            }
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          const dSize = dSpec.drawSize || 24;
+          ctx.save();
+          ctx.translate(f.x, f.y);
+          ctx.rotate(f.angle);
+          // 舰载战机双喷口高频火光喷射动画
+          drawEngineFlameJet(-2.4, dSize * 0.34, 2.1, 7.5, 1.15, fIdx * 3.7);
+          drawEngineFlameJet(2.4, dSize * 0.34, 2.1, 7.5, 1.15, fIdx * 3.7 + 1.4);
+          if (sprites.fighterDrone?.complete) {
+            ctx.drawImage(sprites.fighterDrone, -dSize / 2, -dSize / 2, dSize, dSize);
+          } else if (sprites.hullDelta?.complete) {
+            ctx.drawImage(sprites.hullDelta, -dSize / 2, -dSize / 2, dSize, dSize);
+          }
+          ctx.restore();
+
+          // 无人机生命条与呼号 (体现可被防御火力损伤与三种机型区分)
+          ctx.save();
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.72)';
+          ctx.fillRect(f.x - 10, f.y - dSize * 0.55 - 5, 20, 2.5);
+          ctx.fillStyle = dSpec.color;
+          ctx.fillRect(f.x - 10, f.y - dSize * 0.55 - 5, 20 * Math.max(0, f.hp / f.maxHp), 2.5);
+          ctx.fillStyle = dSpec.color;
+          ctx.font = 'bold 7.2px Consolas, monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(f.id, f.x, f.y + dSize * 0.55 + 6);
+          ctx.restore();
+        });
+
+        // Wingman Ship SVG Sprite (46×46px + 舰艉双联动态火光喷射动画 + 物理外挂武器/引擎贴图)
+        const wKey = isGlacies ? (wingman.hull + 'Glacies') : wingman.hull;
+        const wSprite = sprites[wKey] || sprites[wingman.hull] || sprites.hullWing;
+        let wMountedCount = 0;
+        if (wSprite?.complete) {
+          ctx.save();
+          ctx.translate(wingman.x, wingman.y);
+          ctx.rotate(wingman.angle);
+          drawEngineFlameJet(-6.2, 17.5, 3.6, 12.5, 1.1, 11.2);
+          drawEngineFlameJet(6.2, 17.5, 3.6, 12.5, 1.1, 14.8);
+          ctx.drawImage(wSprite, -23, -23, 46, 46);
+
+          // 僚机外挂武器贴图 (相控阵激光塔 + 左右侧舷导弹井)
+          if (sprites.modLaser?.complete) {
+            const wRelAim = (wingman.aimAngle || wingman.angle) - wingman.angle;
+            ctx.save();
+            ctx.translate(0, 4);
+            ctx.rotate(wRelAim);
+            ctx.drawImage(sprites.modLaser, -9, -9, 18, 18);
+            ctx.restore();
+            wMountedCount++;
+          }
+          if (sprites.modMissile?.complete) {
+            ctx.drawImage(sprites.modMissile, -12 - 6, 2 - 6, 12, 12);
+            ctx.drawImage(sprites.modMissile, 12 - 6, 2 - 6, 12, 12);
+            wMountedCount += 2;
+          }
+          ctx.restore();
+        }
+        weaponMountTelemetry.wingmanMountedSpritesDrawn = wMountedCount;
+
+        // Player Ship SVG Sprite (始终位于画面正中心 cx, cy · 60×60px 主力战舰 + 多喷口火光喷射动画 + 全分区舰载武器/机库/引擎贴图实时挂载渲染)
+        const pKey = isGlacies ? (ship.hull + 'Glacies') : ship.hull;
+        const pSprite = sprites[pKey] || sprites[ship.hull] || sprites.hullDelta;
+        let pMountedCount = 0;
+        if (pSprite?.complete) {
+          const shipSpd = Math.hypot(ship.vx, ship.vy);
+          const thrustMul = 1.0 + Math.min(0.85, shipSpd * 0.28);
+          const hpLayout = HULL_HARDPOINTS[ship.hull] || HULL_HARDPOINTS.hullDelta;
+          const activeModSpec = MODULE_SPECS[saveData.activeModule] || MODULE_SPECS.railgun;
+          const activeBaySpec = MODULE_SPECS[saveData.internalBay] || MODULE_SPECS.hangar;
+          const mainWpnImg = sprites[activeModSpec.spriteKey] || sprites.modRailgun;
+          const bayImg = sprites[activeBaySpec.spriteKey] || sprites.modHangar;
+          const isCompoundEng = (saveData.engineType || 'thrusterCompound') === 'thrusterCompound';
+          const engImg = isCompoundEng ? (sprites.modHallThruster || sprites.modThruster) : sprites.modThruster;
+
+          weaponMountTelemetry.activeMainWeaponKey = activeModSpec.spriteKey || 'modRailgun';
+          weaponMountTelemetry.activeBaySpriteKey = activeBaySpec.spriteKey || 'modHangar';
+          weaponMountTelemetry.activeEngineSpriteKey = isCompoundEng ? 'modHallThruster' : 'modThruster';
+
+          ctx.save();
+          ctx.translate(ship.x, ship.y);
+          ctx.rotate(ship.angle);
+          // 主发动机双联喷口动态火光
+          drawEngineFlameJet(-6.8, 22.0, 4.6, 16.5, thrustMul, 0.5);
+          drawEngineFlameJet(6.8, 22.0, 4.6, 16.5, thrustMul, 2.3);
+          // 巡洋舰/歼星舰副推进器火光
+          if (ship.hull === 'hullWing' || ship.hull === 'hullCross') {
+            drawEngineFlameJet(-14.5, 19.5, 3.2, 11.5, thrustMul * 0.9, 4.1);
+            drawEngineFlameJet(14.5, 19.5, 3.2, 11.5, thrustMul * 0.9, 5.8);
+          }
+
+          // 1. 战舰主底盘贴图
+          ctx.drawImage(pSprite, -30, -30, 60, 60);
+
+          // 2. [紫 P] 舰艉推进引擎舱贴图 (module-thruster.svg)
+          if (engImg?.complete && hpLayout.engineMount) {
+            const em = hpLayout.engineMount;
+            ctx.drawImage(engImg, em.x - em.size / 2, em.y - em.size / 2, em.size, em.size);
+            pMountedCount++;
+          }
+
+          // 3. [绿 B] 内部机库/偏导护盾核心舱贴图 (module-hangar.svg / module-shield.svg)
+          if (bayImg?.complete && hpLayout.bayMount) {
+            const bm = hpLayout.bayMount;
+            ctx.drawImage(bayImg, bm.x - bm.size / 2, bm.y - bm.size / 2, bm.size, bm.size);
+            pMountedCount++;
+          }
+
+          // 4. [红 W2/W3] 左右侧舷副武器硬挂点贴图 (左舷相控阵副激光塔 module-laser.svg + 右舷垂发导弹井 module-missile.svg，100% 沿各自伺服瞄准角旋转对准目标)
+          if (hpLayout.sideWeapons && hpLayout.sideWeapons.length >= 2) {
+            const swL = hpLayout.sideWeapons[0];
+            const swR = hpLayout.sideWeapons[1];
+            const laserWorldAng = typeof ship.laserTurretAngle === 'number' ? ship.laserTurretAngle : (ship.aimAngle || ship.angle);
+            const missileWorldAng = typeof ship.missileTurretAngle === 'number' ? ship.missileTurretAngle : (ship.aimAngle || ship.angle);
+            if (sprites.modLaser?.complete) {
+              ctx.save();
+              ctx.translate(swL.x, swL.y);
+              ctx.rotate(laserWorldAng - ship.angle);
+              ctx.strokeStyle = 'rgba(0, 240, 255, 0.32)';
+              ctx.lineWidth = 0.75;
+              ctx.beginPath();
+              ctx.moveTo(0, -swL.size * 0.4);
+              ctx.lineTo(0, -swL.size * 1.35);
+              ctx.stroke();
+              ctx.drawImage(sprites.modLaser, -swL.size / 2, -swL.size / 2, swL.size, swL.size);
+              ctx.restore();
+              pMountedCount++;
+            }
+            if (sprites.modMissile?.complete) {
+              ctx.save();
+              ctx.translate(swR.x, swR.y);
+              ctx.rotate(missileWorldAng - ship.angle);
+              ctx.drawImage(sprites.modMissile, -swR.size / 2, -swR.size / 2, swR.size, swR.size);
+              ctx.restore();
+              pMountedCount++;
+            }
+          }
+
+          // 5. [红 W1] 舰脊主武器硬挂点回转炮塔贴图 (随火控瞄准角 ship.mainTurretAngle 独立 360° 伺服旋转并附带微弱准星射线指示)
+          if (mainWpnImg?.complete && hpLayout.mainTurret) {
+            const mt = hpLayout.mainTurret;
+            const turretWorldAngle = typeof ship.mainTurretAngle === 'number' ? ship.mainTurretAngle : (ship.aimAngle || ship.angle);
+            const relTurretAngle = turretWorldAngle - ship.angle;
+            ctx.save();
+            ctx.translate(mt.x, mt.y);
+            ctx.rotate(relTurretAngle);
+            // 炮管前端微弱火控激光准星导引线 (直观展现炮塔正在转向瞄准目标)
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+            ctx.lineWidth = 0.9;
+            ctx.beginPath();
+            ctx.moveTo(0, -mt.size * 0.42);
+            ctx.lineTo(0, -mt.size * 1.45);
+            ctx.stroke();
+            ctx.drawImage(mainWpnImg, -mt.size / 2, -mt.size / 2, mt.size, mt.size);
+            ctx.restore();
+            pMountedCount++;
+          }
+
+          ctx.restore();
+        }
+        weaponMountTelemetry.playerMountedSpritesDrawn = pMountedCount;
+
+        // 1 & 3. 真实比例投射物渲染：纤细穿甲曳光弹 / 电浆弹 / 带动态喷射尾焰与抗拦截生命条的制导导弹与鱼雷
+        projectiles.forEach((p, pIdx) => {
+          const pImg = sprites[p.projKey];
+          const seed = p.seed || pIdx * 1.9;
+          if (p.projType === 'missile') {
+            // 3. 制导导弹 (6.5×15px) 与重型鱼雷 (8.5×19px)：真实舰载导弹比例 + 尾部动态喷射火光 + 纤细尾烟
+            const mw = p.isTorpedo ? 8.5 : 6.5;
+            const mh = p.isTorpedo ? 19.0 : 15.0;
+            if (p.trail && p.trail.length > 1) {
+              ctx.save();
+              ctx.strokeStyle = 'rgba(251, 191, 36, 0.38)';
+              ctx.lineWidth = p.isTorpedo ? 2.0 : 1.4;
+              ctx.lineCap = 'round';
+              ctx.beginPath();
+              ctx.moveTo(p.trail[0].x, p.trail[0].y);
+              for (let t = 1; t < p.trail.length; t++) {
+                ctx.lineTo(p.trail[t].x, p.trail[t].y);
+              }
+              ctx.stroke();
+
+              ctx.strokeStyle = 'rgba(255, 255, 255, 0.78)';
+              ctx.lineWidth = 0.75;
+              ctx.beginPath();
+              ctx.moveTo(p.trail[Math.max(0, p.trail.length - 4)].x, p.trail[Math.max(0, p.trail.length - 4)].y);
+              ctx.lineTo(p.x, p.y);
+              ctx.stroke();
+              ctx.restore();
+            }
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot || 0);
+            // 导弹尾部发动机高频火光喷射动画
+            drawEngineFlameJet(0, mh * 0.36, mw * 0.42, mh * 0.72, 1.2, seed);
+            if (pImg?.complete) {
+              ctx.drawImage(pImg, -mw / 2, -mh / 2, mw, mh);
+            }
+            ctx.restore();
+
+            // 若导弹受到敌方近防火力损伤，显示微型导弹结构条
+            if (p.hp && p.maxHp && p.hp < p.maxHp) {
+              ctx.save();
+              ctx.fillStyle = 'rgba(0,0,0,0.75)';
+              ctx.fillRect(p.x - 6, p.y - 10, 12, 2);
+              ctx.fillStyle = '#a3e635';
+              ctx.fillRect(p.x - 6, p.y - 10, 12 * Math.max(0, p.hp / p.maxHp), 2);
+              ctx.restore();
+            }
+          } else if (p.projType === 'plasma') {
+            // 磁约束电浆团投射物 (真实比例 8×14px + 尾部电浆火舌)
+            if (p.trail && p.trail.length > 1) {
+              ctx.save();
+              ctx.strokeStyle = 'rgba(232, 121, 249, 0.48)';
+              ctx.lineWidth = 2.0;
+              ctx.lineCap = 'round';
+              ctx.beginPath();
+              ctx.moveTo(p.trail[0].x, p.trail[0].y);
+              ctx.lineTo(p.x, p.y);
+              ctx.stroke();
+              ctx.restore();
+            }
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot || 0);
+            drawEngineFlameJet(0, 4.5, 2.4, 6.5, 1.0, seed);
+            if (pImg?.complete) {
+              ctx.drawImage(pImg, -4, -7, 8, 14);
+            }
+            ctx.restore();
           } else {
-            // Offscreen boundary threat arrow projection
-            const ang = Math.atan2(en.y - cy, en.x - cx);
-            const bx = Math.max(24, Math.min(canvas.width - 24, cx + Math.cos(ang) * (canvas.width * 0.46)));
-            const by = Math.max(24, Math.min(canvas.height - 24, cy + Math.sin(ang) * (canvas.height * 0.44)));
+            // 1. 高初速穿甲曳光弹 (真实比例：主炮 4.5×13px / 战机微口径 3.2×9.5px + 锐利超音速流光尾迹 + 曳光火舌)
+            const tw = p.isMicro ? 3.2 : 4.5;
+            const th = p.isMicro ? 9.5 : 13.0;
+            const tailX = p.trail && p.trail.length > 0 ? p.trail[0].x : (p.x - p.vx * 1.8);
+            const tailY = p.trail && p.trail.length > 0 ? p.trail[0].y : (p.y - p.vy * 1.8);
+            ctx.save();
+            ctx.strokeStyle = p.color || '#fde047';
+            ctx.globalAlpha = 0.52;
+            ctx.lineWidth = p.isMicro ? 1.25 : 1.75;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(tailX, tailY);
+            ctx.lineTo(p.x, p.y);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#ffffff';
+            ctx.globalAlpha = 0.94;
+            ctx.lineWidth = p.isMicro ? 0.65 : 0.85;
+            ctx.beginPath();
+            ctx.moveTo((tailX + p.x) * 0.45, (tailY + p.y) * 0.45);
+            ctx.lineTo(p.x, p.y);
+            ctx.stroke();
+            ctx.restore();
+
+            const tracerImg = pImg?.complete ? pImg : sprites.projTracer;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot || 0);
+            drawEngineFlameJet(0, th * 0.32, tw * 0.38, th * 0.48, 1.0, seed);
+            if (tracerImg?.complete) {
+              ctx.drawImage(tracerImg, -tw / 2, -th / 2, tw, th);
+            }
+            ctx.restore();
+          }
+        });
+
+        // Sparks & Engine Flame Sparks
+        sparks.forEach((s) => {
+          if (s.isFlame) {
+            const ratio = Math.max(0.1, s.life / (s.maxLife || 10));
+            ctx.save();
+            ctx.globalAlpha = ratio * 0.9;
+            ctx.fillStyle = ratio > 0.6 ? '#fef08a' : (ratio > 0.3 ? '#fb923c' : '#ef4444');
+            const r = (s.size || 1.8) * (0.5 + ratio * 0.6);
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          } else {
+            ctx.fillStyle = s.color;
+            ctx.fillRect(s.x - 1.5, s.y - 1.5, 3, 3);
+          }
+        });
+        floatTexts.forEach((ft) => {
+          ctx.save();
+          ctx.fillStyle = ft.color;
+          ctx.font = 'bold 11px "Noto Sans SC", Consolas, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(ft.text, ft.x, ft.y);
+          ctx.restore();
+        });
+
+        ctx.restore(); // ===== 结束世界坐标摄像机变换 =====
+
+        // 屏幕边缘威胁指示箭头 (以屏幕中心的玩家飞船为基准)
+        enemies.forEach((en) => {
+          const esx = cx + (en.x - ship.x);
+          const esy = cy + (en.y - ship.y);
+          if (esx < -48 || esx > canvas.width + 48 || esy < -48 || esy > canvas.height + 48) {
+            const ang = Math.atan2(en.y - ship.y, en.x - ship.x);
+            const bx = Math.max(24, Math.min(canvas.width - 24, cx + Math.cos(ang) * (canvas.width * 0.45)));
+            const by = Math.max(24, Math.min(canvas.height - 24, cy + Math.sin(ang) * (canvas.height * 0.42)));
             ctx.save();
             ctx.translate(bx, by);
             ctx.rotate(ang);
-            ctx.fillStyle = en.type === 'leviathan' ? '#fbbf24' : '#ef4444';
+            ctx.fillStyle = en.type === 'leviathan' ? '#a3e635' : (en.type === 'bomber' ? '#fbbf24' : '#ef4444');
             ctx.beginPath();
-            ctx.moveTo(8, 0); ctx.lineTo(-6, -5); ctx.lineTo(-6, 5); ctx.closePath();
+            ctx.moveTo(9, 0); ctx.lineTo(-6, -5); ctx.lineTo(-6, 5); ctx.closePath();
             ctx.fill();
             ctx.restore();
           }
         });
 
-        // Wingman Ship SVG Sprite
-        const wSprite = sprites[wingman.hull] || sprites.hullWing;
-        if (wSprite?.complete) {
-          ctx.save();
-          ctx.translate(wingman.x, wingman.y);
-          ctx.rotate(wingman.angle);
-          ctx.drawImage(wSprite, -24, -24, 48, 48);
-          ctx.restore();
-        }
-
-        // Player Ship SVG Sprite
-        const pSprite = sprites[ship.hull] || sprites.hullDelta;
-        if (pSprite?.complete) {
-          ctx.save();
-          ctx.translate(ship.x, ship.y);
-          ctx.rotate(ship.angle);
-          ctx.drawImage(pSprite, -28, -28, 56, 56);
-          ctx.restore();
-        }
-
-        // Projectiles
-        projectiles.forEach((p) => {
-          ctx.fillStyle = p.color;
-          ctx.beginPath(); ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2); ctx.fill();
-        });
-
-        // Sparks
-        sparks.forEach((s) => {
-          ctx.fillStyle = s.color;
-          ctx.fillRect(s.x - 2, s.y - 2, 4, 4);
-        });
+        renderRadar();
       }
+
+      // 暴露物理与防空系统审计接口供自动化测试与验证
+      window.__STAR_PHYSICS_API__ = {
+        HULL_SPECS,
+        ENGINE_SPECS,
+        DRONE_SPECS,
+        MODULE_SPECS,
+        getEffectiveShipKinematics,
+        getState: () => ({
+          ship: { x: ship.x, y: ship.y, vx: ship.vx, vy: ship.vy, angle: ship.angle, angVel: ship.angVel, hull: ship.hull },
+          saveData,
+          combatTelemetry,
+          fighterSquadron: fighterSquadron.map((f) => ({
+            id: f.id, archetype: f.archetype, modelName: f.modelName,
+            hp: f.hp, maxHp: f.maxHp, alive: f.alive, respawnCd: f.respawnCd,
+            speed: Math.hypot(f.vx, f.vy)
+          })),
+          projectilesCount: projectiles.length,
+          pdBeamsCount: pdBeams.length
+        }),
+        setInput: (vx, vy) => { joyVec.x = vx; joyVec.y = vy; },
+        selectHull: (hullKey) => {
+          saveData.selectedHull = hullKey;
+          store.save(saveData);
+          syncShipSpecs();
+        },
+        setEngine: (engKey, lv) => {
+          saveData.engineType = engKey;
+          saveData.engineLv = lv;
+          store.save(saveData);
+          syncShipSpecs();
+        },
+        selectModule: (mk) => {
+          const ms = MODULE_SPECS[mk];
+          if (!ms) return;
+          if (ms.zone === 'B') saveData.internalBay = mk;
+          else if (ms.zone === 'P') saveData.engineType = mk;
+          else saveData.activeModule = mk;
+          store.save(saveData);
+          syncShipSpecs();
+        },
+        resetShip: () => {
+          ship.x = 0; ship.y = 0; ship.vx = 0; ship.vy = 0; ship.angle = 0; ship.angVel = 0;
+        },
+        stepN: (n = 60) => {
+          for (let i = 0; i < n; i++) step();
+          render();
+        }
+      };
+
+      // 第二层检视台 (Tier 2 Inspector) 引擎火焰高频喷射动画驱动 (飞船保持绝对稳固不摇晃，舰艉喷口实时喷射三层激波火舌、行进马赫环与尾焰火星流)
+      const INSPECTOR_NOZZLE_MAP = {
+        'hull-delta.svg': {
+          theme: 'helios',
+          nozzles: [
+            { x: 44, y: 104, w: 12.5, len: 29, phase: 0 },
+            { x: 84, y: 104, w: 12.5, len: 29, phase: 1.9 }
+          ]
+        },
+        'hull-delta-glacies.svg': {
+          theme: 'glacies',
+          nozzles: [
+            { x: 48, y: 105, w: 11.5, len: 28, phase: 0 },
+            { x: 80, y: 105, w: 11.5, len: 28, phase: 1.9 }
+          ]
+        },
+        'hull-wing.svg': {
+          theme: 'helios',
+          nozzles: [
+            { x: 30, y: 104, w: 8.5, len: 23, phase: 0 },
+            { x: 47.5, y: 106, w: 10.5, len: 29, phase: 1.2 },
+            { x: 80.5, y: 106, w: 10.5, len: 29, phase: 2.5 },
+            { x: 98, y: 104, w: 8.5, len: 23, phase: 3.8 }
+          ]
+        },
+        'hull-wing-glacies.svg': {
+          theme: 'glacies',
+          nozzles: [
+            { x: 33, y: 103, w: 8.5, len: 23, phase: 0 },
+            { x: 50.5, y: 106, w: 10.5, len: 29, phase: 1.2 },
+            { x: 77.5, y: 106, w: 10.5, len: 29, phase: 2.5 },
+            { x: 95, y: 103, w: 8.5, len: 23, phase: 3.8 }
+          ]
+        },
+        'hull-ring.svg': {
+          theme: 'helios',
+          nozzles: [
+            { x: 64, y: 116, w: 10, len: 24, phase: 0 },
+            { x: 36, y: 102, w: 7.5, len: 18, phase: 1.6 },
+            { x: 92, y: 102, w: 7.5, len: 18, phase: 3.1 }
+          ]
+        },
+        'hull-ring-glacies.svg': {
+          theme: 'glacies',
+          nozzles: [
+            { x: 46, y: 112, w: 9, len: 22, phase: 0.4 },
+            { x: 82, y: 112, w: 9, len: 22, phase: 2.1 }
+          ]
+        },
+        'hull-cross.svg': {
+          theme: 'helios',
+          nozzles: [
+            { x: 49, y: 106, w: 12.5, len: 30, phase: 0 },
+            { x: 79, y: 106, w: 12.5, len: 30, phase: 1.8 }
+          ]
+        },
+        'hull-cross-glacies.svg': {
+          theme: 'glacies',
+          nozzles: [
+            { x: 49, y: 113, w: 9, len: 23, phase: 0 },
+            { x: 64, y: 115, w: 10.5, len: 28, phase: 1.4 },
+            { x: 79, y: 113, w: 9, len: 23, phase: 2.8 }
+          ]
+        },
+        'unit-fighter-drone.svg': {
+          theme: 'glacies',
+          nozzles: [
+            { x: 51.7, y: 94, w: 8.5, len: 26, phase: 0 },
+            { x: 76.3, y: 94, w: 8.5, len: 26, phase: 1.7 }
+          ]
+        },
+        'module-thruster.svg': {
+          theme: 'glacies',
+          nozzles: [
+            { x: 52, y: 86, w: 12, len: 28, phase: 0 },
+            { x: 76, y: 86, w: 12, len: 28, phase: 1.6 }
+          ]
+        },
+        'module-hall-thruster.svg': {
+          theme: 'glacies',
+          nozzles: [
+            { x: 48, y: 86, w: 12, len: 28, phase: 0 },
+            { x: 80, y: 86, w: 12, len: 28, phase: 1.6 }
+          ]
+        }
+      };
+
+      let activeInspectorRigAnim = null;
+      function mountInspectorRigAnimation(unitFile) {
+        if (activeInspectorRigAnim) {
+          cancelAnimationFrame(activeInspectorRigAnim);
+          activeInspectorRigAnim = null;
+        }
+        const stageEl = document.getElementById('sd-insp-rig-stage');
+        if (!stageEl || !unitFile) return;
+
+        const imgEl = stageEl.querySelector('img');
+        if (imgEl) {
+          // 强制保持飞船本体稳固静止，严禁摇晃或旋转位移
+          imgEl.style.transform = 'none';
+        }
+
+        const oldCanvas = stageEl.querySelector('.sd-insp-flame-canvas');
+        if (oldCanvas) oldCanvas.remove();
+
+        const cfg = INSPECTOR_NOZZLE_MAP[unitFile];
+        if (!cfg || !imgEl) return;
+
+        const flameCanvas = document.createElement('canvas');
+        flameCanvas.className = 'sd-insp-flame-canvas';
+        stageEl.appendChild(flameCanvas);
+        const fCtx = flameCanvas.getContext('2d');
+        const flameSparks = [];
+        const isGlaciesTheme = cfg.theme === 'glacies';
+
+        const tickFlame = (now) => {
+          if (!document.body.contains(flameCanvas)) return;
+          const stageW = stageEl.clientWidth || 124;
+          const imgW = imgEl.clientWidth || 94;
+          const cssW = stageW + 36;
+          const dpr = 2;
+          if (flameCanvas.width !== cssW * dpr) {
+            flameCanvas.width = cssW * dpr;
+            flameCanvas.height = cssW * dpr;
+          }
+          fCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          fCtx.clearRect(0, 0, cssW, cssW);
+
+          const imgOrigin = (cssW - imgW) / 2;
+          const svgScale = imgW / 128;
+
+          cfg.nozzles.forEach((nz, nIdx) => {
+            const nx = imgOrigin + nz.x * svgScale;
+            const ny = imgOrigin + nz.y * svgScale;
+            const nw = nz.w * svgScale;
+            const baseLen = nz.len * svgScale;
+
+            const t = now * 0.042 + nz.phase;
+            const pulse = 0.85 + 0.36 * Math.sin(t * 1.55) + 0.20 * Math.cos(t * 2.95);
+            const curLen = baseLen * pulse;
+            const sway = Math.sin(t * 2.3) * (nw * 0.16);
+            const curW = nw * (0.92 + 0.16 * Math.sin(t * 2.1));
+
+            fCtx.save();
+            fCtx.globalCompositeOperation = 'lighter';
+
+            // 1. 喷口喉部电离辉光 (Nozzle Exit Glow)
+            const throatGrad = fCtx.createRadialGradient(nx, ny + 1, 0.5, nx, ny + 2, curW * 0.85);
+            throatGrad.addColorStop(0, '#ffffff');
+            throatGrad.addColorStop(0.45, isGlaciesTheme ? 'rgba(56, 189, 248, 0.85)' : 'rgba(251, 191, 36, 0.85)');
+            throatGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            fCtx.fillStyle = throatGrad;
+            fCtx.beginPath();
+            fCtx.arc(nx, ny + 1.5, curW * 0.85, 0, Math.PI * 2);
+            fCtx.fill();
+
+            // 2. 外层超音速膨胀燃烧火舌 (Outer Supersonic Plume)
+            const gradOuter = fCtx.createLinearGradient(nx, ny, nx + sway, ny + curLen * 1.25);
+            if (isGlaciesTheme) {
+              gradOuter.addColorStop(0, 'rgba(56, 189, 248, 0.92)');
+              gradOuter.addColorStop(0.55, 'rgba(2, 132, 199, 0.68)');
+              gradOuter.addColorStop(1, 'rgba(2, 132, 199, 0)');
+            } else {
+              gradOuter.addColorStop(0, 'rgba(251, 146, 60, 0.94)');
+              gradOuter.addColorStop(0.55, 'rgba(239, 68, 68, 0.72)');
+              gradOuter.addColorStop(1, 'rgba(239, 68, 68, 0)');
+            }
+            fCtx.fillStyle = gradOuter;
+            fCtx.beginPath();
+            fCtx.moveTo(nx - curW * 0.56, ny);
+            fCtx.quadraticCurveTo(nx - curW * 0.38, ny + curLen * 0.58, nx + sway, ny + curLen * 1.25);
+            fCtx.quadraticCurveTo(nx + curW * 0.38, ny + curLen * 0.58, nx + curW * 0.56, ny);
+            fCtx.closePath();
+            fCtx.fill();
+
+            // 3. 中层高热等离子火炬 (Mid Blazing Plasma Core)
+            const gradMid = fCtx.createLinearGradient(nx, ny, nx + sway * 0.6, ny + curLen * 0.92);
+            if (isGlaciesTheme) {
+              gradMid.addColorStop(0, 'rgba(224, 242, 254, 0.96)');
+              gradMid.addColorStop(0.6, 'rgba(0, 240, 255, 0.85)');
+              gradMid.addColorStop(1, 'rgba(56, 189, 248, 0)');
+            } else {
+              gradMid.addColorStop(0, 'rgba(254, 240, 138, 0.98)');
+              gradMid.addColorStop(0.6, 'rgba(251, 191, 36, 0.88)');
+              gradMid.addColorStop(1, 'rgba(245, 158, 11, 0)');
+            }
+            fCtx.fillStyle = gradMid;
+            fCtx.beginPath();
+            fCtx.moveTo(nx - curW * 0.38, ny);
+            fCtx.lineTo(nx + sway * 0.6, ny + curLen * 0.92);
+            fCtx.lineTo(nx + curW * 0.38, ny);
+            fCtx.closePath();
+            fCtx.fill();
+
+            // 4. 内层白炽超音速核心矛 (Inner White-Hot Core)
+            fCtx.fillStyle = '#ffffff';
+            fCtx.beginPath();
+            fCtx.moveTo(nx - curW * 0.20, ny);
+            fCtx.lineTo(nx + sway * 0.25, ny + curLen * 0.48);
+            fCtx.lineTo(nx + curW * 0.20, ny);
+            fCtx.closePath();
+            fCtx.fill();
+
+            // 5. 向后高速喷射推进的 3 级马赫激波环 (Travelling Mach Shock Diamonds)
+            for (let k = 0; k < 3; k++) {
+              const prog = ((now * 0.0055 + k / 3 + nIdx * 0.21) % 1);
+              const dy = ny + curLen * (0.08 + prog * 0.78);
+              const rx = Math.max(0.7, curW * 0.32 * (1 - prog * 0.65));
+              const ry = Math.max(0.9, curLen * 0.085 * (1 - prog * 0.45));
+              const alpha = Math.sin(prog * Math.PI) * 0.92;
+              fCtx.fillStyle = k === 0 ? `rgba(255, 255, 255, ${alpha.toFixed(2)})` : (
+                isGlaciesTheme
+                  ? `rgba(103, 232, 249, ${alpha.toFixed(2)})`
+                  : `rgba(253, 224, 71, ${alpha.toFixed(2)})`
+              );
+              fCtx.beginPath();
+              fCtx.ellipse(nx + sway * prog * 0.4, dy, rx, ry, 0, 0, Math.PI * 2);
+              fCtx.fill();
+            }
+
+            fCtx.restore();
+
+            // 6. 持续喷射尾焰高速火星粒子流 (Exhaust Flame Sparks)
+            if (flameSparks.length < 48 && Math.random() < 0.75) {
+              flameSparks.push({
+                x: nx + (Math.random() - 0.5) * curW * 0.45,
+                y: ny + 1,
+                vx: (Math.random() - 0.5) * 0.28,
+                vy: (1.35 + Math.random() * 1.45) * svgScale,
+                life: 10 + Math.floor(Math.random() * 7),
+                maxLife: 16,
+                r: 0.9 + Math.random() * 0.9
+              });
+            }
+          });
+
+          // 更新并绘制高速喷射火星粒子
+          fCtx.save();
+          fCtx.globalCompositeOperation = 'lighter';
+          for (let i = flameSparks.length - 1; i >= 0; i--) {
+            const sp = flameSparks[i];
+            sp.x += sp.vx;
+            sp.y += sp.vy;
+            sp.life--;
+            if (sp.life <= 0) {
+              flameSparks.splice(i, 1);
+              continue;
+            }
+            const ratio = sp.life / sp.maxLife;
+            fCtx.globalAlpha = ratio * 0.9;
+            fCtx.fillStyle = ratio > 0.65
+              ? '#ffffff'
+              : (isGlaciesTheme
+                  ? (ratio > 0.35 ? '#38bdf8' : '#0284c7')
+                  : (ratio > 0.35 ? '#fde047' : '#f97316'));
+            fCtx.beginPath();
+            fCtx.arc(sp.x, sp.y, sp.r * (0.45 + ratio * 0.55), 0, Math.PI * 2);
+            fCtx.fill();
+          }
+          fCtx.restore();
+
+          activeInspectorRigAnim = requestAnimationFrame(tickFlame);
+        };
+
+        activeInspectorRigAnim = requestAnimationFrame(tickFlame);
+      }
+
+      window.addEventListener('nexus:tier2-rendered', (e) => {
+        if (e.detail && e.detail.unitFile) {
+          mountInspectorRigAnimation(e.detail.unitFile);
+        }
+      });
+      setTimeout(() => {
+        const box = document.getElementById('sd-insp-preview-box');
+        if (box) mountInspectorRigAnimation(box.getAttribute('data-unit-file'));
+      }, 60);
 
       function loop() {
         step();
@@ -718,24 +3273,60 @@
         requestAnimationFrame(loop);
       }
 
-      // Hull Cycle button binding
-      const HULL_LIST = [
-        { id: 'hullDelta', src: '../assets/star-defender/sprites/hull-delta.svg' },
-        { id: 'hullWing', src: '../assets/star-defender/sprites/hull-wing.svg' },
-        { id: 'hullRing', src: '../assets/star-defender/sprites/hull-ring.svg' },
-        { id: 'hullCross', src: '../assets/star-defender/sprites/hull-cross.svg' }
-      ];
-      document.getElementById('btn-cycle-hull').addEventListener('click', () => {
-        NexusSDK.audio.upgrade();
-        const idx = (HULL_LIST.findIndex((h) => h.id === ship.hull) + 1) % HULL_LIST.length;
-        ship.hull = HULL_LIST[idx].id;
-        saveData.selectedHull = ship.hull;
-        document.getElementById('btn-hull-ico').src = HULL_LIST[idx].src;
-        store.save(saveData);
-      });
+      window.__STAR_DEFENDER_AUDIT__ = () => {
+        const missiles = projectiles.filter(p => p.projType === 'missile' || p.homing);
+        const speeds = missiles.map(p => Number(Math.hypot(p.vx, p.vy).toFixed(3)));
+        const droneSpeeds = fighterSquadron.filter(f => f.alive).map(f => Number(Math.hypot(f.vx, f.vy).toFixed(3)));
+        const weaponSpriteStatus = {};
+        [
+          'modRailgun', 'modLaser', 'modPlasma', 'modMissile', 'modSwarm',
+          'modCryo', 'modEmp', 'modHellfire', 'modTorpedo', 'modHangar',
+          'modShield', 'modThruster', 'turret', 'turretGlacies'
+        ].forEach((k) => {
+          const img = sprites[k];
+          weaponSpriteStatus[k] = !!(img && img.complete && img.naturalWidth > 0);
+        });
+        return {
+          missileCount: missiles.length,
+          missileSpeeds: speeds,
+          minMissileSpeed: speeds.length ? Math.min(...speeds) : null,
+          maxMissileSpeed: speeds.length ? Math.max(...speeds) : null,
+          stalledMissiles: speeds.filter(s => s < 5.8).length,
+          droneSpeeds,
+          combatTelemetry,
+          weaponMountTelemetry,
+          weaponSpriteStatus
+        };
+      };
 
+      syncShipSpecs();
       spawnWave(1);
       requestAnimationFrame(loop);
+
+      // 支持 URL 参数自动化截图验证 (?autostart=1&mod=plasma&dock=1)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('mod') && MODULE_SPECS[urlParams.get('mod')]) {
+        saveData.activeModule = urlParams.get('mod');
+        syncShipSpecs();
+      }
+      if (urlParams.get('hull') && HULL_SPECS[urlParams.get('hull')]) {
+        saveData.selectedHull = urlParams.get('hull');
+        syncShipSpecs();
+      }
+      if (urlParams.get('autostart') === '1') {
+        setTimeout(() => {
+          document.getElementById('nx-btn-enter-tier3')?.click();
+          if (urlParams.get('burst') === '1') {
+            setTimeout(() => fireOverloadBurst(), 120);
+          }
+          if (urlParams.get('dock') === '1') {
+            setTimeout(() => {
+              renderDockyard();
+              dockModal.classList.add('active');
+            }, 150);
+          }
+        }, 120);
+      }
     })();
   </script>
 </body>

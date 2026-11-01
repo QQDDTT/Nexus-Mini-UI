@@ -1,6 +1,6 @@
 /**
  * @file boss-leviathan.anim.js
- * @description 单角色骨骼贴图动作整合脚本：boss-leviathan (star-defender)
+ * @description 单角色骨骼贴图动作整合脚本：boss-leviathan (star-defender · Void Zerg Swarm)
  * 绑定贴图：../sprites/boss-leviathan.svg (25 个骨骼与光影图层组)
  * 遵循 Nexus-Mini v4.0 “一角色一脚本多动画”规范 (RIG_SPEC + 6 ANIMATIONS + 父子矩阵级联)
  */
@@ -15,31 +15,31 @@ export const RIG_SPEC = Object.freeze({
   rootAnchor: [128, 112],
   hasAura: true,
   parts: [
-    { id: 'part-shadow-cast', pivot: [128, 136], parent: 'root', zIndex: 1, blend: 'multiply', role: 'shadow', motion: 'shadow', side: 0, dirY: -1, order: 1 },
-    { id: 'part-aura-ring-outer', pivot: [128, 128], parent: 'root', zIndex: 4, blend: 'screen', role: 'aura-outer', motion: 'spin-cw', side: 0, dirY: -1, order: 1 },
-    { id: 'part-aura-ring-inner', pivot: [128, 128], parent: 'root', zIndex: 5, blend: 'screen', role: 'aura-inner', motion: 'spin-ccw', side: 1, dirY: -1, order: 1 },
-    { id: 'part-light-cone-breath', pivot: [128, 62], parent: 'part-void-breath-maw', zIndex: 9, blend: 'screen', role: 'light-cone', motion: 'pulse-beam', side: 0, dirY: -1, order: 4 },
-    { id: 'part-leg-L1', pivot: [84, 96], parent: 'part-spine-thorax-1', zIndex: 14, blend: 'normal', role: 'limb', motion: 'ik-leg-step', side: -1, dirY: -1, order: 2 },
-    { id: 'part-leg-R1', pivot: [172, 96], parent: 'part-spine-thorax-1', zIndex: 14, blend: 'normal', role: 'limb', motion: 'ik-leg-step', side: 1, dirY: -1, order: 2 },
-    { id: 'part-leg-L2', pivot: [80, 126], parent: 'part-spine-thorax-1', zIndex: 15, blend: 'normal', role: 'limb', motion: 'ik-leg-step', side: -1, dirY: 1, order: 2 },
-    { id: 'part-leg-R2', pivot: [176, 126], parent: 'part-spine-thorax-1', zIndex: 15, blend: 'normal', role: 'limb', motion: 'ik-leg-step', side: 1, dirY: 1, order: 2 },
-    { id: 'part-leg-L3', pivot: [86, 158], parent: 'part-spine-thorax-2', zIndex: 16, blend: 'normal', role: 'limb', motion: 'ik-leg-step', side: -1, dirY: 1, order: 3 },
-    { id: 'part-leg-R3', pivot: [170, 158], parent: 'part-spine-thorax-2', zIndex: 16, blend: 'normal', role: 'limb', motion: 'ik-leg-step', side: 1, dirY: 1, order: 3 },
-    { id: 'part-leg-L4', pivot: [96, 188], parent: 'part-spine-abdomen-3', zIndex: 17, blend: 'normal', role: 'limb', motion: 'ik-leg-step', side: -1, dirY: 1, order: 4 },
-    { id: 'part-leg-R4', pivot: [160, 188], parent: 'part-spine-abdomen-3', zIndex: 17, blend: 'normal', role: 'limb', motion: 'ik-leg-step', side: 1, dirY: 1, order: 4 },
-    { id: 'part-tail-mace', pivot: [128, 214], parent: 'part-spine-abdomen-3', zIndex: 20, blend: 'normal', role: 'somite', motion: 'sway-tail', side: 0, dirY: 1, order: 4 },
-    { id: 'part-spine-abdomen-3', pivot: [128, 182], parent: 'part-spine-thorax-2', zIndex: 22, blend: 'normal', role: 'somite', motion: 'spine-wave-3', side: 0, dirY: 1, order: 3 },
-    { id: 'part-spine-thorax-2', pivot: [128, 144], parent: 'part-spine-thorax-1', zIndex: 25, blend: 'normal', role: 'somite', motion: 'spine-wave-2', side: 0, dirY: 1, order: 2 },
-    { id: 'part-spine-thorax-1', pivot: [128, 106], parent: 'root', zIndex: 28, blend: 'normal', role: 'somite', motion: 'spine-wave-1', side: 0, dirY: 1, order: 1 },
-    { id: 'part-crusher-claw-L', pivot: [78, 76], parent: 'part-head-carapace', zIndex: 32, blend: 'normal', role: 'jaw', motion: 'crush-left', side: -1, dirY: -1, order: 3 },
-    { id: 'part-crusher-claw-R', pivot: [178, 76], parent: 'part-head-carapace', zIndex: 32, blend: 'normal', role: 'jaw', motion: 'crush-right', side: 1, dirY: -1, order: 3 },
-    { id: 'part-inner-mandible-L', pivot: [102, 64], parent: 'part-head-carapace', zIndex: 34, blend: 'normal', role: 'jaw', motion: 'slice-left', side: -1, dirY: -1, order: 3 },
-    { id: 'part-inner-mandible-R', pivot: [154, 64], parent: 'part-head-carapace', zIndex: 34, blend: 'normal', role: 'jaw', motion: 'slice-right', side: 1, dirY: -1, order: 3 },
-    { id: 'part-void-breath-maw', pivot: [128, 62], parent: 'part-head-carapace', zIndex: 36, blend: 'normal', role: 'barrel', motion: 'recoil-maw', side: 0, dirY: -1, order: 3 },
-    { id: 'part-head-carapace', pivot: [128, 84], parent: 'part-spine-thorax-1', zIndex: 38, blend: 'normal', role: 'turret', motion: 'head-turn', side: 0, dirY: -1, order: 2 },
-    { id: 'part-eye-cluster-pupils', pivot: [128, 78], parent: 'part-head-carapace', zIndex: 42, blend: 'normal', role: 'eye', motion: 'pupil-track', side: 0, dirY: -1, order: 3 },
-    { id: 'part-light-rim-leviathan', pivot: [128, 112], parent: 'part-spine-thorax-1', zIndex: 45, blend: 'plus-lighter', role: 'rim-light', motion: 'rim-light', side: 0, dirY: -1, order: 2 },
-    { id: 'part-aura-corona-top', pivot: [128, 128], parent: 'root', zIndex: 65, blend: 'screen', role: 'corona-top', motion: 'pulse-breathe', side: 0, dirY: -1, order: 1 }
+    { id: 'part-shadow-cast', pivot: [128, 136], parent: 'root', zIndex: 1, blend: 'multiply', role: 'shadow', motion: 'shadow', side: 0, dirY: 1, order: 1 },
+    { id: 'part-aura-ring-outer', pivot: [128, 128], parent: 'root', zIndex: 4, blend: 'screen', role: 'aura-outer', motion: 'spin-cw', side: 1, dirY: -1, order: 2 },
+    { id: 'part-aura-ring-inner', pivot: [128, 128], parent: 'root', zIndex: 5, blend: 'screen', role: 'aura-inner', motion: 'spin-ccw', side: 1, dirY: -1, order: 3 },
+    { id: 'part-light-cone-breath', pivot: [128, 62], parent: 'part-void-breath-maw', zIndex: 9, blend: 'screen', role: 'light-cone', motion: 'pulse-beam', side: -1, dirY: -1, order: 4 },
+    { id: 'part-leg-L1', pivot: [84, 96], parent: 'part-spine-thorax-1', zIndex: 14, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 5 },
+    { id: 'part-leg-R1', pivot: [172, 96], parent: 'part-spine-thorax-1', zIndex: 14, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 6 },
+    { id: 'part-leg-L2', pivot: [80, 126], parent: 'part-spine-thorax-1', zIndex: 15, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 7 },
+    { id: 'part-leg-R2', pivot: [176, 126], parent: 'part-spine-thorax-1', zIndex: 15, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 8 },
+    { id: 'part-leg-L3', pivot: [86, 158], parent: 'part-spine-thorax-2', zIndex: 16, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 9 },
+    { id: 'part-leg-R3', pivot: [170, 158], parent: 'part-spine-thorax-2', zIndex: 16, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 10 },
+    { id: 'part-leg-L4', pivot: [96, 188], parent: 'part-spine-abdomen-3', zIndex: 17, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 11 },
+    { id: 'part-leg-R4', pivot: [160, 188], parent: 'part-spine-abdomen-3', zIndex: 17, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 12 },
+    { id: 'part-tail-mace', pivot: [128, 214], parent: 'part-spine-abdomen-3', zIndex: 20, blend: 'normal', role: 'somite', motion: 'spine-wave', side: 0, dirY: 1, order: 13 },
+    { id: 'part-spine-abdomen-3', pivot: [128, 182], parent: 'part-spine-thorax-2', zIndex: 22, blend: 'normal', role: 'somite', motion: 'spine-wave', side: 1, dirY: 1, order: 14 },
+    { id: 'part-spine-thorax-2', pivot: [128, 144], parent: 'part-spine-thorax-1', zIndex: 25, blend: 'normal', role: 'somite', motion: 'spine-wave', side: 1, dirY: 1, order: 15 },
+    { id: 'part-spine-thorax-1', pivot: [128, 106], parent: 'root', zIndex: 28, blend: 'normal', role: 'somite', motion: 'spine-wave', side: 1, dirY: 1, order: 16 },
+    { id: 'part-crusher-claw-L', pivot: [78, 76], parent: 'part-head-carapace', zIndex: 32, blend: 'normal', role: 'jaw', motion: 'bite-jaw', side: -1, dirY: -1, order: 17 },
+    { id: 'part-crusher-claw-R', pivot: [178, 76], parent: 'part-head-carapace', zIndex: 32, blend: 'normal', role: 'jaw', motion: 'bite-jaw', side: 1, dirY: -1, order: 18 },
+    { id: 'part-inner-mandible-L', pivot: [102, 64], parent: 'part-head-carapace', zIndex: 34, blend: 'normal', role: 'jaw', motion: 'bite-jaw', side: -1, dirY: -1, order: 19 },
+    { id: 'part-inner-mandible-R', pivot: [154, 64], parent: 'part-head-carapace', zIndex: 34, blend: 'normal', role: 'jaw', motion: 'bite-jaw', side: 1, dirY: -1, order: 20 },
+    { id: 'part-void-breath-maw', pivot: [128, 62], parent: 'part-head-carapace', zIndex: 36, blend: 'normal', role: 'jaw', motion: 'bite-jaw', side: 0, dirY: -1, order: 21 },
+    { id: 'part-head-carapace', pivot: [128, 84], parent: 'part-spine-thorax-1', zIndex: 38, blend: 'normal', role: 'turret', motion: 'head-track', side: 0, dirY: -1, order: 22 },
+    { id: 'part-eye-cluster-pupils', pivot: [128, 78], parent: 'part-head-carapace', zIndex: 42, blend: 'normal', role: 'eye', motion: 'pupil-track', side: 0, dirY: -1, order: 23 },
+    { id: 'part-light-rim-leviathan', pivot: [128, 112], parent: 'part-spine-thorax-1', zIndex: 45, blend: 'plus-lighter', role: 'rim-light', motion: 'rim-light', side: -1, dirY: -1, order: 24 },
+    { id: 'part-aura-corona-top', pivot: [128, 128], parent: 'root', zIndex: 65, blend: 'screen', role: 'corona-top', motion: 'pulse-breathe', side: 0, dirY: -1, order: 25 }
   ]
 });
 export const ANIMATIONS = Object.freeze({

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <!-- Helios/Glacies Hybrid White-Ceramic & Titanium Strike Fighter Hull -->
+    <linearGradient id="fdHullArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#e2e8f0"/>
+      <stop offset="70%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="fdGoldFoil" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff3c4"/>
+      <stop offset="40%" stop-color="#fbbf24"/>
+      <stop offset="80%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <radialGradient id="fdCanopyGlass" cx="45%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="35%" stop-color="#00f0ff"/>
+      <stop offset="75%" stop-color="#0369a1"/>
+      <stop offset="100%" stop-color="#082f49"/>
+    </radialGradient>
+    <linearGradient id="fdAfterburner" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="35%" stop-color="#00f0ff" stop-opacity="0.95"/>
+      <stop offset="75%" stop-color="#fde047" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="rig-root">
+    <!-- L0: Twin Vectoring Ion Afterburner Plumes -->
+    <g id="thruster-plumes">
+      <g transform="translate(48.5,88)">
+        <g>
+          <animateTransform attributeName="transform" type="scale" values="1,0.58;1.1,1.18;0.92,0.7;1,0.58" dur="0.18s" repeatCount="indefinite"/>
+          <polygon points="-4.5,0 4.5,0 1.5,30 -1.5,30" fill="url(#fdAfterburner)"/>
+          <ellipse cx="0" cy="3" rx="4" ry="6" fill="#ffffff"/>
+        </g>
+      </g>
+      <g transform="translate(71.5,88)">
+        <g>
+          <animateTransform attributeName="transform" type="scale" values="1,0.64;1.08,1.16;0.94,0.68;1,0.64" dur="0.20s" repeatCount="indefinite"/>
+          <polygon points="-4.5,0 4.5,0 1.5,30 -1.5,30" fill="url(#fdAfterburner)"/>
+          <ellipse cx="0" cy="3" rx="4" ry="6" fill="#ffffff"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- L1: Under-Wing Micro-Missile Hardpoints & Nose Pulse Laser Barrels -->
+    <g id="weapon-pods" stroke="#0f172a" stroke-width="1.2">
+      <!-- Twin Nose Pulse-Laser Barrels -->
+      <rect x="49" y="8" width="4" height="18" rx="1.5" fill="#cbd5e1"/>
+      <rect x="67" y="8" width="4" height="18" rx="1.5" fill="#cbd5e1"/>
+      <circle cx="51" cy="8" r="2.2" fill="#00f0ff" stroke="none"/>
+      <circle cx="69" cy="8" r="2.2" fill="#00f0ff" stroke="none"/>
+      <!-- Wingtip Interceptor Missile Rails -->
+      <rect x="11" y="36" width="5" height="28" rx="2" fill="url(#fdGoldFoil)"/>
+      <rect x="104" y="36" width="5" height="28" rx="2" fill="url(#fdGoldFoil)"/>
+      <polygon points="13.5,31 16,37 11,37" fill="#f43f5e" stroke="none"/>
+      <polygon points="106.5,31 109,37 104,37" fill="#f43f5e" stroke="none"/>
+    </g>
+
+    <!-- L2: Forward-Swept Variable-Geometry Strike Fighter Wings -->
+    <g id="fighter-wings" stroke="#0f172a" stroke-width="1.6" stroke-linejoin="round">
+      <!-- Left Forward-Swept Wing -->
+      <polygon points="48,38 14,28 10,48 22,74 46,78" fill="url(#fdHullArmor)"/>
+      <polygon points="45,44 20,36 18,48 28,66 44,68" fill="url(#fdGoldFoil)"/>
+      <!-- Right Forward-Swept Wing -->
+      <polygon points="72,38 106,28 110,48 98,74 74,78" fill="url(#fdHullArmor)"/>
+      <polygon points="75,44 100,36 102,48 92,66 76,68" fill="url(#fdGoldFoil)"/>
+      <!-- Forward Canards -->
+      <polygon points="50,24 32,32 34,38 50,34" fill="#38bdf8"/>
+      <polygon points="70,24 88,32 86,38 70,34" fill="#38bdf8"/>
+    </g>
+
+    <!-- L3: Central Needle Fuselage, 24K Gold Thermal Spine & Sapphire AI Canopy -->
+    <g id="fighter-fuselage" stroke="#0f172a" stroke-width="1.6" stroke-linejoin="round">
+      <!-- Main Fuselage Spine -->
+      <polygon points="60,4 72,26 76,68 70,88 50,88 44,68 48,26" fill="url(#fdHullArmor)"/>
+      <!-- Twin Engine Nacelles -->
+      <rect x="43" y="68" width="11" height="21" rx="2.5" fill="#334155" stroke="#fde047" stroke-width="1.1"/>
+      <rect x="66" y="68" width="11" height="21" rx="2.5" fill="#334155" stroke="#fde047" stroke-width="1.1"/>
+      <!-- 24K Gold Dorsal Reactor Plate -->
+      <polygon points="60,14 68,30 68,66 52,66 52,30" fill="url(#fdGoldFoil)"/>
+      <!-- Armored Sapphire Optical AI Cockpit Canopy -->
+      <polygon points="60,22 66,34 64,54 56,54 54,34" fill="url(#fdCanopyGlass)" stroke="#e0f2fe" stroke-width="1.1"/>
+      <!-- Specular Canopy Highlight -->
+      <polygon points="58,26 61,26 59,46 56.5,46" fill="#ffffff" opacity="0.65" stroke="none"/>
+      <!-- Central Autonomous Drone Core Node -->
+      <circle cx="60" cy="62" r="4.5" fill="#00f0ff" stroke="#ffffff" stroke-width="1"/>
+    </g>
+  </g>
+</svg>
+

@@ -1,144 +1,846 @@
-/* ============================================================================
- * 星轨防线 (Star Defender) — Chroma-Muse Bespoke Theme Stylesheet
- * Style Anchor: STYLE-20 (Hard Sci-Fi Starfield) + STYLE-64 (Aerospace Telemetry HUD)
- * 5:3:1 Allocation:
- *   [5] 50% Anodized Titanium Void (#050914 -> #0c1938) + JWST Amber/Magenta Nebula
- *   [3] 30% 4-Corner Aerospace Flight Deck Telemetry HUD + Mitered Reticle Brackets
- *   [1] 10% Ion Plume Cyan (#00f0ff), Warp Gold (#fbbf24), Plasma Magenta (#e879f9)
- * ============================================================================ */
+/**
+ * ============================================================================
+ * 星轨防线 (Star-Defender) - 大明火黑珐琅·维斯台登铁陨石·螺钿星图高定天文钟主题样式表
+ * Style Code: STYLE-61+121+20 (Grand Feu Black Enamel & Iron Meteorite & Raden Horology)
+ * 视觉面积铁律: 50% 宇宙行星环与大明火黑釉底 + 30% 维斯台登铁陨石凹槽与24K金框 + 10% 蓝宝石真空管青光与滚花金陀飞轮焦点
+ * 适配基准: Mobile Landscape 852×393px (向下兼容 667×375px), 100vw × 100dvh, 零滑溢
+ * ============================================================================
+ */
 
 :root {
-  /* [5] 50% Deep-Space Titanium Void & JWST Nebula Surfaces */
-  --sd-bg-void: #050914;
-  --sd-bg-cobalt: #0c1938;
-  --sd-nebula-magenta: rgba(217, 70, 239, 0.11);
-  --sd-nebula-amber: rgba(245, 158, 11, 0.09);
+  /* 【5】50% 基础底色体系 (Grand Feu Black Enamel & Cosmic Ring Void) */
+  --sd-bg-void-core: #04070e;
+  --sd-bg-nebula-mid: #080d18;
+  --sd-bg-orbit-edge: #10192b;
+  --sd-grid-line: rgba(234, 179, 8, 0.08);
+  --sd-astrolabe-ring: rgba(250, 204, 21, 0.28);
 
-  /* [3] 30% Aerospace Flight Deck Telemetry HUD */
-  --sd-hud-deck-bg: rgba(7, 15, 34, 0.78);
-  --sd-hud-dock-panel: rgba(11, 23, 50, 0.88);
-  --sd-hud-border-cyan: rgba(56, 189, 248, 0.30);
-  --sd-text-telemetry: #f8fafc;
-  --sd-text-vector: #7dd3fc;
-  --sd-text-muted: #64748b;
+  /* 【3】30% 结构层与遥测面板 (Widmanstätten Meteorite & 24K Gold Filigree) */
+  --sd-panel-glass: rgba(7, 11, 20, 0.90);
+  --sd-panel-elevated: rgba(13, 20, 36, 0.94);
+  --sd-panel-slot: rgba(4, 7, 14, 0.88);
+  --sd-border-cyan: rgba(234, 179, 8, 0.52);
+  --sd-border-gold: rgba(253, 224, 71, 0.72);
+  --sd-border-muted: rgba(226, 232, 240, 0.22);
+  --sd-text-primary: #f8fafc;
+  --sd-text-vector: #fef08a;
+  --sd-text-muted: #94a3b8;
 
-  /* [1] 10% High-Energy Propulsion & Weapon Accents */
+  /* 【1】10% 绝对焦点与高能点睛 (24K Gold Leaf, Sapphire Tube Cyan & Raden Pearl) */
   --sd-accent-ion-cyan: #00f0ff;
-  --sd-accent-warp-gold: #fbbf24;
-  --sd-accent-plasma-magenta: #e879f9;
-  --sd-accent-hull-red: #f43f5e;
+  --sd-accent-warp-gold: #fde047;
+  --sd-accent-zerg-crimson: #f43f5e;
+  --sd-accent-zerg-violet: #a855f7;
+  --sd-accent-zerg-acid: #84cc16;
 
-  --sd-miter-clip: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-  --sd-font-sans: 'Orbitron', 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --sd-font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  /* 三色正交挂点宝石边框色 */
+  --sd-zone-weapon-red: #f43f5e;
+  --sd-zone-bay-green: #10b981;
+  --sd-zone-engine-purple: #a855f7;
+
+  /* 统一字体栈 */
+  --sd-font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --sd-font-display: 'Orbitron', 'Rajdhani', 'DIN Alternate', sans-serif;
+  --sd-font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+/* 格拉基斯深冷科技 (Glacies Cryo-Tech) 阵营色彩主题切换支持 */
+[data-faction="glacies"] {
+  --sd-panel-glass: rgba(5, 13, 26, 0.90);
+  --sd-panel-elevated: rgba(9, 22, 42, 0.94);
+  --sd-border-cyan: rgba(56, 189, 248, 0.62);
+  --sd-accent-ion-cyan: #38bdf8;
+  --sd-accent-warp-gold: #e0f2fe;
 }
 
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  -webkit-tap-highlight-color: transparent;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
-  background-color: var(--sd-bg-void);
-  color: var(--sd-text-telemetry);
-  font-family: var(--sd-font-sans);
-}
-
-/* [5] 50% Anodized Titanium Void & JWST Deep-Field Nebula */
-.sd-cosmos-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background:
-    radial-gradient(ellipse at 22% 28%, var(--sd-nebula-magenta) 0%, transparent 52%),
-    radial-gradient(ellipse at 78% 72%, var(--sd-nebula-amber) 0%, transparent 48%),
-    radial-gradient(circle at 50% 50%, var(--sd-bg-cobalt) 0%, var(--sd-bg-void) 88%);
-}
-
-/* [3] 30% 4-Corner Frameless Aerospace Flight Deck Telemetry HUD */
-.sd-telemetry-pod {
-  position: relative;
-  padding: 10px 16px;
-  background: var(--sd-hud-deck-bg);
-  border: 1px solid var(--sd-hud-border-cyan);
-  clip-path: var(--sd-miter-clip);
-  backdrop-filter: blur(12px);
-}
-
-.sd-telemetry-pod::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 14px;
-  height: 2px;
-  background: var(--sd-accent-ion-cyan);
-}
-
-.sd-shield-bar {
-  height: 8px;
-  background: linear-gradient(90deg, #0284c7 0%, var(--sd-accent-ion-cyan) 100%);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.45);
-}
-
-.sd-capacitor-bar {
-  height: 6px;
-  background: linear-gradient(90deg, #a21caf 0%, var(--sd-accent-plasma-magenta) 100%);
-}
-
-/* [1] 10% Warp & Weapon Fire Control CTA */
-.sd-btn-sortie {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 46px;
-  padding: 10px 26px;
-  clip-path: var(--sd-miter-clip);
-  border: 1px solid var(--sd-accent-ion-cyan);
-  background: linear-gradient(135deg, var(--sd-accent-ion-cyan) 0%, #0284c7 100%);
-  color: #030712;
-  font-weight: 900;
-  font-size: 0.92rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  box-shadow: 0 0 22px rgba(0, 240, 255, 0.38);
-  cursor: pointer;
-}
-
-/* ==========================================================================
-   [Momus-Audit Terminal Adaptation Hardening: 852x393 Mobile Landscape]
-   ========================================================================== */
 html, body {
   width: 100vw;
   height: 100dvh;
-  max-width: 100vw;
-  max-height: 100dvh;
-  overflow: hidden !important;
-  overscroll-behavior: none !important;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background-color: var(--sd-bg-void-core);
+  background-image: url('./sprites/ui-horology-cosmos-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  color: var(--sd-text-primary);
+  font-family: var(--sd-font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-button, [role="button"], .btn, .cta-btn, .arcade-back-pill {
-  min-width: 44px;
+/* ============================================================================
+ * 1. 第 2 层 · 游戏菜单高定天文钟机芯总成 (1:1 还原 r3_menu_mat_d 概念设计)
+ * ============================================================================ */
+#nx-tier2-menu {
+  background-color: #03050a !important;
+  background-image: url('./sprites/ui-horology-cosmos-bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  padding:
+    max(4px, env(safe-area-inset-top))
+    max(10px, env(safe-area-inset-right))
+    max(4px, env(safe-area-inset-bottom))
+    max(10px, env(safe-area-inset-left)) !important;
+  gap: 0 !important;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#nx-tier2-menu.active {
+  display: flex;
+}
+
+/* 当处于 ① 舰队清单主页时，隐藏冗余的通用底栏，所有控件内嵌至天文钟主控台内部 */
+#nx-tier2-menu[data-active-tab="home"] .nx-t2-footer {
+  display: none !important;
+}
+
+/* 顶部拱形双阵营徽章与天文钟表圈导航栏 */
+#nx-tier2-menu .nx-t2-header {
+  height: 44px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 8px !important;
+  margin-bottom: -14px !important;
+  position: relative;
+  z-index: 25;
+  display: flex;
+  align-items: center !important;
+  justify-content: space-between;
+  gap: 6px !important;
+}
+
+/* 顶部中央拱形双阵营太阳/星芒徽章铭牌 (1:1 对应设计图顶部 Star Defender | ☀✦ | 星轨防线) */
+.sd-crest-medallion-bar {
+  position: relative;
+  min-height: 44px !important;
+  height: 44px !important;
+  width: 266px;
+  padding: 0 28px 0 30px;
+  background-image: url('./sprites/ui-console-crest-medallion.svg?v=20261101e');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  flex-shrink: 0;
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.92));
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.sd-crest-medallion-bar:hover {
+  filter: brightness(1.08) drop-shadow(0 4px 14px rgba(250, 204, 21, 0.35));
+}
+
+.sd-crest-medallion-bar:active {
+  transform: scale(0.98);
+}
+
+.sd-crest-side-txt {
+  font-family: var(--sd-font-display);
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #f6dc93;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+  white-space: nowrap;
+}
+
+.sd-crest-status-led {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--sd-font-mono);
+  font-size: 0.56rem;
+  color: #cbd5e1;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.sd-crest-status-led .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  border: 1px solid #fde68a;
+}
+
+.sd-crest-status-led.arm .dot {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+#nx-tier2-menu .nx-t2-tab,
+#nx-tier2-menu .nx-t2-btn {
+  min-height: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  padding: 0 8px !important;
+  background: linear-gradient(180deg, rgba(24, 30, 44, 0.92) 0%, rgba(9, 12, 20, 0.96) 100%) !important;
+  border: 1px solid rgba(226, 186, 98, 0.55) !important;
+  border-radius: 6px !important;
+  color: #e2e8f0 !important;
+  font-size: 0.64rem !important;
+  font-weight: 700 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 243, 196, 0.25), 0 2px 6px rgba(0, 0, 0, 0.75);
+}
+
+#nx-tier2-menu .nx-t2-tab.active {
+  background: linear-gradient(180deg, rgba(161, 114, 29, 0.48) 0%, rgba(28, 22, 12, 0.95) 100%) !important;
+  border-color: #fde047 !important;
+  color: #fef08a !important;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.3), inset 0 0 6px rgba(250, 204, 21, 0.22) !important;
+}
+
+/* 3D 雕刻 24K 金框与大明火黑珐琅主控台外壳 (1:1 对应设计图外框) */
+#nx-tier2-menu .nx-t2-body {
+  flex: 1;
+  min-height: 0;
+  background-color: transparent !important;
+  background-image: url('./sprites/ui-console-chassis-frame.svg') !important;
+  background-size: 100% 100% !important;
+  background-repeat: no-repeat !important;
+  border: none !important;
+  border-radius: 26px !important;
+  padding: 28px 24px 18px 24px !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+/* ============================================================================
+ * 2. 星际船坞主控台内部双舱布局 (左 46% 维斯台登陨石凹槽矩阵 + 右 54% 螺钿星盘与蓝宝石真空管舱)
+ * ============================================================================ */
+.sd-roster-workbench {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  gap: 5px;
+}
+
+/* 船坞内嵌顶部微型筛选刻度条 */
+.sd-roster-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 0 6px;
+  height: 28px;
+}
+
+.sd-faction-switch,
+.sd-cat-pills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sd-pill-btn {
+  position: relative;
   min-height: 44px;
+  height: 44px;
+  min-width: 54px;
+  margin: -9px 0;
+  padding: 0 9px;
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-size: 0.62rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  z-index: 5;
+  transition: all 0.14s ease;
+}
+
+.sd-pill-btn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 9px;
+  bottom: 9px;
+  background: linear-gradient(180deg, #1b2230 0%, #0b0f17 100%);
+  border: 1px solid rgba(212, 175, 55, 0.48);
+  border-radius: 5px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.65);
+  z-index: -1;
+}
+
+.sd-pill-btn.active {
+  color: #fffbeb;
+}
+
+.sd-pill-btn.active::before {
+  background: linear-gradient(180deg, #855c14 0%, #3b2604 100%);
+  border-color: #fde68a;
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.35), inset 0 1px 0 rgba(255, 247, 214, 0.45);
+}
+
+.sd-pill-btn.faction-glacies.active {
+  color: #f0f9ff;
+}
+
+.sd-pill-btn.faction-glacies.active::before {
+  background: linear-gradient(180deg, #1e40af 0%, #0f172a 100%);
+  border-color: #7dd3fc;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+/* 主体双舱黄金分割: 左 46% 2×3 维斯台登陨石陈列匣 + 右 54% 螺钿星盘与蓝宝石真空管舱 */
+.sd-roster-main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 46% 54%;
+  gap: 10px;
+  padding: 0 4px;
+}
+
+/* 左舱: 2列 × 3行 深凹维斯台登铁陨石陈列匣 (1:1 还原设计图左侧 6 枚银灰陨石金框凹槽!) */
+.sd-roster-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: calc((100% - 10px) / 3);
+  gap: 5px 7px;
+  overflow-y: auto;
+  padding-right: 3px;
+  overscroll-behavior: contain;
+}
+
+.sd-roster-grid::-webkit-scrollbar {
+  width: 4px;
+}
+.sd-roster-grid::-webkit-scrollbar-track {
+  background: rgba(5, 8, 15, 0.8);
+  border-radius: 3px;
+}
+.sd-roster-grid::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #fde047, #9a6d1f);
+  border-radius: 3px;
+}
+
+/* 单枚深凹维斯台登结晶铁陨石标本匣 (ui-meteorite-vault-box.svg) */
+.sd-unit-card {
+  position: relative;
+  background-color: transparent;
+  background-image: url('./sprites/ui-meteorite-vault-box.svg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  border: none;
+  padding: 8px 14px 7px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+/* 方舱与虫群标本使用内置硼硅玻璃真空胶囊管的陨石匣 (1:1 对应设计图左下角胶囊管凹槽!) */
+.sd-unit-card[data-cat="module"],
+.sd-unit-card[data-cat="zerg"] {
+  background-image: url('./sprites/ui-capsule-vault-box.svg');
+}
+
+.sd-unit-card:hover {
+  filter: brightness(1.08);
+}
+
+.sd-unit-card.selected {
+  filter: brightness(1.15) drop-shadow(0 0 8px rgba(253, 224, 71, 0.45));
+}
+
+.sd-unit-card.selected::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1.5px solid #fde047;
+  border-radius: 10px;
+  pointer-events: none;
+  box-shadow: inset 0 0 10px rgba(253, 224, 71, 0.28);
+}
+
+.sd-unit-card-head {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.54rem;
+  font-family: var(--sd-font-mono);
+  color: #fde68a;
+  text-shadow: 0 1px 2px #000, 0 0 4px #000;
+  line-height: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.sd-unit-svg-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.sd-unit-svg-wrap img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  /* 强立体投影投射在银灰维斯台登铁陨石底座上 */
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.88)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.95));
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 星舰底盘横向陈列 (舰首朝右，1:1 还原设计图左侧陨石匣内横向停泊的立体战舰!) */
+.sd-unit-card[data-cat="hull"] .sd-unit-svg-wrap img {
+  transform: rotate(90deg) scale(1.12);
+}
+
+.sd-unit-card[data-cat="hull"].selected .sd-unit-svg-wrap img {
+  transform: rotate(90deg) scale(1.22);
+}
+
+.sd-unit-card:not([data-cat="hull"]).selected .sd-unit-svg-wrap img {
+  transform: scale(1.14);
+}
+
+.sd-unit-card-foot {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(90deg, rgba(8, 12, 20, 0.78) 0%, rgba(18, 25, 38, 0.85) 50%, rgba(8, 12, 20, 0.78) 100%);
+  border: 1px solid rgba(226, 186, 98, 0.42);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.sd-unit-card-foot span {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #fef9c3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px #000;
+}
+
+.sd-unit-card-foot small {
+  font-size: 0.52rem;
+  color: #93c5fd;
+  font-family: var(--sd-font-mono);
   white-space: nowrap;
   flex-shrink: 0;
-  touch-action: manipulation;
 }
 
-/* ==========================================================================
-   [Safe-Area & Mobile Landscape 852x393 Protection]
-   ========================================================================== */
-:root {
-  --nexus-safe-top: env(safe-area-inset-top, 0px);
-  --nexus-safe-right: env(safe-area-inset-right, 0px);
-  --nexus-safe-bottom: env(safe-area-inset-bottom, 0px);
-  --nexus-safe-left: env(safe-area-inset-left, 0px);
+/* ============================================================================
+ * 3. 右舱 (54%): 大明火黑珐琅·螺钿星图·陀飞轮星盘与三联蓝宝石真空管舱
+ *    (1:1 还原 r3_menu_mat_d 右侧视觉结构!)
+ * ============================================================================ */
+.sd-inspector-dock {
+  position: relative;
+  background-color: transparent;
+  background-image: url('./sprites/ui-raden-astrolabe-stage.svg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  border: none;
+  padding: 12px 14px;
+  overflow: hidden;
+  display: block;
+}
+
+/* 右舱顶部拉丝金铭牌标题 (左上角悬浮于星盘上方) */
+.sd-stage-top-plaque {
+  position: absolute;
+  top: 12px;
+  left: 18px;
+  right: 118px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  background: linear-gradient(90deg, rgba(6, 10, 18, 0.88) 0%, rgba(15, 23, 42, 0.65) 100%);
+  border-left: 2.5px solid #fde047;
+  border-bottom: 1px solid rgba(250, 204, 21, 0.32);
+  padding: 3px 8px;
+  border-radius: 0 6px 6px 0;
+}
+
+.sd-insp-title {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #fef08a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 3px #000;
+}
+
+.sd-insp-code {
+  font-size: 0.54rem;
+  color: #cbd5e1;
+  font-family: var(--sd-font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sd-insp-badge {
+  font-size: 0.56rem;
+  font-family: var(--sd-font-mono);
+  color: #fde047;
+  background: rgba(43, 27, 2, 0.85);
+  border: 1px solid rgba(250, 204, 21, 0.65);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 右舱中左: 24K 金刻度陀飞轮星盘内嵌巨幅实体剖析区 (精准对齐 ui-raden-astrolabe-stage 的金环中心!) */
+.sd-astrolabe-specimen-well {
+  position: absolute;
+  left: 14%;
+  top: 48%;
+  transform: translate(-15%, -50%);
+  width: 148px;
+  height: 148px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.sd-insp-rig-stage {
+  width: 124px;
+  height: 124px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.sd-insp-rig-stage img {
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.92)) drop-shadow(0 0 12px rgba(250, 204, 21, 0.28));
+}
+
+.sd-insp-flame-canvas {
+  position: absolute;
+  left: -18px;
+  top: -18px;
+  width: calc(100% + 36px);
+  height: calc(100% + 36px);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* 星舰在右侧大星盘中同样横向展开 (舰首朝左，1:1 贴合底层 24K 金线框剖析图!) */
+.sd-inspector-dock[data-unit-cat="hull"] .sd-insp-rig-stage {
+  transform: rotate(-90deg) scale(1.12);
+}
+
+/* 右舱中右: 三联圆柱形蓝宝石发光真空管遥测计 (Armor / Ballistics / Reactor Core - 1:1 还原设计图!) */
+.sd-vacuum-tubes-stack {
+  position: absolute;
+  right: 12px;
+  top: 44px;
+  width: 54%;
+  max-width: 236px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 6;
+}
+
+.sd-vacuum-tube {
+  position: relative;
+  height: 44px;
+  background-image: url('./sprites/ui-sapphire-vacuum-tube.svg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 34px;
+}
+
+/* 真空管内部发光等离子液柱 */
+.sd-tube-plasma-bar {
+  position: absolute;
+  left: 34px;
+  top: 10px;
+  bottom: 10px;
+  width: calc(100% - 68px);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(2, 18, 34, 0.55);
+  z-index: 1;
+}
+
+.sd-tube-plasma-fill {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #a5f3fc 0%, #00f5d4 40%, #0284c7 85%, #38bdf8 100%);
+  box-shadow: 0 0 14px #00f5d4, inset 0 2px 3px rgba(255, 255, 255, 0.75);
+  transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-tube-plasma-fill.ballistics {
+  background: linear-gradient(180deg, #bae6fd 0%, #00bbf9 40%, #0369a1 85%, #38bdf8 100%);
+  box-shadow: 0 0 14px #00bbf9, inset 0 2px 3px rgba(255, 255, 255, 0.75);
+}
+
+.sd-tube-plasma-fill.reactor {
+  background: linear-gradient(180deg, #e0f2fe 0%, #38bdf8 40%, #1d4ed8 85%, #60a5fa 100%);
+  box-shadow: 0 0 14px #38bdf8, inset 0 2px 3px rgba(255, 255, 255, 0.75);
+}
+
+.sd-tube-label-row {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  pointer-events: none;
+}
+
+.sd-tube-name {
+  font-family: var(--sd-font-display);
+  font-size: 0.64rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 1px 3px #000, 0 0 6px rgba(0, 0, 0, 0.95);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.sd-tube-val {
+  font-family: var(--sd-font-mono);
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: #fef08a;
+  text-shadow: 0 1px 3px #000, 0 0 5px #000;
+  white-space: nowrap;
+}
+
+/* 右舱左下角(陀飞轮旁): 三色挂点宝石铭牌与船坞改装/旗舰切换按钮组 */
+.sd-stage-bottom-left-controls {
+  position: absolute;
+  left: 14px;
+  bottom: 10px;
+  right: 172px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sd-hardpoint-strip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(5, 8, 15, 0.88);
+  border: 1px solid rgba(226, 186, 98, 0.45);
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 0.54rem;
+  font-family: var(--sd-font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sd-hp-tag {
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 800;
+}
+.sd-hp-tag.w { background: rgba(244, 63, 94, 0.25); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.55); }
+.sd-hp-tag.b { background: rgba(16, 185, 129, 0.25); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.55); }
+.sd-hp-tag.p { background: rgba(168, 85, 247, 0.25); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.55); }
+
+.sd-horology-sub-btns {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sd-action-pill {
+  position: relative;
+  min-height: 44px;
+  height: 44px;
+  min-width: 44px;
+  margin: -4px 0;
+  padding: 0 8px;
+  border: none;
+  background: transparent;
+  color: #f8fafc;
+  font-size: 0.62rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex: 1;
+  z-index: 6;
+}
+
+.sd-action-pill::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 4px;
+  bottom: 4px;
+  border-radius: 6px;
+  border: 1px solid rgba(226, 186, 98, 0.6);
+  background: linear-gradient(180deg, rgba(24, 30, 44, 0.94) 0%, rgba(8, 12, 20, 0.98) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 243, 196, 0.22), 0 3px 6px rgba(0, 0, 0, 0.8);
+  z-index: -1;
+}
+
+.sd-action-pill.equip {
+  color: #fef08a;
+}
+
+.sd-action-pill.equip::before {
+  background: linear-gradient(180deg, rgba(146, 100, 18, 0.55) 0%, rgba(45, 29, 4, 0.95) 100%);
+  border-color: #fde047;
+}
+
+/* 右舱右下角缺口: 3D 滚花 24K 金 T 型推杆与圆形 ENGAGE 点火表冠鼓轮 (1:1 还原设计图右下角 ENGAGE 旋钮!) */
+.sd-engage-throttle-widget {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 162px;
+  height: 70px;
+  background-color: transparent;
+  background-image: url('./sprites/ui-gold-throttle-engage.svg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 17px;
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.sd-engage-throttle-widget:hover {
+  filter: brightness(1.1) drop-shadow(0 0 12px rgba(253, 224, 71, 0.55));
+}
+
+.sd-engage-throttle-widget:active {
+  transform: scale(0.96);
+}
+
+.sd-engage-drum-label {
+  width: 50px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.05;
+  pointer-events: none;
+}
+
+.sd-engage-drum-label strong {
+  font-family: var(--sd-font-display);
+  font-size: 0.58rem;
+  font-weight: 900;
+  color: #2b1b02;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.sd-engage-drum-label span {
+  font-size: 0.5rem;
+  font-weight: 900;
+  color: #422a04;
+}
+
+/* ============================================================================
+ * 4. 紧凑横屏 (667×375px 及高度 <= 420px) 响应式微调
+ * ============================================================================ */
+@media (max-height: 420px) {
+  #nx-tier2-menu .nx-t2-header {
+    height: 44px !important;
+  }
+  .sd-crest-medallion-bar {
+    min-height: 44px !important;
+    height: 44px !important;
+    width: 256px;
+    padding: 0 24px 0 26px;
+  }
+  .sd-crest-side-txt {
+    font-size: 0.62rem;
+  }
+  #nx-tier2-menu .nx-t2-body {
+    padding: 24px 18px 14px 18px !important;
+  }
+  .sd-unit-svg-wrap img {
+    width: 46px;
+    height: 46px;
+  }
+  .sd-vacuum-tube {
+    height: 38px;
+  }
+  .sd-insp-rig-stage img {
+    width: 94px;
+    height: 94px;
+  }
+  .sd-engage-throttle-widget {
+    width: 148px;
+    height: 64px;
+    padding-right: 15px;
+  }
+}
+
+@media (max-width: 720px) {
+  .sd-crest-status-led {
+    display: none;
+  }
+  .sd-crest-medallion-bar {
+    min-width: 210px;
+    padding: 0 14px;
+    gap: 28px;
+  }
 }

@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" data-rig-id="module-cryo-missile-rig" data-root-anchor="64,74" data-faction="glacies" data-slot-zone="weapon" data-slot-size="M-2x1">
+  <defs>
+    <pattern id="mcm-carbon-weave" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#0d1522"/>
+      <polygon points="0,0 3,0 6,3 6,6 3,6 0,3" fill="#18263b"/>
+      <polygon points="3,0 6,0 6,3" fill="#283d5c"/>
+      <polygon points="0,3 3,6 0,6" fill="#070b12"/>
+    </pattern>
+    <linearGradient id="mcm-frost-plate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="38%" stop-color="#e0f2fe"/>
+      <stop offset="78%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <linearGradient id="mcm-sapphire-ice" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#67e8f9"/>
+      <stop offset="70%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#082f49"/>
+    </linearGradient>
+    <radialGradient id="mcm-cryo-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#67e8f9"/>
+      <stop offset="72%" stop-color="#0284c7" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#082f49" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mcm-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.92"/>
+      <stop offset="68%" stop-color="#020617" stop-opacity="0.44"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <g id="part-shadow-cast" data-pivot="64,74" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="76" rx="52" ry="46" fill="url(#mcm-shadow-grad)"/>
+    <polygon points="42,34 86,34 102,50 102,94 86,110 42,110 26,94 26,50" fill="#020617" opacity="0.5"/>
+  </g>
+
+  <g id="part-aura-ring-outer" data-pivot="64,72" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <path d="M44,24 A50,50 0 0,1 84,24 M112,52 A50,50 0 0,1 112,92 M84,120 A50,50 0 0,1 44,120 M16,92 A50,50 0 0,1 16,52" fill="none" stroke="#67e8f9" stroke-width="1.25" stroke-linecap="square" opacity="0.72"/>
+    <path d="M64,20 L64,26 M116,72 L110,72 M64,124 L64,118 M12,72 L18,72" stroke="#ffffff" stroke-width="1.5" opacity="0.88"/>
+  </g>
+
+  <g id="part-aura-ring-inner" data-pivot="64,72" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path d="M34,42 A42,42 0 0,1 94,42 M94,102 A42,42 0 0,1 34,102" fill="none" stroke="#38bdf8" stroke-width="0.95" opacity="0.54"/>
+  </g>
+
+  <g id="part-pedestal-base" data-pivot="64,72" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="42,34 86,34 102,50 102,94 86,110 42,110 26,94 26,50" fill="url(#mcm-carbon-weave)" stroke="#050811" stroke-width="2.2" stroke-linejoin="round"/>
+    <rect x="46" y="37" width="36" height="6" rx="1" fill="url(#mcm-frost-plate)" stroke="#475569" stroke-width="0.95"/>
+    <rect x="46" y="101" width="36" height="6" rx="1" fill="url(#mcm-frost-plate)" stroke="#475569" stroke-width="0.95"/>
+    <rect x="28" y="63" width="6" height="18" rx="1" fill="#06b6d4" stroke="#e0f2fe" stroke-width="0.75"/>
+    <rect x="94" y="63" width="6" height="18" rx="1" fill="#06b6d4" stroke="#e0f2fe" stroke-width="0.75"/>
+    <circle cx="40" cy="46" r="2.5" fill="#94a3b8" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="88" cy="46" r="2.5" fill="#94a3b8" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="40" cy="98" r="2.5" fill="#94a3b8" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="88" cy="98" r="2.5" fill="#94a3b8" stroke="#050811" stroke-width="0.85"/>
+  </g>
+
+  <g id="part-energy-coil-ring" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="22" data-blend="normal" data-motion="spin-cw">
+    <circle cx="64" cy="72" r="29" fill="url(#mcm-frost-plate)" stroke="#050811" stroke-width="1.75"/>
+    <circle cx="64" cy="72" r="23" fill="#041326" stroke="#67e8f9" stroke-width="1.45"/>
+    <path d="M64,43 L64,49 M64,95 L64,101 M35,72 L41,72 M87,72 L93,72" stroke="#ffffff" stroke-width="1.5"/>
+  </g>
+
+  <g id="part-barrel-tube-R" data-pivot="75,54" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <rect x="65" y="16" width="20" height="38" rx="2" fill="#071324" stroke="#050811" stroke-width="1.65"/>
+    <!-- 3 枚菱形切面深冷液氮冰晶弹头 -->
+    <polygon points="69.5,8 72.5,16 69.5,21 66.5,16" fill="url(#mcm-sapphire-ice)" stroke="#ffffff" stroke-width="0.7"/>
+    <polygon points="75,6 78,14 75,19 72,14" fill="#ffffff" stroke="#67e8f9" stroke-width="0.75"/>
+    <polygon points="80.5,8 83.5,16 80.5,21 77.5,16" fill="url(#mcm-sapphire-ice)" stroke="#ffffff" stroke-width="0.7"/>
+    <rect x="67" y="22" width="16" height="26" rx="1" fill="url(#mcm-frost-plate)" stroke="#38bdf8" stroke-width="0.9"/>
+    <path d="M67,30 L83,30 M67,38 L83,38 M75,22 L75,48" stroke="#475569" stroke-width="0.7"/>
+  </g>
+
+  <g id="part-barrel-tube-L" data-pivot="53,54" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <rect x="43" y="16" width="20" height="38" rx="2" fill="#071324" stroke="#050811" stroke-width="1.65"/>
+    <!-- 3 枚菱形切面深冷液氮冰晶弹头 -->
+    <polygon points="47.5,8 50.5,16 47.5,21 44.5,16" fill="url(#mcm-sapphire-ice)" stroke="#ffffff" stroke-width="0.7"/>
+    <polygon points="53,6 56,14 53,19 50,14" fill="#ffffff" stroke="#67e8f9" stroke-width="0.75"/>
+    <polygon points="58.5,8 61.5,16 58.5,21 55.5,16" fill="url(#mcm-sapphire-ice)" stroke="#ffffff" stroke-width="0.7"/>
+    <rect x="45" y="22" width="16" height="26" rx="1" fill="url(#mcm-frost-plate)" stroke="#38bdf8" stroke-width="0.9"/>
+    <path d="M45,30 L61,30 M45,38 L61,38 M53,22 L53,48" stroke="#475569" stroke-width="0.7"/>
+  </g>
+
+  <g id="part-rail-jaw-R" data-pivot="86,52" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-right">
+    <polygon points="84,18 97,28 99,60 84,62" fill="url(#mcm-frost-plate)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <polygon points="86,27 94,33 95,53 86,55" fill="#041326" stroke="#67e8f9" stroke-width="0.8"/>
+    <polygon points="97,28 101,32 98,40" fill="#ffffff" stroke="#38bdf8" stroke-width="0.6"/>
+    <circle cx="86" cy="52" r="2.4" fill="#082f49" stroke="#ffffff" stroke-width="0.8"/>
+  </g>
+
+  <g id="part-rail-jaw-L" data-pivot="42,52" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-left">
+    <polygon points="44,18 31,28 29,60 44,62" fill="url(#mcm-frost-plate)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <polygon points="42,27 34,33 33,53 42,55" fill="#041326" stroke="#67e8f9" stroke-width="0.8"/>
+    <polygon points="31,28 27,32 30,40" fill="#ffffff" stroke="#38bdf8" stroke-width="0.6"/>
+    <circle cx="42" cy="52" r="2.4" fill="#082f49" stroke="#ffffff" stroke-width="0.8"/>
+  </g>
+
+  <g id="part-turret-housing" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <polygon points="41,48 87,48 93,64 89,94 76,102 52,102 39,94 35,64" fill="url(#mcm-carbon-weave)" stroke="#050811" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- 左右凝霜肩甲 -->
+    <polygon points="43,51 51,51 50,80 39,76 38,62" fill="url(#mcm-frost-plate)" stroke="#334155" stroke-width="0.95"/>
+    <polygon points="77,51 85,51 90,62 89,76 78,80" fill="url(#mcm-frost-plate)" stroke="#334155" stroke-width="0.95"/>
+    <!-- 中央蓝宝石超导螺旋冷却窗 -->
+    <rect x="52" y="53" width="24" height="27" rx="2.5" fill="#031124" stroke="#e0f2fe" stroke-width="1.4"/>
+    <path d="M55,58 C59,55 69,55 73,58 C69,61 59,61 55,64 C59,67 69,67 73,70 C69,73 59,73 55,76" fill="none" stroke="#67e8f9" stroke-width="2.1" stroke-linecap="round"/>
+    <!-- 格拉基斯标志性 3 枚深冷压力表盘 -->
+    <circle cx="53" cy="90" r="3.6" fill="#041326" stroke="#ffffff" stroke-width="0.9"/>
+    <line x1="53" y1="90" x2="55" y2="88" stroke="#67e8f9" stroke-width="0.8"/>
+    <circle cx="64" cy="90" r="3.6" fill="#041326" stroke="#ffffff" stroke-width="0.9"/>
+    <line x1="64" y1="90" x2="64" y2="87" stroke="#fde047" stroke-width="0.8"/>
+    <circle cx="75" cy="90" r="3.6" fill="#041326" stroke="#ffffff" stroke-width="0.9"/>
+    <line x1="75" y1="90" x2="77" y2="89" stroke="#67e8f9" stroke-width="0.8"/>
+  </g>
+
+  <g id="part-light-rim-turret" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M35,64 L41,48 L87,48 L93,64" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.94"/>
+    <path d="M52,53 L76,53" fill="none" stroke="#a5f3fc" stroke-width="1.2" opacity="0.9"/>
+  </g>
+
+  <g id="part-aura-corona-top" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <circle cx="64" cy="66.5" r="14" fill="url(#mcm-cryo-glow)" opacity="0.7"/>
+    <path d="M64,53 L64,80 M51,66.5 L77,66.5" stroke="#ffffff" stroke-width="0.85" stroke-linecap="round" opacity="0.92"/>
+  </g>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 96" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <!-- 3D Conical Sunray Brushed 24K Gold Drum Gradient -->
+    <linearGradient id="drumGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff6cf"/>
+      <stop offset="22%" stop-color="#e8c36b"/>
+      <stop offset="48%" stop-color="#9c6e1b"/>
+      <stop offset="74%" stop-color="#f5dc95"/>
+      <stop offset="100%" stop-color="#5c3e08"/>
+    </linearGradient>
+    <radialGradient id="drumFace" cx="42%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#fff5c8"/>
+      <stop offset="45%" stop-color="#ddb458"/>
+      <stop offset="85%" stop-color="#9e711f"/>
+      <stop offset="100%" stop-color="#66450b"/>
+    </radialGradient>
+    <linearGradient id="rollerGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6e4b0e"/>
+      <stop offset="28%" stop-color="#f3d486"/>
+      <stop offset="55%" stop-color="#fff4c4"/>
+      <stop offset="80%" stop-color="#b8872d"/>
+      <stop offset="100%" stop-color="#4d3306"/>
+    </linearGradient>
+    <!-- Diamond Knurling Pattern for T-Bar Handle -->
+    <pattern id="diamondKnurl" width="8" height="8" patternUnits="userSpaceOnUse">
+      <polygon points="4,0 8,4 4,8 0,4" fill="#63430a" stroke="#fde68a" stroke-width="0.6"/>
+      <circle cx="4" cy="4" r="1" fill="#fff7d6" opacity="0.6"/>
+    </pattern>
+    <filter id="heavyShadow" x="-12%" y="-12%" width="125%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.9"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#heavyShadow)">
+    <!-- 1. Tapered 24K Gold Lever Arm Connecting T-Bar Roller to Drum (Exact match to concept art!) -->
+    <polygon points="40,36 124,41 124,57 40,62" fill="url(#drumGold)" stroke="#2b1b02" stroke-width="1.5"/>
+    <polygon points="44,41 120,44 120,54 44,57" fill="#785212" stroke="#fde68a" stroke-width="0.7"/>
+    <line x1="42" y1="38" x2="122" y2="42" stroke="#fff9db" stroke-width="1" opacity="0.8"/>
+
+    <!-- 2. Left Vertical 3D Diamond-Knurled Cylindrical Gold T-Bar Grip Roller -->
+    <rect x="10" y="10" width="32" height="76" rx="9" fill="url(#rollerGold)" stroke="#2b1b02" stroke-width="1.6"/>
+    <rect x="12" y="16" width="28" height="64" rx="4" fill="url(#diamondKnurl)" opacity="0.88"/>
+    <!-- Top & Bottom Bevel Caps of T-Bar Grip -->
+    <rect x="11" y="10" width="30" height="7" rx="3.5" fill="url(#rollerGold)" stroke="#fde68a" stroke-width="0.7"/>
+    <rect x="11" y="79" width="30" height="7" rx="3.5" fill="url(#rollerGold)" stroke="#5c3e08" stroke-width="0.7"/>
+
+    <!-- 3. Right Circular 3D Stepped Conical 24K Gold ENGAGE Chronometer Drum -->
+    <!-- Outer Knurled Gold Drum Base -->
+    <circle cx="164" cy="48" r="44" fill="url(#drumGold)" stroke="#241602" stroke-width="2"/>
+    <circle cx="164" cy="48" r="42" fill="none" stroke="#422a04" stroke-width="3" stroke-dasharray="2.2 2.2"/>
+    <!-- Conical Sloped Gold Bezel Wall -->
+    <circle cx="164" cy="48" r="38" fill="url(#drumGold)" stroke="#fff3c4" stroke-width="1"/>
+    <!-- Deep Inner Gold Bevel Ring -->
+    <circle cx="164" cy="48" r="31" fill="#5e400a" stroke="#fde68a" stroke-width="1.2"/>
+    <!-- Central Sunray-Brushed 24K Gold Button Face -->
+    <circle cx="164" cy="48" r="28" fill="url(#drumFace)" stroke="#fff7d6" stroke-width="1"/>
+    <!-- Specular Sheen across Drum Face -->
+    <path d="M 142,32 A 26,26 0 0,1 186,32" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.45"/>
+  </g>
+</svg>
+

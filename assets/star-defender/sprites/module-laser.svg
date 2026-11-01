@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" data-rig-id="module-laser-rig" data-root-anchor="64,74" data-faction="glacies" data-slot-zone="weapon" data-slot-size="M-2x1">
+  <defs>
+    <!-- 1. 格拉基斯 2x2 斜纹碳纤维复合材料装甲纹理 -->
+    <pattern id="ml-carbon-weave" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#0d1522"/>
+      <polygon points="0,0 3,0 6,3 6,6 3,6 0,3" fill="#18263b"/>
+      <polygon points="3,0 6,0 6,3" fill="#283d5c"/>
+      <polygon points="0,3 3,6 0,6" fill="#070b12"/>
+    </pattern>
+    <!-- 2. 6阶 Gooch 深冷钨钢与阳极氧化钛装甲渐变 -->
+    <linearGradient id="ml-ti-armor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="22%" stop-color="#475569"/>
+      <stop offset="52%" stop-color="#1e293b"/>
+      <stop offset="78%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </linearGradient>
+    <!-- 3. 极地凝霜高光白冰与防热陶瓷渐变 -->
+    <linearGradient id="ml-frost-white" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#e0f2fe"/>
+      <stop offset="70%" stop-color="#bae6fd"/>
+      <stop offset="90%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <!-- 4. 多面体蓝宝石光学聚焦棱镜渐变 -->
+    <linearGradient id="ml-sapphire-prism" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="20%" stop-color="#67e8f9"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="80%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#041022"/>
+    </linearGradient>
+    <!-- 5. 24K Kapton 热控金箔反射镜腔渐变 -->
+    <linearGradient id="ml-kapton-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="28%" stop-color="#fbbf24"/>
+      <stop offset="56%" stop-color="#b45309"/>
+      <stop offset="82%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <!-- 6. 切伦科夫高能激光谐振辉光 -->
+    <radialGradient id="ml-lens-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="34%" stop-color="#67e8f9"/>
+      <stop offset="70%" stop-color="#0284c7" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#082f49" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ml-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.92"/>
+      <stop offset="65%" stop-color="#020617" stop-opacity="0.44"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- [骨骼部件 1] 底层深空接触软阴影 -->
+  <g id="part-shadow-cast" data-pivot="64,74" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="76" rx="52" ry="46" fill="url(#ml-shadow-grad)"/>
+    <polygon points="42,34 86,34 104,52 104,92 86,110 42,110 24,92 24,52" fill="#020617" opacity="0.5"/>
+  </g>
+
+  <!-- [骨骼部件 2] 格拉基斯光学干涉仪游标测距外环 (零虚线环) -->
+  <g id="part-aura-ring-outer" data-pivot="64,72" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <path d="M44,24 A50,50 0 0,1 84,24 M112,52 A50,50 0 0,1 112,92 M84,120 A50,50 0 0,1 44,120 M16,92 A50,50 0 0,1 16,52" fill="none" stroke="#67e8f9" stroke-width="1.25" stroke-linecap="square" opacity="0.72"/>
+    <polygon points="64,18 67,23 61,23" fill="#ffffff" opacity="0.9"/>
+    <polygon points="64,126 67,121 61,121" fill="#67e8f9" opacity="0.8"/>
+    <path d="M116,72 L110,72 M12,72 L18,72" stroke="#ffffff" stroke-width="1.5" opacity="0.85"/>
+  </g>
+
+  <!-- [骨骼部件 3] 逆时针蓝宝石棱镜衍射内环 -->
+  <g id="part-aura-ring-inner" data-pivot="64,72" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <polygon points="64,28 102,50 102,94 64,116 26,94 26,50" fill="none" stroke="#38bdf8" stroke-width="0.9" opacity="0.46"/>
+    <circle cx="64" cy="28" r="1.5" fill="#ffffff"/>
+    <circle cx="102" cy="50" r="1.5" fill="#67e8f9"/>
+    <circle cx="102" cy="94" r="1.5" fill="#67e8f9"/>
+    <circle cx="64" cy="116" r="1.5" fill="#ffffff"/>
+    <circle cx="26" cy="94" r="1.5" fill="#67e8f9"/>
+    <circle cx="26" cy="50" r="1.5" fill="#67e8f9"/>
+  </g>
+
+  <!-- [骨骼部件 4] 正交切角 2x2 斜纹碳纤维底座与凝霜冰晶护板 -->
+  <g id="part-pedestal-base" data-pivot="64,72" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="44,34 84,34 102,52 102,92 84,110 44,110 26,92 26,52" fill="url(#ml-carbon-weave)" stroke="#050811" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- 边缘凝霜白冰结晶护甲条 -->
+    <polygon points="45,36 83,36 88,42 40,42" fill="url(#ml-frost-white)" stroke="#1e293b" stroke-width="0.9"/>
+    <polygon points="45,108 83,108 88,102 40,102" fill="url(#ml-frost-white)" stroke="#1e293b" stroke-width="0.9"/>
+    <!-- 左右深冷液氮热交换接口阀 -->
+    <rect x="28" y="63" width="6" height="18" rx="1" fill="#06b6d4" stroke="#e0f2fe" stroke-width="0.75"/>
+    <path d="M28,69 L34,69 M28,75 L34,75" stroke="#083344" stroke-width="0.75"/>
+    <rect x="94" y="63" width="6" height="18" rx="1" fill="#06b6d4" stroke="#e0f2fe" stroke-width="0.75"/>
+    <path d="M94,69 L100,69 M94,75 L100,75" stroke="#083344" stroke-width="0.75"/>
+    <!-- 四角深冷法兰锚栓 -->
+    <circle cx="40" cy="48" r="2.5" fill="#94a3b8" stroke="#090d16" stroke-width="0.8"/>
+    <circle cx="88" cy="48" r="2.5" fill="#94a3b8" stroke="#090d16" stroke-width="0.8"/>
+    <circle cx="40" cy="96" r="2.5" fill="#94a3b8" stroke="#090d16" stroke-width="0.8"/>
+    <circle cx="88" cy="96" r="2.5" fill="#94a3b8" stroke="#090d16" stroke-width="0.8"/>
+  </g>
+
+  <!-- [骨骼部件 5] 超导蓝宝石光泵浦谐振转子环 -->
+  <g id="part-energy-coil-ring" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="22" data-blend="normal" data-motion="spin-cw">
+    <circle cx="64" cy="72" r="30" fill="url(#ml-kapton-gold)" stroke="#090d16" stroke-width="1.75"/>
+    <circle cx="64" cy="72" r="24" fill="#041326" stroke="#67e8f9" stroke-width="1.5"/>
+    <!-- 8 枚径向光学泵浦闪光灯柱 -->
+    <path d="M64,42 L64,48 M64,96 L64,102 M34,72 L40,72 M88,72 L94,72 M43,51 L47,55 M85,51 L81,55 M43,93 L47,89 M85,93 L81,89" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+  </g>
+
+  <!-- [骨骼部件 6] 右侧多级蓝宝石准直透镜筒与八面体聚焦棱镜冠 -->
+  <g id="part-barrel-tube-R" data-pivot="68,54" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <rect x="64" y="8" width="11" height="46" rx="1.2" fill="url(#ml-ti-armor)" stroke="#050811" stroke-width="1.6"/>
+    <!-- 内部高纯石英光波导芯 -->
+    <rect x="65.5" y="10" width="5.5" height="42" fill="url(#ml-sapphire-prism)"/>
+    <line x1="68" y1="8" x2="68" y2="52" stroke="#ffffff" stroke-width="1.1"/>
+    <!-- 5 道凝霜白陶与黄金隔热准直透镜箍 -->
+    <rect x="63.5" y="14" width="12.5" height="3" rx="0.7" fill="url(#ml-frost-white)" stroke="#050811" stroke-width="0.7"/>
+    <rect x="63.5" y="21" width="12.5" height="2.8" rx="0.7" fill="url(#ml-kapton-gold)" stroke="#050811" stroke-width="0.65"/>
+    <rect x="63.5" y="28" width="12.5" height="3" rx="0.7" fill="url(#ml-frost-white)" stroke="#050811" stroke-width="0.7"/>
+    <rect x="63.5" y="35" width="12.5" height="2.8" rx="0.7" fill="url(#ml-kapton-gold)" stroke="#050811" stroke-width="0.65"/>
+    <rect x="63.5" y="42" width="12.5" height="3" rx="0.7" fill="url(#ml-frost-white)" stroke="#050811" stroke-width="0.7"/>
+    <!-- 炮口斜切蓝宝石物镜冠 -->
+    <polygon points="64,4 76,6 74.5,12 64,12" fill="#67e8f9" stroke="#ffffff" stroke-width="0.8"/>
+  </g>
+
+  <!-- [骨骼部件 7] 左侧多级蓝宝石准直透镜筒与八面体聚焦棱镜冠 -->
+  <g id="part-barrel-tube-L" data-pivot="60,54" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <rect x="53" y="8" width="11" height="46" rx="1.2" fill="url(#ml-ti-armor)" stroke="#050811" stroke-width="1.6"/>
+    <!-- 内部高纯石英光波导芯 -->
+    <rect x="57" y="10" width="5.5" height="42" fill="url(#ml-sapphire-prism)"/>
+    <line x1="60" y1="8" x2="60" y2="52" stroke="#ffffff" stroke-width="1.1"/>
+    <!-- 5 道凝霜白陶与黄金隔热准直透镜箍 -->
+    <rect x="52" y="14" width="12.5" height="3" rx="0.7" fill="url(#ml-frost-white)" stroke="#050811" stroke-width="0.7"/>
+    <rect x="52" y="21" width="12.5" height="2.8" rx="0.7" fill="url(#ml-kapton-gold)" stroke="#050811" stroke-width="0.65"/>
+    <rect x="52" y="28" width="12.5" height="3" rx="0.7" fill="url(#ml-frost-white)" stroke="#050811" stroke-width="0.7"/>
+    <rect x="52" y="35" width="12.5" height="2.8" rx="0.7" fill="url(#ml-kapton-gold)" stroke="#050811" stroke-width="0.65"/>
+    <rect x="52" y="42" width="12.5" height="3" rx="0.7" fill="url(#ml-frost-white)" stroke="#050811" stroke-width="0.7"/>
+    <!-- 炮口斜切蓝宝石物镜冠 -->
+    <polygon points="52,6 64,4 64,12 53.5,12" fill="#ffffff" stroke="#67e8f9" stroke-width="0.8"/>
+  </g>
+
+  <!-- [骨骼部件 8] 右侧可动凝霜冰晶护翼与 24K 金箔反射调焦翼 -->
+  <g id="part-rail-jaw-R" data-pivot="80,48" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-right">
+    <polygon points="77,14 91,24 93,58 78,62 76,42" fill="url(#ml-frost-white)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <!-- 内侧黄金抛光反射镜面 -->
+    <polygon points="79,22 88,29 89,50 79,53" fill="url(#ml-kapton-gold)" stroke="#78350f" stroke-width="0.8"/>
+    <path d="M79,32 L88,35 M79,42 L89,44" stroke="#92400e" stroke-width="0.7"/>
+    <!-- 边缘凝霜冰刺 -->
+    <polygon points="91,24 95,28 92,36" fill="#ffffff" stroke="#38bdf8" stroke-width="0.6"/>
+    <circle cx="80" cy="48" r="2.4" fill="#082f49" stroke="#67e8f9" stroke-width="0.8"/>
+  </g>
+
+  <!-- [骨骼部件 9] 左侧可动凝霜冰晶护翼与 24K 金箔反射调焦翼 -->
+  <g id="part-rail-jaw-L" data-pivot="48,48" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-left">
+    <polygon points="51,14 37,24 35,58 50,62 52,42" fill="url(#ml-frost-white)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <!-- 内侧黄金抛光反射镜面 -->
+    <polygon points="49,22 40,29 39,50 49,53" fill="url(#ml-kapton-gold)" stroke="#78350f" stroke-width="0.8"/>
+    <path d="M49,32 L40,35 M49,42 L39,44" stroke="#92400e" stroke-width="0.7"/>
+    <!-- 边缘凝霜冰刺 -->
+    <polygon points="37,24 33,28 36,36" fill="#ffffff" stroke="#38bdf8" stroke-width="0.6"/>
+    <circle cx="48" cy="48" r="2.4" fill="#082f49" stroke="#67e8f9" stroke-width="0.8"/>
+  </g>
+
+  <!-- [骨骼部件 10] 格拉基斯深冷碳纤炮塔壳、蓝宝石超导盘管天窗与三联低温压力圆表盘 -->
+  <g id="part-turret-housing" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <polygon points="44,48 84,48 92,62 88,94 75,102 53,102 40,94 36,62" fill="url(#ml-carbon-weave)" stroke="#050811" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- 左右凝霜高光白冰披挂肩甲 -->
+    <polygon points="45,50 55,50 54,82 41,78 39,62" fill="url(#ml-frost-white)" stroke="#334155" stroke-width="1.0"/>
+    <polygon points="73,50 83,50 89,62 87,78 74,82" fill="url(#ml-frost-white)" stroke="#334155" stroke-width="1.0"/>
+    <path d="M41,64 L54,64 M74,64 L87,64" stroke="#64748b" stroke-width="0.75"/>
+    <!-- 中央斜切蓝宝石玻璃罩与切伦科夫超导螺旋冷却盘管 -->
+    <polygon points="64,50 74,58 72,82 56,82 54,58" fill="#031124" stroke="#e0f2fe" stroke-width="1.4"/>
+    <path d="M57,58 C61,55 67,55 71,58 C67,61 61,61 57,64 C61,67 67,67 71,70 C67,73 61,73 57,76" fill="none" stroke="#67e8f9" stroke-width="2.1" stroke-linecap="round"/>
+    <circle cx="64" cy="67" r="7.5" fill="url(#ml-lens-glow)"/>
+    <circle cx="64" cy="67" r="3.2" fill="#ffffff"/>
+    <!-- 格拉基斯标志性 3 枚深冷液氮压力圆表盘 (带指针刻度) -->
+    <circle cx="53" cy="91" r="3.8" fill="#041326" stroke="#e0f2fe" stroke-width="0.95"/>
+    <line x1="53" y1="91" x2="55" y2="89" stroke="#67e8f9" stroke-width="0.85"/>
+    <circle cx="64" cy="91" r="3.8" fill="#041326" stroke="#e0f2fe" stroke-width="0.95"/>
+    <line x1="64" y1="91" x2="64" y2="88" stroke="#fde047" stroke-width="0.85"/>
+    <circle cx="75" cy="91" r="3.8" fill="#041326" stroke="#e0f2fe" stroke-width="0.95"/>
+    <line x1="75" y1="91" x2="77" y2="90" stroke="#67e8f9" stroke-width="0.85"/>
+  </g>
+
+  <!-- [骨骼部件 11] 顶层蓝宝石折射高光与冰凌亮边 (Plus-Lighter) -->
+  <g id="part-light-rim-turret" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M36,62 L44,48 L84,48 L92,62" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.94"/>
+    <path d="M54,58 L64,50 L74,58" fill="none" stroke="#67e8f9" stroke-width="1.3" opacity="0.9"/>
+    <path d="M60,6 L60,46 M68,6 L68,46" fill="none" stroke="#ffffff" stroke-width="0.9" opacity="0.85"/>
+  </g>
+
+  <!-- [骨骼部件 12] 顶层切伦科夫光学十字星芒耀斑 (Screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <circle cx="64" cy="67" r="14" fill="url(#ml-lens-glow)" opacity="0.72"/>
+    <circle cx="64" cy="6" r="6" fill="url(#ml-lens-glow)" opacity="0.88"/>
+    <path d="M64,52 L64,82 M49,67 L79,67" stroke="#ffffff" stroke-width="0.9" stroke-linecap="round" opacity="0.92"/>
+  </g>
+</svg>

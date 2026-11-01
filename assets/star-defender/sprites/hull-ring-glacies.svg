@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="hrg-frost-armor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="30%" stop-color="#cbd5e1"/>
+      <stop offset="68%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="hrg-slate-recess" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <radialGradient id="hrg-sapphire-chamber" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.96"/>
+      <stop offset="35%" stop-color="#38bdf8" stop-opacity="0.9"/>
+      <stop offset="72%" stop-color="#0284c7" stop-opacity="0.86"/>
+      <stop offset="100%" stop-color="#082f49" stop-opacity="0.95"/>
+    </radialGradient>
+    <radialGradient id="hrg-cherenkov-lens" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#7dd3fc"/>
+      <stop offset="75%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0c4a6e"/>
+    </radialGradient>
+    <radialGradient id="hrg-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.34"/>
+      <stop offset="55%" stop-color="#0284c7" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#082f49" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="hrg-carbon-weave" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#0f172a"/>
+      <rect x="0" y="0" width="2" height="2" fill="#1e293b"/>
+      <rect x="2" y="2" width="2" height="2" fill="#1e293b"/>
+      <rect x="0" y="2" width="2" height="1" fill="#334155" opacity="0.5"/>
+    </pattern>
+    <pattern id="hrg-frost-rime" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M 0 3 L 3 0 M 5 8 L 8 5" stroke="#f8fafc" stroke-width="0.45" opacity="0.42"/>
+      <circle cx="4" cy="4" r="0.4" fill="#bae6fd" opacity="0.45"/>
+    </pattern>
+  </defs>
+
+  <!-- 1. Ground Shadow -->
+  <g id="part-shadow-cast" data-pivot="64 66" data-parent="root" data-z-index="1" data-blend="multiply">
+    <polygon points="40,12 88,12 116,40 116,88 88,116 40,116 12,88 12,40" fill="#020617" opacity="0.62"/>
+  </g>
+
+  <!-- 2. Outer Cryo Telemetry Ring -->
+  <g id="part-aura-ring-outer" data-pivot="64 64" data-parent="root" data-z-index="4" data-blend="screen">
+    <circle cx="64" cy="64" r="59" fill="url(#hrg-aura)"/>
+    <circle cx="64" cy="64" r="57" fill="none" stroke="#38bdf8" stroke-width="0.8" opacity="0.38"/>
+    <path d="M 64 5 L 64 9 M 64 119 L 64 123 M 5 64 L 9 64 M 119 64 L 123 64" stroke="#7dd3fc" stroke-width="1.2" opacity="0.65"/>
+  </g>
+
+  <!-- 3. Inner Cryo Telemetry Ring -->
+  <g id="part-aura-ring-inner" data-pivot="64 64" data-parent="root" data-z-index="5" data-blend="screen">
+    <circle cx="64" cy="64" r="46" fill="none" stroke="#bae6fd" stroke-width="0.7" opacity="0.32"/>
+  </g>
+
+  <!-- 4. Outer Octagonal Frosted Slate-Blue Armor Ring & Stepped Cryo-Thrusters (part-grav-ring-cw) -->
+  <g id="part-grav-ring-cw" data-pivot="64 64" data-parent="part-central-bridge" data-z-index="15" data-blend="normal">
+    <!-- Outer Chamfered Frosted Slate-Blue Ring -->
+    <polygon points="38,8 90,8 120,38 120,90 90,120 38,120 8,90 8,38" fill="url(#hrg-frost-armor)" stroke="#0f172a" stroke-width="1.6"/>
+    <polygon points="38,8 90,8 120,38 120,90 90,120 38,120 8,90 8,38" fill="url(#hrg-frost-rime)" opacity="0.5"/>
+    <!-- Inner Carbon-Weave Moat -->
+    <polygon points="43,16 85,16 112,43 112,85 85,112 43,112 16,85 16,43" fill="url(#hrg-carbon-weave)" stroke="#475569" stroke-width="1.2"/>
+    <!-- 4 Stepped Cryogenic Thruster Banks at Diagonal Corners -->
+    <polygon points="14,34 34,14 38,18 18,38" fill="#1e293b" stroke="#94a3b8" stroke-width="0.9"/>
+    <polygon points="94,14 114,34 110,38 90,18" fill="#1e293b" stroke="#94a3b8" stroke-width="0.9"/>
+    <polygon points="14,94 34,114 38,110 18,90" fill="#1e293b" stroke="#94a3b8" stroke-width="0.9"/>
+    <polygon points="94,114 114,94 110,90 90,110" fill="#1e293b" stroke="#94a3b8" stroke-width="0.9"/>
+    <circle cx="24" cy="24" r="3.5" fill="url(#hrg-cherenkov-lens)" stroke="#0f172a" stroke-width="0.8"/>
+    <circle cx="104" cy="24" r="3.5" fill="url(#hrg-cherenkov-lens)" stroke="#0f172a" stroke-width="0.8"/>
+    <circle cx="24" cy="104" r="3.5" fill="url(#hrg-cherenkov-lens)" stroke="#0f172a" stroke-width="0.8"/>
+    <circle cx="104" cy="104" r="3.5" fill="url(#hrg-cherenkov-lens)" stroke="#0f172a" stroke-width="0.8"/>
+    <!-- Chamfered Armor Panel Seams & Cryo Fastener Bolts Around Outer Ring -->
+    <line x1="38" y1="8" x2="43" y2="16" stroke="#334155" stroke-width="1.1"/>
+    <line x1="90" y1="8" x2="85" y2="16" stroke="#334155" stroke-width="1.1"/>
+    <line x1="120" y1="38" x2="112" y2="43" stroke="#334155" stroke-width="1.1"/>
+    <line x1="120" y1="90" x2="112" y2="85" stroke="#334155" stroke-width="1.1"/>
+    <line x1="90" y1="120" x2="85" y2="112" stroke="#334155" stroke-width="1.1"/>
+    <line x1="38" y1="120" x2="43" y2="112" stroke="#334155" stroke-width="1.1"/>
+    <line x1="8" y1="90" x2="16" y2="85" stroke="#334155" stroke-width="1.1"/>
+    <line x1="8" y1="38" x2="16" y2="43" stroke="#334155" stroke-width="1.1"/>
+    <circle cx="44" cy="12" r="1" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="84" cy="12" r="1" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="116" cy="44" r="1" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="116" cy="84" r="1" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="84" cy="116" r="1" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="44" cy="116" r="1" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="12" cy="84" r="1" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="12" cy="44" r="1" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <!-- Cryo Radiator Louvers Along Diagonal Ring Faces -->
+    <line x1="20" y1="28" x2="28" y2="20" stroke="#7dd3fc" stroke-width="0.9"/>
+    <line x1="100" y1="20" x2="108" y2="28" stroke="#7dd3fc" stroke-width="0.9"/>
+    <line x1="20" y1="100" x2="28" y2="108" stroke="#7dd3fc" stroke-width="0.9"/>
+    <line x1="100" y1="108" x2="108" y2="100" stroke="#7dd3fc" stroke-width="0.9"/>
+    <rect x="44" y="18" width="5" height="3" rx="0.6" fill="#0284c7" stroke="#bae6fd" stroke-width="0.5"/>
+    <rect x="79" y="18" width="5" height="3" rx="0.6" fill="#0284c7" stroke="#bae6fd" stroke-width="0.5"/>
+    <rect x="44" y="107" width="5" height="3" rx="0.6" fill="#0284c7" stroke="#bae6fd" stroke-width="0.5"/>
+    <rect x="79" y="107" width="5" height="3" rx="0.6" fill="#0284c7" stroke="#bae6fd" stroke-width="0.5"/>
+  </g>
+
+  <!-- 5. Inner Superconducting Cryo-Conduit Ring & 4 Circular Cryo Pressure Dials (part-grav-ring-ccw) -->
+  <g id="part-grav-ring-ccw" data-pivot="64 64" data-parent="part-central-bridge" data-z-index="22" data-blend="normal">
+    <polygon points="46,22 82,22 106,46 106,82 82,106 46,106 22,82 22,46" fill="url(#hrg-slate-recess)" stroke="#94a3b8" stroke-width="1.2"/>
+    <!-- Glowing Cyan Cryo-Conduit Ring -->
+    <polygon points="48,26 80,26 102,48 102,80 80,102 48,102 26,80 26,48" fill="none" stroke="#38bdf8" stroke-width="2.2"/>
+    <polygon points="48,26 80,26 102,48 102,80 80,102 48,102 26,80 26,48" fill="none" stroke="#e0f2fe" stroke-width="0.9"/>
+    <!-- 4 Circular Cryo Pressure Gauges -->
+    <circle cx="45" cy="28" r="3" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.8"/>
+    <line x1="45" y1="28" x2="46.8" y2="26.2" stroke="#38bdf8" stroke-width="0.9"/>
+    <circle cx="83" cy="28" r="3" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.8"/>
+    <line x1="83" y1="28" x2="84.8" y2="26.2" stroke="#38bdf8" stroke-width="0.9"/>
+    <circle cx="45" cy="100" r="3" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.8"/>
+    <line x1="45" y1="100" x2="46.8" y2="98.2" stroke="#38bdf8" stroke-width="0.9"/>
+    <circle cx="83" cy="100" r="3" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.8"/>
+    <line x1="83" y1="100" x2="84.8" y2="98.2" stroke="#38bdf8" stroke-width="0.9"/>
+  </g>
+
+  <!-- 6. North Sensor Bay & Dual Cherenkov Lenses (part-shield-vane-N) -->
+  <g id="part-shield-vane-N" data-pivot="64 42" data-parent="part-central-bridge" data-z-index="28" data-blend="normal">
+    <polygon points="52,10 76,10 80,36 48,36" fill="url(#hrg-frost-armor)" stroke="#0f172a" stroke-width="1.3"/>
+    <polygon points="55,13 73,13 76,33 52,33" fill="url(#hrg-slate-recess)" stroke="#64748b" stroke-width="0.9"/>
+    <circle cx="64" cy="19" r="3.6" fill="url(#hrg-cherenkov-lens)" stroke="#bae6fd" stroke-width="0.8"/>
+    <circle cx="64" cy="28" r="3.6" fill="url(#hrg-cherenkov-lens)" stroke="#bae6fd" stroke-width="0.8"/>
+  </g>
+
+  <!-- 7. South Sensor Bay & Dual Cherenkov Lenses (part-shield-vane-S) -->
+  <g id="part-shield-vane-S" data-pivot="64 86" data-parent="part-central-bridge" data-z-index="28" data-blend="normal">
+    <polygon points="48,92 80,92 76,118 52,118" fill="url(#hrg-frost-armor)" stroke="#0f172a" stroke-width="1.3"/>
+    <polygon points="52,95 76,95 73,115 55,115" fill="url(#hrg-slate-recess)" stroke="#64748b" stroke-width="0.9"/>
+    <circle cx="64" cy="100" r="3.6" fill="url(#hrg-cherenkov-lens)" stroke="#bae6fd" stroke-width="0.8"/>
+    <circle cx="64" cy="109" r="3.6" fill="url(#hrg-cherenkov-lens)" stroke="#bae6fd" stroke-width="0.8"/>
+  </g>
+
+  <!-- 8. West Cryo-Coil Bay (part-shield-vane-W) -->
+  <g id="part-shield-vane-W" data-pivot="42 64" data-parent="part-central-bridge" data-z-index="28" data-blend="normal">
+    <polygon points="10,52 36,48 36,80 10,76" fill="url(#hrg-frost-armor)" stroke="#0f172a" stroke-width="1.3"/>
+    <polygon points="13,55 33,52 33,76 13,73" fill="url(#hrg-sapphire-chamber)" stroke="#7dd3fc" stroke-width="0.9"/>
+    <path d="M 16 58 C 16 54, 21 54, 21 64 C 21 74, 26 74, 26 64 C 26 54, 30 54, 30 68" fill="none" stroke="#e0f2fe" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+
+  <!-- 9. East Cryo-Coil Bay (part-shield-vane-E) -->
+  <g id="part-shield-vane-E" data-pivot="86 64" data-parent="part-central-bridge" data-z-index="28" data-blend="normal">
+    <polygon points="92,48 118,52 118,76 92,80" fill="url(#hrg-frost-armor)" stroke="#0f172a" stroke-width="1.3"/>
+    <polygon points="95,52 115,55 115,73 95,76" fill="url(#hrg-sapphire-chamber)" stroke="#7dd3fc" stroke-width="0.9"/>
+    <path d="M 98 58 C 98 54, 103 54, 103 64 C 103 74, 108 74, 108 64 C 108 54, 112 54, 112 68" fill="none" stroke="#e0f2fe" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+
+  <!-- 10. Central Chamfered Frosted Command Citadel (part-central-bridge) -->
+  <g id="part-central-bridge" data-pivot="64 64" data-parent="root" data-z-index="34" data-blend="normal">
+    <polygon points="50,34 78,34 94,50 94,78 78,94 50,94 34,78 34,50" fill="url(#hrg-frost-armor)" stroke="#0f172a" stroke-width="1.5"/>
+    <polygon points="50,34 78,34 94,50 94,78 78,94 50,94 34,78 34,50" fill="url(#hrg-frost-rime)" opacity="0.5"/>
+    <!-- Recessed Dark Bezel -->
+    <polygon points="53,39 75,39 89,53 89,75 75,89 53,89 39,75 39,53" fill="url(#hrg-slate-recess)" stroke="#94a3b8" stroke-width="1"/>
+  </g>
+
+  <!-- 11. Central Hexagonal Sapphire Glass Cryo-Chamber & 4-Loop Helical Spring Coil (part-reactor-core) -->
+  <g id="part-reactor-core" data-pivot="64 64" data-parent="part-central-bridge" data-z-index="40" data-blend="normal">
+    <!-- Hexagonal Sapphire Cryo-Chamber -->
+    <polygon points="54,43 74,43 85,54 85,74 74,85 54,85 43,74 43,54" fill="url(#hrg-sapphire-chamber)" stroke="#7dd3fc" stroke-width="1.3"/>
+    <!-- Glowing 4-Loop Helical Superconducting Spring Coil inside Sapphire Chamber -->
+    <path d="M 54 48 C 46 48, 46 55, 64 55 C 82 55, 82 62, 64 62 C 46 62, 46 69, 64 69 C 82 69, 82 76, 64 76 C 48 76, 48 81, 74 81" fill="none" stroke="#0284c7" stroke-width="4.2" stroke-linecap="round"/>
+    <path d="M 54 48 C 46 48, 46 55, 64 55 C 82 55, 82 62, 64 62 C 46 62, 46 69, 64 69 C 82 69, 82 76, 64 76 C 48 76, 48 81, 74 81" fill="none" stroke="#7dd3fc" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M 54 48 C 46 48, 46 55, 64 55 C 82 55, 82 62, 64 62 C 46 62, 46 69, 64 69 C 82 69, 82 76, 64 76 C 48 76, 48 81, 74 81" fill="none" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round"/>
+    <!-- Sapphire Specular Reflection -->
+    <polygon points="55,45 72,45 66,53 49,53" fill="#ffffff" opacity="0.32"/>
+  </g>
+
+  <!-- 12. Specular Rim Highlights -->
+  <g id="part-light-rim-ring" data-pivot="64 64" data-parent="part-grav-ring-cw" data-z-index="45" data-blend="plus-lighter">
+    <polyline points="8,38 38,8 90,8" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.82"/>
+    <polyline points="34,50 50,34 78,34" fill="none" stroke="#e0f2fe" stroke-width="1.2" opacity="0.78"/>
+  </g>
+
+  <!-- 13. Top Corona Glare -->
+  <g id="part-aura-corona-top" data-pivot="64 64" data-parent="root" data-z-index="65" data-blend="screen">
+    <circle cx="64" cy="64" r="14" fill="#38bdf8" opacity="0.22"/>
+    <circle cx="64" cy="19" r="5" fill="#7dd3fc" opacity="0.35"/>
+  </g>
+</svg>

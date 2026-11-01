@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 256" width="64" height="256">
+  <defs>
+    <linearGradient id="lbOuterBloom" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f0ff" stop-opacity="0"/>
+      <stop offset="22%" stop-color="#0284c7" stop-opacity="0.45"/>
+      <stop offset="42%" stop-color="#00f0ff" stop-opacity="0.92"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="58%" stop-color="#00f0ff" stop-opacity="0.92"/>
+      <stop offset="78%" stop-color="#0284c7" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="lbImpactFlare" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="35%" stop-color="#67e8f9" stop-opacity="0.92"/>
+      <stop offset="70%" stop-color="#00f0ff" stop-opacity="0.48"/>
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <g id="rig-root">
+    <!-- L0: Wide Coherent Laser Sheath -->
+    <rect x="12" y="16" width="40" height="224" fill="url(#lbOuterBloom)"/>
+
+    <!-- L1: Spiral Phase-Lock Waveguides -->
+    <path d="M 24,20 Q 40,56 24,92 Q 40,128 24,164 Q 40,200 24,236" fill="none" stroke="#67e8f9" stroke-width="1.8" opacity="0.82"/>
+    <path d="M 40,20 Q 24,56 40,92 Q 24,128 40,164 Q 24,200 40,236" fill="none" stroke="#fde047" stroke-width="1.3" opacity="0.68"/>
+
+    <!-- L2: High-Energy White-Hot Collimated Core -->
+    <rect x="28" y="14" width="8" height="228" rx="4" fill="#ffffff"/>
+
+    <!-- L3: Target Thermal Impact Flare (Top) & Muzzle Diffraction Star (Bottom) -->
+    <g id="impact-flare" transform="translate(32, 20)">
+      <circle cx="0" cy="0" r="24" fill="url(#lbImpactFlare)"/>
+      <polygon points="0,-22 3,-4 22,0 3,4 0,22 -3,4 -22,0 -3,-4" fill="#ffffff"/>
+      <circle cx="0" cy="0" r="9" fill="none" stroke="#fde047" stroke-width="1.5"/>
+    </g>
+
+    <g id="muzzle-flare" transform="translate(32, 236)">
+      <circle cx="0" cy="0" r="20" fill="url(#lbImpactFlare)"/>
+      <polygon points="0,-16 2.5,-3 16,0 2.5,3 0,16 -2.5,3 -16,0 -2.5,-3" fill="#ffffff"/>
+    </g>
+  </g>
+</svg>
+

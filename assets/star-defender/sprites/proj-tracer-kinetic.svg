@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 160" width="64" height="160">
+  <defs>
+    <!-- Hyper-velocity ionized tracer wake gradient -->
+    <linearGradient id="tkWakeOuter" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="18%" stop-color="#fde047" stop-opacity="0.95"/>
+      <stop offset="45%" stop-color="#00f0ff" stop-opacity="0.78"/>
+      <stop offset="78%" stop-color="#0284c7" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#050914" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="tkCoreBeam" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="32%" stop-color="#fef08a" stop-opacity="0.98"/>
+      <stop offset="68%" stop-color="#38bdf8" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="tkShockHead" cx="50%" cy="22%" r="55%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="35%" stop-color="#fde047" stop-opacity="0.92"/>
+      <stop offset="72%" stop-color="#00f0ff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tkSabotMetal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+  </defs>
+
+  <g id="rig-root">
+    <!-- L0: Outer Ionized Mach Cone & Plasma Wake -->
+    <polygon points="32,4 48,28 40,156 24,156 16,28" fill="url(#tkWakeOuter)"/>
+    <ellipse cx="32" cy="24" rx="22" ry="20" fill="url(#tkShockHead)"/>
+
+    <!-- L1: Supersonic Bow Shockwave Arcs -->
+    <path d="M 10,36 Q 32,2 54,36" fill="none" stroke="#00f0ff" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+    <path d="M 15,48 Q 32,16 49,48" fill="none" stroke="#fde047" stroke-width="1.6" stroke-linecap="round" opacity="0.75"/>
+
+    <!-- L2: High-Luminance Incandescent Tracer Tail -->
+    <polygon points="32,6 39,24 35,148 29,148 25,24" fill="url(#tkCoreBeam)"/>
+    <line x1="32" y1="8" x2="32" y2="136" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round"/>
+
+    <!-- L3: Tungsten-Depleted Uranium Sabot Penetrator Core -->
+    <g id="warhead-core">
+      <polygon points="32,4 37,22 35,44 29,44 27,22" fill="url(#tkSabotMetal)" stroke="#fde047" stroke-width="0.9"/>
+      <!-- Sabot Discard Fins -->
+      <polygon points="27,24 19,32 21,36 28,31" fill="#fde047"/>
+      <polygon points="37,24 45,32 43,36 36,31" fill="#fde047"/>
+      <!-- Incandescent Nose Tip -->
+      <ellipse cx="32" cy="14" rx="3.2" ry="7" fill="#ffffff"/>
+    </g>
+
+    <!-- L4: Trailing Spark Embers -->
+    <g id="wake-sparks" fill="#fef08a">
+      <circle cx="26" cy="64" r="1.8"/>
+      <circle cx="38" cy="78" r="1.5"/>
+      <circle cx="28" cy="98" r="1.6"/>
+      <circle cx="35" cy="118" r="1.2"/>
+    </g>
+  </g>
+</svg>
+

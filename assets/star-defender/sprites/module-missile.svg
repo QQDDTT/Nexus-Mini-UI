@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" data-rig-id="module-missile-rig" data-root-anchor="64,74" data-faction="helios" data-slot-zone="weapon" data-slot-size="M-2x1">
+  <defs>
+    <!-- 1. 黄黑工程防爆警示斜纹涂装 -->
+    <pattern id="mm-hazard-stripe" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="3" height="6" fill="#facc15"/>
+      <rect x="3" width="3" height="6" fill="#0f172a"/>
+    </pattern>
+    <!-- 2. 6阶 Gooch 拉丝钛合金主装甲渐变 -->
+    <linearGradient id="mm-ti-armor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="20%" stop-color="#64748b"/>
+      <stop offset="48%" stop-color="#334155"/>
+      <stop offset="75%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#050811"/>
+    </linearGradient>
+    <!-- 3. NASA 极白氧化铝隔热陶瓷装甲渐变 -->
+    <linearGradient id="mm-ceramic-white" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="38%" stop-color="#f8fafc"/>
+      <stop offset="75%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <!-- 4. 24K Kapton 聚酰亚胺褶皱金箔热控层 -->
+    <linearGradient id="mm-kapton-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="25%" stop-color="#fbbf24"/>
+      <stop offset="52%" stop-color="#b45309"/>
+      <stop offset="78%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <!-- 5. 绯红高爆穿甲导弹战斗部渐变 -->
+    <linearGradient id="mm-warhead-red" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fecaca"/>
+      <stop offset="28%" stop-color="#ef4444"/>
+      <stop offset="68%" stop-color="#b91c1c"/>
+      <stop offset="100%" stop-color="#450a0a"/>
+    </linearGradient>
+    <!-- 6. 红外制导雷达锁定辉光 -->
+    <radialGradient id="mm-warhead-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#fca5a5"/>
+      <stop offset="72%" stop-color="#ef4444" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#7f1d1d" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mm-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.92"/>
+      <stop offset="66%" stop-color="#020617" stop-opacity="0.44"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- [骨骼部件 1] 底层深空接触软阴影 -->
+  <g id="part-shadow-cast" data-pivot="64,74" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="76" rx="53" ry="46" fill="url(#mm-shadow-grad)"/>
+    <polygon points="40,34 88,34 104,50 104,94 88,110 40,110 24,94 24,50" fill="#020617" opacity="0.5"/>
+  </g>
+
+  <!-- [骨骼部件 2] 导弹火控包线实心游标测距外环 (零虚线环) -->
+  <g id="part-aura-ring-outer" data-pivot="64,72" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <path d="M44,24 A50,50 0 0,1 84,24 M112,52 A50,50 0 0,1 112,92 M84,120 A50,50 0 0,1 44,120 M16,92 A50,50 0 0,1 16,52" fill="none" stroke="#fbbf24" stroke-width="1.25" stroke-linecap="square" opacity="0.68"/>
+    <path d="M64,20 L64,26 M116,72 L110,72 M64,124 L64,118 M12,72 L18,72" stroke="#ef4444" stroke-width="1.5" opacity="0.88"/>
+  </g>
+
+  <!-- [骨骼部件 3] 逆时针多目标锁定内环 -->
+  <g id="part-aura-ring-inner" data-pivot="64,72" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path d="M34,42 A42,42 0 0,1 94,42 M94,102 A42,42 0 0,1 34,102" fill="none" stroke="#fde047" stroke-width="0.9" opacity="0.52"/>
+    <polygon points="34,40 37,44 31,44" fill="#ef4444"/>
+    <polygon points="94,40 97,44 91,44" fill="#ef4444"/>
+  </g>
+
+  <!-- [骨骼部件 4] 八角重装导弹井基座、导流排焰槽与黄黑防爆警示带 -->
+  <g id="part-pedestal-base" data-pivot="64,72" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="40,34 88,34 104,50 104,94 88,110 40,110 24,94 24,50" fill="url(#mm-ti-armor)" stroke="#050811" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- 前后黄黑斜纹防爆排焰警示板 -->
+    <rect x="44" y="37" width="40" height="5.5" rx="1" fill="url(#mm-hazard-stripe)" stroke="#050811" stroke-width="0.9"/>
+    <rect x="44" y="101.5" width="40" height="5.5" rx="1" fill="url(#mm-hazard-stripe)" stroke="#050811" stroke-width="0.9"/>
+    <!-- 左右 [红 W: M级武器槽] 蓝图标准挂载块 -->
+    <rect x="26" y="63" width="6" height="18" rx="1" fill="#ef4444" stroke="#fca5a5" stroke-width="0.75"/>
+    <rect x="96" y="63" width="6" height="18" rx="1" fill="#ef4444" stroke="#fca5a5" stroke-width="0.75"/>
+    <!-- 四角固定锚栓 -->
+    <circle cx="38" cy="46" r="2.6" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="90" cy="46" r="2.6" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="38" cy="98" r="2.6" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="90" cy="98" r="2.6" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+  </g>
+
+  <!-- [骨骼部件 5] 24K Kapton 旋转供弹转盘与燃气排导环 -->
+  <g id="part-energy-coil-ring" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="22" data-blend="normal" data-motion="spin-cw">
+    <circle cx="64" cy="72" r="30" fill="url(#mm-kapton-gold)" stroke="#050811" stroke-width="1.75"/>
+    <path d="M43,51 L85,93 M85,51 L43,93 M64,42 L64,102 M34,72 L94,72" stroke="#78350f" stroke-width="0.85"/>
+    <circle cx="64" cy="72" r="23" fill="#0b111e" stroke="#fbbf24" stroke-width="1.35"/>
+  </g>
+
+  <!-- [骨骼部件 6] 右联三管模块化前射导弹发射箱与裸露绯红穿甲弹头 -->
+  <g id="part-barrel-tube-R" data-pivot="75,54" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <rect x="65" y="16" width="20" height="38" rx="2" fill="#0d131f" stroke="#050811" stroke-width="1.65"/>
+    <!-- 3 枚待发高爆穿甲导弹锥头与金色引信环 -->
+    <polygon points="69.5,8 72.5,18 66.5,18" fill="url(#mm-warhead-red)" stroke="#fca5a5" stroke-width="0.65"/>
+    <line x1="67.5" y1="15" x2="71.5" y2="15" stroke="#fde047" stroke-width="1.1"/>
+    <polygon points="75,6 78,16 72,16" fill="url(#mm-warhead-red)" stroke="#fca5a5" stroke-width="0.65"/>
+    <line x1="73" y1="13" x2="77" y2="13" stroke="#fde047" stroke-width="1.1"/>
+    <polygon points="80.5,8 83.5,18 77.5,18" fill="url(#mm-warhead-red)" stroke="#fca5a5" stroke-width="0.65"/>
+    <line x1="78.5" y1="15" x2="82.5" y2="15" stroke="#fde047" stroke-width="1.1"/>
+    <!-- 极白 NASA 防热陶瓦发射箱外甲与锁扣带 -->
+    <rect x="66.5" y="21" width="17" height="27" rx="1" fill="url(#mm-ceramic-white)" stroke="#1e293b" stroke-width="0.95"/>
+    <path d="M66.5,29 L83.5,29 M66.5,37 L83.5,37 M72,21 L72,48 M78,21 L78,48" stroke="#475569" stroke-width="0.7"/>
+    <rect x="68" y="42" width="14" height="3.5" fill="url(#mm-hazard-stripe)"/>
+  </g>
+
+  <!-- [骨骼部件 7] 左联三管模块化前射导弹发射箱与裸露绯红穿甲弹头 -->
+  <g id="part-barrel-tube-L" data-pivot="53,54" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <rect x="43" y="16" width="20" height="38" rx="2" fill="#0d131f" stroke="#050811" stroke-width="1.65"/>
+    <!-- 3 枚待发高爆穿甲导弹锥头与金色引信环 -->
+    <polygon points="47.5,8 50.5,18 44.5,18" fill="url(#mm-warhead-red)" stroke="#fca5a5" stroke-width="0.65"/>
+    <line x1="45.5" y1="15" x2="49.5" y2="15" stroke="#fde047" stroke-width="1.1"/>
+    <polygon points="53,6 56,16 50,16" fill="url(#mm-warhead-red)" stroke="#fca5a5" stroke-width="0.65"/>
+    <line x1="51" y1="13" x2="55" y2="13" stroke="#fde047" stroke-width="1.1"/>
+    <polygon points="58.5,8 61.5,18 55.5,18" fill="url(#mm-warhead-red)" stroke="#fca5a5" stroke-width="0.65"/>
+    <line x1="56.5" y1="15" x2="60.5" y2="15" stroke="#fde047" stroke-width="1.1"/>
+    <!-- 极白 NASA 防热陶瓦发射箱外甲与锁扣带 -->
+    <rect x="44.5" y="21" width="17" height="27" rx="1" fill="url(#mm-ceramic-white)" stroke="#1e293b" stroke-width="0.95"/>
+    <path d="M44.5,29 L61.5,29 M44.5,37 L61.5,37 M50,21 L50,48 M56,21 L56,48" stroke="#475569" stroke-width="0.7"/>
+    <rect x="46" y="42" width="14" height="3.5" fill="url(#mm-hazard-stripe)"/>
+  </g>
+
+  <!-- [骨骼部件 8] 右侧可动防爆导流护翼门 (内衬 24K Kapton 金箔) -->
+  <g id="part-rail-jaw-R" data-pivot="86,52" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-right">
+    <polygon points="84,18 97,27 99,62 84,64" fill="url(#mm-ceramic-white)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <polygon points="86,25 95,31 96,55 86,57" fill="url(#mm-kapton-gold)" stroke="#78350f" stroke-width="0.8"/>
+    <rect x="88.5" y="36" width="5" height="12" rx="0.8" fill="url(#mm-warhead-red)" stroke="#fca5a5" stroke-width="0.6"/>
+    <circle cx="86" cy="52" r="2.5" fill="#334155" stroke="#f8fafc" stroke-width="0.8"/>
+  </g>
+
+  <!-- [骨骼部件 9] 左侧可动防爆导流护翼门 (内衬 24K Kapton 金箔) -->
+  <g id="part-rail-jaw-L" data-pivot="42,52" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-left">
+    <polygon points="44,18 31,27 29,62 44,64" fill="url(#mm-ceramic-white)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <polygon points="42,25 33,31 32,55 42,57" fill="url(#mm-kapton-gold)" stroke="#78350f" stroke-width="0.8"/>
+    <rect x="34.5" y="36" width="5" height="12" rx="0.8" fill="url(#mm-warhead-red)" stroke="#fca5a5" stroke-width="0.6"/>
+    <circle cx="42" cy="52" r="2.5" fill="#334155" stroke="#f8fafc" stroke-width="0.8"/>
+  </g>
+
+  <!-- [骨骼部件 10] 八联装 VLS 垂直发射井主装甲舱、6 枚独立防爆井盖与光电索敌头 -->
+  <g id="part-turret-housing" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <polygon points="42,48 86,48 93,64 89,94 76,102 52,102 39,94 35,64" fill="url(#mm-ti-armor)" stroke="#050811" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- 24K Kapton 金箔热控垂直发射井矩阵面板 -->
+    <rect x="44" y="52" width="40" height="29" rx="2" fill="url(#mm-kapton-gold)" stroke="#451a03" stroke-width="1.15"/>
+    <path d="M44,66.5 L84,66.5 M57,52 L57,81 M71,52 L71,81" stroke="#78350f" stroke-width="0.85"/>
+    <!-- 左侧与右侧 4 枚 VLS 垂直发射井装甲圆盖 (可见内部红色待发弹头顶尖) -->
+    <circle cx="50.5" cy="59" r="4.2" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.9"/>
+    <circle cx="50.5" cy="59" r="1.8" fill="#ef4444"/>
+    <circle cx="77.5" cy="59" r="4.2" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.9"/>
+    <circle cx="77.5" cy="59" r="1.8" fill="#ef4444"/>
+    <circle cx="50.5" cy="74" r="4.2" fill="#0f172a" stroke="#fde047" stroke-width="0.9"/>
+    <circle cx="50.5" cy="74" r="1.8" fill="#ef4444"/>
+    <circle cx="77.5" cy="74" r="4.2" fill="#0f172a" stroke="#fde047" stroke-width="0.9"/>
+    <circle cx="77.5" cy="74" r="1.8" fill="#ef4444"/>
+    <!-- 中央毫米波/红外复合制导光学雷达球 -->
+    <circle cx="64" cy="66.5" r="7.5" fill="#2a0808" stroke="#f8fafc" stroke-width="1.35"/>
+    <circle cx="64" cy="66.5" r="4.8" fill="url(#mm-warhead-glow)"/>
+    <circle cx="62.5" cy="65" r="1.5" fill="#ffffff"/>
+    <!-- 尾部极白 NASA 防热陶瓦装甲带与蓝图色标 -->
+    <rect x="46" y="84" width="36" height="12" rx="1.5" fill="url(#mm-ceramic-white)" stroke="#1e293b" stroke-width="1.0"/>
+    <rect x="49" y="87" width="8" height="6" rx="0.8" fill="#ef4444" stroke="#fca5a5" stroke-width="0.6"/>
+    <rect x="60" y="87" width="8" height="6" rx="0.8" fill="#fbbf24" stroke="#fef08a" stroke-width="0.6"/>
+    <rect x="71" y="87" width="8" height="6" rx="0.8" fill="#06b6d4" stroke="#a5f3fc" stroke-width="0.6"/>
+  </g>
+
+  <!-- [骨骼部件 11] 顶层硬表面倒角亮边与磨损掉漆亮线 (Plus-Lighter) -->
+  <g id="part-light-rim-turret" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M35,64 L42,48 L86,48 L93,64" fill="none" stroke="#ffffff" stroke-width="1.75" stroke-linecap="round" opacity="0.92"/>
+    <path d="M44,52 L84,52" fill="none" stroke="#fef08a" stroke-width="1.2" opacity="0.88"/>
+  </g>
+
+  <!-- [骨骼部件 12] 顶层红外制导激光十字星芒 (Screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <circle cx="64" cy="66.5" r="13" fill="url(#mm-warhead-glow)" opacity="0.68"/>
+    <path d="M64,54 L64,79 M51,66.5 L77,66.5" stroke="#ffffff" stroke-width="0.85" stroke-linecap="round" opacity="0.9"/>
+  </g>
+</svg>

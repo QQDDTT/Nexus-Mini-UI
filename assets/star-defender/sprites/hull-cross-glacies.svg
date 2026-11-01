@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="hcg-frost-armor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="30%" stop-color="#cbd5e1"/>
+      <stop offset="68%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="hcg-slate-recess" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <linearGradient id="hcg-dark-nose" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <radialGradient id="hcg-sapphire-chamber" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.96"/>
+      <stop offset="35%" stop-color="#38bdf8" stop-opacity="0.9"/>
+      <stop offset="72%" stop-color="#0284c7" stop-opacity="0.86"/>
+      <stop offset="100%" stop-color="#082f49" stop-opacity="0.95"/>
+    </radialGradient>
+    <radialGradient id="hcg-cherenkov-lens" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#7dd3fc"/>
+      <stop offset="75%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0c4a6e"/>
+    </radialGradient>
+    <radialGradient id="hcg-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.34"/>
+      <stop offset="55%" stop-color="#0284c7" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#082f49" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="hcg-carbon-weave" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#0f172a"/>
+      <rect x="0" y="0" width="2" height="2" fill="#1e293b"/>
+      <rect x="2" y="2" width="2" height="2" fill="#1e293b"/>
+      <rect x="0" y="2" width="2" height="1" fill="#334155" opacity="0.5"/>
+    </pattern>
+    <pattern id="hcg-frost-rime" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M 0 3 L 3 0 M 5 8 L 8 5" stroke="#f8fafc" stroke-width="0.45" opacity="0.42"/>
+      <circle cx="4" cy="4" r="0.4" fill="#bae6fd" opacity="0.45"/>
+    </pattern>
+  </defs>
+
+  <!-- 1. Ground Shadow -->
+  <g id="part-shadow-cast" data-pivot="64 68" data-parent="root" data-z-index="1" data-blend="multiply">
+    <polygon points="64,6 84,22 86,44 122,48 122,82 86,86 84,116 44,116 42,86 6,82 6,48 42,44 44,22" fill="#020617" opacity="0.62"/>
+  </g>
+
+  <!-- 2. Outer Cryo Telemetry Ring -->
+  <g id="part-aura-ring-outer" data-pivot="64 64" data-parent="root" data-z-index="4" data-blend="screen">
+    <circle cx="64" cy="64" r="59" fill="url(#hcg-aura)"/>
+    <circle cx="64" cy="64" r="57" fill="none" stroke="#38bdf8" stroke-width="0.8" opacity="0.38"/>
+    <path d="M 64 5 L 64 9 M 64 119 L 64 123 M 5 64 L 9 64 M 119 64 L 123 64" stroke="#7dd3fc" stroke-width="1.2" opacity="0.65"/>
+  </g>
+
+  <!-- 3. Inner Cryo Telemetry Ring -->
+  <g id="part-aura-ring-inner" data-pivot="64 64" data-parent="root" data-z-index="5" data-blend="screen">
+    <circle cx="64" cy="64" r="45" fill="none" stroke="#bae6fd" stroke-width="0.7" opacity="0.32"/>
+  </g>
+
+  <!-- 4. Stepped Cryogenic Rear Thruster Plume Array (part-plume-array) -->
+  <g id="part-plume-array" data-pivot="64 104" data-parent="part-cross-hull-body" data-z-index="10" data-blend="screen">
+    <!-- Left, Center, Right Stepped Frosted Cryo-Nozzles -->
+    <polygon points="44,102 54,102 56,114 42,114" fill="#1e293b" stroke="#94a3b8" stroke-width="1"/>
+    <polygon points="58,104 70,104 72,116 56,116" fill="#1e293b" stroke="#94a3b8" stroke-width="1"/>
+    <polygon points="74,102 84,102 86,114 72,114" fill="#1e293b" stroke="#94a3b8" stroke-width="1"/>
+    <!-- Cherenkov Blue Pulsing Plumes -->
+    <g transform="translate(49,114)"><g><animateTransform attributeName="transform" type="scale" values="1,0.58;1.08,1.18;0.94,0.7;1,0.58" dur="0.21s" repeatCount="indefinite"/><polygon points="-5,0 5,0 2,11 -2,11" fill="#38bdf8" opacity="0.85"/></g></g>
+    <g transform="translate(64,116)"><g><animateTransform attributeName="transform" type="scale" values="1,0.62;1.1,1.22;0.92,0.68;1,0.62" dur="0.19s" repeatCount="indefinite"/><polygon points="-5,0 5,0 2,11 -2,11" fill="#7dd3fc" opacity="0.92"/><polygon points="-3,0 3,0 0,8" fill="#ffffff"/></g></g>
+    <g transform="translate(79,114)"><g><animateTransform attributeName="transform" type="scale" values="1,0.6;1.08,1.16;0.94,0.72;1,0.6" dur="0.23s" repeatCount="indefinite"/><polygon points="-5,0 5,0 2,11 -2,11" fill="#38bdf8" opacity="0.85"/></g></g>
+  </g>
+
+  <!-- 5. Heavy Cruciform Frosted Slate-Blue Dreadnought Hull (part-cross-hull-body) -->
+  <g id="part-cross-hull-body" data-pivot="64 64" data-parent="root" data-z-index="20" data-blend="normal">
+    <!-- Cruciform Frosted Slate-Blue Armor Chassis -->
+    <polygon points="64,4 82,18 84,42 122,46 122,80 84,84 82,108 46,108 44,84 6,80 6,46 44,42 46,18" fill="url(#hcg-frost-armor)" stroke="#0f172a" stroke-width="1.6"/>
+    <polygon points="64,4 82,18 84,42 122,46 122,80 84,84 82,108 46,108 44,84 6,80 6,46 44,42 46,18" fill="url(#hcg-frost-rime)" opacity="0.5"/>
+    <!-- Dark Charcoal Faceted Nose Cone (matching preview.png Glacies prow) -->
+    <polygon points="64,4 78,16 72,22 56,22 50,16" fill="url(#hcg-dark-nose)" stroke="#0f172a" stroke-width="1.2"/>
+    <line x1="64" y1="4" x2="64" y2="22" stroke="#94a3b8" stroke-width="0.9"/>
+    <!-- Recessed Carbon-Weave Wing Bays -->
+    <polygon points="10,50 42,47 42,79 10,76" fill="url(#hcg-carbon-weave)" stroke="#475569" stroke-width="1"/>
+    <polygon points="86,47 118,50 118,76 86,79" fill="url(#hcg-carbon-weave)" stroke="#475569" stroke-width="1"/>
+    <!-- 3 Circular Cryogenic Pressure Dial Gauges along Spine -->
+    <circle cx="48" cy="40" r="3" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.8"/>
+    <line x1="48" y1="40" x2="49.8" y2="38.2" stroke="#38bdf8" stroke-width="0.9"/>
+    <circle cx="80" cy="40" r="3" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.8"/>
+    <line x1="80" y1="40" x2="81.8" y2="38.2" stroke="#38bdf8" stroke-width="0.9"/>
+    <circle cx="64" cy="102" r="3" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.8"/>
+    <line x1="64" y1="102" x2="65.8" y2="100.2" stroke="#38bdf8" stroke-width="0.9"/>
+    <!-- Chamfered Armor Seam Lines, Cryo Coolant Conduits & Flush Fasteners -->
+    <line x1="46" y1="18" x2="54" y2="22" stroke="#334155" stroke-width="1.1"/>
+    <line x1="82" y1="18" x2="74" y2="22" stroke="#334155" stroke-width="1.1"/>
+    <line x1="44" y1="42" x2="48" y2="46" stroke="#334155" stroke-width="1.1"/>
+    <line x1="84" y1="42" x2="80" y2="46" stroke="#334155" stroke-width="1.1"/>
+    <line x1="44" y1="84" x2="48" y2="80" stroke="#334155" stroke-width="1.1"/>
+    <line x1="84" y1="84" x2="80" y2="80" stroke="#334155" stroke-width="1.1"/>
+    <line x1="56" y1="22" x2="56" y2="42" stroke="#38bdf8" stroke-width="1.1" opacity="0.8"/>
+    <line x1="72" y1="22" x2="72" y2="42" stroke="#38bdf8" stroke-width="1.1" opacity="0.8"/>
+    <line x1="38" y1="63" x2="44" y2="63" stroke="#38bdf8" stroke-width="1.4"/>
+    <line x1="84" y1="63" x2="90" y2="63" stroke="#38bdf8" stroke-width="1.4"/>
+    <!-- Cryo Louver Vents on Cross Arms -->
+    <line x1="12" y1="48" x2="38" y2="46" stroke="#94a3b8" stroke-width="0.9"/>
+    <line x1="12" y1="78" x2="38" y2="80" stroke="#94a3b8" stroke-width="0.9"/>
+    <line x1="90" y1="46" x2="116" y2="48" stroke="#94a3b8" stroke-width="0.9"/>
+    <line x1="90" y1="80" x2="116" y2="78" stroke="#94a3b8" stroke-width="0.9"/>
+    <!-- Flush Titanium Fastener Rivets -->
+    <circle cx="50" cy="20" r="0.9" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="78" cy="20" r="0.9" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="12" cy="48" r="0.9" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="116" cy="48" r="0.9" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="12" cy="78" r="0.9" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="116" cy="78" r="0.9" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="50" cy="104" r="0.9" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <circle cx="78" cy="104" r="0.9" fill="#0f172a" stroke="#e2e8f0" stroke-width="0.4"/>
+    <rect x="47" y="88" width="4" height="6" rx="0.6" fill="#0284c7" stroke="#bae6fd" stroke-width="0.5"/>
+    <rect x="77" y="88" width="4" height="6" rx="0.6" fill="#0284c7" stroke="#bae6fd" stroke-width="0.5"/>
+    <circle cx="48" cy="72" r="2.6" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.7"/>
+    <line x1="48" y1="72" x2="49.5" y2="70.5" stroke="#38bdf8" stroke-width="0.8"/>
+    <circle cx="80" cy="72" r="2.6" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.7"/>
+    <line x1="80" y1="72" x2="81.5" y2="70.5" stroke="#38bdf8" stroke-width="0.8"/>
+  </g>
+
+  <!-- 6. Central Hexagonal Sapphire Glass Cryo-Chamber & 4-Loop Helical Spring Coil (part-heavy-reactor) -->
+  <g id="part-heavy-reactor" data-pivot="64 62" data-parent="part-cross-hull-body" data-z-index="30" data-blend="normal">
+    <polygon points="48,42 80,42 88,52 88,74 80,84 48,84 40,74 40,52" fill="url(#hcg-slate-recess)" stroke="#94a3b8" stroke-width="1.2"/>
+    <polygon points="51,45 77,45 84,54 84,72 77,81 51,81 44,72 44,54" fill="url(#hcg-sapphire-chamber)" stroke="#7dd3fc" stroke-width="1.3"/>
+    <!-- 4-Loop Helical Superconducting Spring Coil -->
+    <path d="M 52 50 C 45 50, 45 56, 64 56 C 83 56, 83 62, 64 62 C 45 62, 45 68, 64 68 C 83 68, 83 74, 64 74 C 48 74, 48 78, 76 78" fill="none" stroke="#0284c7" stroke-width="4.2" stroke-linecap="round"/>
+    <path d="M 52 50 C 45 50, 45 56, 64 56 C 83 56, 83 62, 64 62 C 45 62, 45 68, 64 68 C 83 68, 83 74, 64 74 C 48 74, 48 78, 76 78" fill="none" stroke="#7dd3fc" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M 52 50 C 45 50, 45 56, 64 56 C 83 56, 83 62, 64 62 C 45 62, 45 68, 64 68 C 83 68, 83 74, 64 74 C 48 74, 48 78, 76 78" fill="none" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round"/>
+    <!-- Sapphire Specular Reflection -->
+    <polygon points="52,47 74,47 68,54 47,54" fill="#ffffff" opacity="0.32"/>
+  </g>
+
+  <!-- 7. Forward Recessed Octagonal Sensor Bay with TWO Glowing Blue Optical Lenses (part-turret-front) -->
+  <g id="part-turret-front" data-pivot="64 30" data-parent="part-cross-hull-body" data-z-index="40" data-blend="normal">
+    <polygon points="54,22 74,22 78,38 50,38" fill="url(#hcg-slate-recess)" stroke="#94a3b8" stroke-width="1"/>
+    <circle cx="64" cy="27" r="3.5" fill="url(#hcg-cherenkov-lens)" stroke="#bae6fd" stroke-width="0.8"/>
+    <circle cx="64" cy="34" r="3.5" fill="url(#hcg-cherenkov-lens)" stroke="#bae6fd" stroke-width="0.8"/>
+    <circle cx="63" cy="26" r="1" fill="#ffffff"/>
+    <circle cx="63" cy="33" r="1" fill="#ffffff"/>
+  </g>
+
+  <!-- 8. Aft Cryo-Turret & Dual Optical Lenses (part-turret-rear) -->
+  <g id="part-turret-rear" data-pivot="64 88" data-parent="part-cross-hull-body" data-z-index="40" data-blend="normal">
+    <polygon points="52,86 76,86 74,98 54,98" fill="url(#hcg-slate-recess)" stroke="#94a3b8" stroke-width="1"/>
+    <circle cx="59" cy="92" r="3.4" fill="url(#hcg-cherenkov-lens)" stroke="#bae6fd" stroke-width="0.8"/>
+    <circle cx="69" cy="92" r="3.4" fill="url(#hcg-cherenkov-lens)" stroke="#bae6fd" stroke-width="0.8"/>
+  </g>
+
+  <!-- 9. Left Sponson Sapphire Cryo-Coil Pod (part-turret-left) -->
+  <g id="part-turret-left" data-pivot="30 62" data-parent="part-cross-hull-body" data-z-index="40" data-blend="normal">
+    <polygon points="14,53 38,51 38,75 14,73" fill="url(#hcg-sapphire-chamber)" stroke="#7dd3fc" stroke-width="1.1"/>
+    <path d="M 18 57 C 18 53, 23 53, 23 63 C 23 73, 28 73, 28 63 C 28 53, 34 53, 34 69" fill="none" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- 10. Right Sponson Sapphire Cryo-Coil Pod (part-turret-right) -->
+  <g id="part-turret-right" data-pivot="98 62" data-parent="part-cross-hull-body" data-z-index="40" data-blend="normal">
+    <polygon points="90,51 114,53 114,73 90,75" fill="url(#hcg-sapphire-chamber)" stroke="#7dd3fc" stroke-width="1.1"/>
+    <path d="M 94 57 C 94 53, 99 53, 99 63 C 99 73, 104 73, 104 63 C 104 53, 110 53, 110 69" fill="none" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- 11. Specular Rim Highlights -->
+  <g id="part-light-rim-cross" data-pivot="64 64" data-parent="part-cross-hull-body" data-z-index="45" data-blend="plus-lighter">
+    <polyline points="6,46 44,42 46,18 64,4" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.82"/>
+    <polyline points="44,54 51,45 77,45" fill="none" stroke="#e0f2fe" stroke-width="1.2" opacity="0.78"/>
+  </g>
+
+  <!-- 12. Top Corona Glare -->
+  <g id="part-aura-corona-top" data-pivot="64 64" data-parent="root" data-z-index="65" data-blend="screen">
+    <circle cx="64" cy="62" r="14" fill="#38bdf8" opacity="0.22"/>
+    <circle cx="64" cy="27" r="5" fill="#7dd3fc" opacity="0.35"/>
+  </g>
+</svg>

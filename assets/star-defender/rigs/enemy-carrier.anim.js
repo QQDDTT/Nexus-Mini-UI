@@ -1,6 +1,6 @@
 /**
  * @file enemy-carrier.anim.js
- * @description 单角色骨骼贴图动作整合脚本：enemy-carrier (star-defender)
+ * @description 单角色骨骼贴图动作整合脚本：enemy-carrier (star-defender · Void Zerg Swarm)
  * 绑定贴图：../sprites/enemy-carrier.svg (20 个骨骼与光影图层组)
  * 遵循 Nexus-Mini v4.0 “一角色一脚本多动画”规范 (RIG_SPEC + 6 ANIMATIONS + 父子矩阵级联)
  */
@@ -15,26 +15,26 @@ export const RIG_SPEC = Object.freeze({
   rootAnchor: [64, 64],
   hasAura: true,
   parts: [
-    { id: 'part-shadow-cast', pivot: [64, 68], parent: 'root', zIndex: 1, blend: 'multiply', role: 'shadow', motion: 'shadow', side: 0, dirY: -1, order: 1 },
-    { id: 'part-aura-ring-outer', pivot: [64, 64], parent: 'root', zIndex: 4, blend: 'screen', role: 'aura-outer', motion: 'spin-cw', side: 0, dirY: -1, order: 1 },
-    { id: 'part-aura-ring-inner', pivot: [64, 64], parent: 'root', zIndex: 5, blend: 'screen', role: 'aura-inner', motion: 'spin-ccw', side: 1, dirY: -1, order: 1 },
-    { id: 'part-bio-plasma-vent', pivot: [64, 102], parent: 'part-mother-keel', zIndex: 12, blend: 'normal', role: 'core', motion: 'pulse-vent', side: 0, dirY: 1, order: 2 },
-    { id: 'part-aux-stabilizer-1', pivot: [83.8, 83.8], parent: 'root', zIndex: 17, blend: 'normal', role: 'chassis', motion: 'chassis', side: 1, dirY: -1, order: 1 },
-    { id: 'part-aux-stabilizer-2', pivot: [64, 92], parent: 'root', zIndex: 18, blend: 'normal', role: 'chassis', motion: 'chassis', side: 0, dirY: -1, order: 2 },
-    { id: 'part-feeler-right', pivot: [78, 24], parent: 'part-mother-keel', zIndex: 18, blend: 'normal', role: 'wing', motion: 'sway-right', side: 1, dirY: -1, order: 2 },
-    { id: 'part-feeler-left', pivot: [50, 24], parent: 'part-mother-keel', zIndex: 18, blend: 'normal', role: 'wing', motion: 'sway-left', side: -1, dirY: -1, order: 2 },
-    { id: 'part-aux-stabilizer-3', pivot: [44.2, 83.8], parent: 'root', zIndex: 19, blend: 'normal', role: 'chassis', motion: 'chassis', side: -1, dirY: -1, order: 3 },
-    { id: 'part-aux-stabilizer-4', pivot: [36, 64], parent: 'root', zIndex: 20, blend: 'normal', role: 'chassis', motion: 'chassis', side: -1, dirY: -1, order: 4 },
-    { id: 'part-aux-stabilizer-5', pivot: [44.2, 44.2], parent: 'root', zIndex: 21, blend: 'normal', role: 'chassis', motion: 'chassis', side: -1, dirY: -1, order: 5 },
-    { id: 'part-aux-stabilizer-6', pivot: [64, 36], parent: 'root', zIndex: 22, blend: 'normal', role: 'chassis', motion: 'chassis', side: 0, dirY: -1, order: 6 },
-    { id: 'part-aux-stabilizer-7', pivot: [83.8, 44.2], parent: 'root', zIndex: 23, blend: 'normal', role: 'chassis', motion: 'chassis', side: 1, dirY: -1, order: 7 },
-    { id: 'part-aux-stabilizer-8', pivot: [92, 64], parent: 'root', zIndex: 24, blend: 'normal', role: 'chassis', motion: 'chassis', side: 1, dirY: -1, order: 8 },
-    { id: 'part-mother-keel', pivot: [64, 64], parent: 'root', zIndex: 24, blend: 'normal', role: 'chassis', motion: 'chassis', side: 0, dirY: -1, order: 1 },
-    { id: 'part-brood-shell-R', pivot: [82, 36], parent: 'part-mother-keel', zIndex: 32, blend: 'normal', role: 'hatch', motion: 'open-hatch-right', side: 1, dirY: 1, order: 2 },
-    { id: 'part-brood-shell-L', pivot: [46, 36], parent: 'part-mother-keel', zIndex: 32, blend: 'normal', role: 'hatch', motion: 'open-hatch-left', side: -1, dirY: 1, order: 2 },
-    { id: 'part-bio-pulse-chamber', pivot: [64, 60], parent: 'part-mother-keel', zIndex: 40, blend: 'normal', role: 'core', motion: 'pulse-core', side: 0, dirY: -1, order: 2 },
-    { id: 'part-light-rim-carrier', pivot: [64, 64], parent: 'part-mother-keel', zIndex: 45, blend: 'plus-lighter', role: 'rim-light', motion: 'rim-light', side: 0, dirY: -1, order: 2 },
-    { id: 'part-aura-corona-top', pivot: [64, 64], parent: 'root', zIndex: 65, blend: 'screen', role: 'corona-top', motion: 'pulse-breathe', side: 0, dirY: -1, order: 1 }
+    { id: 'part-shadow-cast', pivot: [64, 68], parent: 'root', zIndex: 1, blend: 'multiply', role: 'shadow', motion: 'shadow', side: 0, dirY: 1, order: 1 },
+    { id: 'part-aura-ring-outer', pivot: [64, 64], parent: 'root', zIndex: 4, blend: 'screen', role: 'aura-outer', motion: 'spin-cw', side: 1, dirY: -1, order: 2 },
+    { id: 'part-aura-ring-inner', pivot: [64, 64], parent: 'root', zIndex: 5, blend: 'screen', role: 'aura-inner', motion: 'spin-ccw', side: 1, dirY: -1, order: 3 },
+    { id: 'part-bio-plasma-vent', pivot: [64, 102], parent: 'part-mother-keel', zIndex: 12, blend: 'normal', role: 'thruster', motion: 'pulse-vent', side: 0, dirY: 1, order: 4 },
+    { id: 'part-aux-stabilizer-1', pivot: [83.8, 83.8], parent: 'root', zIndex: 17, blend: 'normal', role: 'wing', motion: 'flap-wing', side: 0, dirY: -1, order: 5 },
+    { id: 'part-aux-stabilizer-2', pivot: [64, 92], parent: 'root', zIndex: 18, blend: 'normal', role: 'wing', motion: 'flap-wing', side: 0, dirY: -1, order: 6 },
+    { id: 'part-feeler-right', pivot: [78, 24], parent: 'part-mother-keel', zIndex: 18, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: 1, dirY: -1, order: 7 },
+    { id: 'part-feeler-left', pivot: [50, 24], parent: 'part-mother-keel', zIndex: 18, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 8 },
+    { id: 'part-aux-stabilizer-3', pivot: [44.2, 83.8], parent: 'root', zIndex: 19, blend: 'normal', role: 'wing', motion: 'flap-wing', side: 0, dirY: -1, order: 9 },
+    { id: 'part-aux-stabilizer-4', pivot: [36, 64], parent: 'root', zIndex: 20, blend: 'normal', role: 'wing', motion: 'flap-wing', side: 0, dirY: -1, order: 10 },
+    { id: 'part-aux-stabilizer-5', pivot: [44.2, 44.2], parent: 'root', zIndex: 21, blend: 'normal', role: 'wing', motion: 'flap-wing', side: 0, dirY: -1, order: 11 },
+    { id: 'part-aux-stabilizer-6', pivot: [64, 36], parent: 'root', zIndex: 22, blend: 'normal', role: 'wing', motion: 'flap-wing', side: 0, dirY: -1, order: 12 },
+    { id: 'part-aux-stabilizer-7', pivot: [83.8, 44.2], parent: 'root', zIndex: 23, blend: 'normal', role: 'wing', motion: 'flap-wing', side: 0, dirY: -1, order: 13 },
+    { id: 'part-aux-stabilizer-8', pivot: [92, 64], parent: 'root', zIndex: 24, blend: 'normal', role: 'wing', motion: 'flap-wing', side: 0, dirY: -1, order: 14 },
+    { id: 'part-mother-keel', pivot: [64, 64], parent: 'root', zIndex: 24, blend: 'normal', role: 'chassis', motion: 'chassis', side: 0, dirY: -1, order: 15 },
+    { id: 'part-brood-shell-L', pivot: [46, 36], parent: 'part-mother-keel', zIndex: 32, blend: 'normal', role: 'hatch', motion: 'open-hatch', side: -1, dirY: -1, order: 16 },
+    { id: 'part-brood-shell-R', pivot: [82, 36], parent: 'part-mother-keel', zIndex: 32, blend: 'normal', role: 'hatch', motion: 'open-hatch', side: 1, dirY: -1, order: 17 },
+    { id: 'part-bio-pulse-chamber', pivot: [64, 60], parent: 'part-mother-keel', zIndex: 40, blend: 'normal', role: 'core', motion: 'pulse-core', side: 1, dirY: -1, order: 18 },
+    { id: 'part-light-rim-carrier', pivot: [64, 64], parent: 'part-mother-keel', zIndex: 45, blend: 'plus-lighter', role: 'rim-light', motion: 'rim-light', side: -1, dirY: -1, order: 19 },
+    { id: 'part-aura-corona-top', pivot: [64, 64], parent: 'root', zIndex: 65, blend: 'screen', role: 'corona-top', motion: 'pulse-breathe', side: 0, dirY: -1, order: 20 }
   ]
 });
 export const ANIMATIONS = Object.freeze({

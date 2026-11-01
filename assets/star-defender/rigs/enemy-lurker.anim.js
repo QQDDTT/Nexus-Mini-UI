@@ -1,6 +1,6 @@
 /**
  * @file enemy-lurker.anim.js
- * @description 单角色骨骼贴图动作整合脚本：enemy-lurker (star-defender)
+ * @description 单角色骨骼贴图动作整合脚本：enemy-lurker (star-defender · Void Zerg Swarm)
  * 绑定贴图：../sprites/enemy-lurker.svg (27 个骨骼与光影图层组)
  * 遵循 Nexus-Mini v4.0 “一角色一脚本多动画”规范 (RIG_SPEC + 6 ANIMATIONS + 父子矩阵级联)
  */
@@ -16,32 +16,32 @@ export const RIG_SPEC = Object.freeze({
   hasAura: true,
   parts: [
     { id: 'part-shadow-cast', pivot: [64, 66], parent: 'root', zIndex: 1, blend: 'multiply', role: 'shadow', motion: 'shadow', side: 0, dirY: 1, order: 1 },
-    { id: 'part-aura-ring-outer', pivot: [64, 64], parent: 'root', zIndex: 4, blend: 'screen', role: 'aura-outer', motion: 'spin-cw', side: 0, dirY: -1, order: 1 },
-    { id: 'part-aura-ring-inner', pivot: [64, 64], parent: 'root', zIndex: 5, blend: 'screen', role: 'aura-inner', motion: 'spin-ccw', side: 1, dirY: -1, order: 1 },
-    { id: 'part-tentacle-L1-root', pivot: [38, 62], parent: 'part-head-mantle', zIndex: 15, blend: 'normal', role: 'somite', motion: 'ik-wave-root', side: -1, dirY: 1, order: 2 },
-    { id: 'part-tentacle-R1-root', pivot: [90, 62], parent: 'part-head-mantle', zIndex: 15, blend: 'normal', role: 'somite', motion: 'ik-wave-root', side: 1, dirY: 1, order: 2 },
-    { id: 'part-tentacle-L1-mid', pivot: [28, 80], parent: 'part-tentacle-L1-root', zIndex: 16, blend: 'normal', role: 'somite', motion: 'ik-wave-mid', side: -1, dirY: 1, order: 3 },
-    { id: 'part-tentacle-R1-mid', pivot: [100, 80], parent: 'part-tentacle-R1-root', zIndex: 16, blend: 'normal', role: 'somite', motion: 'ik-wave-mid', side: 1, dirY: 1, order: 3 },
-    { id: 'part-tentacle-L1-tip', pivot: [20, 98], parent: 'part-tentacle-L1-mid', zIndex: 17, blend: 'normal', role: 'somite', motion: 'ik-wave-tip', side: -1, dirY: 1, order: 4 },
-    { id: 'part-tentacle-R1-tip', pivot: [108, 98], parent: 'part-tentacle-R1-mid', zIndex: 17, blend: 'normal', role: 'somite', motion: 'ik-wave-tip', side: 1, dirY: 1, order: 4 },
-    { id: 'part-tentacle-L2-root', pivot: [48, 66], parent: 'part-head-mantle', zIndex: 18, blend: 'normal', role: 'somite', motion: 'ik-wave-root', side: -1, dirY: 1, order: 3 },
-    { id: 'part-tentacle-R2-root', pivot: [80, 66], parent: 'part-head-mantle', zIndex: 18, blend: 'normal', role: 'somite', motion: 'ik-wave-root', side: 1, dirY: 1, order: 3 },
-    { id: 'part-tentacle-R2-mid', pivot: [86, 85], parent: 'part-tentacle-R2-root', zIndex: 19, blend: 'normal', role: 'somite', motion: 'ik-wave-mid', side: 1, dirY: 1, order: 4 },
-    { id: 'part-tentacle-L2-mid', pivot: [42, 85], parent: 'part-tentacle-L2-root', zIndex: 19, blend: 'normal', role: 'somite', motion: 'ik-wave-mid', side: -1, dirY: 1, order: 4 },
-    { id: 'part-tentacle-L2-tip', pivot: [38, 103], parent: 'part-tentacle-L2-mid', zIndex: 20, blend: 'normal', role: 'somite', motion: 'ik-wave-tip', side: -1, dirY: 1, order: 5 },
-    { id: 'part-tentacle-R2-tip', pivot: [90, 103], parent: 'part-tentacle-R2-mid', zIndex: 20, blend: 'normal', role: 'somite', motion: 'ik-wave-tip', side: 1, dirY: 1, order: 5 },
-    { id: 'part-tentacle-R3-root', pivot: [70, 68], parent: 'part-head-mantle', zIndex: 21, blend: 'normal', role: 'somite', motion: 'ik-wave-root', side: 1, dirY: 1, order: 4 },
-    { id: 'part-tentacle-L3-root', pivot: [58, 68], parent: 'part-head-mantle', zIndex: 21, blend: 'normal', role: 'somite', motion: 'ik-wave-root', side: -1, dirY: 1, order: 4 },
-    { id: 'part-tentacle-L3-mid', pivot: [56, 88], parent: 'part-tentacle-L3-root', zIndex: 22, blend: 'normal', role: 'somite', motion: 'ik-wave-mid', side: -1, dirY: 1, order: 5 },
-    { id: 'part-tentacle-R3-mid', pivot: [72, 88], parent: 'part-tentacle-R3-root', zIndex: 22, blend: 'normal', role: 'somite', motion: 'ik-wave-mid', side: 1, dirY: 1, order: 5 },
-    { id: 'part-tentacle-R3-tip', pivot: [74, 106], parent: 'part-tentacle-R3-mid', zIndex: 23, blend: 'normal', role: 'somite', motion: 'ik-wave-tip', side: 1, dirY: 1, order: 6 },
-    { id: 'part-tentacle-L3-tip', pivot: [54, 106], parent: 'part-tentacle-L3-mid', zIndex: 23, blend: 'normal', role: 'somite', motion: 'ik-wave-tip', side: -1, dirY: 1, order: 6 },
-    { id: 'part-jaw-left', pivot: [42, 52], parent: 'part-head-mantle', zIndex: 28, blend: 'normal', role: 'jaw', motion: 'bite-left', side: -1, dirY: -1, order: 2 },
-    { id: 'part-jaw-right', pivot: [86, 52], parent: 'part-head-mantle', zIndex: 28, blend: 'normal', role: 'jaw', motion: 'bite-right', side: 1, dirY: -1, order: 2 },
-    { id: 'part-head-mantle', pivot: [64, 46], parent: 'root', zIndex: 34, blend: 'normal', role: 'chassis', motion: 'chassis', side: 0, dirY: -1, order: 1 },
-    { id: 'part-eye-locking-pupil', pivot: [64, 44], parent: 'part-head-mantle', zIndex: 40, blend: 'normal', role: 'eye', motion: 'pupil-track', side: 0, dirY: -1, order: 2 },
-    { id: 'part-light-rim-lurker', pivot: [64, 46], parent: 'part-head-mantle', zIndex: 45, blend: 'plus-lighter', role: 'rim-light', motion: 'rim-light', side: 0, dirY: 1, order: 2 },
-    { id: 'part-aura-corona-top', pivot: [64, 64], parent: 'root', zIndex: 65, blend: 'screen', role: 'corona-top', motion: 'pulse-breathe', side: 0, dirY: -1, order: 1 }
+    { id: 'part-aura-ring-outer', pivot: [64, 64], parent: 'root', zIndex: 4, blend: 'screen', role: 'aura-outer', motion: 'spin-cw', side: 1, dirY: -1, order: 2 },
+    { id: 'part-aura-ring-inner', pivot: [64, 64], parent: 'root', zIndex: 5, blend: 'screen', role: 'aura-inner', motion: 'spin-ccw', side: 1, dirY: -1, order: 3 },
+    { id: 'part-tentacle-L1-root', pivot: [38, 62], parent: 'part-head-mantle', zIndex: 15, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 4 },
+    { id: 'part-tentacle-R1-root', pivot: [90, 62], parent: 'part-head-mantle', zIndex: 15, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: 1, dirY: -1, order: 5 },
+    { id: 'part-tentacle-L1-mid', pivot: [28, 80], parent: 'part-tentacle-L1-root', zIndex: 16, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 6 },
+    { id: 'part-tentacle-R1-mid', pivot: [100, 80], parent: 'part-tentacle-R1-root', zIndex: 16, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: 1, dirY: -1, order: 7 },
+    { id: 'part-tentacle-L1-tip', pivot: [20, 98], parent: 'part-tentacle-L1-mid', zIndex: 17, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 8 },
+    { id: 'part-tentacle-R1-tip', pivot: [108, 98], parent: 'part-tentacle-R1-mid', zIndex: 17, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: 1, dirY: -1, order: 9 },
+    { id: 'part-tentacle-L2-root', pivot: [48, 66], parent: 'part-head-mantle', zIndex: 18, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 10 },
+    { id: 'part-tentacle-R2-root', pivot: [80, 66], parent: 'part-head-mantle', zIndex: 18, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: 1, dirY: -1, order: 11 },
+    { id: 'part-tentacle-R2-mid', pivot: [86, 85], parent: 'part-tentacle-R2-root', zIndex: 19, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: 1, dirY: -1, order: 12 },
+    { id: 'part-tentacle-L2-mid', pivot: [42, 85], parent: 'part-tentacle-L2-root', zIndex: 19, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 13 },
+    { id: 'part-tentacle-L2-tip', pivot: [38, 103], parent: 'part-tentacle-L2-mid', zIndex: 20, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 14 },
+    { id: 'part-tentacle-R2-tip', pivot: [90, 103], parent: 'part-tentacle-R2-mid', zIndex: 20, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: 1, dirY: -1, order: 15 },
+    { id: 'part-tentacle-R3-root', pivot: [70, 68], parent: 'part-head-mantle', zIndex: 21, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: 1, dirY: -1, order: 16 },
+    { id: 'part-tentacle-L3-root', pivot: [58, 68], parent: 'part-head-mantle', zIndex: 21, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 17 },
+    { id: 'part-tentacle-L3-mid', pivot: [56, 88], parent: 'part-tentacle-L3-root', zIndex: 22, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 18 },
+    { id: 'part-tentacle-R3-mid', pivot: [72, 88], parent: 'part-tentacle-R3-root', zIndex: 22, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: 1, dirY: -1, order: 19 },
+    { id: 'part-tentacle-R3-tip', pivot: [74, 106], parent: 'part-tentacle-R3-mid', zIndex: 23, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: 1, dirY: -1, order: 20 },
+    { id: 'part-tentacle-L3-tip', pivot: [54, 106], parent: 'part-tentacle-L3-mid', zIndex: 23, blend: 'normal', role: 'limb', motion: 'ik-limb-step', side: -1, dirY: -1, order: 21 },
+    { id: 'part-jaw-left', pivot: [42, 52], parent: 'part-head-mantle', zIndex: 28, blend: 'normal', role: 'jaw', motion: 'bite-jaw', side: -1, dirY: -1, order: 22 },
+    { id: 'part-jaw-right', pivot: [86, 52], parent: 'part-head-mantle', zIndex: 28, blend: 'normal', role: 'jaw', motion: 'bite-jaw', side: 1, dirY: -1, order: 23 },
+    { id: 'part-head-mantle', pivot: [64, 46], parent: 'root', zIndex: 34, blend: 'normal', role: 'turret', motion: 'head-track', side: 0, dirY: -1, order: 24 },
+    { id: 'part-eye-locking-pupil', pivot: [64, 44], parent: 'part-head-mantle', zIndex: 40, blend: 'normal', role: 'eye', motion: 'pupil-track', side: -1, dirY: -1, order: 25 },
+    { id: 'part-light-rim-lurker', pivot: [64, 46], parent: 'part-head-mantle', zIndex: 45, blend: 'plus-lighter', role: 'rim-light', motion: 'rim-light', side: -1, dirY: -1, order: 26 },
+    { id: 'part-aura-corona-top', pivot: [64, 64], parent: 'root', zIndex: 65, blend: 'screen', role: 'corona-top', motion: 'pulse-breathe', side: 0, dirY: -1, order: 27 }
   ]
 });
 export const ANIMATIONS = Object.freeze({

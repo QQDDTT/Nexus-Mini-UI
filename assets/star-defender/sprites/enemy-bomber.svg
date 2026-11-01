@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Glossy Crimson-Violet Chitin Ribcage (Matches zerg_enemy_roster_showcase ENEMY-02) -->
+    <linearGradient id="ebm-chitin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="35%" stop-color="#be123c"/>
+      <stop offset="70%" stop-color="#4c0519"/>
+      <stop offset="100%" stop-color="#1a0315"/>
+    </linearGradient>
+    <linearGradient id="ebm-chitin-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#881337"/>
+      <stop offset="55%" stop-color="#3b0726"/>
+      <stop offset="100%" stop-color="#0f0208"/>
+    </linearGradient>
+    <!-- Glowing Spherical Neon-Lime Acid-Mine Sac -->
+    <radialGradient id="ebm-acid-sphere" cx="46%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="32%" stop-color="#bef264"/>
+      <stop offset="68%" stop-color="#65a30d"/>
+      <stop offset="100%" stop-color="#1a2e05"/>
+    </radialGradient>
+    <!-- Amber Compound Eye -->
+    <radialGradient id="ebm-amber-eye" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="45%" stop-color="#f59e0b"/>
+      <stop offset="85%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </radialGradient>
+    <radialGradient id="ebm-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a3e635" stop-opacity="0.34"/>
+      <stop offset="60%" stop-color="#be123c" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#0f0208" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="ebm-manga-hatch" width="5" height="5" patternUnits="userSpaceOnUse">
+      <path d="M 0 5 L 5 0 M -1 1 L 1 -1" stroke="#0f0208" stroke-width="0.65" opacity="0.48"/>
+    </pattern>
+    <pattern id="ebm-bio-honeycomb" width="7" height="7" patternUnits="userSpaceOnUse">
+      <polygon points="3.5,0 7,2 7,5 3.5,7 0,5 0,2" fill="none" stroke="#365314" stroke-width="0.6" opacity="0.45"/>
+      <circle cx="3.5" cy="3.5" r="0.9" fill="#ecfccb" opacity="0.45"/>
+    </pattern>
+  </defs>
+
+  <!-- 1. Ground Shadow -->
+  <g id="part-shadow-cast" data-pivot="64 68" data-parent="root" data-z-index="1" data-blend="multiply">
+    <ellipse cx="64" cy="68" rx="46" ry="48" fill="#090106" opacity="0.6"/>
+  </g>
+
+  <!-- 2. Outer Bio-Hazard Aura Ring -->
+  <g id="part-aura-ring-outer" data-pivot="64 64" data-parent="root" data-z-index="4" data-blend="screen">
+    <circle cx="64" cy="58" r="56" fill="url(#ebm-aura)"/>
+    <circle cx="64" cy="64" r="55" fill="none" stroke="#84cc16" stroke-width="0.7" opacity="0.35"/>
+  </g>
+
+  <!-- 3. Inner Bio-Hazard Aura Ring -->
+  <g id="part-aura-ring-inner" data-pivot="64 64" data-parent="root" data-z-index="5" data-blend="screen">
+    <circle cx="64" cy="58" r="42" fill="none" stroke="#f43f5e" stroke-width="0.6" opacity="0.28"/>
+  </g>
+
+  <!-- 4~7. Four Trailing Whip-Like S-Curved Crimson Feeler Tentacles at Bottom (Matching Showcase ENEMY-02) -->
+  <g id="part-tentacle-NW" data-pivot="40 40" data-parent="part-spore-sac-main" data-z-index="14" data-blend="normal">
+    <path d="M 46 84 C 32 94, 18 102, 22 116 C 24 122, 32 122, 30 114 C 28 106, 38 98, 50 88 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.6" stroke-linejoin="round"/>
+  </g>
+  <g id="part-tentacle-NE" data-pivot="88 40" data-parent="part-spore-sac-main" data-z-index="15" data-blend="normal">
+    <path d="M 82 84 C 96 94, 110 102, 106 116 C 104 122, 96 122, 98 114 C 100 106, 90 98, 78 88 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.6" stroke-linejoin="round"/>
+  </g>
+  <g id="part-tentacle-SW" data-pivot="40 88" data-parent="part-spore-sac-main" data-z-index="16" data-blend="normal">
+    <path d="M 56 88 C 48 100, 42 114, 48 124 C 51 127, 56 124, 53 117 C 50 110, 54 100, 61 90 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.6" stroke-linejoin="round"/>
+  </g>
+  <g id="part-tentacle-SE" data-pivot="88 88" data-parent="part-spore-sac-main" data-z-index="17" data-blend="normal">
+    <path d="M 72 88 C 80 100, 86 114, 80 124 C 77 127, 72 124, 75 117 C 78 110, 74 100, 67 90 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.6" stroke-linejoin="round"/>
+  </g>
+
+  <!-- 8. Huge Spherical/Ovoid Glowing Neon-Lime Acid-Mine Sac (part-spore-sac-main) -->
+  <g id="part-spore-sac-main" data-pivot="64 64" data-parent="root" data-z-index="24" data-blend="normal">
+    <ellipse cx="64" cy="58" rx="33" ry="34" fill="url(#ebm-acid-sphere)" stroke="#0f0208" stroke-width="2.2"/>
+    <ellipse cx="64" cy="58" rx="33" ry="34" fill="url(#ebm-bio-honeycomb)"/>
+    <!-- Internal Acid Bubbles & Cellular Blisters -->
+    <circle cx="52" cy="50" r="6" fill="#ecfccb" opacity="0.55"/>
+    <circle cx="75" cy="54" r="5" fill="#ecfccb" opacity="0.5"/>
+    <circle cx="56" cy="68" r="4.5" fill="#fef08a" opacity="0.55"/>
+    <circle cx="72" cy="70" r="4" fill="#fef08a" opacity="0.5"/>
+    <circle cx="64" cy="78" r="3" fill="#ecfccb" opacity="0.65"/>
+    <circle cx="46" cy="62" r="2.8" fill="#ecfccb" opacity="0.6"/>
+    <circle cx="82" cy="62" r="2.8" fill="#ecfccb" opacity="0.6"/>
+  </g>
+
+  <!-- 9. Left 5 Curved Segmented Crimson-Violet Chitin Rib Claws Wrapping Sphere (part-chitin-rib-L) -->
+  <g id="part-chitin-rib-L" data-pivot="46 64" data-parent="part-spore-sac-main" data-z-index="30" data-blend="normal">
+    <!-- Lateral Spine Support Bar -->
+    <path d="M 38 30 C 24 44, 24 72, 42 88 C 32 72, 32 46, 44 34 Z" fill="url(#ebm-chitin-dark)" stroke="#0f0208" stroke-width="1.8"/>
+    <!-- 5 Curved Rib Claws Embracing Left Hemisphere -->
+    <path d="M 36 32 C 24 36, 26 44, 48 42 C 36 40, 34 36, 42 33 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.5"/>
+    <path d="M 30 43 C 18 48, 22 56, 46 53 C 34 51, 30 47, 38 44 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.5"/>
+    <path d="M 28 56 C 18 61, 22 69, 47 64 C 34 63, 30 59, 36 56 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.5"/>
+    <path d="M 31 69 C 22 74, 27 81, 50 75 C 38 74, 34 71, 38 68 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.5"/>
+    <path d="M 38 80 C 32 85, 38 91, 55 85 C 45 85, 41 82, 44 79 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.5"/>
+  </g>
+
+  <!-- 10. Right 5 Curved Segmented Crimson-Violet Chitin Rib Claws Wrapping Sphere (part-chitin-rib-R) -->
+  <g id="part-chitin-rib-R" data-pivot="82 64" data-parent="part-spore-sac-main" data-z-index="30" data-blend="normal">
+    <!-- Lateral Spine Support Bar -->
+    <path d="M 90 30 C 104 44, 104 72, 86 88 C 96 72, 96 46, 84 34 Z" fill="url(#ebm-chitin-dark)" stroke="#0f0208" stroke-width="1.8"/>
+    <!-- 5 Curved Rib Claws Embracing Right Hemisphere -->
+    <path d="M 92 32 C 104 36, 102 44, 80 42 C 92 40, 94 36, 86 33 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.5"/>
+    <path d="M 98 43 C 110 48, 106 56, 82 53 C 94 51, 98 47, 90 44 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.5"/>
+    <path d="M 100 56 C 110 61, 106 69, 81 64 C 94 63, 98 59, 92 56 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.5"/>
+    <path d="M 97 69 C 106 74, 101 81, 78 75 C 90 74, 94 71, 90 68 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.5"/>
+    <path d="M 90 80 C 96 85, 90 91, 73 85 C 83 85, 87 82, 84 79 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.5"/>
+  </g>
+
+  <!-- 11. V-Shaped Crimson Brow Plate, Twin Amber Eyes & Front Trigger Fangs (part-detonator-maw) -->
+  <g id="part-detonator-maw" data-pivot="64 26" data-parent="part-spore-sac-main" data-z-index="36" data-blend="normal">
+    <!-- Top Twin Trigger Horns -->
+    <path d="M 52 14 C 46 8, 48 4, 55 9 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.4"/>
+    <path d="M 76 14 C 82 8, 80 4, 73 9 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.4"/>
+    <!-- V-Shaped Crimson Brow Plate (Matching Showcase ENEMY-02) -->
+    <path d="M 44 24 C 52 20, 76 20, 84 24 C 82 32, 72 37, 64 39 C 56 37, 46 32, 44 24 Z" fill="url(#ebm-chitin)" stroke="#0f0208" stroke-width="1.8"/>
+    <path d="M 44 24 C 52 20, 76 20, 84 24 C 82 32, 72 37, 64 39 Z" fill="url(#ebm-manga-hatch)"/>
+    <!-- Twin Oval Amber Compound Eyes -->
+    <ellipse cx="55" cy="29" rx="4.5" ry="2.8" transform="rotate(18 55 29)" fill="url(#ebm-amber-eye)" stroke="#0f0208" stroke-width="1.2"/>
+    <ellipse cx="73" cy="29" rx="4.5" ry="2.8" transform="rotate(-18 73 29)" fill="url(#ebm-amber-eye)" stroke="#0f0208" stroke-width="1.2"/>
+    <circle cx="54" cy="28" r="1.1" fill="#ffffff"/>
+    <circle cx="72" cy="28" r="1.1" fill="#ffffff"/>
+  </g>
+
+  <!-- 12. Top Exposed Brain-Dome Trigger Gland & Central Acid Core (part-brain-trigger-core) -->
+  <g id="part-brain-trigger-core" data-pivot="64 64" data-parent="part-spore-sac-main" data-z-index="40" data-blend="normal">
+    <!-- Top Exposed Convoluted Green Brain-Dome (Matching Showcase ENEMY-02 crown) -->
+    <path d="M 50 22 C 50 10, 78 10, 78 22 C 72 24, 56 24, 50 22 Z" fill="url(#ebm-acid-sphere)" stroke="#0f0208" stroke-width="1.8"/>
+    <path d="M 56 15 C 60 13, 62 19, 64 14 C 66 19, 68 13, 72 15" fill="none" stroke="#365314" stroke-width="1.1" stroke-linecap="round"/>
+    <!-- Central Pulsing Volatile Bio-Mine Nucleus -->
+    <circle cx="64" cy="58" r="11" fill="#fef08a" opacity="0.65"/>
+    <path d="M 64 39 L 64 78 M 48 58 L 80 58 M 53 47 L 75 69 M 75 47 L 53 69" stroke="#ecfccb" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+    <!-- Dense Bio-Luminescent Spore Pustules & Rib Joint Spines (Matching Showcase ENEMY-02) -->
+    <circle cx="64" cy="58" r="5" fill="#ffffff" opacity="0.75"/>
+    <circle cx="58" cy="44" r="2.2" fill="#fef08a" stroke="#365314" stroke-width="0.6"/>
+    <circle cx="70" cy="44" r="2.2" fill="#fef08a" stroke="#365314" stroke-width="0.6"/>
+    <circle cx="49" cy="57" r="2.4" fill="#fef08a" stroke="#365314" stroke-width="0.6"/>
+    <circle cx="79" cy="57" r="2.4" fill="#fef08a" stroke="#365314" stroke-width="0.6"/>
+    <circle cx="51" cy="73" r="2" fill="#fef08a" stroke="#365314" stroke-width="0.6"/>
+    <circle cx="77" cy="73" r="2" fill="#fef08a" stroke="#365314" stroke-width="0.6"/>
+    <circle cx="60" cy="83" r="1.8" fill="#ecfccb" stroke="#365314" stroke-width="0.5"/>
+    <circle cx="68" cy="83" r="1.8" fill="#ecfccb" stroke="#365314" stroke-width="0.5"/>
+    <!-- Chitin Rib Knuckle Nodes on Left & Right Ribs -->
+    <circle cx="31" cy="36" r="1.4" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="26" cy="47" r="1.5" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="24" cy="60" r="1.5" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="27" cy="73" r="1.4" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="35" cy="84" r="1.3" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="97" cy="36" r="1.4" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="102" cy="47" r="1.5" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="104" cy="60" r="1.5" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="101" cy="73" r="1.4" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <circle cx="93" cy="84" r="1.3" fill="#fda4af" stroke="#0f0208" stroke-width="0.6"/>
+    <!-- Suction Nodes on Bottom Feeler Tentacles -->
+    <circle cx="27" cy="108" r="1.3" fill="#a3e635" stroke="#0f0208" stroke-width="0.5"/>
+    <circle cx="101" cy="108" r="1.3" fill="#a3e635" stroke="#0f0208" stroke-width="0.5"/>
+    <circle cx="51" cy="114" r="1.3" fill="#a3e635" stroke="#0f0208" stroke-width="0.5"/>
+    <circle cx="77" cy="114" r="1.3" fill="#a3e635" stroke="#0f0208" stroke-width="0.5"/>
+    <polygon points="57,37 60,42 62,37" fill="#fef2f2" stroke="#0f0208" stroke-width="0.6"/>
+    <polygon points="71,37 68,42 66,37" fill="#fef2f2" stroke="#0f0208" stroke-width="0.6"/>
+  </g>
+
+  <!-- 13. Cel-Shaded Specular Rim Highlights -->
+  <g id="part-light-rim-bomber" data-pivot="64 64" data-parent="part-spore-sac-main" data-z-index="45" data-blend="plus-lighter">
+    <path d="M 42 40 C 36 52, 38 68, 48 78" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+    <path d="M 54 14 C 60 11, 68 11, 74 14" fill="none" stroke="#ecfccb" stroke-width="1.4" stroke-linecap="round"/>
+  </g>
+
+  <!-- 14. Top Bio-Luminescent Glare -->
+  <g id="part-aura-corona-top" data-pivot="64 64" data-parent="root" data-z-index="65" data-blend="screen">
+    <circle cx="64" cy="58" r="20" fill="#a3e635" opacity="0.25"/>
+  </g>
+</svg>

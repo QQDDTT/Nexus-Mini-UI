@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 160" width="64" height="160">
+  <defs>
+    <radialGradient id="pbHeadGlow" cx="50%" cy="28%" r="48%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#f5d0fe" stop-opacity="0.96"/>
+      <stop offset="62%" stop-color="#e879f9" stop-opacity="0.82"/>
+      <stop offset="88%" stop-color="#a21caf" stop-opacity="0.38"/>
+      <stop offset="100%" stop-color="#701a75" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pbTailTrail" x1="50%" y1="15%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="28%" stop-color="#e879f9" stop-opacity="0.85"/>
+      <stop offset="65%" stop-color="#f43f5e" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#4c0519" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="rig-root">
+    <!-- L0: Tapered Magneto-Plasma Tracer Tail -->
+    <polygon points="32,16 50,36 38,154 26,154 14,36" fill="url(#pbTailTrail)"/>
+
+    <!-- L1: Helical Magnetic Containment Filaments -->
+    <path d="M 20,34 C 44,54 18,78 40,102 C 24,120 36,136 32,150" fill="none" stroke="#f0abfc" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+    <path d="M 44,34 C 20,54 46,78 24,102 C 40,120 28,136 32,150" fill="none" stroke="#fb7185" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>
+
+    <!-- L2: Plasmoid Torus Head -->
+    <ellipse cx="32" cy="34" rx="24" ry="26" fill="url(#pbHeadGlow)"/>
+    <ellipse cx="32" cy="32" rx="12" ry="16" fill="#fae8ff" stroke="#e879f9" stroke-width="1.5"/>
+    <ellipse cx="32" cy="30" rx="6.5" ry="10" fill="#ffffff"/>
+
+    <!-- L3: Corona Arcs & Ionized Droplets -->
+    <g stroke="#ffffff" stroke-width="1.2" fill="none" opacity="0.9">
+      <path d="M 16,28 Q 24,16 32,14 Q 40,16 48,28"/>
+      <path d="M 18,40 Q 32,50 46,40"/>
+    </g>
+    <g fill="#f5d0fe">
+      <circle cx="24" cy="68" r="2.4"/>
+      <circle cx="39" cy="84" r="2.0"/>
+      <circle cx="27" cy="106" r="1.8"/>
+      <circle cx="35" cy="126" r="1.4"/>
+    </g>
+  </g>
+</svg>
+

@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" preserveAspectRatio="none">
+  <defs>
+    <!-- 3D Brushed 24K Champagne Gold Bezel Gradient -->
+    <linearGradient id="goldFrame" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff2bd"/>
+      <stop offset="18%" stop-color="#e2ba62"/>
+      <stop offset="45%" stop-color="#9e7220"/>
+      <stop offset="72%" stop-color="#ebd089"/>
+      <stop offset="100%" stop-color="#5e400a"/>
+    </linearGradient>
+    <linearGradient id="goldInnerBevel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a3208"/>
+      <stop offset="50%" stop-color="#7d5816"/>
+      <stop offset="100%" stop-color="#f7e29c"/>
+    </linearGradient>
+    <!-- Silver-Steel Widmanstätten Iron Meteorite Base -->
+    <linearGradient id="meteoriteSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5d6676"/>
+      <stop offset="30%" stop-color="#788294"/>
+      <stop offset="65%" stop-color="#48505e"/>
+      <stop offset="100%" stop-color="#323844"/>
+    </linearGradient>
+    <!-- Deep Recessed Shadow Wall -->
+    <linearGradient id="recessWallTop" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#090c12"/>
+      <stop offset="100%" stop-color="#252b37"/>
+    </linearGradient>
+    <linearGradient id="recessWallLeft" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0d1118"/>
+      <stop offset="100%" stop-color="#2c3340"/>
+    </linearGradient>
+    <!-- Widmanstätten Crystalline Cross-Hatch Pattern -->
+    <pattern id="widmanCrystal" width="56" height="56" patternUnits="userSpaceOnUse">
+      <rect width="56" height="56" fill="none"/>
+      <!-- 60-degree & 120-degree metallic nickel-iron lamellae facets -->
+      <polygon points="0,0 28,0 14,24" fill="#8e99ac" opacity="0.35"/>
+      <polygon points="28,0 56,0 42,24 14,24" fill="#3a414e" opacity="0.42"/>
+      <polygon points="14,24 42,24 28,48 0,48" fill="#9aa5b8" opacity="0.28"/>
+      <polygon points="42,24 56,24 56,56 28,48" fill="#2c323d" opacity="0.45"/>
+      <!-- Crystalline Etch Lines -->
+      <path d="M-10,8 L66,46 M-10,32 L66,-6 M-10,52 L66,14 M8,-10 L42,66 M34,-10 L4,66 M52,-10 L22,66" stroke="#b8c3d6" stroke-width="1.1" opacity="0.48"/>
+      <path d="M-6,18 L62,54 M-6,42 L62,4 M18,-6 L52,62 M44,-6 L12,62" stroke="#1e222a" stroke-width="1.3" opacity="0.55"/>
+      <path d="M0,28 L56,28 M28,0 L28,56" stroke="#cbd5e1" stroke-width="0.5" opacity="0.25"/>
+    </pattern>
+    <!-- Inner Shadow over Meteorite Bed -->
+    <radialGradient id="bedVignette" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="75%" stop-color="#000000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.72"/>
+    </radialGradient>
+    <!-- Curved Sapphire Glass Dome Specular -->
+    <linearGradient id="glassSweep" x1="0%" y1="0%" x2="65%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="32%" stop-color="#ffffff" stop-opacity="0.03"/>
+      <stop offset="33%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.06"/>
+    </linearGradient>
+    <clipPath id="bedClip">
+      <polygon points="28,17 252,17 263,28 263,92 252,103 28,103 17,92 17,28"/>
+    </clipPath>
+  </defs>
+
+  <!-- 1. Corner Protruding 24K Gold Hex-Bolt Ears (Exact match to concept art) -->
+  <g fill="url(#goldFrame)" stroke="#3b2604" stroke-width="1.2">
+    <!-- Top-Left Ear -->
+    <circle cx="14" cy="14" r="7.5"/>
+    <polygon points="14,9.5 18,11.8 18,16.2 14,18.5 10,16.2 10,11.8" fill="#855c14" stroke="#fde68a" stroke-width="0.7"/>
+    <!-- Top-Right Ear -->
+    <circle cx="266" cy="14" r="7.5"/>
+    <polygon points="266,9.5 270,11.8 270,16.2 266,18.5 262,16.2 262,11.8" fill="#855c14" stroke="#fde68a" stroke-width="0.7"/>
+    <!-- Bottom-Left Ear -->
+    <circle cx="14" cy="106" r="7.5"/>
+    <polygon points="14,101.5 18,103.8 18,108.2 14,110.5 10,108.2 10,103.8" fill="#855c14" stroke="#fde68a" stroke-width="0.7"/>
+    <!-- Bottom-Right Ear -->
+    <circle cx="266" cy="106" r="7.5"/>
+    <polygon points="266,101.5 270,103.8 270,108.2 266,110.5 262,108.2 262,103.8" fill="#855c14" stroke="#fde68a" stroke-width="0.7"/>
+  </g>
+
+  <!-- 2. Heavy 3D Stepped 24K Brushed Gold Octagonal Outer Casing -->
+  <polygon points="22,4 258,4 276,22 276,98 258,116 22,116 4,98 4,22" fill="url(#goldFrame)" stroke="#2b1b02" stroke-width="1.8"/>
+  <!-- Outer Gold Ridge Highlight -->
+  <polygon points="24,6.5 256,6.5 273.5,24 273.5,96 256,113.5 24,113.5 6.5,96 6.5,24" fill="none" stroke="#fff7d6" stroke-width="1" opacity="0.75"/>
+  <!-- Stepped Inner Gold Rim -->
+  <polygon points="25,10 255,10 270,25 270,95 255,110 25,110 10,95 10,25" fill="url(#goldInnerBevel)" stroke="#3d2806" stroke-width="1.2"/>
+
+  <!-- 3. Deep 3D Recessed Inner Vault Walls (Trapezoidal 3D Bevel) -->
+  <!-- Top Dark Shadow Wall -->
+  <polygon points="25,10 255,10 252,17 28,17" fill="url(#recessWallTop)"/>
+  <!-- Bottom Illuminated Bevel Wall -->
+  <polygon points="28,103 252,103 255,110 25,110" fill="#475163"/>
+  <!-- Left Shadow Wall -->
+  <polygon points="10,25 17,28 17,92 10,95" fill="url(#recessWallLeft)"/>
+  <!-- Right Bevel Wall -->
+  <polygon points="270,25 263,28 263,92 270,95" fill="#384152"/>
+  <!-- Corner Bevel Facets -->
+  <polygon points="25,10 28,17 17,28 10,25" fill="#141923"/>
+  <polygon points="255,10 270,25 263,28 252,17" fill="#1f2633"/>
+  <polygon points="10,95 17,92 28,103 25,110" fill="#2c3444"/>
+  <polygon points="263,92 270,95 255,110 252,103" fill="#525d73"/>
+
+  <!-- 4. Recessed Silver Widmanstätten Crystalline Iron Meteorite Bed -->
+  <g clip-path="url(#bedClip)">
+    <rect x="15" y="15" width="250" height="90" fill="url(#meteoriteSilver)"/>
+    <rect x="15" y="15" width="250" height="90" fill="url(#widmanCrystal)"/>
+    <!-- Cast Shadow from Top & Left Gold Overhang -->
+    <rect x="15" y="15" width="250" height="10" fill="#000000" opacity="0.55"/>
+    <rect x="15" y="15" width="10" height="90" fill="#000000" opacity="0.42"/>
+    <!-- Radial Vignette & Center Specimen Pedestal Socket -->
+    <rect x="15" y="15" width="250" height="90" fill="url(#bedVignette)"/>
+    <ellipse cx="140" cy="58" rx="64" ry="26" fill="#0d121c" opacity="0.45" stroke="#94a3b8" stroke-width="0.7" stroke-dasharray="4 3"/>
+    <!-- Curved Sapphire Glass Cover Specular Sweep -->
+    <polygon points="15,15 175,15 115,105 15,105" fill="url(#glassSweep)"/>
+  </g>
+
+  <!-- Inner Gold Hairline Lip around Meteorite Well -->
+  <polygon points="28,17 252,17 263,28 263,92 252,103 28,103 17,92 17,28" fill="none" stroke="#d4af37" stroke-width="0.9" opacity="0.7"/>
+
+  <!-- Top & Bottom Center Engraved Gold Rivets -->
+  <circle cx="140" cy="7" r="2.2" fill="#422c06" stroke="#fde68a" stroke-width="0.7"/>
+  <circle cx="140" cy="113" r="2.2" fill="#422c06" stroke="#fde68a" stroke-width="0.7"/>
+</svg>
+

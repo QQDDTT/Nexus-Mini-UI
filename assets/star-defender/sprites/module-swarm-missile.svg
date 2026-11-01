@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" data-rig-id="module-swarm-missile-rig" data-root-anchor="64,74" data-faction="helios" data-slot-zone="weapon" data-slot-size="M-3x1">
+  <defs>
+    <!-- 1. 黄黑工程防爆斜纹警示涂装 -->
+    <pattern id="msm-hazard-stripe" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="3" height="6" fill="#facc15"/>
+      <rect x="3" width="3" height="6" fill="#090d16"/>
+    </pattern>
+    <!-- 2. 6阶 Gooch 拉丝钛合金主装甲渐变 -->
+    <linearGradient id="msm-ti-armor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="22%" stop-color="#64748b"/>
+      <stop offset="50%" stop-color="#334155"/>
+      <stop offset="78%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#04070e"/>
+    </linearGradient>
+    <!-- 3. NASA 极白氧化铝防热陶瓷装甲渐变 -->
+    <linearGradient id="msm-ceramic-white" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#f8fafc"/>
+      <stop offset="78%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <!-- 4. 24K Kapton 聚酰亚胺多切面褶皱金箔热控层 -->
+    <linearGradient id="msm-kapton-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="26%" stop-color="#fbbf24"/>
+      <stop offset="54%" stop-color="#b45309"/>
+      <stop offset="80%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <!-- 5. 蜂群微型追踪弹头琥珀金红渐变 -->
+    <radialGradient id="msm-stinger-head" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="38%" stop-color="#fde047"/>
+      <stop offset="78%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#7c2d12"/>
+    </radialGradient>
+    <!-- 6. 多波束相控阵激光测距仪青光 -->
+    <radialGradient id="msm-lidar-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#67e8f9"/>
+      <stop offset="75%" stop-color="#0284c7" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#082f49" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="msm-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.92"/>
+      <stop offset="66%" stop-color="#020617" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- [骨骼部件 1] 底层接触软阴影 -->
+  <g id="part-shadow-cast" data-pivot="64,74" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="76" rx="54" ry="48" fill="url(#msm-shadow-grad)"/>
+    <polygon points="38,32 90,32 106,48 106,94 90,110 38,110 22,94 22,48" fill="#020617" opacity="0.5"/>
+  </g>
+
+  <!-- [骨骼部件 2] 广域蜂群锁定游标测距外环 (零虚线环) -->
+  <g id="part-aura-ring-outer" data-pivot="64,72" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
+    <path d="M42,22 A52,52 0 0,1 86,22 M114,50 A52,52 0 0,1 114,94 M86,122 A52,52 0 0,1 42,122 M14,94 A52,52 0 0,1 14,50" fill="none" stroke="#f97316" stroke-width="1.3" stroke-linecap="square" opacity="0.7"/>
+    <path d="M64,18 L64,24 M118,72 L112,72 M64,126 L64,120 M10,72 L16,72" stroke="#fde047" stroke-width="1.5" opacity="0.88"/>
+  </g>
+
+  <!-- [骨骼部件 3] 逆时针蜂巢多目标分配内环 -->
+  <g id="part-aura-ring-inner" data-pivot="64,72" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
+    <path d="M34,42 A42,42 0 0,1 94,42 M94,102 A42,42 0 0,1 34,102" fill="none" stroke="#facc15" stroke-width="0.95" opacity="0.52"/>
+  </g>
+
+  <!-- [骨骼部件 4] 八角重装底座、排焰百叶窗与黄黑防爆条 -->
+  <g id="part-pedestal-base" data-pivot="64,72" data-parent="root" data-z-index="15" data-blend="normal">
+    <polygon points="38,32 90,32 106,48 106,94 90,110 38,110 22,94 22,48" fill="url(#msm-ti-armor)" stroke="#050811" stroke-width="2.2" stroke-linejoin="round"/>
+    <rect x="42" y="35" width="44" height="5.5" rx="1" fill="url(#msm-hazard-stripe)" stroke="#050811" stroke-width="0.85"/>
+    <rect x="42" y="101.5" width="44" height="5.5" rx="1" fill="url(#msm-hazard-stripe)" stroke="#050811" stroke-width="0.85"/>
+    <rect x="24" y="62" width="6" height="20" rx="1" fill="#ef4444" stroke="#fca5a5" stroke-width="0.75"/>
+    <rect x="98" y="62" width="6" height="20" rx="1" fill="#ef4444" stroke="#fca5a5" stroke-width="0.75"/>
+    <circle cx="36" cy="44" r="2.6" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="92" cy="44" r="2.6" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="36" cy="98" r="2.6" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+    <circle cx="92" cy="98" r="2.6" fill="#64748b" stroke="#050811" stroke-width="0.85"/>
+  </g>
+
+  <!-- [骨骼部件 5] 24K Kapton 高速旋转供弹鼓轮 -->
+  <g id="part-energy-coil-ring" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="22" data-blend="normal" data-motion="spin-cw">
+    <circle cx="64" cy="72" r="30" fill="url(#msm-kapton-gold)" stroke="#050811" stroke-width="1.75"/>
+    <path d="M43,51 L85,93 M85,51 L43,93 M64,42 L64,102 M34,72 L94,72" stroke="#78350f" stroke-width="0.85"/>
+    <circle cx="64" cy="72" r="23" fill="#0d131f" stroke="#f97316" stroke-width="1.35"/>
+  </g>
+
+  <!-- [骨骼部件 6] 右翼 6 联装蜂巢微型导弹发射巢箱 (Hexagonal Micro-Missile Pod R) -->
+  <g id="part-barrel-tube-R" data-pivot="78,50" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <polygon points="66,12 90,12 92,48 64,48" fill="url(#msm-ceramic-white)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <rect x="67.5" y="15" width="21" height="28" rx="1.5" fill="#090d16" stroke="#475569" stroke-width="0.9"/>
+    <!-- 6 枚蜂巢阵列待发微型导弹头 -->
+    <circle cx="73" cy="21" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="83" cy="21" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="73" cy="29" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="83" cy="29" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="73" cy="37" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="83" cy="37" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <rect x="68" y="44" width="20" height="2.8" fill="url(#msm-hazard-stripe)"/>
+  </g>
+
+  <!-- [骨骼部件 7] 左翼 6 联装蜂巢微型导弹发射巢箱 (Hexagonal Micro-Missile Pod L) -->
+  <g id="part-barrel-tube-L" data-pivot="50,50" data-parent="part-turret-housing" data-z-index="28" data-blend="normal" data-motion="recoil-y">
+    <polygon points="38,12 62,12 64,48 36,48" fill="url(#msm-ceramic-white)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <rect x="39.5" y="15" width="21" height="28" rx="1.5" fill="#090d16" stroke="#475569" stroke-width="0.9"/>
+    <!-- 6 枚蜂巢阵列待发微型导弹头 -->
+    <circle cx="45" cy="21" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="55" cy="21" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="45" cy="29" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="55" cy="29" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="45" cy="37" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="55" cy="37" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <rect x="40" y="44" width="20" height="2.8" fill="url(#msm-hazard-stripe)"/>
+  </g>
+
+  <!-- [骨骼部件 8] 右侧可动防爆导流翼板 (内衬 24K Kapton 金箔) -->
+  <g id="part-rail-jaw-R" data-pivot="92,52" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-right">
+    <polygon points="90,16 104,26 105,60 90,62" fill="url(#msm-ceramic-white)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <polygon points="92,24 101,31 102,53 92,55" fill="url(#msm-kapton-gold)" stroke="#78350f" stroke-width="0.8"/>
+    <circle cx="92" cy="52" r="2.4" fill="#334155" stroke="#fde047" stroke-width="0.8"/>
+  </g>
+
+  <!-- [骨骼部件 9] 左侧可动防爆导流翼板 (内衬 24K Kapton 金箔) -->
+  <g id="part-rail-jaw-L" data-pivot="36,52" data-parent="part-turret-housing" data-z-index="34" data-blend="normal" data-motion="rotate-jaw-left">
+    <polygon points="38,16 24,26 23,60 38,62" fill="url(#msm-ceramic-white)" stroke="#050811" stroke-width="1.65" stroke-linejoin="round"/>
+    <polygon points="36,24 27,31 26,53 36,55" fill="url(#msm-kapton-gold)" stroke="#78350f" stroke-width="0.8"/>
+    <circle cx="36" cy="52" r="2.4" fill="#334155" stroke="#fde047" stroke-width="0.8"/>
+  </g>
+
+  <!-- [骨骼部件 10] 蜂群导弹主装甲回转舱、8 联装预备弹巢与中央激光雷达球 -->
+  <g id="part-turret-housing" data-pivot="64,72" data-parent="part-pedestal-base" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
+    <polygon points="34,46 94,46 100,64 96,94 82,102 46,102 32,94 28,64" fill="url(#msm-ti-armor)" stroke="#050811" stroke-width="2.2" stroke-linejoin="round"/>
+    <rect x="38" y="51" width="52" height="30" rx="2" fill="url(#msm-kapton-gold)" stroke="#451a03" stroke-width="1.1"/>
+    <path d="M38,66 L90,66 M54,51 L54,81 M74,51 L74,81" stroke="#78350f" stroke-width="0.8"/>
+    <!-- 左右 8 枚预备蜂群导弹发射井盖 -->
+    <circle cx="44" cy="58.5" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="51" cy="58.5" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="77" cy="58.5" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="84" cy="58.5" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="44" cy="73.5" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="51" cy="73.5" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="77" cy="73.5" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <circle cx="84" cy="73.5" r="3.4" fill="url(#msm-stinger-head)" stroke="#ffffff" stroke-width="0.65"/>
+    <!-- 中央蓝宝石全息多目标激光测距仪 -->
+    <circle cx="64" cy="66" r="7.5" fill="#041326" stroke="#ffffff" stroke-width="1.35"/>
+    <circle cx="64" cy="66" r="5" fill="url(#msm-lidar-glow)"/>
+    <circle cx="62.5" cy="64.5" r="1.5" fill="#ffffff"/>
+    <!-- 尾部极白 NASA 防热陶瓦排烟罩 -->
+    <rect x="44" y="85" width="40" height="11" rx="1.5" fill="url(#msm-ceramic-white)" stroke="#1e293b" stroke-width="0.95"/>
+    <rect x="48" y="88" width="32" height="5" fill="url(#msm-hazard-stripe)"/>
+  </g>
+
+  <!-- [骨骼部件 11] 顶层硬表面倒角高光 (Plus-Lighter) -->
+  <g id="part-light-rim-turret" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
+    <path d="M28,64 L34,46 L94,46 L100,64" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.92"/>
+    <path d="M38,51 L90,51" fill="none" stroke="#fef08a" stroke-width="1.2" opacity="0.88"/>
+  </g>
+
+  <!-- [骨骼部件 12] 顶层全息测距耀斑 (Screen) -->
+  <g id="part-aura-corona-top" data-pivot="64,72" data-parent="part-turret-housing" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
+    <circle cx="64" cy="66" r="13" fill="url(#msm-lidar-glow)" opacity="0.68"/>
+    <path d="M64,53 L64,79 M51,66 L77,66" stroke="#ffffff" stroke-width="0.85" stroke-linecap="round" opacity="0.9"/>
+  </g>
+</svg>
