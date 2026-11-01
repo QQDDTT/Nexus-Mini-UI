@@ -1017,25 +1017,14 @@
           </div>
         </div>
 
-        <div style="background:rgba(15,23,42,0.82);border:1px solid var(--mg-border-subtle);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;flex:1;">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <strong style="font-size:0.72rem;color:var(--mg-text-primary);">【加入房间 · 客机移动端直连房主移动设备】</strong>
-            <span style="font-size:0.64rem;color:var(--mg-accent-gold);" id="lobby-join-code-display">输入 4 位房间码: ____</span>
+        <div style="background:rgba(15,23,42,0.82);border:1px solid var(--mg-border-subtle);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+            <strong style="font-size:0.72rem;color:var(--mg-text-primary);">【可加入局域网房间列表 · 点击一键加入免输 ID】</strong>
+            <button class="btn-ghost" id="lobby-refresh-rooms-btn" style="min-height:36px;padding:0 10px;font-size:0.64rem;border-color:var(--mg-accent-gold);color:var(--mg-accent-gold);">
+              ↻ 刷新房间列表
+            </button>
           </div>
-          <div class="numpad-grid" id="lobby-numpad">
-            <button class="numpad-btn" data-key="1">1</button>
-            <button class="numpad-btn" data-key="2">2</button>
-            <button class="numpad-btn" data-key="3">3</button>
-            <button class="numpad-btn" data-key="4">4</button>
-            <button class="numpad-btn" data-key="5">5</button>
-            <button class="numpad-btn" data-key="CLR" style="color:var(--mg-accent-crimson);">清空</button>
-            <button class="numpad-btn" data-key="6">6</button>
-            <button class="numpad-btn" data-key="7">7</button>
-            <button class="numpad-btn" data-key="8">8</button>
-            <button class="numpad-btn" data-key="9">9</button>
-            <button class="numpad-btn" data-key="0">0</button>
-            <button class="numpad-btn" data-key="JOIN" style="background:rgba(0,240,255,0.2);color:var(--mg-accent-cyan);border-color:var(--mg-accent-cyan);">连接</button>
-          </div>
+          <div id="lobby-room-list" style="display:flex;flex-direction:column;gap:5px;overflow-y:auto;flex:1;"></div>
         </div>
       </div>
 
@@ -2781,6 +2770,48 @@
             biomeListEl.appendChild(btn);
           });
         }
+
+        renderLobbyRoomList();
+      }
+
+      function renderLobbyRoomList() {
+        const listEl = document.getElementById('lobby-room-list');
+        if (!listEl) return;
+        if (!lanSession) {
+          initLanHostSession('MG-' + Math.floor(100 + Math.random() * 900), false);
+        }
+        const rooms = (lanSession && lanSession.getAvailableRooms) ? lanSession.getAvailableRooms() : [];
+        listEl.innerHTML = rooms.map((rm) => {
+          const isJoined = isLanGuest && lanRoomCode === rm.roomCode;
+          const isSelf = !isLanGuest && lanRoomCode === rm.roomCode;
+          return `
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border-radius:8px;background:rgba(3,24,28,0.75);border:1px solid ${isJoined ? 'var(--mg-accent-cyan)' : 'var(--mg-border-subtle)'};">
+              <div style="min-width:0;flex:1;">
+                <div style="font-size:0.7rem;font-weight:800;color:var(--mg-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                  <span style="color:var(--mg-accent-cyan);font-family:Consolas,monospace;">[${rm.roomCode}]</span> ${rm.title}
+                </div>
+                <div style="font-size:0.6rem;color:var(--mg-text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                  房主: ${rm.hostName} · ${rm.modeName} · <span style="color:var(--mg-accent-emerald);">${rm.players} (${rm.rttMs || 2}ms)</span>
+                </div>
+              </div>
+              <button type="button" class="btn-ghost" data-lobby-join-code="${rm.roomCode}" style="min-height:44px;padding:0 10px;font-size:0.66rem;border-color:${isJoined ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-cyan)'};color:${isJoined ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-cyan)'};">
+                ${isJoined ? '已连入' : (isSelf ? '本机房主' : '一键加入')}
+              </button>
+            </div>
+          `;
+        }).join('');
+
+        listEl.querySelectorAll('[data-lobby-join-code]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const targetCode = btn.getAttribute('data-lobby-join-code');
+            if (!targetCode) return;
+            NexusSDK.audio.win();
+            initLanHostSession(targetCode, true);
+            if (lanSession && lanSession.joinRoom) lanSession.joinRoom(targetCode, 'client');
+            showToast('已一键加入局域网房间：' + targetCode);
+            renderLobbyRoomList();
+          });
+        });
       }
 
       document.getElementById('lobby-species-picker')?.addEventListener('change', (e) => {
@@ -2790,34 +2821,18 @@
       });
 
       document.getElementById('lobby-create-room-btn')?.addEventListener('click', () => {
-        const newCode = String(Math.floor(1000 + Math.random() * 9000));
-        initLanHostSession(newCode);
+        const newCode = 'MG-' + Math.floor(100 + Math.random() * 900);
+        initLanHostSession(newCode, false);
         NexusSDK.audio.upgrade();
         showToast('已在房主移动端建立局域网房间：' + newCode);
+        renderLobbyRoomList();
       });
 
-      document.getElementById('lobby-numpad')?.addEventListener('click', (e) => {
-        const btn = e.target.closest('.numpad-btn');
-        if (!btn) return;
-        const key = btn.dataset.key;
-        const disp = document.getElementById('lobby-join-code-display');
+      document.getElementById('lobby-refresh-rooms-btn')?.addEventListener('click', () => {
+        if (lanSession && lanSession.refreshRooms) lanSession.refreshRooms();
         NexusSDK.audio.tap();
-        if (key === 'CLR') {
-          guestInputCode = '';
-        } else if (key === 'JOIN') {
-          if (guestInputCode.length !== 4) {
-            showToast('请输入完整的 4 位房主房间码！');
-            return;
-          }
-          initLanHostSession(guestInputCode, true);
-          if (lanSession && lanSession.joinRoom) lanSession.joinRoom(guestInputCode, 'client');
-          if (lanSession && lanSession.sendReliable) lanSession.sendReliable({ type: 'GUEST_JOIN', code: guestInputCode });
-          showToast('已向房主移动设备 (' + guestInputCode + ') 发送直连握手！');
-          return;
-        } else if (guestInputCode.length < 4) {
-          guestInputCode += key;
-        }
-        if (disp) disp.textContent = '输入 4 位房间码: ' + guestInputCode.padEnd(4, '_');
+        renderLobbyRoomList();
+        showToast('已刷新局域网可加入房间列表');
       });
 
       document.getElementById('lobby-launch-arena-btn')?.addEventListener('click', () => {

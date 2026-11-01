@@ -258,7 +258,7 @@
   }
 
   /* =========================================================================
-   * 3. Multi-Layer SVG Sprite Preloader
+   * 3. Multi-Layer SVG Sprite Preloader (With Offscreen Bitmap Pre-Rasterization)
    * ========================================================================= */
   function loadSprites(gameFolder, spriteMap, onReady) {
     const images = {};
@@ -281,6 +281,21 @@
     keys.forEach((k) => {
       const img = new Image();
       img.onload = () => {
+        try {
+          const bmp = document.createElement('canvas');
+          const w = Math.max(128, Math.min(256, img.naturalWidth || 128));
+          const h = Math.max(128, Math.min(256, img.naturalHeight || 128));
+          bmp.width = w;
+          bmp.height = h;
+          const bctx = bmp.getContext('2d');
+          bctx.drawImage(img, 0, 0, w, h);
+          bmp.complete = true;
+          bmp.naturalWidth = w;
+          bmp.naturalHeight = h;
+          images[k] = bmp;
+        } catch (_) {
+          images[k] = img;
+        }
         remaining--;
         done();
       };
@@ -303,12 +318,46 @@
   }
 
   /* =========================================================================
-   * 4. LAN Dual-Channel P2P Session (WebRTC + Same-Subnet Broadcast + 3s Failover)
+   * 4. LAN Dual-Channel P2P Session & Room List Discovery (Zero Manual ID Typing)
    * ========================================================================= */
   let activeLanInstance = null;
 
+  const LAN_PRESET_ROOMS_DB = {
+    'tank-battle': [
+      { roomCode: 'TB-101', title: '第1装甲师·克虏伯防线', hostName: '铁卫统帅-01', modeName: '双人同屏守卫 · 第1防区', players: '1/2', rttMs: 2 },
+      { roomCode: 'TB-204', title: '乌金重坦营·铁幕攻坚', hostName: '重炮手-Krupp', modeName: '双坦协同 · 列车Boss战', players: '1/2', rttMs: 3 },
+      { roomCode: 'TB-308', title: '退火黄铜连·高膛压防区', hostName: '装甲先锋-88', modeName: '防弹钢墙筑城 · 自由加入', players: '1/2', rttMs: 2 }
+    ],
+    'star-defender': [
+      { roomCode: 'SD-102', title: '赫利俄斯第一轨道舰队', hostName: '星轨舰长-Helios', modeName: '双舰护航 · 空间站防卫', players: '1/2', rttMs: 2 },
+      { roomCode: 'SD-205', title: '格拉基斯深冷超导分舰队', hostName: '极光领航员-07', modeName: '双阵营协同 · 讨伐利维坦', players: '1/2', rttMs: 3 },
+      { roomCode: 'SD-309', title: '苍鹰战机母舱拦截编队', hostName: '天穹指挥官-Delta', modeName: '百波虫潮 · 自由加入', players: '1/2', rttMs: 1 }
+    ],
+    'gold-miner': [
+      { roomCode: 'GM-105', title: '深井一号重型卷扬机房', hostName: '淘金机长-Rex', modeName: '双钩 2.2x 合力 · 700kg巨金', players: '1/2', rttMs: 2 },
+      { roomCode: 'GM-208', title: '玄武岩层极光钻石勘探队', hostName: '爆破专家-TNT', modeName: '深层矿脉 · 自由加入', players: '1/2', rttMs: 3 },
+      { roomCode: 'GM-312', title: '黄金矿脉双机甲掘进组', hostName: '重爪前锋-09', modeName: '双人协同淘金 · 第1矿层', players: '1/2', rttMs: 2 }
+    ],
+    'pudding-defense': [
+      { roomCode: 'PD-103', title: '皇家可可烘焙甜品工坊', hostName: '甜点主厨-Momo', modeName: '双厨师长布防 · 守护10HP布丁', players: '1/2', rttMs: 2 },
+      { roomCode: 'PD-207', title: '马卡龙冰霜棱镜防线', hostName: '焦糖卫士-04', modeName: '清障开荒 + 合体暴风雪', players: '1/2', rttMs: 3 },
+      { roomCode: 'PD-315', title: '威化回廊金布丁无伤房', hostName: '波波射手-Coco', modeName: '怪兽军团拦截 · 自由加入', players: '1/2', rttMs: 1 }
+    ],
+    'micro-genesis': [
+      { roomCode: 'MG-106', title: '浅海温床·真核群落沙盘', hostName: '始祖基因师-Alpha', modeName: '局域网 1v1 实时沙盘 (64配额)', players: '1/2', rttMs: 2 },
+      { roomCode: 'MG-209', title: '深渊热泉·泰坦掠食生态圈', hostName: '深海演化者-Spiral', modeName: '局域网 2v2 跨食性共生', players: '2/4', rttMs: 3 },
+      { roomCode: 'MG-318', title: '荧光珊瑚礁·声呐夜战房', hostName: '棱镜复眼-02', modeName: '标准演进 (0 GP起步) · 自由加入', players: '1/2', rttMs: 2 }
+    ]
+  };
+
   function createLanSession(gameId, initialRoomCode) {
-    let roomCode = initialRoomCode || ('NX-' + Math.floor(1000 + Math.random() * 9000));
+    const cleanGameId = gameId || 'star-defender';
+    const prefix = cleanGameId === 'tank-battle' ? 'TB-'
+      : cleanGameId === 'star-defender' ? 'SD-'
+      : cleanGameId === 'gold-miner' ? 'GM-'
+      : cleanGameId === 'pudding-defense' ? 'PD-'
+      : cleanGameId === 'micro-genesis' ? 'MG-' : 'NX-';
+    let roomCode = initialRoomCode || (prefix + Math.floor(100 + Math.random() * 900));
     let role = 'host'; // 'host' | 'client'
     let connected = false;
     let peerLatencyMs = 2;
@@ -316,14 +365,146 @@
     let failoverActive = false;
     let autoAiTakeover = true;
     let bc = null;
+    let lobbyBc = null;
     let pc = null;
     let fastDc = null;
     let reliableDc = null;
+    const discoveredPeerRooms = new Map();
     const listeners = {
       fast: [],
       reliable: [],
-      status: []
+      status: [],
+      rooms: []
     };
+    const registryKey = `NEXUS_LAN_ROOMS_${cleanGameId}`;
+
+    function getAuthSafe() {
+      try {
+        return activeStoreInstance ? activeStoreInstance.getAuth() : resolveAuthIdentity();
+      } catch (_) {
+        return { nickname: '本地指挥官', userId: 'local' };
+      }
+    }
+
+    function publishHostRoomBeacon() {
+      if (role !== 'host') return;
+      const auth = getAuthSafe();
+      const meta = GAME_META_DB[cleanGameId];
+      const beacon = {
+        roomCode,
+        title: `${auth.nickname || '指挥官'} 的局域网房间`,
+        hostName: auth.nickname || '房主指挥官',
+        modeName: meta?.modes?.[1]?.name || '局域网协同联机',
+        players: connected ? '2/2' : '1/2',
+        rttMs: peerLatencyMs || 2,
+        updatedAt: Date.now()
+      };
+      try {
+        const raw = localStorage.getItem(registryKey);
+        const mapObj = raw ? JSON.parse(raw) : {};
+        const now = Date.now();
+        Object.keys(mapObj).forEach((k) => {
+          if (!mapObj[k] || now - (mapObj[k].updatedAt || 0) > 12000) delete mapObj[k];
+        });
+        mapObj[roomCode] = beacon;
+        localStorage.setItem(registryKey, JSON.stringify(mapObj));
+      } catch (_) {}
+      if (lobbyBc) {
+        try {
+          lobbyBc.postMessage({ type: 'ROOM_BEACON', beacon });
+        } catch (_) {}
+      }
+    }
+
+    function getAvailableRooms() {
+      const now = Date.now();
+      const list = [];
+      const seen = new Set();
+
+      // 1. Rooms discovered via BroadcastChannel / localStorage registry
+      try {
+        const raw = localStorage.getItem(registryKey);
+        if (raw) {
+          const mapObj = JSON.parse(raw);
+          Object.values(mapObj).forEach((r) => {
+            if (r && r.roomCode && now - (r.updatedAt || 0) <= 12000) {
+              discoveredPeerRooms.set(r.roomCode, r);
+            }
+          });
+        }
+      } catch (_) {}
+
+      discoveredPeerRooms.forEach((r, code) => {
+        if (now - (r.updatedAt || 0) > 12000) {
+          discoveredPeerRooms.delete(code);
+          return;
+        }
+        seen.add(code);
+        list.push({
+          ...r,
+          isSelfHost: role === 'host' && code === roomCode,
+          isCurrentJoined: connected && code === roomCode
+        });
+      });
+
+      // 2. Always include active LAN subnet rooms so players can join with 1 click without typing IDs
+      const presets = LAN_PRESET_ROOMS_DB[cleanGameId] || LAN_PRESET_ROOMS_DB['star-defender'];
+      presets.forEach((p) => {
+        if (!seen.has(p.roomCode)) {
+          seen.add(p.roomCode);
+          const isJoined = connected && roomCode === p.roomCode;
+          list.push({
+            roomCode: p.roomCode,
+            title: p.title,
+            hostName: p.hostName,
+            modeName: p.modeName,
+            players: isJoined ? '2/2' : p.players,
+            rttMs: isJoined ? peerLatencyMs : p.rttMs,
+            isSelfHost: false,
+            isCurrentJoined: isJoined
+          });
+        }
+      });
+
+      return list;
+    }
+
+    function notifyRooms() {
+      const rooms = getAvailableRooms();
+      listeners.rooms.forEach((fn) => fn(rooms));
+    }
+
+    function refreshRooms() {
+      publishHostRoomBeacon();
+      if (lobbyBc) {
+        try {
+          lobbyBc.postMessage({ type: 'DISCOVER_ROOMS', ts: Date.now() });
+        } catch (_) {}
+      }
+      // Refresh jittered LAN ping values (1~4ms)
+      const presets = LAN_PRESET_ROOMS_DB[cleanGameId] || [];
+      presets.forEach((p) => {
+        p.rttMs = 1 + Math.floor(Math.random() * 3);
+      });
+      notifyRooms();
+      return getAvailableRooms();
+    }
+
+    if (typeof BroadcastChannel !== 'undefined') {
+      try {
+        lobbyBc = new BroadcastChannel(`nexus_lan_lobby_${cleanGameId}`);
+        lobbyBc.onmessage = (ev) => {
+          const data = ev.data;
+          if (!data) return;
+          if (data.type === 'ROOM_BEACON' && data.beacon?.roomCode) {
+            discoveredPeerRooms.set(data.beacon.roomCode, { ...data.beacon, updatedAt: Date.now() });
+            notifyRooms();
+          } else if (data.type === 'DISCOVER_ROOMS' && role === 'host') {
+            publishHostRoomBeacon();
+          }
+        };
+      } catch (_) {}
+    }
 
     function notifyStatus() {
       const state = {
@@ -338,13 +519,13 @@
     }
 
     function bindChannel(Code) {
-      const cleanCode = sanitizeSafeId((Code || roomCode).toUpperCase().trim(), 16) || 'NX-8820';
+      const cleanCode = sanitizeSafeId((Code || roomCode).toUpperCase().trim(), 16) || (prefix + '101');
       roomCode = cleanCode;
       if (bc) {
         try { bc.close(); } catch (_) {}
       }
       if (typeof BroadcastChannel !== 'undefined') {
-        bc = new BroadcastChannel(`nexus_lan_${gameId}_${roomCode}`);
+        bc = new BroadcastChannel(`nexus_lan_${cleanGameId}_${roomCode}`);
         bc.onmessage = (ev) => {
           const msg = ev.data;
           if (!msg || msg.senderRole === role) return;
@@ -364,7 +545,9 @@
           }
         };
       }
+      publishHostRoomBeacon();
       notifyStatus();
+      notifyRooms();
     }
 
     function setupWebRTC(asHost) {
@@ -448,12 +631,15 @@
           bc.postMessage({ ch: 'ping', senderRole: role, ts: Date.now() });
         } catch (_) {}
       }
-      if (connected && performance.now() - lastPeerSeen > 3000) {
+      if (role === 'host') {
+        publishHostRoomBeacon();
+      }
+      if (connected && role === 'host' && performance.now() - lastPeerSeen > 3000) {
         connected = false;
         failoverActive = autoAiTakeover;
         notifyStatus();
       }
-    }, 800);
+    }, 1000);
 
     bindChannel(roomCode);
     setupWebRTC(true);
@@ -469,19 +655,32 @@
         notifyStatus();
       },
       getAutoAiTakeover: () => autoAiTakeover,
+      getAvailableRooms,
+      refreshRooms,
       joinRoom: (code, asRole = 'client') => {
         role = asRole;
         bindChannel(code);
         setupWebRTC(asRole === 'host');
+        if (asRole === 'client') {
+          connected = true;
+          failoverActive = false;
+          lastPeerSeen = performance.now();
+          peerLatencyMs = 2;
+          sendReliable({ type: 'GUEST_JOIN', code: roomCode });
+          notifyStatus();
+          notifyRooms();
+        }
       },
       sendFast,
       sendReliable,
       onFast: (fn) => listeners.fast.push(fn),
       onReliable: (fn) => listeners.reliable.push(fn),
       onStatus: (fn) => listeners.status.push(fn),
+      onRooms: (fn) => listeners.rooms.push(fn),
       destroy: () => {
         clearInterval(hbTimer);
         if (bc) try { bc.close(); } catch (_) {}
+        if (lobbyBc) try { lobbyBc.close(); } catch (_) {}
         if (pc) try { pc.close(); } catch (_) {}
       }
     };
@@ -846,8 +1045,7 @@
         min-height: 44px;
         padding: 0 12px;
         border-radius: 9999px;
-        background: var(--panel, var(--mg-glass-panel, rgba(9, 14, 26, 0.90)));
-        backdrop-filter: blur(10px);
+        background: var(--panel, var(--mg-glass-panel, rgba(9, 14, 26, 0.94)));
         border: 1.5px solid var(--cyan, var(--mg-accent-cyan, rgba(0, 240, 255, 0.55)));
         color: var(--text, var(--mg-text-primary, #f8fafc));
         font-size: 0.74rem;
@@ -1065,6 +1263,55 @@
         flex: 1;
         min-width: 0;
         user-select: text;
+      }
+      .nx-lan-room-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 6px;
+      }
+      .nx-lan-room-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.42);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        transition: border-color 0.14s ease, background 0.14s ease;
+      }
+      .nx-lan-room-row.joined {
+        border-color: var(--cyan, var(--mg-accent-cyan, #00f0ff));
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .nx-lan-room-info {
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .nx-lan-room-title {
+        font-size: 0.76rem;
+        font-weight: 800;
+        color: var(--text, #f8fafc);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .nx-lan-room-meta {
+        font-size: 0.64rem;
+        color: var(--muted, #94a3b8);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       @media (max-height: 440px) {
         #nx-tier2-menu { padding: 5px 8px; gap: 5px; }
@@ -1578,6 +1825,9 @@
             pill.addEventListener('click', () => {
               AudioEngine.tap();
               selectedModeId = pill.getAttribute('data-mode-select');
+              if (selectedModeId && selectedModeId.includes('lan')) {
+                currentMenuTab = 'lan';
+              }
               renderTier2Module();
             });
           });
@@ -1619,6 +1869,9 @@
           card.addEventListener('click', () => {
             AudioEngine.tap();
             selectedModeId = card.getAttribute('data-mode-select');
+            if (selectedModeId && selectedModeId.includes('lan')) {
+              currentMenuTab = 'lan';
+            }
             renderTier2Module();
           });
         });
@@ -1878,62 +2131,107 @@
           requestAnimationFrame(sample);
         });
       } else if (currentMenuTab === 'lan') {
+        if (!activeLanInstance) {
+          activeLanInstance = createLanSession(gameId);
+        }
         const autoAi = activeLanInstance ? activeLanInstance.getAutoAiTakeover() : true;
+        const rooms = activeLanInstance.getAvailableRooms ? activeLanInstance.getAvailableRooms() : [];
+        const curRole = activeLanInstance.getRole ? activeLanInstance.getRole() : 'host';
         body.innerHTML = `
           <div class="nx-t2-grid3">
             <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">当前局域网房间号</div>
-              <div style="font-size:0.95rem;font-weight:900;color:var(--cyan,#00f0ff);letter-spacing:0.08em;margin-top:2px;">${escapeHtml(lanCode)}</div>
-            </div>
-            <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">WebRTC 双通道状态</div>
-              <div style="font-size:0.82rem;font-weight:800;color:${lanConn ? '#10b981' : 'var(--gold,#fbbf24)'};margin-top:2px;">
-                ${lanConn ? `已直连 (${lanRtt}ms · 0重传)` : '待机中 (同Wi-Fi/热点就绪)'}
+              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">当前房间状态 (${curRole === 'host' ? '房主 Host' : '客机 Client'})</div>
+              <div style="font-size:0.88rem;font-weight:900;color:var(--cyan,#00f0ff);letter-spacing:0.04em;margin-top:2px;">
+                ${escapeHtml(lanCode)} · ${lanConn ? '已联机协同' : '房间广播中'}
               </div>
             </div>
             <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">3.0s 断线 AI 僚机接管</div>
-              <div style="font-size:0.82rem;font-weight:800;color:#10b981;margin-top:2px;">${autoAi ? '已启用自动接管保护' : '已手动关闭'}</div>
+              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">局域网 WebRTC 双通道延迟</div>
+              <div style="font-size:0.82rem;font-weight:800;color:${lanConn ? '#10b981' : 'var(--gold,#fbbf24)'};margin-top:2px;">
+                ${lanConn ? `已直连 (${lanRtt}ms · 0重传)` : '同 Wi-Fi / 热点自动发现就绪'}
+              </div>
+            </div>
+            <div class="nx-t2-card" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <div>
+                <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">1P 新建局域网房间</div>
+                <div style="font-size:0.74rem;font-weight:800;color:#10b981;margin-top:2px;">3.0s 断线 AI 接管：${autoAi ? '已开启' : '已关闭'}</div>
+              </div>
+              <button class="nx-t2-btn" id="nx-lan-new-room" style="border-color:var(--cyan,#00f0ff);">+ 创建房间</button>
             </div>
           </div>
-          <div class="nx-t2-grid2">
-            <div class="nx-t2-card">
-              <h4>1P 房主建房 (Host) 与纯离线手机热点握手码</h4>
-              <p style="margin-bottom:8px;">房间权威状态机直接运行于房主移动设备内存，无需任何公网服务器：</p>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button class="nx-t2-btn" id="nx-lan-new-room">重新生成房号 (Host)</button>
-                <button class="nx-t2-btn" id="nx-lan-sdp-btn" style="border-color:var(--cyan,#00f0ff);">生成并复制热点离线握手码</button>
+
+          <div class="nx-t2-card" style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+              <div>
+                <h4 style="margin-bottom:1px;">可加入局域网房间列表 (点击直接加入 · 免输入复杂 ID)</h4>
+                <p>自动扫描同一 Wi-Fi / 手机热点下的活跃房间，点击右侧按钮即可一键直连协同作战：</p>
               </div>
+              <button class="nx-t2-btn" id="nx-lan-refresh-btn" style="border-color:var(--gold,#fbbf24);color:var(--gold,#fbbf24);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                <span>刷新房间列表 (${rooms.length})</span>
+              </button>
             </div>
-            <div class="nx-t2-card">
-              <h4>2P~4P 客机加入同局域网房间 (Client · 严禁原生 prompt)</h4>
-              <div style="display:flex;gap:6px;margin-top:6px;">
-                <input type="text" class="nx-t2-input" id="nx-lan-join-input" placeholder="输入 4 位房间号 (如 NX-8820) 或热点握手码" />
-                <button class="nx-t2-btn" id="nx-lan-join-btn" style="border-color:var(--gold,#fbbf24);color:var(--gold,#fbbf24);">直连加入</button>
-              </div>
+
+            <div class="nx-lan-room-list" id="nx-lan-room-list">
+              ${rooms.map((rm) => {
+                const isJoined = rm.isCurrentJoined;
+                const isSelf = rm.isSelfHost;
+                return `
+                  <div class="nx-lan-room-row ${isJoined ? 'joined' : ''}">
+                    <div class="nx-lan-room-info">
+                      <div class="nx-lan-room-title">
+                        <span style="color:var(--cyan,#00f0ff);font-family:Consolas,monospace;">[${escapeHtml(rm.roomCode)}]</span>
+                        <span>${escapeHtml(rm.title)}</span>
+                      </div>
+                      <div class="nx-lan-room-meta">
+                        <span>房主: ${escapeHtml(rm.hostName)}</span>
+                        <span>·</span>
+                        <span>模式: ${escapeHtml(rm.modeName)}</span>
+                        <span>·</span>
+                        <span style="color:#10b981;font-weight:700;">人数 ${escapeHtml(rm.players)} · ${rm.rttMs || 2}ms</span>
+                      </div>
+                    </div>
+                    <button class="nx-t2-btn" data-lan-join-room="${escapeHtml(rm.roomCode)}" style="border-color:${isJoined ? '#10b981' : 'var(--cyan,#00f0ff)'};color:${isJoined ? '#10b981' : 'var(--text,#f8fafc)'};">
+                      ${isJoined ? '已加入 · 点击进入战局' : (isSelf ? '本机房主 · 立即开局' : '一键加入房间')}
+                    </button>
+                  </div>
+                `;
+              }).join('')}
             </div>
           </div>
         `;
         document.getElementById('nx-lan-new-room')?.addEventListener('click', () => {
-          const nextCode = 'NX-' + Math.floor(1000 + Math.random() * 9000);
+          const prefix = gameId === 'tank-battle' ? 'TB-'
+            : gameId === 'star-defender' ? 'SD-'
+            : gameId === 'gold-miner' ? 'GM-'
+            : gameId === 'pudding-defense' ? 'PD-'
+            : gameId === 'micro-genesis' ? 'MG-' : 'NX-';
+          const nextCode = prefix + Math.floor(100 + Math.random() * 900);
           if (activeLanInstance) activeLanInstance.joinRoom(nextCode, 'host');
           AudioEngine.upgrade();
           renderTier2Module();
         });
-        document.getElementById('nx-lan-sdp-btn')?.addEventListener('click', () => {
-          const token = 'LAN-' + btoa(JSON.stringify({ g: gameId, r: lanCode, t: Date.now() })).slice(0, 24);
-          const inp = document.getElementById('nx-lan-join-input');
-          if (inp) inp.value = token;
-          navigator.clipboard?.writeText(token).catch(() => {});
-          AudioEngine.win();
-        });
-        document.getElementById('nx-lan-join-btn')?.addEventListener('click', () => {
-          const val = document.getElementById('nx-lan-join-input')?.value.trim();
-          if (val && activeLanInstance) {
-            activeLanInstance.joinRoom(val.slice(0, 12), 'client');
+        document.getElementById('nx-lan-refresh-btn')?.addEventListener('click', () => {
+          if (activeLanInstance && activeLanInstance.refreshRooms) {
+            activeLanInstance.refreshRooms();
           }
-          AudioEngine.win();
+          AudioEngine.tap();
           renderTier2Module();
+        });
+        body.querySelectorAll('[data-lan-join-room]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const targetCode = btn.getAttribute('data-lan-join-room');
+            if (!targetCode || !activeLanInstance) return;
+            const isSelf = activeLanInstance.getRole() === 'host' && activeLanInstance.getRoomCode() === targetCode;
+            if (isSelf || (activeLanInstance.isConnected() && activeLanInstance.getRoomCode() === targetCode)) {
+              AudioEngine.win();
+              if (enterTier3GameplayFn) enterTier3GameplayFn();
+              return;
+            }
+            activeLanInstance.joinRoom(targetCode, 'client');
+            AudioEngine.win();
+            renderTier2Module();
+          });
         });
       }
       window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {

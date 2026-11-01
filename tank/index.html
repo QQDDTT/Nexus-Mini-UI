@@ -483,6 +483,8 @@
         steel: 'tile-steel.svg',
         bush: 'tile-bush.svg',
         crate: 'pickup-crate.svg'
+      }, () => {
+        terrainDirty = true;
       });
 
       const canvas = document.getElementById('battle-canvas');
@@ -497,6 +499,14 @@
       const TILE = 24; // 逻辑网格 26 * 24 = 624px
       const LOGICAL_SIZE = GRID * TILE;
 
+      // 离屏静态地形缓存层 (624x624)，仅当砖墙/钢墙变动时重绘，消除每帧重复遍历 676 网格
+      const terrainCacheCanvas = document.createElement('canvas');
+      terrainCacheCanvas.width = LOGICAL_SIZE;
+      terrainCacheCanvas.height = LOGICAL_SIZE;
+      const terrainCtx = terrainCacheCanvas.getContext('2d');
+      let terrainDirty = true;
+      let bushCoords = [];
+
       // 严格 1:1 正方形视口几何锁与高清 DPR 适配 (彻底修复 667x375 画布横向挤压问题)
       function syncSquareViewport() {
         if (!stageWrap || !bezelEl) return;
@@ -504,7 +514,7 @@
         const side = Math.max(180, Math.floor(Math.min(rect.width, rect.height)));
         bezelEl.style.width = side + 'px';
         bezelEl.style.height = side + 'px';
-        const dpr = Math.min(3, window.devicePixelRatio || 1);
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
         const targetPx = Math.round(LOGICAL_SIZE * dpr);
         if (canvas.width !== targetPx || canvas.height !== targetPx) {
           canvas.width = targetPx;
@@ -583,6 +593,7 @@
         if (r < 0 || r >= GRID || c < 0 || c >= GRID) return;
         map[r][c] = 1;
         brickMask[r][c] = 15; // 0b1111 四象限完整
+        terrainDirty = true;
       }
 
       function setBaseWall(tileType) {
@@ -595,6 +606,7 @@
           map[r][c] = tileType;
           brickMask[r][c] = tileType === 1 ? 15 : 0;
         });
+        terrainDirty = true;
       }
 
       function buildStageMap(stg) {
@@ -602,6 +614,7 @@
         brickMask = Array.from({ length: GRID }, () => Array(GRID).fill(0));
         treadMarks = [];
         floatTexts = [];
+        bushCoords = [];
         const rng = NexusSDK.createSeededRandom(stg * 9137 + 101);
         for (let r = 3; r < 22; r += 2) {
           for (let c = 2; c < 24; c += 2) {
@@ -615,6 +628,7 @@
               for (let dc = 0; dc <= 1; dc++) {
                 map[r + dr][c + dc] = t;
                 brickMask[r + dr][c + dc] = t === 1 ? 15 : 0;
+                if (t === 3) bushCoords.push([r + dr, c + dc]);
               }
             }
           }
@@ -623,6 +637,7 @@
         setBaseWall(1);
         map[24][12] = 5; map[24][13] = 5;
         map[25][12] = 5; map[25][13] = 5;
+        terrainDirty = true;
 
         p1.x = 8 * TILE; p1.y = 22 * TILE; p1.dir = 0; p1.turretAng = 0;
         p1.hp = 3; p1.shield = 150; p1.recoil = 0; p1.hitShake = 0;
@@ -744,6 +759,7 @@
         if (breakSteel) {
           brickMask[r][c] = 0;
           map[r][c] = 0;
+          terrainDirty = true;
           return true;
         }
         let mask = brickMask[r][c] || 15;
@@ -772,6 +788,7 @@
         if (brickMask[r][c] === 0) {
           map[r][c] = 0;
         }
+        terrainDirty = true;
         return true;
       }
 
@@ -956,6 +973,7 @@
           if (map[r] && brickMask[r]) {
             brickMask[r][c] = mask;
             map[r][c] = tile;
+            terrainDirty = true;
           }
         } else if (msg.type === 'crate_spawn' && msg.crate) {
           crates.push(msg.crate);
@@ -1112,7 +1130,10 @@
               continue;
             }
           } else if (t === 2) {
-            if (b.breakSteel) map[r][c] = 0;
+            if (b.breakSteel) {
+              map[r][c] = 0;
+              terrainDirty = true;
+            }
             explode(b.x, b.y, '#9eb0c7', 6);
             NexusSDK.audio.hit();
             bullets.splice(i, 1);
@@ -1334,36 +1355,71 @@
       }
 
       // 四象限砖墙独立裁剪渲染 (part-brick-tl / tr / bl / br)
-      function drawQuadBrickTile(r, c) {
+      function drawQuadBrickTileToCtx(targetCtx, r, c) {
         const mask = brickMask[r][c] || 0;
         if (mask === 0 || !sprites.brick?.complete) return;
         const x = c * TILE;
         const y = r * TILE;
         const half = TILE / 2;
         if (mask === 15) {
-          ctx.drawImage(sprites.brick, x, y, TILE, TILE);
+          targetCtx.drawImage(sprites.brick, x, y, TILE, TILE);
           return;
         }
-        // 按 4-bit 掩码独立裁剪 128x128 矢量贴图的四个象限
-        if (mask & 1) ctx.drawImage(sprites.brick, 0, 0, 64, 64, x, y, half, half);
-        if (mask & 2) ctx.drawImage(sprites.brick, 64, 0, 64, 64, x + half, y, half, half);
-        if (mask & 4) ctx.drawImage(sprites.brick, 0, 64, 64, 64, x, y + half, half, half);
-        if (mask & 8) ctx.drawImage(sprites.brick, 64, 64, 64, 64, x + half, y + half, half, half);
+        // 按 4-bit 掩码独立裁剪 128x128 贴图的四个象限
+        if (mask & 1) targetCtx.drawImage(sprites.brick, 0, 0, 64, 64, x, y, half, half);
+        if (mask & 2) targetCtx.drawImage(sprites.brick, 64, 0, 64, 64, x + half, y, half, half);
+        if (mask & 4) targetCtx.drawImage(sprites.brick, 0, 64, 64, 64, x, y + half, half, half);
+        if (mask & 8) targetCtx.drawImage(sprites.brick, 64, 64, 64, 64, x + half, y + half, half, half);
+      }
+
+      function rebuildTerrainCache() {
+        terrainCtx.fillStyle = '#1d2128';
+        terrainCtx.fillRect(0, 0, LOGICAL_SIZE, LOGICAL_SIZE);
+
+        // 微弱拉丝测距网格 (单次批量路径绘制)
+        terrainCtx.strokeStyle = 'rgba(170, 185, 205, 0.055)';
+        terrainCtx.lineWidth = 1;
+        terrainCtx.beginPath();
+        for (let i = 0; i <= GRID; i++) {
+          terrainCtx.moveTo(i * TILE, 0);
+          terrainCtx.lineTo(i * TILE, GRID * TILE);
+          terrainCtx.moveTo(0, i * TILE);
+          terrainCtx.lineTo(GRID * TILE, i * TILE);
+        }
+        terrainCtx.stroke();
+
+        // Pass 1: Ground tiles (4-Quadrant Brick, Steel, Anti-Tank Trench)
+        for (let r = 0; r < GRID; r++) {
+          for (let c = 0; c < GRID; c++) {
+            const t = map[r][c];
+            const x = c * TILE;
+            const y = r * TILE;
+            if (t === 1) {
+              drawQuadBrickTileToCtx(terrainCtx, r, c);
+            } else if (t === 2 && sprites.steel?.complete) {
+              terrainCtx.drawImage(sprites.steel, x, y, TILE, TILE);
+            } else if (t === 4) {
+              terrainCtx.fillStyle = '#14171d';
+              terrainCtx.fillRect(x, y, TILE, TILE);
+              terrainCtx.strokeStyle = 'rgba(133, 152, 176, 0.22)';
+              terrainCtx.beginPath();
+              terrainCtx.moveTo(x + 3, y + TILE * 0.5);
+              terrainCtx.lineTo(x + TILE - 3, y + TILE * 0.5);
+              terrainCtx.stroke();
+            }
+          }
+        }
+        terrainDirty = false;
       }
 
       function render() {
+        if (window.NexusSDK && !window.NexusSDK.isGameplayActive()) return;
         ctx.shadowBlur = 0;
-        // 方案 B 低对比度浸油发蓝炮钢地面
-        ctx.fillStyle = '#1d2128';
-        ctx.fillRect(0, 0, LOGICAL_SIZE, LOGICAL_SIZE);
 
-        // 微弱拉丝测距网格
-        ctx.strokeStyle = 'rgba(170, 185, 205, 0.055)';
-        ctx.lineWidth = 1;
-        for (let i = 0; i <= GRID; i++) {
-          ctx.beginPath(); ctx.moveTo(i * TILE, 0); ctx.lineTo(i * TILE, GRID * TILE); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(0, i * TILE); ctx.lineTo(GRID * TILE, i * TILE); ctx.stroke();
+        if (terrainDirty) {
+          rebuildTerrainCache();
         }
+        ctx.drawImage(terrainCacheCanvas, 0, 0, LOGICAL_SIZE, LOGICAL_SIZE);
 
         // 重型履带碾压地面车辙暗痕
         ctx.fillStyle = 'rgba(10, 12, 16, 0.35)';
@@ -1376,28 +1432,6 @@
             ctx.fillRect(tm.x - 3, tm.y + 8, 4, 6);
           }
         });
-
-        // Pass 1: Ground tiles (4-Quadrant Brick, Steel, Anti-Tank Trench)
-        for (let r = 0; r < GRID; r++) {
-          for (let c = 0; c < GRID; c++) {
-            const t = map[r][c];
-            const x = c * TILE;
-            const y = r * TILE;
-            if (t === 1) {
-              drawQuadBrickTile(r, c);
-            } else if (t === 2 && sprites.steel?.complete) {
-              ctx.drawImage(sprites.steel, x, y, TILE, TILE);
-            } else if (t === 4) {
-              ctx.fillStyle = '#14171d';
-              ctx.fillRect(x, y, TILE, TILE);
-              ctx.strokeStyle = 'rgba(133, 152, 176, 0.22)';
-              ctx.beginPath();
-              ctx.moveTo(x + 3, y + TILE * 0.5);
-              ctx.lineTo(x + TILE - 3, y + TILE * 0.5);
-              ctx.stroke();
-            }
-          }
-        }
 
         // Base Eagle (2x2 tiles at col 12, row 24)
         if (sprites.eagle?.complete) {
@@ -1467,19 +1501,17 @@
         });
 
         // Pass 2: Bush Canopy (Occlusion layer above tanks)
-        for (let r = 0; r < GRID; r++) {
-          for (let c = 0; c < GRID; c++) {
-            if (map[r][c] === 3 && sprites.bush?.complete) {
-              const bx = c * TILE, by = r * TILE;
-              const nearAlly =
-                Math.hypot((p1.x + TILE * 0.9) - (bx + TILE * 0.5), (p1.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4 ||
-                Math.hypot((p2.x + TILE * 0.9) - (bx + TILE * 0.5), (p2.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4;
-              ctx.save();
-              ctx.globalAlpha = nearAlly ? 0.62 : 0.90;
-              ctx.drawImage(sprites.bush, bx, by, TILE, TILE);
-              ctx.restore();
-            }
+        if (sprites.bush?.complete) {
+          for (let i = 0; i < bushCoords.length; i++) {
+            const [r, c] = bushCoords[i];
+            const bx = c * TILE, by = r * TILE;
+            const nearAlly =
+              Math.hypot((p1.x + TILE * 0.9) - (bx + TILE * 0.5), (p1.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4 ||
+              Math.hypot((p2.x + TILE * 0.9) - (bx + TILE * 0.5), (p2.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4;
+            ctx.globalAlpha = nearAlly ? 0.62 : 0.90;
+            ctx.drawImage(sprites.bush, bx, by, TILE, TILE);
           }
+          ctx.globalAlpha = 1.0;
         }
 
         // Particles & Floating Texts
@@ -1524,7 +1556,11 @@
                 const t0 = performance.now();
                 const states = ['idle', 'move', 'attack'];
                 const tickRig = (now) => {
-                  if (! document.body.contains(svgEl)) return;
+                  if (!document.body.contains(svgEl)) return;
+                  if (window.NexusSDK && window.NexusSDK.isGameplayActive()) {
+                    activeInspectorRigAnim = requestAnimationFrame(tickRig);
+                    return;
+                  }
                   const elapsed = now - t0;
                   const stateIdx = Math.floor(elapsed / 2200) % states.length;
                   rigMod.applyToSvgDom(svgEl, states[stateIdx], elapsed % 2200, {
@@ -1545,6 +1581,10 @@
         const t0 = performance.now();
         const tickLocal = (now) => {
           if (!document.body.contains(imgEl)) return;
+          if (window.NexusSDK && window.NexusSDK.isGameplayActive()) {
+            activeInspectorRigAnim = requestAnimationFrame(tickLocal);
+            return;
+          }
           const elapsed = now - t0;
           const cycle = (elapsed % 2400) / 2400;
           const recoilY = cycle > 0.72 && cycle < 0.86 ? 3.5 : 0;
