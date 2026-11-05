@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v13.0-enforce-room-only-launch';
+const CACHE_NAME = 'nexus-mini-portal-v14.0-collision-niche-ecosystem';
 const CORE_ASSETS = [
   './',
   './index.html',

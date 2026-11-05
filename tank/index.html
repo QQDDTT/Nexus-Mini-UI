@@ -1885,6 +1885,169 @@
         document.getElementById('hud-score').textContent = score.toLocaleString();
       }
 
+      // =====================================================================
+      // 坦克体积碰撞解算器：禁止坦克重叠 + 碰撞触发冲撞伤害 (同阵营免疫伤害)
+      // =====================================================================
+      function resolveTankCollisions() {
+        const allTanks = [];
+        if (p1.hp > 0 && p1.alive !== false) {
+          allTanks.push({ entity: p1, team: 'player', isBoss: false, name: '1P 统帅战车' });
+        }
+        if (p2.hp > 0 && p2.alive !== false) {
+          allTanks.push({ entity: p2, team: 'player', isBoss: false, name: '2P 僚机战车' });
+        }
+        enemies.forEach((en) => {
+          if (en.hp > 0) {
+            allTanks.push({
+              entity: en,
+              team: 'enemy',
+              isBoss: en.type === 'boss',
+              name: en.type === 'boss' ? '敌军重型陆行巨兽' : '敌方战车'
+            });
+          }
+        });
+
+        for (let i = 0; i < allTanks.length; i++) {
+          const tA = allTanks[i];
+          const a = tA.entity;
+          const rA = a.r || 18.5;
+
+          for (let j = i + 1; j < allTanks.length; j++) {
+            const tB = allTanks[j];
+            const b = tB.entity;
+            const rB = b.r || 18.5;
+
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const dist = Math.hypot(dx, dy);
+            const minDist = rA + rB;
+
+            if (dist < minDist) {
+              // 1. 硬物理分离：绝对禁止坦克相互重叠
+              const overlap = minDist - dist;
+              let nx = dx / (dist || 1);
+              let ny = dy / (dist || 1);
+              if (dist < 0.001) {
+                const rndAng = Math.random() * Math.PI * 2;
+                nx = Math.cos(rndAng);
+                ny = Math.sin(rndAng);
+              }
+
+              let weightA = 0.5;
+              let weightB = 0.5;
+              if (tA.isBoss) { weightA = 0.06; weightB = 0.94; }
+              else if (tB.isBoss) { weightA = 0.94; weightB = 0.06; }
+
+              a.x += nx * overlap * weightA;
+              a.y += ny * overlap * weightA;
+              b.x -= nx * overlap * weightB;
+              b.y -= ny * overlap * weightB;
+
+              const marginA = rA + 4;
+              a.x = Math.max(marginA, Math.min(LOGICAL_SIZE - marginA, a.x));
+              a.y = Math.max(marginA, Math.min(LOGICAL_SIZE - marginA, a.y));
+              const marginB = rB + 4;
+              b.x = Math.max(marginB, Math.min(LOGICAL_SIZE - marginB, b.x));
+              b.y = Math.max(marginB, Math.min(LOGICAL_SIZE - marginB, b.y));
+
+              if (typeof a.vLin === 'number') a.vLin *= 0.65;
+              if (typeof b.vLin === 'number') b.vLin *= 0.65;
+
+              // 2. 阵营碰撞判定：同阵营免疫伤害，敌对阵营触发碰撞伤害
+              if (tA.team !== tB.team) {
+                const now = performance.now();
+                const canDamageA = !a.lastRamTime || (now - a.lastRamTime > 600);
+                const canDamageB = !b.lastRamTime || (now - b.lastRamTime > 600);
+
+                if (canDamageA || canDamageB) {
+                  a.lastRamTime = now;
+                  b.lastRamTime = now;
+
+                  const midX = (a.x + b.x) * 0.5;
+                  const midY = (a.y + b.y) * 0.5;
+                  explode(midX, midY, '#f59e0b', 12);
+                  NexusSDK.audio.hit();
+
+                  const dmgToA = tB.isBoss ? 2 : 1;
+                  const dmgToB = 1;
+
+                  // 结算 A
+                  if (a.shield && a.shield > 0) {
+                    a.shield = Math.max(0, a.shield - dmgToA * 80);
+                    spawnFloatText(a.x, a.y - 20, `冲撞抵片 -${dmgToA}`, '#38bdf8');
+                  } else {
+                    a.hp = Math.max(0, a.hp - dmgToA);
+                    spawnFloatText(a.x, a.y - 20, `装甲冲撞 -${dmgToA}`, '#ef4444');
+                  }
+                  a.hitShake = 0.8;
+
+                  // 结算 B
+                  if (b.shield && b.shield > 0) {
+                    b.shield = Math.max(0, b.shield - dmgToB * 80);
+                    spawnFloatText(b.x, b.y - 20, `冲撞抵片 -${dmgToB}`, '#38bdf8');
+                  } else {
+                    b.hp = Math.max(0, b.hp - dmgToB);
+                    spawnFloatText(b.x, b.y - 20, `冲撞受损 -${dmgToB}`, '#fbbf24');
+                  }
+                  b.hitShake = 0.8;
+
+                  // 敌坦爆毁判定
+                  if (tA.team === 'enemy' && a.hp <= 0) {
+                    explode(a.x, a.y, '#d8b584', 16);
+                    NexusSDK.audio.explosion();
+                    const bSpec = ENEMY_BOUNTIES[a.type] || ENEMY_BOUNTIES.scout;
+                    score += bSpec.score;
+                    saveData.currency.tankCoins += bSpec.coins;
+                    enemies = enemies.filter((e) => e !== a);
+                  }
+                  if (tB.team === 'enemy' && b.hp <= 0) {
+                    explode(b.x, b.y, '#d8b584', 16);
+                    NexusSDK.audio.explosion();
+                    const bSpec = ENEMY_BOUNTIES[b.type] || ENEMY_BOUNTIES.scout;
+                    score += bSpec.score;
+                    saveData.currency.tankCoins += bSpec.coins;
+                    enemies = enemies.filter((e) => e !== b);
+                  }
+
+                  // 玩家战车损毁判定
+                  if (tA.team === 'player' && a.hp <= 0 && a === p1) {
+                    p1.lives--;
+                    if (p1.lives <= 0) {
+                      explode(p1.x, p1.y, '#c97a63', 24);
+                      NexusSDK.audio.explosion();
+                      triggerGameOver('战车殉爆 · 作战失败', '统帅重装战车在装甲冲撞中彻底殉爆。');
+                    } else {
+                      p1.hp = 3;
+                      p1.shield = 180;
+                      spawnFloatText(p1.x, p1.y - 18, '备用车体投入战场', '#38bdf8');
+                    }
+                  }
+                  if (tB.team === 'player' && b.hp <= 0 && b === p1) {
+                    p1.lives--;
+                    if (p1.lives <= 0) {
+                      explode(p1.x, p1.y, '#c97a63', 24);
+                      NexusSDK.audio.explosion();
+                      triggerGameOver('战车殉爆 · 作战失败', '统帅重装战车在装甲冲撞中彻底殉爆。');
+                    } else {
+                      p1.hp = 3;
+                      p1.shield = 180;
+                      spawnFloatText(p1.x, p1.y - 18, '备用车体投入战场', '#38bdf8');
+                    }
+                  }
+
+                  updateHud();
+                }
+              } else {
+                // 同阵营：仅硬体积推开防重叠，完全免疫伤害
+                if (Math.random() < 0.1) {
+                  explode((a.x + b.x) * 0.5, (a.y + b.y) * 0.5, '#94a3b8', 2);
+                }
+              }
+            }
+          }
+        }
+      }
+
       function step() {
         if (window.NexusSDK && !window.NexusSDK.isGameplayActive()) return;
         if (battleOver) return;
@@ -2062,6 +2225,11 @@
             fireTank(en, 'enemy');
           }
         });
+
+        // =====================================================================
+        // 3.5 坦克碰撞事件系统：硬体积禁止重叠 + 冲撞伤害结算 (同阵营免疫伤害)
+        // =====================================================================
+        resolveTankCollisions();
 
         // =====================================================================
         // 4. 高初速穿甲弹连续射线扫掠检测 (CCD Raycast) 与斜面物理跳弹
@@ -2999,6 +3167,8 @@
       });
 
       requestAnimationFrame(loop);
+      // 调试探针导出
+      window.__debugTank = () => ({ p1, p2, enemies, resolveTankCollisions });
     })();
   </script>
 </body>

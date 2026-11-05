@@ -1900,6 +1900,11 @@
         ctx.translate(org.x, org.y);
         ctx.rotate(org.angle || 0);
 
+        // 碰撞受压弹性微形变
+        if (org.squashTimer && org.squashTimer > 0) {
+          ctx.scale(1.12, 0.88);
+        }
+
         // 计算脊椎节点坐标 (从头节 i=0 到尾节 i=segCount-1)
         const spine = [];
         const totalHalfLen = ((segCount - 1) * segSpacing) * 0.5;
@@ -3021,6 +3026,19 @@
           poisonTimer: 0,
           poisonDps: 0,
           suppressedTimer: 0,
+          squashTimer: 0,
+          // 生态位 NPC 智能角色系统：领主智能 (apex) | 协同智能 (pack) | 群居智能 (herd)
+          nicheRole: (function() {
+            if (opts.isBoss || (bp.dietType === 'carnivore' && torso.sizePx >= 48)) return 'apex';
+            if (bp.dietType === 'herbivore') return 'herd';
+            return 'pack';
+          })(),
+          territoryCenter: { x, y, radius: 480 },
+          territoryAngle: Math.random() * Math.PI * 2,
+          packFlankAngle: (Math.random() < 0.5 ? 1 : -1) * (0.55 + Math.random() * 0.35),
+          hitAndRunTimer: 0,
+          herdPanicTimer: 0,
+          herdPanicTarget: null,
           assimilatedOrgans: [], // Boss 4 双槽 FIFO 12.0s 同化队列
           hatredMap: new Map(),
           phaseOffset: Math.random() * Math.PI * 2,
@@ -3925,6 +3943,7 @@
           if (org.mimicTimer > 0) org.mimicTimer = Math.max(0, org.mimicTimer - dt);
           if (org.blindTimer > 0) org.blindTimer = Math.max(0, org.blindTimer - dt);
           if (org.stunTimer > 0) org.stunTimer = Math.max(0, org.stunTimer - dt);
+          if (org.squashTimer > 0) org.squashTimer = Math.max(0, org.squashTimer - dt);
           if (org.suppressedTimer > 0) org.suppressedTimer = Math.max(0, org.suppressedTimer - dt);
           if (org.slowTimer > 0) org.slowTimer = Math.max(0, org.slowTimer - dt);
           if (org.iceShieldTimer > 0) org.iceShieldTimer = Math.max(0, org.iceShieldTimer - dt);
@@ -4088,60 +4107,177 @@
               (org.colonyId === 'player_colony' && pheromoneMode === 'forage')
             );
 
-            if (shouldPreemptiveEvade) {
-              // 感官前置预警规避：优先沿着合成斥力向量远离天敌，并在天敌逼近时自动释放逃生技能
-              org.targetAngle = Math.atan2(evadeY, evadeX);
-              org.isEvading = true;
-              if (nearestThreatDist < 175 && org.skillCd <= 0 && st.activeSkill) {
-                const skType = st.activeSkill.type;
-                if (skType === 'sidestep' || skType === 'jetdash' || skType === 'ink' || skType === 'mimic' || skType === 'electric') {
-                  triggerEntityActiveSkill(org);
+            // =====================================================================
+            // NPC 生态位智能决策系统：领主智能 (apex) | 协同智能 (pack) | 群居智能 (herd)
+            // =====================================================================
+            const role = org.nicheRole || (org.blueprint.dietType === 'herbivore' ? 'herd' : (org.isBoss ? 'apex' : 'pack'));
+
+            // 1. 群居智能 (herd): 类似羊群 Boids 凝聚、对齐、分离 + 惊群连锁逃散
+            if (role === 'herd') {
+              if (org.herdPanicTimer > 0) org.herdPanicTimer = Math.max(0, org.herdPanicTimer - dt);
+
+              // 检查群友是否有人在逃命 -> 触发羊群连锁惊厥
+              if (org.herdPanicTimer <= 0) {
+                for (let ki = 0; ki < arenaState.organisms.length; ki++) {
+                  const kin = arenaState.organisms[ki];
+                  if (kin !== org && kin.hp > 0 && kin.nicheRole === 'herd' && kin.colonyId === org.colonyId) {
+                    if (kin.isEvading || kin.herdPanicTimer > 0) {
+                      if (Math.hypot(kin.x - org.x, kin.y - org.y) < 240) {
+                        org.herdPanicTimer = 2.4;
+                        org.herdPanicTarget = kin.herdPanicTarget || nearestThreat;
+                        break;
+                      }
+                    }
+                  }
                 }
               }
-            } else {
-              org.isEvading = false;
-              if (org.colonyId === 'player_colony' && !org.formerKin && alpha) {
-                // 同族电脑 NPC 响应三态信息素信标 + 防扎堆排斥力
-                if (pheromoneMode === 'guard') {
-                  const orbitAng = arenaState.timeSec * 0.9 + (org.phaseOffset || 0);
-                  const gx = alpha.x + Math.cos(orbitAng) * 95;
-                  const gy = alpha.y + Math.sin(orbitAng) * 95;
-                  org.targetAngle = nearestEnemy && nearestEnemyDist < 210
-                    ? Math.atan2(nearestEnemy.y - org.y, nearestEnemy.x - org.x)
-                    : Math.atan2(gy - org.y, gx - org.x);
-                } else if (pheromoneMode === 'hunt' && nearestEnemy) {
-                  org.targetAngle = Math.atan2(nearestEnemy.y - org.y, nearestEnemy.x - org.x);
-                  if (nearestEnemyDist < 230 && org.skillCd <= 0) triggerEntityActiveSkill(org);
-                } else if (bestFood) {
-                  org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
+
+              if (shouldPreemptiveEvade || org.herdPanicTimer > 0) {
+                // 惊群狂奔：集体朝背离天敌威胁的方向全速冲刺
+                org.isEvading = true;
+                const threat = nearestThreat || org.herdPanicTarget;
+                if (threat) {
+                  const pAng = Math.atan2(org.y - threat.y, org.x - threat.x);
+                  org.targetAngle = pAng;
                 } else {
-                  org.targetAngle = org.angle + Math.sin(arenaState.timeSec + org.phaseOffset) * 0.3;
+                  org.targetAngle = Math.atan2(evadeY, evadeX);
+                }
+                if (nearestThreatDist < 160 && org.skillCd <= 0 && st.activeSkill) {
+                  triggerEntityActiveSkill(org);
                 }
               } else {
-                // 野生种群与首领 AI
-                if (nearestEnemy && st.carnEff > 0 && (w.w_aggr > 0.50 || org.isBoss)) {
-                  org.targetAngle = Math.atan2(nearestEnemy.y - org.y, nearestEnemy.x - org.x);
-                  if (nearestEnemyDist < 240 && org.skillCd <= 0 && Math.random() < dt * 1.5) {
-                    triggerEntityActiveSkill(org);
+                org.isEvading = false;
+                // Boids 算法：向同伴质心靠近 (Cohesion) + 航向对齐 (Alignment)
+                let cohX = 0, cohY = 0, aliX = 0, aliY = 0, kinCount = 0;
+                arenaState.organisms.forEach((kin) => {
+                  if (kin === org || kin.hp <= 0 || kin.colonyId !== org.colonyId) return;
+                  const kd = Math.hypot(kin.x - org.x, kin.y - org.y);
+                  if (kd < 220) {
+                    cohX += kin.x;
+                    cohY += kin.y;
+                    aliX += Math.cos(kin.angle);
+                    aliY += Math.sin(kin.angle);
+                    kinCount++;
                   }
-                } else if (bestFood) {
+                });
+
+                if (bestFood) {
                   org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
+                } else if (kinCount > 0) {
+                  const centerDir = Math.atan2((cohY / kinCount) - org.y, (cohX / kinCount) - org.x);
+                  const alignDir = Math.atan2(aliY, aliX);
+                  org.targetAngle = alignDir * 0.6 + centerDir * 0.4;
                 } else {
-                  org.targetAngle = org.angle + Math.sin(arenaState.timeSec * 0.7 + org.phaseOffset) * 0.25;
+                  org.targetAngle = org.angle + Math.sin(arenaState.timeSec * 0.8 + org.phaseOffset) * 0.22;
                 }
               }
             }
+            // 2. 领主智能 (apex): 独来独往，有大片专属领地，领地意识极强，巡视并狂暴扑杀入侵者
+            else if (role === 'apex') {
+              org.isEvading = false;
+              const territory = org.territoryCenter || { x: org.x, y: org.y, radius: 480 };
+              const dToTerritory = Math.hypot(org.x - territory.x, org.y - territory.y);
 
-            // 同族电脑 NPC 防扎堆分离向量 (d < 46px 时施加排斥分量)
+              // 检查是否有异族入侵领地 (以 territoryCenter 为圆心，半径 480px)
+              let intruder = null;
+              let intruderDist = 9999;
+              arenaState.organisms.forEach((other) => {
+                if (other.hp <= 0 || other === org || other.colonyId === org.colonyId) return;
+                const dIn = Math.hypot(other.x - territory.x, other.y - territory.y);
+                if (dIn < territory.radius + 60) {
+                  const dToSelf = Math.hypot(other.x - org.x, other.y - org.y);
+                  if (dToSelf < intruderDist) {
+                    intruderDist = dToSelf;
+                    intruder = other;
+                  }
+                }
+              });
+
+              if (intruder) {
+                // 狂暴扑杀领地入侵者
+                org.targetAngle = Math.atan2(intruder.y - org.y, intruder.x - org.x);
+                if (intruderDist < 220 && org.skillCd <= 0 && Math.random() < dt * 2.2) {
+                  triggerEntityActiveSkill(org);
+                }
+              } else if (bestFood && st.carnEff > 0 && org.energy < org.maxEnergy * 0.75) {
+                // 饱腹进食有机肉块
+                org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
+              } else {
+                // 独来独往领地巡逻：若偏离领地中心则向心引导，否则大半径从容巡航游弋
+                if (dToTerritory > territory.radius * 0.75) {
+                  org.targetAngle = Math.atan2(territory.y - org.y, territory.x - org.x);
+                } else {
+                  org.territoryAngle = (org.territoryAngle || 0) + 0.012;
+                  const patrolX = territory.x + Math.cos(org.territoryAngle) * (territory.radius * 0.55);
+                  const patrolY = territory.y + Math.sin(org.territoryAngle) * (territory.radius * 0.55);
+                  org.targetAngle = Math.atan2(patrolY - org.y, patrolX - org.x);
+                }
+              }
+            }
+            // 3. 协同智能 (pack): 协同狩猎，呼应同伴广播，扇形包抄合围，交替游走撕咬
+            else {
+              if (org.hitAndRunTimer > 0) org.hitAndRunTimer = Math.max(0, org.hitAndRunTimer - dt);
+
+              // 狼群通信与目标共享：呼应半径 380px 内同伴的目标
+              let sharedPackTarget = nearestEnemy;
+              if (!sharedPackTarget) {
+                for (let pi = 0; pi < arenaState.organisms.length; pi++) {
+                  const mate = arenaState.organisms[pi];
+                  if (mate !== org && mate.hp > 0 && mate.colonyId === org.colonyId) {
+                    if (mate.packCurrentTarget && mate.packCurrentTarget.hp > 0) {
+                      if (Math.hypot(mate.x - org.x, mate.y - org.y) < 380) {
+                        sharedPackTarget = mate.packCurrentTarget;
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+              org.packCurrentTarget = sharedPackTarget;
+
+              if (shouldPreemptiveEvade) {
+                org.targetAngle = Math.atan2(evadeY, evadeX);
+                org.isEvading = true;
+                if (nearestThreatDist < 175 && org.skillCd <= 0 && st.activeSkill) {
+                  triggerEntityActiveSkill(org);
+                }
+              } else if (sharedPackTarget && sharedPackTarget.hp > 0) {
+                org.isEvading = false;
+                const dTarget = Math.hypot(sharedPackTarget.x - org.x, sharedPackTarget.y - org.y);
+                const directAng = Math.atan2(sharedPackTarget.y - org.y, sharedPackTarget.x - org.x);
+
+                if (org.hitAndRunTimer > 0) {
+                  // 刚刚咬完一击：向侧后方微退游走，给同伴让出扑咬通道
+                  org.targetAngle = directAng + (org.packFlankAngle || 0.6) * 1.5;
+                } else {
+                  // 协同包抄合围：左翼/右翼扇形夹角包抄切入
+                  const flank = dTarget > 110 ? (org.packFlankAngle || 0) : 0;
+                  org.targetAngle = directAng + flank;
+                  if (dTarget < 210 && org.skillCd <= 0) {
+                    triggerEntityActiveSkill(org);
+                  }
+                }
+              } else if (bestFood) {
+                org.isEvading = false;
+                org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
+              } else {
+                org.isEvading = false;
+                org.targetAngle = org.angle + Math.sin(arenaState.timeSec * 0.7 + org.phaseOffset) * 0.25;
+              }
+            }
+
+            // 防扎堆与领主独来独往强排斥力
             let sepX = 0;
             let sepY = 0;
-            arenaState.organisms.forEach((kin) => {
-              if (kin === org || kin.hp <= 0 || kin.colonyId !== org.colonyId) return;
-              const kx = org.x - kin.x;
-              const ky = org.y - kin.y;
+            const sepDist = role === 'apex' ? 120 : (role === 'herd' ? 38 : 46);
+            arenaState.organisms.forEach((otherOrg) => {
+              if (otherOrg === org || otherOrg.hp <= 0) return;
+              const kx = org.x - otherOrg.x;
+              const ky = org.y - otherOrg.y;
               const kd = Math.hypot(kx, ky);
-              if (kd > 0.1 && kd < 46) {
-                const push = ((46 - kd) / 46) * 0.85;
+              if (kd > 0.1 && kd < sepDist) {
+                const pushWeight = (role === 'apex' && otherOrg.nicheRole === 'apex') ? 2.5 : 0.9;
+                const push = ((sepDist - kd) / sepDist) * pushWeight;
                 sepX += (kx / kd) * push;
                 sepY += (ky / kd) * push;
               }
@@ -4241,6 +4377,7 @@
               const d = Math.hypot(other.x - org.x, other.y - org.y);
               if (d <= org.radius + other.radius + 6) {
                 org.biteCd = 0.65;
+                org.hitAndRunTimer = 0.85; // 协同撕咬后侧向游走，交由同伴切入
                 org.energy = Math.max(0, org.energy - st.biteCost);
                 applyDamage(other, st.biteDmg, org);
                 if (st.lifesteal > 0) {
@@ -4252,6 +4389,11 @@
             }
           }
         });
+
+        // =====================================================================
+        // 生物体积硬碰撞解算器：禁止生物重叠 + 弹性排斥与挤压事件
+        // =====================================================================
+        resolveOrganismCollisions(dt);
 
         // 清理死亡生物与过期食物
         arenaState.organisms = arenaState.organisms.filter((o) => o.hp > 0);
@@ -4280,6 +4422,84 @@
           if (gpBar) gpBar.style.width = Math.min(100, (globalGpReserve / 800) * 100) + '%';
           const cdOverlay = document.getElementById('skill-cd-overlay');
           if (cdOverlay) cdOverlay.classList.toggle('active', alpha.skillCd > 0);
+        }
+      }
+
+      // =====================================================================
+      // 生物体积硬碰撞解算器：禁止生物重叠 + 弹性排斥与挤压事件
+      // =====================================================================
+      function resolveOrganismCollisions(dt) {
+        for (let i = 0; i < arenaState.organisms.length; i++) {
+          const a = arenaState.organisms[i];
+          if (a.hp <= 0) continue;
+
+          for (let j = i + 1; j < arenaState.organisms.length; j++) {
+            const b = arenaState.organisms[j];
+            if (b.hp <= 0) continue;
+
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const dist = Math.hypot(dx, dy);
+            const minDist = a.radius + b.radius;
+
+            if (dist < minDist) {
+              // 1. 硬物理分离：根据质量（半径平方）推开双方，禁止生物重叠
+              const overlap = minDist - dist;
+              let nx = dx / (dist || 1);
+              let ny = dy / (dist || 1);
+              if (dist < 0.001) {
+                const rndAng = Math.random() * Math.PI * 2;
+                nx = Math.cos(rndAng);
+                ny = Math.sin(rndAng);
+              }
+
+              const massA = a.radius * a.radius * (a.isBoss ? 4.0 : 1.0);
+              const massB = b.radius * b.radius * (b.isBoss ? 4.0 : 1.0);
+              const totalMass = massA + massB;
+              const ratioA = massB / totalMass;
+              const ratioB = massA / totalMass;
+
+              a.x += nx * overlap * ratioA;
+              a.y += ny * overlap * ratioA;
+              b.x -= nx * overlap * ratioB;
+              b.y -= ny * overlap * ratioB;
+
+              // 边界保底约束
+              a.x = Math.max(a.radius, Math.min(WORLD_W - a.radius, a.x));
+              a.y = Math.max(a.radius, Math.min(WORLD_H - a.radius, a.y));
+              b.x = Math.max(b.radius, Math.min(WORLD_W - b.radius, b.x));
+              b.y = Math.max(b.radius, Math.min(WORLD_H - b.radius, b.y));
+
+              // 碰撞沿法线消除逼近速度并施加弹性排斥
+              const relVx = a.vx - b.vx;
+              const relVy = a.vy - b.vy;
+              const normalVel = relVx * nx + relVy * ny;
+              if (normalVel < 0) {
+                const restitution = 0.35;
+                const impulse = -(1 + restitution) * normalVel / totalMass;
+                a.vx += (nx * impulse * massB);
+                a.vy += (ny * impulse * massB);
+                b.vx -= (nx * impulse * massA);
+                b.vy -= (ny * impulse * massA);
+              }
+
+              // 触发生物挤压形变
+              a.squashTimer = 0.16;
+              b.squashTimer = 0.16;
+
+              // 角刺接触微创反伤 (若异族且一方具备骨刺/坚硬外壳)
+              if (a.colonyId !== b.colonyId) {
+                const stA = getEffectiveStats(a);
+                const stB = getEffectiveStats(b);
+                if (stA.hasSpike && Math.random() < 0.15) {
+                  applyDamage(b, 4.5, a);
+                }
+                if (stB.hasSpike && Math.random() < 0.15) {
+                  applyDamage(a, 4.5, b);
+                }
+              }
+            }
+          }
         }
       }
 
@@ -4708,6 +4928,8 @@
           }
         }
       } catch (_e) {}
+      // 调试探针导出
+      window.__debugGenesis = () => ({ arenaState, resolveOrganismCollisions, spawnOrganismEntity });
     })();
   </script>
 </body>

@@ -1573,6 +1573,169 @@
         return r;
       }
 
+      // =====================================================================
+      // 飞船与战机体积碰撞解算器：禁止飞船重叠 + 冲撞伤害 (同阵营免疫伤害)
+      // =====================================================================
+      function resolveShipShipCollisions() {
+        const allShips = [];
+
+        // 1. 玩家旗舰
+        if (ship && ship.hp > 0) {
+          allShips.push({
+            entity: ship,
+            team: 'player',
+            radius: 28,
+            mass: 12.0,
+            isFlagship: true,
+            name: '旗舰'
+          });
+        }
+
+        // 2. 玩家舰载僚机编队
+        fighterSquadron.forEach((f) => {
+          if (f.alive && f.hp > 0) {
+            allShips.push({
+              entity: f,
+              team: 'player',
+              radius: 14,
+              mass: 1.0,
+              isDrone: true,
+              name: f.id || '战机'
+            });
+          }
+        });
+
+        // 3. 敌方舰队与异虫单位
+        enemies.forEach((en) => {
+          if (en.hp > 0) {
+            const isBoss = en.type === 'leviathan';
+            const isCarrier = en.type === 'carrier';
+            const r = en.r || (isBoss ? 44 : (isCarrier ? 34 : 18));
+            allShips.push({
+              entity: en,
+              team: 'enemy',
+              radius: r,
+              mass: isBoss ? 16.0 : (isCarrier ? 6.0 : 1.2),
+              isEnemy: true,
+              isBoss,
+              name: en.type
+            });
+          }
+        });
+
+        for (let i = 0; i < allShips.length; i++) {
+          const sA = allShips[i];
+          const a = sA.entity;
+          const rA = sA.radius;
+
+          for (let j = i + 1; j < allShips.length; j++) {
+            const sB = allShips[j];
+            const b = sB.entity;
+            const rB = sB.radius;
+
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const dist = Math.hypot(dx, dy);
+            const minDist = rA + rB;
+
+            if (dist < minDist) {
+              // 1. 硬物理分离：绝对禁止飞船相互重叠穿透
+              const overlap = minDist - dist;
+              let nx = dx / (dist || 1);
+              let ny = dy / (dist || 1);
+              if (dist < 0.001) {
+                const rndAng = Math.random() * Math.PI * 2;
+                nx = Math.cos(rndAng);
+                ny = Math.sin(rndAng);
+              }
+
+              const totalMass = sA.mass + sB.mass;
+              const ratioA = sB.mass / totalMass;
+              const ratioB = sA.mass / totalMass;
+
+              a.x += nx * overlap * ratioA;
+              a.y += ny * overlap * ratioA;
+              b.x -= nx * overlap * ratioB;
+              b.y -= ny * overlap * ratioB;
+
+              // 2. 阵营判定：同阵营免疫伤害，敌对阵营触发碰撞伤害
+              if (sA.team !== sB.team) {
+                const now = performance.now();
+                const canHitA = !a.lastRamTime || (now - a.lastRamTime > 450);
+                const canHitB = !b.lastRamTime || (now - b.lastRamTime > 450);
+
+                if (canHitA || canHitB) {
+                  a.lastRamTime = now;
+                  b.lastRamTime = now;
+
+                  const midX = (a.x + b.x) * 0.5;
+                  const midY = (a.y + b.y) * 0.5;
+
+                  for (let k = 0; k < 6; k++) {
+                    sparks.push({
+                      x: midX, y: midY,
+                      vx: (Math.random() - 0.5) * 5, vy: (Math.random() - 0.5) * 5,
+                      life: 14, color: '#fde047'
+                    });
+                  }
+                  NexusSDK.audio.hit();
+
+                  let dmgToPlayer = 22;
+                  let dmgToEnemy = 35;
+                  if (sA.isEnemy && a.type === 'bomber') { dmgToPlayer = 55; dmgToEnemy = 999; }
+                  if (sB.isEnemy && b.type === 'bomber') { dmgToPlayer = 55; dmgToEnemy = 999; }
+                  if (sA.isBoss || sB.isBoss) { dmgToPlayer = 45; dmgToEnemy = 25; }
+
+                  const pTarget = sA.team === 'player' ? sA : sB;
+                  const pEnt = pTarget.entity;
+                  if (pTarget.isFlagship) {
+                    if (ship.shield >= dmgToPlayer) {
+                      ship.shield -= dmgToPlayer;
+                      floatTexts.push({ x: ship.x, y: ship.y - 18, text: `🛡 护盾抵御 -${dmgToPlayer}`, color: '#38bdf8', life: 24 });
+                    } else {
+                      const remain = dmgToPlayer - ship.shield;
+                      ship.shield = 0;
+                      ship.hp = Math.max(0, ship.hp - remain);
+                      floatTexts.push({ x: ship.x, y: ship.y - 18, text: `💥 船体冲撞 -${remain}`, color: '#ef4444', life: 24 });
+                    }
+                    if (ship.hp <= 0) {
+                      ship.hp = Math.round(ship.maxHp * 0.65);
+                      ship.shield = ship.maxShield;
+                      triggerSupernova(true);
+                      floatTexts.push({ x: ship.x, y: ship.y - 28, text: '⚡ 应急折跃护盾重塑!', color: '#00f0ff', life: 42 });
+                    }
+                  } else if (pTarget.isDrone) {
+                    pEnt.hp = Math.max(0, pEnt.hp - dmgToPlayer);
+                    floatTexts.push({ x: pEnt.x, y: pEnt.y - 12, text: `战机碰撞 -${dmgToPlayer}`, color: '#f97316', life: 20 });
+                    if (pEnt.hp <= 0) {
+                      pEnt.alive = false;
+                      pEnt.respawnCd = 120;
+                      floatTexts.push({ x: pEnt.x, y: pEnt.y - 12, text: `⚠ ${pEnt.id} 战损重构中`, color: '#f43f5e', life: 28 });
+                    }
+                  }
+
+                  const eTarget = sA.team === 'enemy' ? sA : sB;
+                  const eEnt = eTarget.entity;
+                  eEnt.hp = Math.max(0, eEnt.hp - dmgToEnemy);
+                  floatTexts.push({ x: eEnt.x, y: eEnt.y - 12, text: `冲撞受损 -${dmgToEnemy}`, color: '#fbbf24', life: 20 });
+
+                  updateHud();
+                }
+              } else {
+                // 同阵营（友军之间或敌军之间）：仅硬物理推开防重叠，完全免疫伤害
+                if (Math.random() < 0.05) {
+                  sparks.push({
+                    x: (a.x + b.x) * 0.5, y: (a.y + b.y) * 0.5,
+                    vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2,
+                    life: 8, color: '#38bdf8'
+                  });
+                }
+              }
+            }
+          }
+        }
+      }
+
       function step() {
         if (window.NexusSDK && !window.NexusSDK.isGameplayActive()) return;
         if (dockModal.classList.contains('active')) return;
@@ -2142,30 +2305,6 @@
           en.y += Math.sin(ang) * en.speed * slowMul + (en.vyEvade || 0);
           en.rot = ang + Math.PI / 2;
 
-          // Collide with Player Ship
-          if (Math.hypot(en.x - ship.x, en.y - ship.y) < 26 + en.r * 0.5) {
-            const dmg = en.type === 'bomber' ? 65 : 22;
-            if (ship.shield >= dmg) ship.shield -= dmg;
-            else {
-              ship.hp = Math.max(0, ship.hp - (dmg - ship.shield));
-              ship.shield = 0;
-            }
-            if (en.type === 'bomber' || en.type === 'swarm') {
-              en.hp = 0;
-            } else {
-              // 弹开重型异虫避免贴脸重叠
-              en.x -= Math.cos(ang) * 42;
-              en.y -= Math.sin(ang) * 42;
-            }
-            if (ship.hp <= 0) {
-              ship.hp = Math.round(ship.maxHp * 0.65);
-              ship.shield = ship.maxShield;
-              triggerSupernova(true);
-              floatTexts.push({ x: ship.x, y: ship.y - 28, text: '⚡ 应急折跃护盾重塑!', color: '#00f0ff', life: 42 });
-              updateHud();
-            }
-          }
-
           // Collide with Distant Orbital Station Core (stationPos)
           if (Math.hypot(en.x - stationPos.x, en.y - stationPos.y) < 48 + en.r * 0.5) {
             const sDmg = en.type === 'bomber' ? 75 : 35;
@@ -2206,6 +2345,11 @@
             updateHud();
           }
         }
+
+        // =====================================================================
+        // 飞船与战机体积碰撞系统：硬物理禁止重叠 + 冲撞伤害结算 (同阵营免疫伤害)
+        // =====================================================================
+        resolveShipShipCollisions();
 
         // Update Projectiles (with Constant-Speed Angular Homing for Missiles, Straight Ballistics for Cannons, Trail Recording & AOE support)
         for (let i = projectiles.length - 1; i >= 0; i--) {
@@ -3375,6 +3519,8 @@
           }
         }, 120);
       }
+      // 调试探针导出
+      window.__debugStar = () => ({ ship, fighterSquadron, enemies, resolveShipShipCollisions });
     })();
   </script>
 </body>
