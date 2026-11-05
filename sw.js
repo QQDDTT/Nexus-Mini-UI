@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v11.9-clean-spaceship-roster';
+const CACHE_NAME = 'nexus-mini-portal-v12.0-star-text-harmony';
 const CORE_ASSETS = [
   './',
   './index.html',

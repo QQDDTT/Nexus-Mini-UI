@@ -958,15 +958,15 @@
         { id: 'lan-coop', name: '局域网双舰护航', desc: '同 Wi-Fi / 手机热点 WebRTC 双通道直连，双机集火深渊虚空利维坦 Boss' }
       ],
       starRosterUnits: [
-        { no: 'HL-01', cat: 'hull', faction: 'helios', hullKey: 'hullDelta', badge: '14格·120MW', file: 'hull-delta.svg', name: 'Delta 截击舰', weight: 'TWR 1.92·S', fullTitle: '赫利俄斯 Delta 级高速三角截击舰', subCode: 'NASA 白瓷热防护瓦 + 24K 聚酰亚胺金箔舱 + 双矢量尾喷', zoneSpec: 'W:2S+1M | B:2×1格 | P:2×S', armorVal: '420 HP', armorPct: 62, velVal: '540 m/s', velPct: 96, pwrVal: '120 MW', pwrPct: 75 },
-        { no: 'HL-02', cat: 'hull', faction: 'helios', hullKey: 'hullWing', badge: '22格·185MW', file: 'hull-wing.svg', name: 'Wing 巡洋舰', weight: 'TWR 1.48·A', fullTitle: '赫利俄斯 Wing 级前掠翼多挂点战术巡洋舰', subCode: '重型钛合金前掠翼梁 + 四联导弹垂发井 + 双核反应堆', zoneSpec: 'W:2S+2M | B:3×1格 | P:2×M', armorVal: '680 HP', armorPct: 78, velVal: '430 m/s', velPct: 82, pwrVal: '185 MW', pwrPct: 84 },
-        { no: 'HL-03', cat: 'hull', faction: 'helios', hullKey: 'hullRing', badge: '28格·260MW', file: 'hull-ring.svg', name: 'Ring 环轨舰', weight: 'TWR 1.22·B', fullTitle: '赫利俄斯 Ring 级磁约束环状护盾母舰', subCode: '360° 环形托卡马克聚变线圈 + 金箔辐射散热翼 + 无人机母舱', zoneSpec: 'W:2M+1L | B:4×1格 | P:2×M', armorVal: '920 HP', armorPct: 90, velVal: '360 m/s', velPct: 68, pwrVal: '260 MW', pwrPct: 94 },
-        { no: 'HL-04', cat: 'hull', faction: 'helios', hullKey: 'hullCross', badge: '36格·340MW', file: 'hull-cross.svg', name: 'Cross 歼星舰', weight: 'TWR 1.08·B', fullTitle: '赫利俄斯 Cross 级重装十字无畏歼星旗舰', subCode: '四象限重型装甲翼 + 轴向磁轨主炮槽 + 四联霍尔等离子推进阵', zoneSpec: 'W:2M+2L | B:4×1格 | P:3×L', armorVal: '1350 HP', armorPct: 100, velVal: '310 m/s', velPct: 58, pwrVal: '340 MW', pwrPct: 100 },
-        { no: 'GL-01', cat: 'hull', faction: 'glacies', hullKey: 'hullDelta', badge: '14格·135MW', file: 'hull-delta-glacies.svg', name: '霜刃 Delta 舰', weight: 'TWR 1.98·S', fullTitle: '格拉基斯 Delta 级深冷碳纤超导截击舰', subCode: '2x2 斜纹凝霜碳纤维 + 蓝宝石光学导流罩 + 切伦科夫冷离子推进', zoneSpec: 'W:2S+1M | B:2×1格 | P:2×S', armorVal: '390 HP', armorPct: 58, velVal: '565 m/s', velPct: 99, pwrVal: '135 MW', pwrPct: 80 },
-        { no: 'GL-02', cat: 'hull', faction: 'glacies', hullKey: 'hullWing', badge: '22格·200MW', file: 'hull-wing-glacies.svg', name: '寒翼 Wing 舰', weight: 'TWR 1.54·A', fullTitle: '格拉基斯 Wing 级液氮超导前掠翼科研巡洋舰', subCode: '深海蓝宝石棱镜阵列 + 零电阻超导电容舱 + 极光矢量翼', zoneSpec: 'W:2S+2M | B:3×1格 | P:2×M', armorVal: '640 HP', armorPct: 74, velVal: '450 m/s', velPct: 86, pwrVal: '200 MW', pwrPct: 88 },
-        { no: 'GL-03', cat: 'hull', faction: 'glacies', hullKey: 'hullRing', badge: '28格·285MW', file: 'hull-ring-glacies.svg', name: '极光 Ring 舰', weight: 'TWR 1.28·A', fullTitle: '格拉基斯 Ring 级量子纠缠环轨力场母舰', subCode: '超低温超导磁暴环 + 蓝宝石相控阵护盾发生器', zoneSpec: 'W:2M+1L | B:4×1格 | P:2×M', armorVal: '880 HP', armorPct: 86, velVal: '380 m/s', velPct: 72, pwrVal: '285 MW', pwrPct: 97 },
-        { no: 'GL-04', cat: 'hull', faction: 'glacies', hullKey: 'hullCross', badge: '36格·360MW', file: 'hull-cross-glacies.svg', name: '凛冬 Cross 舰', weight: 'TWR 1.12·B', fullTitle: '格拉基斯 Cross 级深渊极寒重装歼星旗舰', subCode: '四翼深冷超导磁轨阵列 + 切伦科夫重核反应堆 + 绝对零度力场', zoneSpec: 'W:2M+2L | B:4×1格 | P:3×L', armorVal: '1280 HP', armorPct: 96, velVal: '325 m/s', velPct: 62, pwrVal: '360 MW', pwrPct: 100 },
-        { no: 'FD-01', cat: 'hull', faction: 'all', hullKey: 'hullDelta', badge: 'FIGHTER·编队', file: 'unit-fighter-drone.svg', name: '苍鹰舰载战机', weight: 'TWR 2.45·S+', fullTitle: 'FD-01「苍鹰」前掠翼全自主舰载拦截战机', subCode: '24K金箔热脊 + 蓝宝石AI光电座舱 + 翼尖双联格斗弹 + 机首脉冲激光', zoneSpec: '4机编队自主掠袭狗斗 | 脉冲激光 + 穿甲曳光机炮', armorVal: '180 HP', armorPct: 48, velVal: '680 m/s', velPct: 100, pwrVal: '45 MW', pwrPct: 64 },
+        { no: 'HL-01', cat: 'hull', faction: 'helios', hullKey: 'hullDelta', badge: '14格·120MW', file: 'hull-delta.svg', name: 'Delta 舰', weight: '1.92·S', fullTitle: '赫利俄斯 Delta 级高速三角截击舰', subCode: 'NASA 白瓷热防护瓦 + 24K 聚酰亚胺金箔舱 + 双矢量尾喷', zoneSpec: 'W:2S+1M | B:2×1格 | P:2×S', armorVal: '420 HP', armorPct: 62, velVal: '540 m/s', velPct: 96, pwrVal: '120 MW', pwrPct: 75 },
+        { no: 'HL-02', cat: 'hull', faction: 'helios', hullKey: 'hullWing', badge: '22格·185MW', file: 'hull-wing.svg', name: 'Wing 舰', weight: '1.48·A', fullTitle: '赫利俄斯 Wing 级前掠翼多挂点战术巡洋舰', subCode: '重型钛合金前掠翼梁 + 四联导弹垂发井 + 双核反应堆', zoneSpec: 'W:2S+2M | B:3×1格 | P:2×M', armorVal: '680 HP', armorPct: 78, velVal: '430 m/s', velPct: 82, pwrVal: '185 MW', pwrPct: 84 },
+        { no: 'HL-03', cat: 'hull', faction: 'helios', hullKey: 'hullRing', badge: '28格·260MW', file: 'hull-ring.svg', name: 'Ring 舰', weight: '1.22·B', fullTitle: '赫利俄斯 Ring 级磁约束环状护盾母舰', subCode: '360° 环形托卡马克聚变线圈 + 金箔辐射散热翼 + 无人机母舱', zoneSpec: 'W:2M+1L | B:4×1格 | P:2×M', armorVal: '920 HP', armorPct: 90, velVal: '360 m/s', velPct: 68, pwrVal: '260 MW', pwrPct: 94 },
+        { no: 'HL-04', cat: 'hull', faction: 'helios', hullKey: 'hullCross', badge: '36格·340MW', file: 'hull-cross.svg', name: 'Cross 舰', weight: '1.08·B', fullTitle: '赫利俄斯 Cross 级重装十字无畏歼星旗舰', subCode: '四象限重型装甲翼 + 轴向磁轨主炮槽 + 四联霍尔等离子推进阵', zoneSpec: 'W:2M+2L | B:4×1格 | P:3×L', armorVal: '1350 HP', armorPct: 100, velVal: '310 m/s', velPct: 58, pwrVal: '340 MW', pwrPct: 100 },
+        { no: 'GL-01', cat: 'hull', faction: 'glacies', hullKey: 'hullDelta', badge: '14格·135MW', file: 'hull-delta-glacies.svg', name: '霜刃舰', weight: '1.98·S', fullTitle: '格拉基斯 Delta 级深冷碳纤超导截击舰', subCode: '2x2 斜纹凝霜碳纤维 + 蓝宝石光学导流罩 + 切伦科夫冷离子推进', zoneSpec: 'W:2S+1M | B:2×1格 | P:2×S', armorVal: '390 HP', armorPct: 58, velVal: '565 m/s', velPct: 99, pwrVal: '135 MW', pwrPct: 80 },
+        { no: 'GL-02', cat: 'hull', faction: 'glacies', hullKey: 'hullWing', badge: '22格·200MW', file: 'hull-wing-glacies.svg', name: '寒翼舰', weight: '1.54·A', fullTitle: '格拉基斯 Wing 级液氮超导前掠翼科研巡洋舰', subCode: '深海蓝宝石棱镜阵列 + 零电阻超导电容舱 + 极光矢量翼', zoneSpec: 'W:2S+2M | B:3×1格 | P:2×M', armorVal: '640 HP', armorPct: 74, velVal: '450 m/s', velPct: 86, pwrVal: '200 MW', pwrPct: 88 },
+        { no: 'GL-03', cat: 'hull', faction: 'glacies', hullKey: 'hullRing', badge: '28格·285MW', file: 'hull-ring-glacies.svg', name: '极光舰', weight: '1.28·A', fullTitle: '格拉基斯 Ring 级量子纠缠环轨力场母舰', subCode: '超低温超导磁暴环 + 蓝宝石相控阵护盾发生器', zoneSpec: 'W:2M+1L | B:4×1格 | P:2×M', armorVal: '880 HP', armorPct: 86, velVal: '380 m/s', velPct: 72, pwrVal: '285 MW', pwrPct: 97 },
+        { no: 'GL-04', cat: 'hull', faction: 'glacies', hullKey: 'hullCross', badge: '36格·360MW', file: 'hull-cross-glacies.svg', name: '凛冬舰', weight: '1.12·B', fullTitle: '格拉基斯 Cross 级深渊极寒重装歼星旗舰', subCode: '四翼深冷超导磁轨阵列 + 切伦科夫重核反应堆 + 绝对零度力场', zoneSpec: 'W:2M+2L | B:4×1格 | P:3×L', armorVal: '1280 HP', armorPct: 96, velVal: '325 m/s', velPct: 62, pwrVal: '360 MW', pwrPct: 100 },
+        { no: 'FD-01', cat: 'hull', faction: 'all', hullKey: 'hullDelta', badge: '编队·45MW', file: 'unit-fighter-drone.svg', name: '苍鹰战机', weight: '2.45·S+', fullTitle: 'FD-01「苍鹰」前掠翼全自主舰载拦截战机', subCode: '24K金箔热脊 + 蓝宝石AI光电座舱 + 翼尖双联格斗弹 + 机首脉冲激光', zoneSpec: '4机编队自主掠袭狗斗 | 脉冲激光 + 穿甲曳光机炮', armorVal: '180 HP', armorPct: 48, velVal: '680 m/s', velPct: 100, pwrVal: '45 MW', pwrPct: 64 },
         { no: 'MD-01', cat: 'module', faction: 'all', modKey: 'railgun', badge: 'W:M·2格', file: 'module-railgun.svg', name: '电磁轨道炮', weight: '动能 K·28MW', fullTitle: 'Mk.IV 双导轨高初速洛伦兹电磁加速炮', subCode: '铜金加速线圈 + 钨芯穿甲弹丸 · 对重甲外壳 135% 贯通伤害', zoneSpec: '挂载区: [红 W] 武器座 · 耗电 28MW', armorVal: '穿甲 135%', armorPct: 92, velVal: '1800 m/s', velPct: 98, pwrVal: '-28 MW', pwrPct: 65 },
         { no: 'MD-02', cat: 'module', faction: 'all', modKey: 'laser', badge: 'W:S·1格', file: 'module-laser.svg', name: '高能激光塔', weight: '热能 E·24MW', fullTitle: 'Helios-L9 蓝宝石棱镜相控阵脉冲激光炮', subCode: '零飞行延迟瞬时命中 + 高频离散脉冲灼烧小型飞蝗集群', zoneSpec: '挂载区: [红 W] 武器座 · 耗电 24MW', armorVal: '精准 100%', armorPct: 100, velVal: '光速瞬达', velPct: 100, pwrVal: '-24 MW', pwrPct: 58 },
         { no: 'MD-03', cat: 'module', faction: 'all', modKey: 'plasma', badge: 'W:M·2格', file: 'module-plasma.svg', name: '电浆重炮', weight: '电浆 E·34MW', fullTitle: '托卡马克磁约束高温电浆球团发射器', subCode: '发射高能紫红电浆球团，命中后融解异虫甲壳并附加灼烧', zoneSpec: '挂载区: [红 W] 武器座 · 耗电 34MW', armorVal: '融甲 140%', armorPct: 94, velVal: '920 m/s', velPct: 76, pwrVal: '-34 MW', pwrPct: 78 },
@@ -2072,63 +2072,65 @@
                   `).join('')}
                 </div>
 
-                <div class="sd-inspector-dock">
-                  <div class="sd-inspector-header">
-                    <div>
-                      <h3 class="sd-inspector-title">${u.fullTitle || u.name}</h3>
-                      <p class="sd-inspector-sub">${u.subCode || ''}</p>
+                <div class="sd-inspector-dock" id="sd-insp-preview-box" data-unit-cat="${u.cat}" data-unit-file="${u.file}">
+                  <!-- 顶部金铭牌标题 (单行优雅不折行) -->
+                  <div class="sd-stage-top-plaque">
+                    <div style="min-width:0;flex:1;">
+                      <div class="sd-insp-title">${u.fullTitle}</div>
+                      <div class="sd-insp-code">${u.subCode}</div>
                     </div>
-                    <div class="sd-rank-badge">${u.no} · Lv.5</div>
+                    <span class="sd-insp-badge">${u.no} · Lv.5</span>
                   </div>
 
-                  <div class="sd-stat-cylinders">
-                    <div class="sd-cylinder" style="--cyl-pct:${u.armorPct || 70}%;">
-                      <div class="sd-cyl-core">
-                        <div class="sd-cyl-liquid"></div>
-                        <div class="sd-cyl-label">
-                          <span>Armor · 装甲</span>
-                          <strong>${u.armorVal || '680 HP'}</strong>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="sd-cylinder" style="--cyl-pct:${u.velPct || 80}%;">
-                      <div class="sd-cyl-core">
-                        <div class="sd-cyl-liquid vel"></div>
-                        <div class="sd-cyl-label">
-                          <span>Ballistics · 航速</span>
-                          <strong>${u.velVal || '430 m/s'}</strong>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="sd-cylinder" style="--cyl-pct:${u.pwrPct || 85}%;">
-                      <div class="sd-cyl-core">
-                        <div class="sd-cyl-liquid pwr"></div>
-                        <div class="sd-cyl-label">
-                          <span>Reactor Core · 堆芯</span>
-                          <strong>${u.pwrVal || '185 MW'}</strong>
-                        </div>
-                      </div>
+                  <!-- 中左：24K金刻度陀飞轮星盘内嵌巨幅实体剖析区 -->
+                  <div class="sd-astrolabe-specimen-well">
+                    <div class="sd-insp-rig-stage" id="sd-insp-rig-stage">
+                      <img src="../assets/${meta.id}/sprites/${u.file}?v=20261102a" alt="${u.name}" />
                     </div>
                   </div>
 
-                  <div class="sd-reticle-radar-wrap">
-                    <div class="sd-reticle-radar">
-                      <div class="sd-radar-sweeper"></div>
-                      <div class="sd-radar-center-svg">
-                        <img src="../assets/${meta.id}/sprites/${u.file}?v=20261102a" alt="${u.name}" />
+                  <!-- 中右：三联圆柱形蓝宝石发光真空管遥测计 (Armor / Ballistics / Reactor Core) -->
+                  <div class="sd-vacuum-tubes-stack">
+                    <div class="sd-vacuum-tube">
+                      <div class="sd-tube-plasma-bar">
+                        <div class="sd-tube-plasma-fill" style="width:${u.armorPct}%"></div>
+                      </div>
+                      <div class="sd-tube-label-row">
+                        <span class="sd-tube-name">Armor · 装甲</span>
+                        <span class="sd-tube-val">${u.armorVal}</span>
+                      </div>
+                    </div>
+
+                    <div class="sd-vacuum-tube">
+                      <div class="sd-tube-plasma-bar">
+                        <div class="sd-tube-plasma-fill ballistics" style="width:${u.velPct}%"></div>
+                      </div>
+                      <div class="sd-tube-label-row">
+                        <span class="sd-tube-name">Ballistics · 航速</span>
+                        <span class="sd-tube-val">${u.velVal}</span>
+                      </div>
+                    </div>
+
+                    <div class="sd-vacuum-tube">
+                      <div class="sd-tube-plasma-bar">
+                        <div class="sd-tube-plasma-fill reactor" style="width:${u.pwrPct}%"></div>
+                      </div>
+                      <div class="sd-tube-label-row">
+                        <span class="sd-tube-name">Reactor Core · 堆芯</span>
+                        <span class="sd-tube-val">${u.pwrVal}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div class="sd-spec-strip">
-                    <span class="pill red">红W</span>
-                    <span class="pill grn">绿B</span>
-                    <span class="pill pur">紫P</span>
-                    <span class="txt">${u.zoneSpec || 'W:2S+2M | B:3×1格 | P:2×M · 严格分区'}</span>
-                  </div>
-
-                  <div class="sd-inspector-actions">
-                    <div class="sd-action-pills">
+                  <!-- 左下角(陀飞轮旁)：三色挂点宝石铭牌与船坞改装/旗舰切换按钮组 -->
+                  <div class="sd-stage-bottom-left-controls">
+                    <div class="sd-hardpoint-strip">
+                      <span class="sd-hp-tag w">红W</span>
+                      <span class="sd-hp-tag b">绿B</span>
+                      <span class="sd-hp-tag p">紫P</span>
+                      <span style="color:#fde68a;overflow:hidden;text-overflow:ellipsis;">${u.zoneSpec}</span>
+                    </div>
+                    <div class="sd-horology-sub-btns">
                       ${actionBtnHtml}
                       <button class="sd-action-pill" id="sd-btn-open-dockyard">
                         ⚙ 船坞 3 栏改装
