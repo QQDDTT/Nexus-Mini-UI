@@ -6,18 +6,18 @@
   <meta name="theme-color" content="#1b1f26" />
   <title>钢铁防线 · TANK BATTLE | Nexus-Mini</title>
   <link rel="icon" type="image/svg+xml" href="../assets/tank-battle/icon.svg" />
-  <link rel="stylesheet" href="../assets/tank-battle/style.css?v=20261031c" />
+  <link rel="stylesheet" href="../assets/tank-battle/style.css?v=20261102a" />
   <style>
     :root {
-      --void: #1b1f26;
-      --panel: #2b313a;
-      --border: #4a5462;
-      --cyan: #c48f5a;
-      --gold: #dfc08e;
-      --red: #b5604a;
-      --green: #7a9a82;
-      --text: #d6deea;
-      --muted: #909ba8;
+      --void: #141215;
+      --panel: #282c34;
+      --border: #4b5362;
+      --cyan: #f59e0b;
+      --gold: #fde047;
+      --red: #ef4444;
+      --green: #22c55e;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
     html, body {
@@ -33,7 +33,7 @@
     #app {
       width: 100%; height: 100%;
       display: grid;
-      grid-template-columns: 196px 1fr 196px;
+      grid-template-columns: 198px 1fr 198px;
       gap: 8px;
       padding:
         max(6px, env(safe-area-inset-top))
@@ -53,7 +53,7 @@
       border-bottom: 4px solid #121519;
       border-radius: 3px;
       box-shadow: 0 5px 14px rgba(0, 0, 0, 0.72), inset 0 0 16px rgba(0, 0, 0, 0.38);
-      padding: 8px 9px;
+      padding: 8px 8px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -108,7 +108,7 @@
       justify-content: space-between;
       align-items: center;
       font-family: "Consolas", "Noto Sans SC", monospace;
-      font-size: 0.65rem;
+      font-size: 0.64rem;
       color: #98a3b0;
       white-space: nowrap;
     }
@@ -120,10 +120,10 @@
       color: #dfc08e;
     }
 
-    /* 机械液压十字方向盘总成 (每个方向键严格满足 >=44x44px 触控热区) */
+    /* 左翼：以车体为参照系 (Tank-Centric) 机械液压十字/八向差速方向盘 (每个按键严格 >= 44x44px) */
     .dpad-housing {
-      width: 144px;
-      height: 144px;
+      width: 142px;
+      height: 142px;
       margin: 0 auto;
       background: #181c22;
       border: 2px solid #444d59;
@@ -150,11 +150,24 @@
       border-bottom: 3px solid #13161b;
       border-radius: 2px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       touch-action: none;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.65);
+      font-size: 0.5rem;
+      font-family: "Consolas", "Noto Sans SC", monospace;
+      font-weight: 700;
+      white-space: nowrap;
+      line-height: 1;
+      gap: 1px;
+    }
+    .dpad-btn.diag {
+      background: linear-gradient(180deg, #2d343f 0%, #20252d 100%);
+      color: #7d8998;
+      border-color: #46505e #171b20 #111418 #3b4350;
+      font-size: 0.56rem;
     }
     .dpad-btn:active,
     .dpad-btn.pressed {
@@ -167,9 +180,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.48rem;
+      color: #8598b0;
+      font-family: "Consolas", monospace;
+      text-align: center;
     }
 
-    /* 中央 26×26 铸钢防盾战场取景框 (严格 1:1 等比正方形) */
+    /* 中央 1:1 铸钢防盾 360° 全向战术沙盘取景框 */
     .stage-wrap {
       width: 100%;
       height: 100%;
@@ -277,18 +294,19 @@
       border-color: #5b6778 #1a1e24 #13161b #4b5563;
     }
 
-    /* 右翼：退火紫铜主炮击发栓与防弹钢加固按键 */
+    /* 右翼：陀螺稳定火控舱（中央开火键 + 两侧炮塔左/右旋按钮） */
     .fire-housing {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       margin: auto 0;
+      width: 100%;
     }
     .fortify-btn {
       width: 100%;
       min-height: 44px;
-      padding: 0 8px;
+      padding: 0 6px;
       background: linear-gradient(180deg, #3c4450 0%, #2b313a 100%);
       color: #dfc08e;
       border-top: 1.5px solid #5b6778;
@@ -296,12 +314,12 @@
       border-right: 1.5px solid #1a1e24;
       border-bottom: 3px solid #13161b;
       border-radius: 2px;
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       font-weight: 800;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 4px;
       cursor: pointer;
       white-space: nowrap;
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
@@ -309,16 +327,64 @@
     .fortify-btn:active {
       transform: translateY(1px);
     }
+
+    /* 开火键双翼炮塔旋转三联总成 */
+    .turret-fire-cluster {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      width: 100%;
+    }
+    .turret-turn-btn {
+      min-width: 44px;
+      width: 44px;
+      min-height: 68px;
+      height: 68px;
+      background: linear-gradient(180deg, #3a424f 0%, #262c35 100%);
+      color: #dfc08e;
+      border-top: 1.5px solid #5b6778;
+      border-left: 1.5px solid #4b5563;
+      border-right: 1.5px solid #1a1e24;
+      border-bottom: 3px solid #13161b;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      touch-action: none;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.72);
+      font-family: "Consolas", "Noto Sans SC", monospace;
+      font-size: 0.56rem;
+      font-weight: 800;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .turret-turn-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    .turret-turn-btn:active,
+    .turret-turn-btn.pressed {
+      background: linear-gradient(180deg, #4b5668 0%, #343c48 100%);
+      color: #f5e2c8;
+      border-top-color: #c48f5a;
+      transform: translateY(1px);
+    }
+
     .fire-plunger {
-      width: 90px;
-      height: 90px;
-      min-height: 90px;
+      width: 78px;
+      height: 78px;
+      min-width: 68px;
+      min-height: 68px;
       border-radius: 50%;
       background: radial-gradient(circle at 38% 32%, #9c6f44 0%, #75512f 55%, #52371e 100%);
       color: #f0e4d6;
-      border: 4px solid #3a424f;
+      border: 3.5px solid #3a424f;
       box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.82),
+        0 6px 14px rgba(0, 0, 0, 0.82),
         inset 0 2px 3px rgba(255, 255, 255, 0.28),
         inset 0 -4px 6px rgba(0, 0, 0, 0.68);
       display: flex;
@@ -329,20 +395,22 @@
       cursor: pointer;
       touch-action: none;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.88);
+      flex-shrink: 0;
     }
     .fire-plunger strong {
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       font-weight: 900;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.03em;
       white-space: nowrap;
     }
     .fire-plunger span {
-      font-size: 0.54rem;
+      font-size: 0.5rem;
       font-family: "Consolas", monospace;
       color: #e3c598;
       white-space: nowrap;
     }
-    .fire-plunger:active {
+    .fire-plunger:active,
+    .fire-plunger.pressed {
       transform: scale(0.96);
       box-shadow:
         0 3px 8px rgba(0, 0, 0, 0.85),
@@ -350,122 +418,165 @@
     }
 
     @media (max-width: 880px) {
-      #app { grid-template-columns: 168px 1fr 168px; gap: 6px; padding: 6px; }
+      #app { grid-template-columns: 184px 1fr 184px; gap: 6px; padding: 6px; }
       .dpad-housing { width: 140px; height: 140px; }
-      .fire-plunger { width: 82px; height: 82px; min-height: 82px; }
+      .fire-plunger { width: 72px; height: 72px; }
     }
 
-    /* 紧凑横屏 (667x375) 专项适配：收窄侧翼保证中央战场充裕 1:1 正方形空间且按钮仍 >= 44x44px */
+    /* 紧凑横屏 (667x375) 专项适配：保证中央战场充裕 1:1 正方形空间且所有按键 >= 44x44px */
     @media (max-width: 740px) {
-      #app { grid-template-columns: 144px 1fr 144px; gap: 4px; padding: 4px; }
-      .t3-wing { padding: 6px; gap: 4px; }
+      #app { grid-template-columns: 158px 1fr 158px; gap: 4px; padding: 4px; }
+      .t3-wing { padding: 5px; gap: 3px; }
       .brand-stamp img { width: 22px; height: 22px; }
       .brand-stamp h1 { font-size: 0.72rem; }
       .wing-stat-box { padding: 4px 5px; gap: 2px; }
-      .wing-stat-row { font-size: 0.6rem; }
-      .dpad-housing { width: 136px; height: 136px; gap: 1px; padding: 0; }
-      .fire-plunger { width: 76px; height: 76px; min-height: 76px; }
-      .fortify-btn { font-size: 0.62rem; padding: 0 4px; }
+      .wing-stat-row { font-size: 0.58rem; }
+      .dpad-housing { width: 138px; height: 138px; gap: 1px; padding: 1px; }
+      .turret-fire-cluster { gap: 2px; }
+      .turret-turn-btn { width: 44px; min-width: 44px; height: 56px; min-height: 56px; font-size: 0.52rem; }
+      .fire-plunger { width: 54px; height: 54px; min-width: 52px; min-height: 52px; border-width: 2.5px; }
+      .fire-plunger strong { font-size: 0.62rem; }
+      .fire-plunger span { font-size: 0.44rem; }
+      .fortify-btn { font-size: 0.6rem; padding: 0 4px; }
+    }
+
+    /* 机械设置：紧凑拇指热区模式 (nx-touch-compact) */
+    body.nx-touch-compact .dpad-housing {
+      transform: scale(0.94);
+      margin-bottom: 4px;
+    }
+    body.nx-touch-compact .fire-housing {
+      gap: 4px;
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <!-- 左翼：重型发蓝炮钢遥测槽与机械十字方向盘 -->
+    <!-- 左翼：重型发蓝炮钢遥测槽与【以车体为参照】的差速转向方向盘 -->
     <aside class="t3-wing tb-rivets">
       <div>
         <div class="brand-stamp">
           <img src="../assets/tank-battle/icon.svg" alt="Tank Battle" />
           <div>
             <h1>钢铁防线</h1>
-            <p id="hud-lan">AI 战术僚机协同</p>
+            <p id="hud-lan">360° 陀螺火控协同</p>
           </div>
         </div>
         <div class="wing-stat-box" style="margin-top:4px;">
-          <div class="wing-stat-row"><span>防区 SECTOR</span><strong class="brass" id="hud-stage">第 1 关</strong></div>
-          <div class="wing-stat-row"><span>敌坦 HOSTILES</span><strong id="hud-enemies">14 辆</strong></div>
-          <div class="wing-stat-row"><span>军械币 COINS</span><strong class="brass" id="hud-coins">500</strong></div>
-          <div class="wing-stat-row"><span>战车军衔 RANK</span><strong id="hud-rank">Rank 1</strong></div>
+          <div class="wing-stat-row"><span>当前防区</span><strong class="brass" id="hud-stage">第 1 关</strong></div>
+          <div class="wing-stat-row"><span>敌方装甲</span><strong id="hud-enemies">14 辆</strong></div>
+          <div class="wing-stat-row"><span>军械硬币</span><strong class="brass" id="hud-coins">500</strong></div>
+          <div class="wing-stat-row"><span>车体/炮塔角</span><strong id="hud-angles">0° / 0°</strong></div>
         </div>
       </div>
 
-      <!-- 机械液压十字方向键 (支持触控 & 键盘 WASD / 方向键，严格 >= 44x44px) -->
+      <!-- 车体参照系 (Tank-Centric) 机械十字/八向差速方向键 (▲沿车头前进 ▼沿车尾倒车 ◀车体左转 ▶车体右转) -->
       <div>
-        <div class="dpad-housing">
-          <div></div>
-          <button class="dpad-btn" data-dir="0" aria-label="Up">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 6 19 16 5 16"/></svg>
+        <div class="dpad-housing" id="hull-dpad">
+          <button class="dpad-btn diag" data-hull="fwd-ccw" aria-label="前左差速" title="前左差速 (W+A)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="17" y1="17" x2="7" y2="7"/><polyline points="17 7 7 7 7 17"/></svg>
           </button>
-          <div></div>
-          <button class="dpad-btn" data-dir="3" aria-label="Left">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 12 16 5 16 19"/></svg>
+          <button class="dpad-btn" data-hull="fwd" aria-label="车头前进" title="车头前进 (W)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 3 21 16 3 16"/></svg>
           </button>
-          <div class="dpad-axle">
-            <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="#232830" stroke="#6c7888" stroke-width="2"/></svg>
+          <button class="dpad-btn diag" data-hull="fwd-cw" aria-label="前右差速" title="前右差速 (W+D)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </button>
+
+          <button class="dpad-btn" data-hull="ccw" aria-label="车体左旋" title="车体左旋 (A)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="3 12 16 3 16 21"/></svg>
+          </button>
+          <div class="dpad-axle" title="车体参照系差速转向">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="16" rx="3"/><line x1="8" y1="4" x2="8" y2="20"/><line x1="16" y1="4" x2="16" y2="20"/></svg>
           </div>
-          <button class="dpad-btn" data-dir="1" aria-label="Right">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="18 12 8 19 8 5"/></svg>
+          <button class="dpad-btn" data-hull="cw" aria-label="车体右旋" title="车体右旋 (D)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="21 12 8 21 8 3"/></svg>
           </button>
-          <div></div>
-          <button class="dpad-btn" data-dir="2" aria-label="Down">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 18 5 8 19 8"/></svg>
+
+          <button class="dpad-btn diag" data-hull="rev-ccw" aria-label="倒车左偏" title="倒车左偏 (S+A)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>
           </button>
-          <div></div>
+          <button class="dpad-btn" data-hull="rev" aria-label="车尾倒退" title="车尾倒退 (S)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 21 3 8 21 8"/></svg>
+          </button>
+          <button class="dpad-btn diag" data-hull="rev-cw" aria-label="倒车右偏" title="倒车右偏 (S+D)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="7" y1="7" x2="17" y2="17"/><polyline points="7 17 17 17 17 7"/></svg>
+          </button>
         </div>
-        <div style="font-size:0.56rem;text-align:center;font-family:Consolas,monospace;color:#8592a1;margin-top:2px;">
-          机械液压转向总成
+        <div style="font-size:0.54rem;text-align:center;font-family:Consolas,monospace;color:#8592a1;margin-top:2px;white-space:nowrap;">
+          车体参照系差速履带 (WASD)
         </div>
       </div>
     </aside>
 
-    <!-- 中央：26×26 铸钢防盾取景框与主战场画布 (强制 1:1 正方形) -->
+    <!-- 中央：360° 全向异形工事战术沙盘与主战场画布 (强制 1:1 正方形) -->
     <main class="stage-wrap" id="stage-wrap">
       <div class="battlefield-bezel tb-rivets" id="battlefield-bezel">
         <canvas id="battle-canvas" width="624" height="624"></canvas>
         <!-- 防线失守 / 战役结算模态框 -->
         <div class="battle-modal-overlay" id="battle-result-modal">
           <div class="battle-modal-card tb-rivets">
-            <div class="battle-modal-title" id="modal-result-title">防线失守 · DEFEAT</div>
-            <div class="battle-modal-desc" id="modal-result-desc">统帅鹰标地堡遭到敌军穿甲弹摧毁，当前战区防御宣告失守。</div>
+            <div class="battle-modal-title" id="modal-result-title">防线失守 · 作战失利</div>
+            <div class="battle-modal-desc" id="modal-result-desc">统帅鹰标地堡遭到敌军高初速穿甲弹击穿，当前战区防御宣告失守。</div>
             <div class="battle-modal-actions">
-              <button class="battle-modal-btn" id="btn-modal-redeploy">重新部署防线 · REDEPLOY</button>
-              <button class="battle-modal-btn secondary" id="btn-modal-armory">返回重装军械库 · ARMORY</button>
+              <button class="battle-modal-btn" id="btn-modal-redeploy">重新部署防线</button>
+              <button class="battle-modal-btn secondary" id="btn-modal-armory">返回重装军械库</button>
             </div>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- 右翼：退火紫铜主炮击发栓、地堡钢化加固与装甲状态槽 -->
-    <aside class="t3-wing tb-rivets" style="padding-top:48px;">
+    <!-- 右翼：开火键双翼独立炮塔转向按钮 (↺ / FIRE / ↻)、异形钢障加固与装甲状态槽 -->
+    <aside class="t3-wing tb-rivets" style="padding-top:46px;">
       <div class="fire-housing">
-        <button class="fortify-btn" id="btn-fortify-base" aria-label="加固地堡" title="消耗 50 军械币加固统帅地堡">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>钢墙加固 (-50)</span>
+        <button class="fortify-btn" id="btn-fortify-base" aria-label="加固核心地堡防线" title="消耗 50 军械币升级基地防爆跳弹钢障">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="8 11 12 15 16 11"/></svg>
+          <span>-50</span>
         </button>
 
-        <button class="fire-plunger" id="btn-fire" aria-label="主炮击发" title="120MM 主炮穿甲弹击发">
-          <strong>击发 FIRE</strong>
-          <span>120MM APFSDS</span>
-        </button>
+        <!-- 炮塔左旋 / 主炮击发 / 炮塔右旋 纯符号化操控集群 -->
+        <div class="turret-fire-cluster">
+          <button class="turret-turn-btn" id="btn-turret-ccw" aria-label="炮塔左旋" title="逆时针旋转炮塔 (Q / J)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+            </svg>
+          </button>
+
+          <button class="fire-plunger" id="btn-fire" aria-label="主炮击发" title="高初速尾翼稳定脱壳穿甲弹击发 (空格 / K)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/></svg>
+            <span id="hud-ammo-vel">980px/s</span>
+          </button>
+
+          <button class="turret-turn-btn" id="btn-turret-cw" aria-label="炮塔右旋" title="顺时针旋转炮塔 (E / L)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+              <path d="M21 3v5h-5"/>
+            </svg>
+          </button>
+        </div>
+        <div style="font-size:0.53rem;text-align:center;font-family:Consolas,monospace;color:#8592a1;white-space:nowrap;">
+          陀螺稳定炮塔 (Q/E调炮 · 空格开火)
+        </div>
       </div>
 
       <div class="wing-stat-box">
         <div class="wing-stat-row"><span>1P 装甲/地堡</span><strong id="hud-hp">HP3·完好</strong></div>
-        <div class="wing-stat-row"><span>备用履带 LIVES</span><strong id="hud-lives">×2 车组</strong></div>
+        <div class="wing-stat-row"><span>军衔/车组</span><strong id="hud-lives">R1 · ×2车组</strong></div>
         <div class="wing-stat-row"><span>防线战绩</span><strong class="brass" id="hud-score">0</strong></div>
       </div>
     </aside>
   </div>
 
-  <script src="../shared/nexus-sdk.js?v=4.2"></script>
+  <script src="../shared/nexus-sdk.js?v=4.3"></script>
   <script>
     (() => {
       NexusSDK.initShellUI({ gameId: 'tank-battle', gameTitle: '钢铁防线' });
 
       const store = NexusSDK.createGameStorage('NEXUS_MINI_TANK_', (isAdmin) => ({
         currency: { tankCoins: isAdmin ? 999999 : 500 },
-        stats: { wins: isAdmin ? 999 : 5, highScore: isAdmin ? 99999 : 6800 },
+        stats: { wins: isAdmin ? 999 : 0, highScore: isAdmin ? 99999 : 0 },
         rank: isAdmin ? 4 : 1
       }));
       let saveData = store.load();
@@ -487,6 +598,67 @@
         terrainDirty = true;
       });
 
+      // 车体与炮塔同源 SVG 分离位图缓存：将 SVG 中车体图层与独立旋转炮塔图层拆分为两张高清离屏贴图
+      const splitLayers = {};
+      const TANK_SPRITE_FILES = {
+        p1: 'player-tank-p1.svg',
+        p2: 'player-tank-p2.svg',
+        scout: 'enemy-scout.svg',
+        raider: 'enemy-raider.svg',
+        shooter: 'enemy-shooter.svg',
+        mammoth: 'enemy-mammoth.svg',
+        boss: 'enemy-boss-train.svg'
+      };
+      const TURRET_GROUP_IDS = [
+        'part-turret-ring', 'part-turret-body', 'part-barrel-main',
+        'part-barrel-left', 'part-barrel-right', 'part-barrel-twin-mg',
+        'part-barrel-plasma-L', 'part-barrel-plasma-R', 'part-barrel-railgun',
+        'part-barrel-heavy-L', 'part-barrel-heavy-R', 'part-rail-jaw-L', 'part-rail-jaw-R',
+        'part-cooling-fin-L', 'part-cooling-fin-R', 'part-sensor-optic',
+        'part-radar-scanner', 'part-light-cone-main', 'part-light-rim-turret',
+        'part-turret-front', 'part-barrel-front', 'part-turret-rear',
+        'part-barrel-rear-L', 'part-barrel-rear-R', 'part-aa-turret-L', 'part-aa-turret-R'
+      ];
+
+      async function buildSplitTankSprites() {
+        if (!window.location.protocol.startsWith('http')) return;
+        const parser = new DOMParser();
+        const serializer = new XMLSerializer();
+        await Promise.all(Object.entries(TANK_SPRITE_FILES).map(async ([key, file]) => {
+          try {
+            const resp = await fetch(`../assets/tank-battle/sprites/${file}`);
+            if (!resp.ok) return;
+            const rawSvg = await resp.text();
+
+            // 1. Hull SVG (隐藏所有独立炮塔与炮管图层)
+            const hullDoc = parser.parseFromString(rawSvg, 'image/svg+xml');
+            TURRET_GROUP_IDS.forEach((id) => {
+              const el = hullDoc.getElementById(id);
+              if (el) el.setAttribute('display', 'none');
+            });
+            const hullStr = serializer.serializeToString(hullDoc.documentElement);
+            const hullImg = new Image();
+            hullImg.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(hullStr);
+
+            // 2. Turret SVG (仅保留炮塔座圈、炮塔本体、炮管、制退器、雷达与扫描光锥，过滤全部非炮塔顶层元素)
+            const turretDoc = parser.parseFromString(rawSvg, 'image/svg+xml');
+            const rootNodes = turretDoc.querySelectorAll('svg > [id]');
+            rootNodes.forEach((node) => {
+              const gid = node.getAttribute('id') || '';
+              if (!TURRET_GROUP_IDS.includes(gid)) {
+                node.setAttribute('display', 'none');
+              }
+            });
+            const turretStr = serializer.serializeToString(turretDoc.documentElement);
+            const turretImg = new Image();
+            turretImg.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(turretStr);
+
+            splitLayers[key] = { hullImg, turretImg };
+          } catch (_) {}
+        }));
+      }
+      buildSplitTankSprites();
+
       const canvas = document.getElementById('battle-canvas');
       const ctx = canvas.getContext('2d');
       const stageWrap = document.getElementById('stage-wrap');
@@ -495,19 +667,16 @@
       const modalTitleEl = document.getElementById('modal-result-title');
       const modalDescEl = document.getElementById('modal-result-desc');
 
-      const GRID = 26;
-      const TILE = 24; // 逻辑网格 26 * 24 = 624px
-      const LOGICAL_SIZE = GRID * TILE;
+      const LOGICAL_SIZE = 624; // 624x624 连续二维欧几里得物理空间 (零正交方块网格)
+      const DT = 1 / 60;
 
-      // 离屏静态地形缓存层 (624x624)，仅当砖墙/钢墙变动时重绘，消除每帧重复遍历 676 网格
+      // 离屏静态异形工事与极坐标底板缓存层 (624x624)
       const terrainCacheCanvas = document.createElement('canvas');
       terrainCacheCanvas.width = LOGICAL_SIZE;
       terrainCacheCanvas.height = LOGICAL_SIZE;
       const terrainCtx = terrainCacheCanvas.getContext('2d');
       let terrainDirty = true;
-      let bushCoords = [];
 
-      // 严格 1:1 正方形视口几何锁与高清 DPR 适配 (彻底修复 667x375 画布横向挤压问题)
       function syncSquareViewport() {
         if (!stageWrap || !bezelEl) return;
         const rect = stageWrap.getBoundingClientRect();
@@ -526,10 +695,34 @@
       window.addEventListener('orientationchange', () => setTimeout(syncSquareViewport, 60));
       syncSquareViewport();
 
-      // Tile types: 0 Empty, 1 Brick (4-quadrant destructible), 2 Steel, 3 Bush, 4 TrenchWater, 5 BaseEagle
-      let map = Array.from({ length: GRID }, () => Array(GRID).fill(0));
-      // 四象限独立毁伤位掩码: bit0(1)=TL, bit1(2)=TR, bit2(4)=BL, bit3(8)=BR, 0b1111=15
-      let brickMask = Array.from({ length: GRID }, () => Array(GRID).fill(0));
+      function normalizeAngle(a) {
+        let r = a % (Math.PI * 2);
+        if (r > Math.PI) r -= Math.PI * 2;
+        if (r <= -Math.PI) r += Math.PI * 2;
+        return r;
+      }
+
+      function shortestAngleDiff(from, to) {
+        return normalizeAngle(to - from);
+      }
+
+      // 军衔等级 -> 车体沉稳极速 (px/s)、原地回转角速度 (rad/s)、高初速穿甲弹速 (px/s)、自动装弹机装填帧数 (cdFrames: 84~114帧 = 1.40~1.90s)
+      const RANK_SPECS = [
+        { fwdSpd: 78,  revSpd: 48, turnRate: 1.65, bulletSpd: 760,  cdFrames: 114, maxShots: 1, breakSteel: false, dmg: 1 },
+        { fwdSpd: 86,  revSpd: 54, turnRate: 1.75, bulletSpd: 980,  cdFrames: 105, maxShots: 1, breakSteel: false, dmg: 1 },
+        { fwdSpd: 94,  revSpd: 58, turnRate: 1.85, bulletSpd: 1080, cdFrames: 96,  maxShots: 2, breakSteel: false, dmg: 2 },
+        { fwdSpd: 100, revSpd: 62, turnRate: 1.95, bulletSpd: 1200, cdFrames: 90,  maxShots: 2, breakSteel: true,  dmg: 2 },
+        { fwdSpd: 108, revSpd: 68, turnRate: 2.05, bulletSpd: 1380, cdFrames: 84,  maxShots: 2, breakSteel: true,  dmg: 3 }
+      ];
+
+      // 五大战术空投物资类型
+      const CRATE_TYPES = [
+        { kind: 'star', tag: '晋升', label: '★ 火力晋升 (提速穿甲)', color: '#fde047' },
+        { kind: 'fortify', tag: '筑城', label: '🛡 V型跳弹钢障筑城', color: '#94a3b8' },
+        { kind: 'emp', tag: '静默', label: '⚡ 全域火控电磁静默', color: '#f59e0b' },
+        { kind: 'nuke', tag: '轰炸', label: '☢ 轨道清场轰炸', color: '#ef4444' },
+        { kind: 'shield', tag: '护盾', label: '❖ 360° 偏导量子护盾', color: '#c084fc' }
+      ];
 
       let stage = 1;
       let score = 0;
@@ -541,32 +734,99 @@
       let battleOver = false;
       let netFrameTick = 0;
 
-      const DIRS = [
-        { dx: 0, dy: -1, ang: 0 },
-        { dx: 1, dy: 0, ang: Math.PI / 2 },
-        { dx: 0, dy: 1, ang: Math.PI },
-        { dx: -1, dy: 0, ang: -Math.PI / 2 }
-      ];
+      // 异形多边形与圆形战术掩体集合 (彻底废除正方形方块网格)
+      // 每项结构: { id, kind: 'hex-brick'|'chevron-steel'|'pillbox'|'dragon-teeth'|'basalt'|'trench', x, y, r, rot, vertices, hp, maxHp, sectorMask, isBaseGuard }
+      let obstacles = [];
+      let canopyBushes = [];
+      const eagleBase = { x: 312, y: 580, r: 24 };
 
-      // 五大战术空投物资类型 (彻底消除单一空投空头支票)
-      const CRATE_TYPES = [
-        { kind: 'star', label: '★ 火力晋升', color: '#dfc08e' },
-        { kind: 'fortify', label: '🛡 钢墙筑城', color: '#8695ab' },
-        { kind: 'emp', label: '⚡ 电磁静默', color: '#c48f5a' },
-        { kind: 'nuke', label: '☢ 轨道轰炸', color: '#b85440' },
-        { kind: 'shield', label: '❖ 量子护盾', color: '#9aa8bd' }
-      ];
+      // 1P、2P 与全体敌坦共享：360° 车炮分离 + 转向减速耦合 + 动态移动散布 (Movement Dispersion & Settling)
+      const DISP_MIN = 0.005;   // 驻停满缩圈基准散布半角 (~0.28°，指哪打哪激光级精度)
+      const DISP_MAX = 0.320;   // 全速移动+转向最大扩圈散布半角 (~18.3°)
+      const TAU_BLOOM = 0.11;   // 运动/转向扩圈时间常数 (s，快速扩圈)
+      const TAU_SETTLE = 0.52;  // 驻停缩圈时间常数 (s，配合线性收敛底限在 0.65~0.85s 内完全闭合)
+
+      // 敌坦统一规格表：全面下调车体移速 (34~68 px/s)，并延长重炮装填时间 (cdFrames: 120~168帧 = 2.00~2.80s)
+      const ENEMY_SPECS = {
+        scout:   { hp: 1, speed: 56, turnRate: 1.45, turretRate: 1.75, bulletSpd: 650,  r: 17, size: 40, cdFrames: 126, score: 100,  coins: 10,  haltFrames: 34, settleGoal: 0.042, fireMaxDisp: 0.052 },
+        raider:  { hp: 2, speed: 68, turnRate: 1.65, turretRate: 2.10, bulletSpd: 780,  r: 18, size: 42, cdFrames: 120, score: 200,  coins: 20,  haltFrames: 0,  settleGoal: 0.320, fireMaxDisp: 0.320 },
+        shooter: { hp: 2, speed: 48, turnRate: 1.25, turretRate: 1.85, bulletSpd: 1260, r: 18, size: 44, cdFrames: 156, score: 300,  coins: 30,  haltFrames: 48, settleGoal: 0.011, fireMaxDisp: 0.018 },
+        mammoth: { hp: 4, speed: 40, turnRate: 1.05, turretRate: 1.35, bulletSpd: 820,  r: 20, size: 46, cdFrames: 168, score: 400,  coins: 50,  haltFrames: 40, settleGoal: 0.030, fireMaxDisp: 0.038 },
+        boss:    { hp: 18, speed: 34, turnRate: 0.90, turretRate: 1.65, bulletSpd: 920, r: 28, size: 64, cdFrames: 138, score: 1500, coins: 200, haltFrames: 42, settleGoal: 0.026, fireMaxDisp: 0.034 }
+      };
+      const ENEMY_BOUNTIES = ENEMY_SPECS;
+
+      function updateTankDispersion(tank, maxLinSpd, maxHullTurn, wTurret, dt) {
+        const linRatio = Math.min(1.2, Math.abs(tank.vLin || 0) / Math.max(32, maxLinSpd || 70));
+        const hullRatio = Math.min(1.2, Math.abs(tank.wHull || 0) / Math.max(0.85, maxHullTurn || 1.55));
+        const turRatio = Math.min(1.2, Math.abs(wTurret || 0) / 2.60);
+        const sigmaTarget = Math.min(DISP_MAX, DISP_MIN + 0.19 * linRatio + 0.09 * hullRatio + 0.07 * turRatio);
+        const cur = tank.dispersion ?? DISP_MIN;
+        if (sigmaTarget > cur) {
+          tank.dispersion = Math.min(DISP_MAX, cur + (sigmaTarget - cur) * Math.min(1, dt / TAU_BLOOM));
+        } else {
+          const stepShrink = Math.max((cur - sigmaTarget) * Math.min(1, dt / TAU_SETTLE), 0.22 * dt);
+          tank.dispersion = Math.max(sigmaTarget, cur - stepShrink);
+        }
+      }
+
+      // 敌我通用的重装底盘运动学 + 转向减速 + 制动滑行 + 动态移动散布解算器
+      function stepTankKinematicsAndDispersion(tank, throttle, hullSteer, wTurret, maxFwdSpd, maxRevSpd, maxTurnRate, dt) {
+        // 1. 差速履带转向：行进间转向角速度折减为 0.78，原地转向为 1.0
+        const steerScale = Math.abs(throttle) > 0.05 ? 0.78 : 1.0;
+        if (Math.abs(hullSteer) > 0.02) {
+          tank.wHull = hullSteer * maxTurnRate * steerScale;
+          tank.hullAng = normalizeAngle(tank.hullAng + tank.wHull * dt);
+          tank.movePhase = (tank.movePhase || 0) + 0.14 * Math.abs(hullSteer);
+        } else {
+          tank.wHull = (tank.wHull || 0) * 0.72;
+          if (Math.abs(tank.wHull) < 0.04) tank.wHull = 0;
+        }
+
+        // 2. 车体推进加减速与转向自动降速 (模拟单侧履带制动转向降速与重装惯性滑行)
+        const turnSlowdown = Math.abs(hullSteer) > 0.25 ? 0.75 : 1.0;
+        const targetMaxFwd = maxFwdSpd * turnSlowdown;
+        if (throttle > 0.05) {
+          const nextV = (tank.vLin || 0) + 195 * throttle * dt;
+          tank.vLin = nextV > targetMaxFwd ? Math.max(targetMaxFwd, (tank.vLin || 0) * 0.92) : nextV;
+        } else if (throttle < -0.05) {
+          tank.vLin = Math.max(-maxRevSpd * turnSlowdown, (tank.vLin || 0) + 165 * throttle * dt);
+        } else {
+          // 松油门或短停制动：平滑惯性减速滑行直至完全驻停
+          tank.vLin = (tank.vLin || 0) * 0.78;
+          if (Math.abs(tank.vLin) < 1.2) tank.vLin = 0;
+        }
+
+        // 3. 连续位移与异形多边形切向滑移 (含制动减速滑行阶段)
+        if (Math.abs(tank.vLin) > 0.5) {
+          moveTankWithPolygonSliding(tank, dt);
+          tank.movePhase = (tank.movePhase || 0) + 0.16 * (Math.abs(tank.vLin) / Math.max(35, maxFwdSpd));
+          recordTread(tank);
+        }
+
+        // 4. 实时解算动态移动散布与驻停火控缩圈
+        tank.wTurret = wTurret || 0;
+        updateTankDispersion(tank, maxFwdSpd, maxTurnRate, tank.wTurret, dt);
+      }
+
+      function getTankAccuracyPct(tank) {
+        const d = tank.dispersion ?? DISP_MIN;
+        return Math.round(Math.max(0, Math.min(1, 1 - (d - DISP_MIN) / (DISP_MAX - DISP_MIN))) * 100);
+      }
 
       const p1 = {
-        x: 8 * TILE, y: 22 * TILE, dir: 0, turretAng: 0,
+        x: 215, y: 545, r: 18.5, size: 44,
+        hullAng: 0, turretAng: 0, vLin: 0, wHull: 0, wTurret: 0, dispersion: DISP_MIN,
         hp: 3, lives: 2, rank: saveData.rank || 1, shield: 150, cd: 0,
         recoil: 0, movePhase: 0, hitShake: 0
       };
       const p2 = {
-        x: 16 * TILE, y: 22 * TILE, dir: 0, turretAng: 0,
+        x: 409, y: 545, r: 18.5, size: 44,
+        hullAng: 0, turretAng: 0, vLin: 0, wHull: 0, wTurret: 0, dispersion: DISP_MIN, haltTimer: 0,
         hp: 3, rank: 2, shield: 150, cd: 0, isRemote: false,
         recoil: 0, movePhase: 0, hitShake: 0
       };
+
       let enemies = [];
       let bullets = [];
       let crates = [];
@@ -574,80 +834,225 @@
       let treadMarks = [];
       let floatTexts = [];
 
-      function spawnFloatText(x, y, text, color = '#dfc08e') {
-        floatTexts.push({ x, y, text, color, life: 45 });
+      // 构建正多边形或异形凸多边形世界顶点
+      function makePolygonVertices(cx, cy, localPts, rot = 0) {
+        const c = Math.cos(rot);
+        const s = Math.sin(rot);
+        return localPts.map(([lx, ly]) => ({
+          x: cx + lx * c - ly * s,
+          y: cy + lx * s + ly * c
+        }));
       }
 
-      function recordTread(tank) {
-        if (Math.random() > 0.28) return;
-        treadMarks.push({
-          x: tank.x + TILE * 0.9,
-          y: tank.y + TILE * 0.9,
-          dir: tank.dir,
-          alpha: 0.26
-        });
-        if (treadMarks.length > 90) treadMarks.shift();
+      function makeRegularPolygon(cx, cy, radius, sides, rot = 0) {
+        const pts = [];
+        for (let i = 0; i < sides; i++) {
+          const a = rot + (i * Math.PI * 2) / sides;
+          pts.push({ x: cx + Math.cos(a) * radius, y: cy + Math.sin(a) * radius });
+        }
+        return pts;
       }
 
-      function setTileBrick(r, c) {
-        if (r < 0 || r >= GRID || c < 0 || c >= GRID) return;
-        map[r][c] = 1;
-        brickMask[r][c] = 15; // 0b1111 四象限完整
-        terrainDirty = true;
+      // 创建各类非方块异形掩体
+      let nextObsId = 1;
+      function createHexBrick(x, y, radius = 25, rot = Math.PI / 6, isBaseGuard = false) {
+        return {
+          id: nextObsId++,
+          kind: 'hex-brick',
+          x, y, r: radius, rot,
+          vertices: makeRegularPolygon(x, y, radius, 6, rot),
+          hp: 4, maxHp: 4,
+          sectorMask: 0b1111, // 4 扇区复合装甲砖
+          isBaseGuard
+        };
       }
 
-      function setBaseWall(tileType) {
-        const coords = [
-          [23,11],[23,12],[23,13],[23,14],
-          [24,11],[24,14],
-          [25,11],[25,14]
+      function createChevronSteel(x, y, scale = 1.0, rot = 0, isBaseGuard = false) {
+        // V 型钝角折线楔形防爆钢墙 (六边形楔形体，具备真实大倾角跳弹斜面)
+        const local = [
+          [0, -24 * scale],
+          [32 * scale, -4 * scale],
+          [26 * scale, 18 * scale],
+          [0, 6 * scale],
+          [-26 * scale, 18 * scale],
+          [-32 * scale, -4 * scale]
         ];
-        coords.forEach(([r, c]) => {
-          map[r][c] = tileType;
-          brickMask[r][c] = tileType === 1 ? 15 : 0;
+        return {
+          id: nextObsId++,
+          kind: 'chevron-steel',
+          x, y, r: 32 * scale, rot,
+          vertices: makePolygonVertices(x, y, local, rot),
+          hp: 8, maxHp: 8,
+          isBaseGuard
+        };
+      }
+
+      function createCircularPillbox(x, y, radius = 24) {
+        // 圆形钢筋混凝土暗堡 (纯圆包络，360° 零死角切向滑移)
+        return {
+          id: nextObsId++,
+          kind: 'pillbox',
+          x, y, r: radius, rot: 0,
+          vertices: null,
+          hp: 4, maxHp: 4,
+          isBaseGuard: false
+        };
+      }
+
+      function createDragonTeethCluster(x, y, rot = 0) {
+        // 正三角形龙牙反坦克锥群 (阻挡坦克车体冲锋，但高初速炮弹可飞越穿射)
+        return {
+          id: nextObsId++,
+          kind: 'dragon-teeth',
+          x, y, r: 22, rot,
+          vertices: makeRegularPolygon(x, y, 22, 3, rot - Math.PI / 2),
+          hp: 999, maxHp: 999,
+          allowBulletPass: true,
+          isBaseGuard: false
+        };
+      }
+
+      function createBasaltOutcrop(x, y, radius = 27, rot = 0.3) {
+        // 不规则五边形/七边形玄武岩断崖
+        const local = [
+          [0, -radius * 0.95],
+          [radius * 0.92, -radius * 0.32],
+          [radius * 0.78, radius * 0.68],
+          [-radius * 0.25, radius * 0.96],
+          [-radius * 0.96, radius * 0.42],
+          [-radius * 0.82, -radius * 0.55]
+        ];
+        return {
+          id: nextObsId++,
+          kind: 'basalt',
+          x, y, r: radius, rot,
+          vertices: makePolygonVertices(x, y, local, rot),
+          hp: 999, maxHp: 999,
+          isBaseGuard: false
+        };
+      }
+
+      function createDiagonalTrench(x, y, rot = 0.45) {
+        // 斜向反坦克壕沟 (六边形长槽，阻挡车体但炮弹可飞越)
+        const local = [
+          [-34, -11], [0, -14], [34, -11],
+          [30, 11], [0, 14], [-30, 11]
+        ];
+        return {
+          id: nextObsId++,
+          kind: 'trench',
+          x, y, r: 34, rot,
+          vertices: makePolygonVertices(x, y, local, rot),
+          hp: 999, maxHp: 999,
+          allowBulletPass: true,
+          isBaseGuard: false
+        };
+      }
+
+      // 构建环绕八角鹰标统帅地堡的异形拱卫防线 (六角砖堡或 V 型跳弹钢墙)
+      function rebuildBasePerimeter(useSteel = false) {
+        obstacles = obstacles.filter((o) => !o.isBaseGuard);
+        const arcPositions = [
+          { x: 254, y: 582, rot: -0.45 },
+          { x: 266, y: 534, rot: -0.25 },
+          { x: 312, y: 520, rot: 0 },
+          { x: 358, y: 534, rot: 0.25 },
+          { x: 370, y: 582, rot: 0.45 }
+        ];
+        arcPositions.forEach((pos) => {
+          if (useSteel) {
+            obstacles.push(createChevronSteel(pos.x, pos.y, 0.82, pos.rot, true));
+          } else {
+            obstacles.push(createHexBrick(pos.x, pos.y, 22, pos.rot + Math.PI / 6, true));
+          }
         });
         terrainDirty = true;
       }
 
       function buildStageMap(stg) {
-        map = Array.from({ length: GRID }, () => Array(GRID).fill(0));
-        brickMask = Array.from({ length: GRID }, () => Array(GRID).fill(0));
+        obstacles = [];
+        canopyBushes = [];
         treadMarks = [];
         floatTexts = [];
-        bushCoords = [];
-        const rng = NexusSDK.createSeededRandom(stg * 9137 + 101);
-        for (let r = 3; r < 22; r += 2) {
-          for (let c = 2; c < 24; c += 2) {
-            const roll = rng();
-            let t = 0;
-            if (roll < 0.36) t = 1; // Brick
-            else if (roll < 0.48) t = 2; // Steel
-            else if (roll < 0.58) t = 3; // Bush
-            else if (roll < 0.63 && r > 6 && r < 18) t = 4; // Anti-tank trench channel
-            for (let dr = 0; dr <= 1; dr++) {
-              for (let dc = 0; dc <= 1; dc++) {
-                map[r + dr][c + dc] = t;
-                brickMask[r + dr][c + dc] = t === 1 ? 15 : 0;
-                if (t === 3) bushCoords.push([r + dr, c + dc]);
-              }
-            }
-          }
-        }
-        // Base Eagle & Perimeter Walls at bottom center (cols 11..14, rows 23..25)
-        setBaseWall(1);
-        map[24][12] = 5; map[24][13] = 5;
-        map[25][12] = 5; map[25][13] = 5;
-        terrainDirty = true;
+        nextObsId = 1;
 
-        p1.x = 8 * TILE; p1.y = 22 * TILE; p1.dir = 0; p1.turretAng = 0;
-        p1.hp = 3; p1.shield = 150; p1.recoil = 0; p1.hitShake = 0;
-        p2.x = 16 * TILE; p2.y = 22 * TILE; p2.dir = 0; p2.turretAng = 0;
-        p2.hp = 3; p2.shield = 150; p2.recoil = 0; p2.hitShake = 0;
+        const rng = NexusSDK.createSeededRandom(stg * 7919 + 307);
+
+        // 在连续战场空间中按战术环带与交错通道布置非方块异形工事
+        const layoutAnchors = [
+          // 前沿交火带 (y: 120 ~ 200)
+          { x: 115, y: 145 }, { x: 215, y: 135 }, { x: 312, y: 155 }, { x: 409, y: 135 }, { x: 509, y: 145 },
+          // 中盘侧翼掩体与跳弹走廊 (y: 230 ~ 330)
+          { x: 95, y: 255 }, { x: 185, y: 245 }, { x: 265, y: 270 }, { x: 359, y: 270 }, { x: 439, y: 245 }, { x: 529, y: 255 },
+          { x: 145, y: 345 }, { x: 240, y: 360 }, { x: 312, y: 340 }, { x: 384, y: 360 }, { x: 479, y: 345 },
+          // 后卫缓冲屏障带 (y: 420 ~ 470)
+          { x: 110, y: 445 }, { x: 205, y: 440 }, { x: 312, y: 435 }, { x: 419, y: 440 }, { x: 514, y: 445 }
+        ];
+
+        layoutAnchors.forEach((pt, idx) => {
+          const jx = pt.x + (rng() - 0.5) * 18;
+          const jy = pt.y + (rng() - 0.5) * 16;
+          const rot = (rng() - 0.5) * 1.1;
+          const roll = rng();
+
+          if (roll < 0.34) {
+            obstacles.push(createHexBrick(jx, jy, 25, rot));
+          } else if (roll < 0.54) {
+            obstacles.push(createChevronSteel(jx, jy, 0.95, rot));
+          } else if (roll < 0.70) {
+            obstacles.push(createCircularPillbox(jx, jy, 23));
+          } else if (roll < 0.82) {
+            obstacles.push(createDragonTeethCluster(jx, jy, rot));
+          } else if (roll < 0.91) {
+            obstacles.push(createBasaltOutcrop(jx, jy, 25, rot));
+          } else {
+            obstacles.push(createDiagonalTrench(jx, jy, (idx % 2 === 0 ? 1 : -1) * 0.42));
+          }
+        });
+
+        // 布置椭圆形/六角形光学迷彩纳米林带
+        const bushSpots = [
+          { x: 150, y: 195 }, { x: 474, y: 195 },
+          { x: 145, y: 300 }, { x: 479, y: 300 },
+          { x: 255, y: 400 }, { x: 369, y: 400 }
+        ];
+        bushSpots.forEach((bs) => {
+          canopyBushes.push({
+            x: bs.x + (rng() - 0.5) * 16,
+            y: bs.y + (rng() - 0.5) * 16,
+            r: 28,
+            rot: rng() * Math.PI * 2
+          });
+        });
+
+        // 统帅鹰标地堡外围异形拱卫掩体
+        rebuildBasePerimeter(false);
+
+        // 初始化 1P / 2P 车体、陀螺稳定炮塔与驻停满缩圈状态
+        p1.x = 205; p1.y = 555; p1.hullAng = 0; p1.turretAng = 0; p1.vLin = 0; p1.wHull = 0; p1.wTurret = 0; p1.dispersion = DISP_MIN;
+        p1.hp = 3; p1.shield = 160; p1.recoil = 0; p1.hitShake = 0;
+        p2.x = 419; p2.y = 555; p2.hullAng = 0; p2.turretAng = 0; p2.vLin = 0; p2.wHull = 0; p2.wTurret = 0; p2.dispersion = DISP_MIN; p2.haltTimer = 0;
+        p2.hp = 3; p2.shield = 160; p2.recoil = 0; p2.hitShake = 0;
 
         enemies = [
-          { type: 'mammoth', x: 12 * TILE, y: 2 * TILE, dir: 2, turretAng: Math.PI, hp: 4, maxHp: 4, speed: 1.15, cd: 35, size: TILE * 1.85, recoil: 0, movePhase: 0, isElite: false },
-          { type: 'raider', x: 4 * TILE, y: 4 * TILE, dir: 2, turretAng: Math.PI, hp: 2, maxHp: 2, speed: 1.8, cd: 40, size: TILE * 1.8, recoil: 0, movePhase: 0, isElite: true }
+          {
+            type: 'mammoth', x: 312, y: 58, r: ENEMY_SPECS.mammoth.r, size: ENEMY_SPECS.mammoth.size,
+            hullAng: Math.PI, turretAng: Math.PI, vLin: 0, wHull: 0, wTurret: 0, dispersion: DISP_MIN, haltTimer: 0,
+            hp: ENEMY_SPECS.mammoth.hp, maxHp: ENEMY_SPECS.mammoth.hp,
+            speed: ENEMY_SPECS.mammoth.speed, turnRate: ENEMY_SPECS.mammoth.turnRate,
+            turretRate: ENEMY_SPECS.mammoth.turretRate, bulletSpd: ENEMY_SPECS.mammoth.bulletSpd,
+            cd: 50, recoil: 0, movePhase: 0, isElite: false, aiSteerTimer: 0, avoidDir: 1
+          },
+          {
+            type: 'raider', x: 110, y: 64, r: ENEMY_SPECS.raider.r, size: ENEMY_SPECS.raider.size,
+            hullAng: Math.PI * 0.85, turretAng: Math.PI * 0.9, vLin: 0, wHull: 0, wTurret: 0, dispersion: DISP_MIN, haltTimer: 0,
+            hp: ENEMY_SPECS.raider.hp, maxHp: ENEMY_SPECS.raider.hp,
+            speed: ENEMY_SPECS.raider.speed, turnRate: ENEMY_SPECS.raider.turnRate,
+            turretRate: ENEMY_SPECS.raider.turretRate, bulletSpd: ENEMY_SPECS.raider.bulletSpd,
+            cd: 55, recoil: 0, movePhase: 0, isElite: true, aiSteerTimer: 0, avoidDir: -1
+          }
         ];
+
         bullets = [];
         crates = [];
         remainingSpawns = 12 + stg * 2;
@@ -657,14 +1062,34 @@
         battleOver = false;
         modalEl.classList.remove('visible');
 
-        // Every 3rd stage spawns a Siege Boss Train at top
         if (stg % 3 === 0) {
           enemies.push({
-            type: 'boss', x: 12 * TILE, y: 1 * TILE, dir: 2, turretAng: Math.PI,
-            hp: 16 + stg * 2, maxHp: 16 + stg * 2, speed: 1.0, cd: 50, size: TILE * 2.4, recoil: 0, movePhase: 0, isElite: true
+            type: 'boss', x: 312, y: 48, r: ENEMY_SPECS.boss.r, size: ENEMY_SPECS.boss.size,
+            hullAng: Math.PI, turretAng: Math.PI, vLin: 0, wHull: 0, wTurret: 0, dispersion: DISP_MIN, haltTimer: 0,
+            hp: ENEMY_SPECS.boss.hp + stg * 2, maxHp: ENEMY_SPECS.boss.hp + stg * 2,
+            speed: ENEMY_SPECS.boss.speed, turnRate: ENEMY_SPECS.boss.turnRate,
+            turretRate: ENEMY_SPECS.boss.turretRate, bulletSpd: ENEMY_SPECS.boss.bulletSpd,
+            cd: 60, recoil: 0, movePhase: 0, isElite: true, aiSteerTimer: 0, avoidDir: 1
           });
         }
         updateHud();
+      }
+
+      function spawnFloatText(x, y, text, color = '#dfc08e') {
+        floatTexts.push({ x, y, text, color, life: 48 });
+      }
+
+      function recordTread(tank) {
+        if (Math.random() > 0.32) return;
+        const isEco = window.NexusSDK?.getSettings?.()?.particleTier === 'eco';
+        const maxTreads = isEco ? 45 : 110;
+        treadMarks.push({
+          x: tank.x,
+          y: tank.y,
+          ang: tank.hullAng,
+          alpha: 0.28
+        });
+        while (treadMarks.length > maxTreads) treadMarks.shift();
       }
 
       function triggerGameOver(reasonTitle, reasonDesc) {
@@ -691,143 +1116,403 @@
         document.querySelector('.nx-return-pill')?.click();
       });
 
+      // =========================================================================
+      // 几何碰撞与連続射线求交数学引擎 (Circle vs Polygon/Circle & Segment Raycast)
+      // =========================================================================
+
+      // 点 P 到线段 AB 的最近点
+      function closestPointOnSegment(px, py, ax, ay, bx, by) {
+        const abx = bx - ax;
+        const aby = by - ay;
+        const lenSq = abx * abx + aby * aby;
+        if (lenSq < 1e-6) return { x: ax, y: ay };
+        const t = Math.max(0, Math.min(1, ((px - ax) * abx + (py - ay) * aby) / lenSq));
+        return { x: ax + t * abx, y: ay + t * aby };
+      }
+
+      // 判断点是否在凸多边形内部
+      function pointInConvexPolygon(px, py, verts) {
+        let pos = 0, neg = 0;
+        for (let i = 0, n = verts.length; i < n; i++) {
+          const a = verts[i];
+          const b = verts[(i + 1) % n];
+          const cross = (b.x - a.x) * (py - a.y) - (b.y - a.y) * (px - a.x);
+          if (cross > 0) pos++;
+          else if (cross < 0) neg++;
+          if (pos > 0 && neg > 0) return false;
+        }
+        return true;
+      }
+
+      // 计算圆形刚体 (cx, cy, cr) 与异形障碍物的碰撞推出向量与切向滑移法线
+      function resolveCircleObstaclePenetration(cx, cy, cr, obs) {
+        const dx0 = cx - obs.x;
+        const dy0 = cy - obs.y;
+        const maxDist = cr + obs.r + 4;
+        if (dx0 * dx0 + dy0 * dy0 > maxDist * maxDist) return null;
+
+        // 圆形暗堡或圆形底座
+        if (!obs.vertices) {
+          const dist = Math.hypot(dx0, dy0) || 0.001;
+          const pen = cr + obs.r - dist;
+          if (pen > 0) {
+            return { nx: dx0 / dist, ny: dy0 / dist, pen };
+          }
+          return null;
+        }
+
+        // 凸多边形掩体 (六角蜂巢砖堡、V型防爆钢墙、三角龙牙障、玄武岩断崖、斜壕)
+        const verts = obs.vertices;
+        let minDistSq = Infinity;
+        let bestQ = null;
+        for (let i = 0, n = verts.length; i < n; i++) {
+          const a = verts[i];
+          const b = verts[(i + 1) % n];
+          const q = closestPointOnSegment(cx, cy, a.x, a.y, b.x, b.y);
+          const dqx = cx - q.x;
+          const dqy = cy - q.y;
+          const dSq = dqx * dqx + dqy * dqy;
+          if (dSq < minDistSq) {
+            minDistSq = dSq;
+            bestQ = q;
+          }
+        }
+        const inside = pointInConvexPolygon(cx, cy, verts);
+        const dist = Math.sqrt(minDistSq);
+        if (inside) {
+          const nx = (cx - obs.x) / (Math.hypot(cx - obs.x, cy - obs.y) || 1);
+          const ny = (cy - obs.y) / (Math.hypot(cx - obs.x, cy - obs.y) || 1);
+          return { nx, ny, pen: cr + dist };
+        }
+        if (dist < cr) {
+          const nx = dist > 1e-4 ? (cx - bestQ.x) / dist : (cx - obs.x) / (Math.hypot(cx - obs.x, cy - obs.y) || 1);
+          const ny = dist > 1e-4 ? (cy - bestQ.y) / dist : (cy - obs.y) / (Math.hypot(cx - obs.x, cy - obs.y) || 1);
+          return { nx, ny, pen: cr - dist };
+        }
+        return null;
+      }
+
+      // 移动战车并执行与所有异形掩体的连续切向滑动导流 (Zero-Snag Tangential Sliding)
+      function moveTankWithPolygonSliding(tank, dt) {
+        const hx = Math.sin(tank.hullAng);
+        const hy = -Math.cos(tank.hullAng);
+        let vx = hx * tank.vLin;
+        let vy = hy * tank.vLin;
+
+        tank.x += vx * dt;
+        tank.y += vy * dt;
+
+        // 战场边界约束
+        const margin = tank.r + 4;
+        if (tank.x < margin) tank.x = margin;
+        if (tank.x > LOGICAL_SIZE - margin) tank.x = LOGICAL_SIZE - margin;
+        if (tank.y < margin) tank.y = margin;
+        if (tank.y > LOGICAL_SIZE - margin) tank.y = LOGICAL_SIZE - margin;
+
+        // 与异形障碍物多边形及统帅鹰标核心迭代解算切向滑移
+        for (let iter = 0; iter < 2; iter++) {
+          for (let i = 0; i < obstacles.length; i++) {
+            const obs = obstacles[i];
+            const hit = resolveCircleObstaclePenetration(tank.x, tank.y, tank.r, obs);
+            if (hit) {
+              tank.x += hit.nx * hit.pen;
+              tank.y += hit.ny * hit.pen;
+            }
+          }
+          // 统帅鹰标核心八角底座碰撞
+          const dBaseX = tank.x - eagleBase.x;
+          const dBaseY = tank.y - eagleBase.y;
+          const distBase = Math.hypot(dBaseX, dBaseY) || 1;
+          if (distBase < tank.r + eagleBase.r) {
+            const pen = tank.r + eagleBase.r - distBase;
+            tank.x += (dBaseX / distBase) * pen;
+            tank.y += (dBaseY / distBase) * pen;
+          }
+          // 战车与战车之间的圆-圆刚体防穿模排斥 (1P、2P 与全体敌坦互不重叠)
+          const allTanks = [p1, p2, ...enemies];
+          for (let j = 0; j < allTanks.length; j++) {
+            const other = allTanks[j];
+            if (!other || other === tank || other.hp <= 0) continue;
+            const dxT = tank.x - other.x;
+            const dyT = tank.y - other.y;
+            const minSep = (tank.r || 18) + (other.r || 18);
+            const distSq = dxT * dxT + dyT * dyT;
+            if (distSq < minSep * minSep) {
+              const distT = Math.sqrt(distSq) || 0.01;
+              const penT = minSep - distT;
+              const nxT = dxT / distT;
+              const nyT = dyT / distT;
+              tank.x += nxT * penT * 0.65;
+              tank.y += nyT * penT * 0.65;
+              other.x = Math.max(other.r + 4, Math.min(LOGICAL_SIZE - other.r - 4, other.x - nxT * penT * 0.35));
+              other.y = Math.max(other.r + 4, Math.min(LOGICAL_SIZE - other.r - 4, other.y - nyT * penT * 0.35));
+            }
+          }
+        }
+      }
+
+      // 两个有向线段 P1->P2 与 A->B 的精确交点与外法线求解 (用于高初速穿甲弹 CCD 防穿模与跳弹)
+      function intersectSegmentSegment(p1x, p1y, p2x, p2y, ax, ay, bx, by) {
+        const rx = p2x - p1x;
+        const ry = p2y - p1y;
+        const sx = bx - ax;
+        const sy = by - ay;
+        const rxs = rx * sy - ry * sx;
+        if (Math.abs(rxs) < 1e-6) return null;
+        const qpx = ax - p1x;
+        const qpy = ay - p1y;
+        const t = (qpx * sy - qpy * sx) / rxs;
+        const u = (qpx * ry - qpy * rx) / rxs;
+        if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+          const edgeLen = Math.hypot(sx, sy) || 1;
+          // 顺时针多边形顶点的外法线为 (sy / edgeLen, -sx / edgeLen)
+          let nx = sy / edgeLen;
+          let ny = -sx / edgeLen;
+          if (nx * rx + ny * ry > 0) {
+            nx = -nx;
+            ny = -ny;
+          }
+          return { t, x: p1x + t * rx, y: p1y + t * ry, nx, ny };
+        }
+        return null;
+      }
+
+      // 线段 P1->P2 与圆 (cx, cy, r) 的首次交点与法线求解
+      function intersectSegmentCircle(p1x, p1y, p2x, p2y, cx, cy, r) {
+        const dx = p2x - p1x;
+        const dy = p2y - p1y;
+        const fx = p1x - cx;
+        const fy = p1y - cy;
+        const a = dx * dx + dy * dy;
+        if (a < 1e-6) return null;
+        const b = 2 * (fx * dx + fy * dy);
+        const c = fx * fx + fy * fy - r * r;
+        let disc = b * b - 4 * a * c;
+        if (disc < 0) return null;
+        disc = Math.sqrt(disc);
+        const t = (-b - disc) / (2 * a);
+        if (t >= 0 && t <= 1) {
+          const hx = p1x + t * dx;
+          const hy = p1y + t * dy;
+          const len = Math.hypot(hx - cx, hy - cy) || 1;
+          return { t, x: hx, y: hy, nx: (hx - cx) / len, ny: (hy - cy) / len };
+        }
+        return null;
+      }
+
+      // 高初速穿甲弹连续碰撞检测 (CCD Raycast vs. Polygon/Circle Obstacles)
+      function traceBulletObstacles(x0, y0, x1, y1) {
+        let bestHit = null;
+        for (let i = 0; i < obstacles.length; i++) {
+          const obs = obstacles[i];
+          if (obs.allowBulletPass) continue; // 龙牙锥与反坦克壕沟允许高初速炮弹飞越
+
+          // 快速包围球剔除
+          const midX = (x0 + x1) * 0.5;
+          const midY = (y0 + y1) * 0.5;
+          const halfStep = Math.hypot(x1 - x0, y1 - y0) * 0.5 + obs.r + 6;
+          if (Math.hypot(midX - obs.x, midY - obs.y) > halfStep) continue;
+
+          if (!obs.vertices) {
+            const h = intersectSegmentCircle(x0, y0, x1, y1, obs.x, obs.y, obs.r);
+            if (h && (!bestHit || h.t < bestHit.t)) {
+              bestHit = { ...h, obs, obsIndex: i };
+            }
+          } else {
+            const verts = obs.vertices;
+            for (let k = 0, n = verts.length; k < n; k++) {
+              const va = verts[k];
+              const vb = verts[(k + 1) % n];
+              const h = intersectSegmentSegment(x0, y0, x1, y1, va.x, va.y, vb.x, vb.y);
+              if (h && (!bestHit || h.t < bestHit.t)) {
+                bestHit = { ...h, obs, obsIndex: i };
+              }
+            }
+          }
+        }
+        return bestHit;
+      }
+
+      // 对异形掩体造成局部扇区剥落或跳弹响应
+      function handleBulletObstacleHit(bullet, hit) {
+        const obs = hit.obs;
+        const speed = Math.hypot(bullet.vx, bullet.vy) || 1;
+        const ux = bullet.vx / speed;
+        const uy = bullet.vy / speed;
+        const cosIncidence = Math.abs(ux * hit.nx + uy * hit.ny); // cos(入射角)
+
+        if (obs.kind === 'hex-brick') {
+          // 六角蜂巢复合砖堡：按受击方位剥落对应扇区并扣减耐久
+          const relAng = normalizeAngle(Math.atan2(hit.y - obs.y, hit.x - obs.x) - obs.rot);
+          let bit = 1;
+          if (relAng >= -Math.PI && relAng < -Math.PI * 0.5) bit = 4; // TL
+          else if (relAng >= -Math.PI * 0.5 && relAng < 0) bit = 8;    // TR
+          else if (relAng >= 0 && relAng < Math.PI * 0.5) bit = 2;     // BR
+          else bit = 1;                                                // BL
+
+          if (bullet.breakSteel || bullet.dmg >= 3) {
+            obs.hp = 0;
+            obs.sectorMask = 0;
+          } else {
+            obs.hp -= bullet.dmg;
+            obs.sectorMask &= ~bit;
+            if (obs.sectorMask === 0) obs.hp = 0;
+          }
+          explode(hit.x, hit.y, '#b5604a', 8);
+          NexusSDK.audio.hit();
+          if (obs.hp <= 0) {
+            obstacles.splice(hit.obsIndex, 1);
+          }
+          terrainDirty = true;
+          syncObstacleDamageOverLan(obs);
+          return 'consumed';
+        }
+
+        if (obs.kind === 'pillbox') {
+          // 圆形钢筋混凝土暗堡：承受多发穿甲弹后坍塌
+          obs.hp -= bullet.breakSteel ? 2 : 1;
+          explode(hit.x, hit.y, '#9aa8bd', 7);
+          NexusSDK.audio.hit();
+          if (obs.hp <= 0) {
+            obstacles.splice(hit.obsIndex, 1);
+          }
+          terrainDirty = true;
+          syncObstacleDamageOverLan(obs);
+          return 'consumed';
+        }
+
+        if (obs.kind === 'chevron-steel') {
+          // V 型折角防爆钢墙：3~4 阶重炮正入射可击毁；否则大倾角擦碰触发真实物理镜面跳弹 (Ricochet)
+          if (bullet.breakSteel && cosIncidence > 0.55) {
+            obs.hp -= bullet.dmg * 2;
+            explode(hit.x, hit.y, '#dfc08e', 10);
+            NexusSDK.audio.hit();
+            if (obs.hp <= 0) {
+              obstacles.splice(hit.obsIndex, 1);
+              terrainDirty = true;
+            }
+            syncObstacleDamageOverLan(obs);
+            return 'consumed';
+          }
+
+          // 斜面镜面反射跳弹：v' = v - 2(v·n)n (最多跳弹 1 次)
+          if ((bullet.bounces || 0) < 1 && cosIncidence < 0.82) {
+            const dot = bullet.vx * hit.nx + bullet.vy * hit.ny;
+            bullet.vx = (bullet.vx - 2 * dot * hit.nx) * 0.90;
+            bullet.vy = (bullet.vy - 2 * dot * hit.ny) * 0.90;
+            bullet.x = hit.x + hit.nx * 3.5;
+            bullet.y = hit.y + hit.ny * 3.5;
+            bullet.bounces = (bullet.bounces || 0) + 1;
+            explode(hit.x, hit.y, '#dfc08e', 9);
+            NexusSDK.audio.hit();
+            return 'ricochet';
+          }
+
+          explode(hit.x, hit.y, '#9eb0c7', 6);
+          NexusSDK.audio.hit();
+          return 'consumed';
+        }
+
+        // 玄武岩断崖：吸收炮弹并迸发石屑火花
+        explode(hit.x, hit.y, '#8598b0', 6);
+        NexusSDK.audio.hit();
+        return 'consumed';
+      }
+
+      function syncObstacleDamageOverLan(obs) {
+        if (lan.isConnected()) {
+          lan.sendReliable({
+            type: 'poly_obs_hit',
+            id: obs.id,
+            hp: obs.hp,
+            sectorMask: obs.sectorMask || 0
+          });
+        }
+      }
+
       function spawnEnemy() {
         if (remainingSpawns <= 0 || enemies.length >= 6) return;
-        const spawnCols = [1, 12, 23];
-        const col = spawnCols[remainingSpawns % 3];
+        const spawnXList = [72, 312, 552];
+        const sx = spawnXList[remainingSpawns % 3];
         const types = ['scout', 'raider', 'shooter', 'mammoth'];
         const type = types[(remainingSpawns + stage) % types.length];
-        const hpMap = { scout: 1, raider: 1, shooter: 2, mammoth: 4 };
-        const spdMap = { scout: 1.7, raider: 2.2, shooter: 1.6, mammoth: 1.15 };
+        const sp = ENEMY_SPECS[type] || ENEMY_SPECS.scout;
         const isElite = (remainingSpawns % 4 === 0);
         enemies.push({
           type,
-          x: col * TILE,
-          y: 1 * TILE,
-          dir: 2,
+          x: sx,
+          y: 44,
+          r: sp.r,
+          size: sp.size,
+          hullAng: Math.PI,
           turretAng: Math.PI,
-          hp: hpMap[type],
-          maxHp: hpMap[type],
-          speed: spdMap[type],
-          cd: 40,
-          size: TILE * 1.8,
+          vLin: 0,
+          wHull: 0,
+          wTurret: 0,
+          dispersion: DISP_MIN,
+          haltTimer: 0,
+          hp: sp.hp,
+          maxHp: sp.hp,
+          speed: sp.speed,
+          turnRate: sp.turnRate,
+          turretRate: sp.turretRate,
+          bulletSpd: sp.bulletSpd,
+          cd: 55,
           recoil: 0,
           movePhase: 0,
-          isElite
+          isElite,
+          aiSteerTimer: 0,
+          avoidDir: remainingSpawns % 2 === 0 ? 1 : -1
         });
         remainingSpawns--;
         updateHud();
       }
 
-      // 支持四象限砖墙精确子块碰撞检测
-      function canMoveRect(nx, ny, size = TILE * 1.75) {
-        if (nx < 0 || ny < 0 || nx + size > GRID * TILE || ny + size > GRID * TILE) return false;
-        const c0 = Math.floor(nx / TILE);
-        const c1 = Math.floor((nx + size - 1) / TILE);
-        const r0 = Math.floor(ny / TILE);
-        const r1 = Math.floor((ny + size - 1) / TILE);
-        const half = TILE / 2;
-        for (let r = r0; r <= r1; r++) {
-          for (let c = c0; c <= c1; c++) {
-            const t = map[r]?.[c];
-            if (t === 2 || t === 4 || t === 5) return false;
-            if (t === 1) {
-              const mask = brickMask[r]?.[c] || 0;
-              if (mask === 0) continue;
-              const tx = c * TILE;
-              const ty = r * TILE;
-              const quadrants = [
-                { bit: 1, x0: tx, y0: ty, x1: tx + half, y1: ty + half },
-                { bit: 2, x0: tx + half, y0: ty, x1: tx + TILE, y1: ty + half },
-                { bit: 4, x0: tx, y0: ty + half, x1: tx + half, y1: ty + TILE },
-                { bit: 8, x0: tx + half, y0: ty + half, x1: tx + TILE, y1: ty + TILE }
-              ];
-              for (const q of quadrants) {
-                if ((mask & q.bit) && nx < q.x1 && nx + size > q.x0 && ny < q.y1 && ny + size > q.y0) {
-                  return false;
-                }
-              }
-            }
-          }
-        }
-        return true;
-      }
-
-      // 四象限砖墙局部碎裂判定：普通炮弹仅剥离命中的 1~2 个子象限，Lv.3 重炮整块贯穿
-      function damageBrickTile(r, c, bx, by, vx, vy, breakSteel) {
-        if (map[r]?.[c] !== 1) return false;
-        if (breakSteel) {
-          brickMask[r][c] = 0;
-          map[r][c] = 0;
-          terrainDirty = true;
-          return true;
-        }
-        let mask = brickMask[r][c] || 15;
-        const lx = bx - c * TILE;
-        const ly = by - r * TILE;
-        const half = TILE / 2;
-        let hitBit = 0;
-        if (ly < half) {
-          hitBit = lx < half ? 1 : 2;
-        } else {
-          hitBit = lx < half ? 4 : 8;
-        }
-        // 若命中的子块已碎，则沿弹道方向剥离相邻象限
-        if ((mask & hitBit) === 0) {
-          if (Math.abs(vy) >= Math.abs(vx)) {
-            const rowBits = ly < half ? (1 | 2) : (4 | 8);
-            if (mask & rowBits) hitBit = mask & rowBits;
-            else hitBit = mask & (-mask);
-          } else {
-            const colBits = lx < half ? (1 | 4) : (2 | 8);
-            if (mask & colBits) hitBit = mask & colBits;
-            else hitBit = mask & (-mask);
-          }
-        }
-        brickMask[r][c] = mask & (~hitBit);
-        if (brickMask[r][c] === 0) {
-          map[r][c] = 0;
-        }
-        terrainDirty = true;
-        return true;
-      }
-
       function spawnRandomCrate(x, y) {
         const spec = CRATE_TYPES[Math.floor(Math.random() * CRATE_TYPES.length)];
-        crates.push({
-          x: x ?? (2 + Math.floor(Math.random() * 20)) * TILE,
-          y: y ?? (4 + Math.floor(Math.random() * 16)) * TILE,
-          life: 600,
+        const newCrate = {
+          x: x ?? (90 + Math.random() * 444),
+          y: y ?? (120 + Math.random() * 340),
+          life: 660,
           kind: spec.kind,
+          tag: spec.tag,
           label: spec.label,
           color: spec.color,
           rot: 0
-        });
+        };
+        crates.push(newCrate);
+        if (lan.isConnected() && lanRole === 'host') {
+          lan.sendReliable({ type: 'crate_spawn', crate: newCrate });
+        }
       }
 
       function applyCrateEffect(cr, collectorTank) {
         NexusSDK.audio.pickup();
         saveData.currency.tankCoins += 60;
-        spawnFloatText(cr.x + TILE * 0.8, cr.y, cr.label, cr.color);
+        spawnFloatText(cr.x, cr.y - 12, cr.label, cr.color);
 
         if (cr.kind === 'star') {
           collectorTank.rank = Math.min(4, (collectorTank.rank || 1) + 1);
           if (collectorTank === p1) saveData.rank = p1.rank;
         } else if (cr.kind === 'fortify') {
           fortifyTimer = 1200;
-          setBaseWall(2);
+          rebuildBasePerimeter(true);
         } else if (cr.kind === 'emp') {
-          empTimer = 360; // 6.0 秒全屏敌军电磁静默瘫痪
-          explode(cr.x + TILE * 0.8, cr.y + TILE * 0.8, '#c48f5a', 16);
+          empTimer = 600; // 10.0 秒全场敌坦火控与推进瘫痪 (60Hz * 10s)
+          explode(cr.x, cr.y, '#c48f5a', 18);
         } else if (cr.kind === 'nuke') {
-          // 全屏轨道轰炸
           for (let j = enemies.length - 1; j >= 0; j--) {
             const en = enemies[j];
-            en.hp -= 8;
-            explode(en.x + TILE, en.y + TILE, '#dfc08e', 16);
+            if (en.type !== 'boss') {
+              en.hp = 0;
+            } else {
+              en.hp = Math.max(1, en.hp - 6);
+            }
+            explode(en.x, en.y, '#dfc08e', 16);
             if (en.hp <= 0) {
-              score += en.type === 'boss' ? 1500 : 200;
-              saveData.currency.tankCoins += en.type === 'boss' ? 150 : 25;
+              const bSpec = ENEMY_BOUNTIES[en.type] || ENEMY_BOUNTIES.scout;
+              score += bSpec.score;
+              saveData.currency.tankCoins += bSpec.coins;
               enemies.splice(j, 1);
             }
           }
@@ -841,88 +1526,182 @@
         updateHud();
       }
 
+      // 敌我统一高初速穿甲击发函数 (共享动态移动散布角采样 + 驻停满缩圈「定点精密穿甲」奖励 + 开火后坐力瞬态扩圈)
       function fireTank(tank, owner) {
         if (battleOver || tank.cd > 0) return;
-        const rank = tank.rank || 1;
-        tank.cd = rank >= 2 ? 14 : 22;
-        tank.recoil = 1.0; // 触发炮管轴向后坐力骨骼动画 (part-barrel-main recoil-y)
-        const d = DIRS[tank.dir];
-        tank.turretAng = d.ang;
-        const speed = rank >= 1 ? 6.8 : 5.2;
-        bullets.push({
-          x: tank.x + TILE * 0.9 + d.dx * 14,
-          y: tank.y + TILE * 0.9 + d.dy * 14,
-          vx: d.dx * speed,
-          vy: d.dy * speed,
-          owner,
-          breakSteel: rank >= 3,
-          dmg: rank >= 2 ? 2 : 1
+        const isEnemy = owner === 'enemy';
+        const rSpec = isEnemy ? null : RANK_SPECS[Math.min(4, Math.max(0, tank.rank || 1))];
+        const eSpec = isEnemy ? (ENEMY_SPECS[tank.type] || ENEMY_SPECS.scout) : null;
+
+        if (!isEnemy) {
+          const myActiveShots = bullets.filter((b) => b.owner === owner).length;
+          if (myActiveShots >= rSpec.maxShots + 1) return;
+          const reloadFrames = owner === 'p2' ? 108 : (rSpec.cdFrames || 96);
+          tank.cd = reloadFrames;
+          tank.maxCd = reloadFrames;
+        } else {
+          const reloadFrames = eSpec.cdFrames || 132;
+          tank.cd = reloadFrames;
+          tank.maxCd = reloadFrames;
+        }
+        tank.recoil = 1.0;
+
+        // 计算当前散布半角 sigma 与是否触发「驻停定点精密射击」奖励 (精度 >= 92% 且车体静止)
+        const sigma = tank.dispersion ?? DISP_MIN;
+        const accPct = getTankAccuracyPct(tank);
+        const isPinpoint = Math.abs(tank.vLin || 0) < 2.2 && Math.abs(tank.wHull || 0) < 0.08 && accPct >= 92;
+
+        // 三角分布弹道偏角采样：运动中散布大，驻停缩圈后趋近于 0° 激光精度
+        const jitter = isPinpoint ? (Math.random() - 0.5) * 0.004 : ((Math.random() - Math.random()) * sigma);
+        const shotAng = tank.turretAng + jitter;
+
+        // 炮口方向仍取 tank.turretAng 计算出膛起点，飞行速度矢量取带散布偏角的 shotAng
+        const muzzleX = Math.sin(tank.turretAng);
+        const muzzleY = -Math.cos(tank.turretAng);
+
+        // 定点精密射击奖励：穿甲弹初速额外 +12% 膛压增益 (敌我同享)，且我方 2 阶以上附加弱点高爆破片 (+1 伤害)
+        const baseBulletSpd = isEnemy ? (tank.bulletSpd || eSpec.bulletSpd || 720) : rSpec.bulletSpd;
+        const speed = Math.round(baseBulletSpd * (isPinpoint ? 1.12 : 1.0));
+        const hasFragBonus = isPinpoint && !isEnemy && (tank.rank || 1) >= 2;
+        const shotDmg = isEnemy ? 1 : (rSpec.dmg + (hasFragBonus ? 1 : 0));
+
+        // 击发后坐力引发瞬时扩圈脉冲 (+0.11 rad，敌我同享)
+        tank.dispersion = Math.min(DISP_MAX, sigma + 0.11);
+
+        // 铁幕攻城列车首领 (boss) 触发三联高初速扇形穿甲弹幕，其余单位发射主炮穿甲弹
+        const fanOffsets = (isEnemy && tank.type === 'boss') ? [-0.14, 0, 0.14] : [0];
+        fanOffsets.forEach((off) => {
+          const finalAng = shotAng + off;
+          const dirX = Math.sin(finalAng);
+          const dirY = -Math.cos(finalAng);
+          bullets.push({
+            x: tank.x + muzzleX * 22,
+            y: tank.y + muzzleY * 22,
+            prevX: tank.x + muzzleX * 10,
+            prevY: tank.y + muzzleY * 10,
+            vx: dirX * speed,
+            vy: dirY * speed,
+            owner,
+            breakSteel: isEnemy ? (tank.type === 'boss') : rSpec.breakSteel,
+            dmg: shotDmg,
+            fragBonus: hasFragBonus,
+            pinpoint: isPinpoint,
+            bounces: 0
+          });
         });
-        if (owner === 'p1') {
+
+        if (owner === 'p1' || (owner === 'p2' && lan.isConnected() && lanRole === 'client')) {
           NexusSDK.audio.shoot();
-          if (lan.isConnected()) {
-            lan.sendFast({ type: 'p2_state', x: p1.x, y: p1.y, dir: p1.dir, fire: true });
+          if (window.NexusSDK?.getSettings?.()?.haptics && navigator.vibrate) {
+            navigator.vibrate(14);
+          }
+          updateHud();
+          if (lan.isConnected() && lanRole === 'client' && owner === 'p2') {
+            lan.sendFast({
+              type: 'p2_state',
+              x: Math.round(p2.x),
+              y: Math.round(p2.y),
+              hullAng: Number(p2.hullAng.toFixed(3)),
+              turretAng: Number(p2.turretAng.toFixed(3)),
+              dispersion: Number(p2.dispersion.toFixed(3)),
+              fire: true
+            });
           }
         }
       }
 
       function explode(x, y, color = '#d8b584', count = 10) {
-        for (let i = 0; i < count; i++) {
-          const a = (Math.PI * 2 * i) / count + Math.random() * 0.4;
-          const sp = 1.4 + Math.random() * 2.8;
+        const isEco = window.NexusSDK?.getSettings?.()?.particleTier === 'eco';
+        const effCount = isEco ? Math.max(3, Math.ceil(count * 0.5)) : count;
+        for (let i = 0; i < effCount; i++) {
+          const a = (Math.PI * 2 * i) / effCount + Math.random() * 0.4;
+          const sp = 1.6 + Math.random() * 3.2;
           particles.push({
             x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
-            life: 18 + Math.floor(Math.random() * 10), color
+            life: 16 + Math.floor(Math.random() * 10), color
           });
         }
       }
 
-      // Input Handling (Touch D-Pad + Keyboard)
-      let activeDir = -1;
+      // =========================================================================
+      // 输入控制：左侧车体参照系方向键 + 右侧开火键双翼独立炮塔旋转按钮 (支持多点触控无冲)
+      // =========================================================================
+      const activeHullCommands = new Set();
+      let turretTurnDir = 0; // -1: 炮塔逆时针左旋, +1: 炮塔顺时针右旋
+      let turretHoldFrames = 0;
       const keys = {};
+
       window.addEventListener('keydown', (e) => {
         keys[e.code] = true;
-        if (e.code === 'KeyW' || e.code === 'ArrowUp') activeDir = 0;
-        if (e.code === 'KeyD' || e.code === 'ArrowRight') activeDir = 1;
-        if (e.code === 'KeyS' || e.code === 'ArrowDown') activeDir = 2;
-        if (e.code === 'KeyA' || e.code === 'ArrowLeft') activeDir = 3;
-        if (e.code === 'Space' || e.code === 'KeyJ') fireTank(p1, 'p1');
+        if (e.code === 'Space' || e.code === 'KeyK') {
+          e.preventDefault();
+          const isClient = lan.isConnected() && lanRole === 'client';
+          fireTank(isClient ? p2 : p1, isClient ? 'p2' : 'p1');
+        }
       });
       window.addEventListener('keyup', (e) => {
         keys[e.code] = false;
-        if (
-          !keys['KeyW'] && !keys['ArrowUp'] &&
-          !keys['KeyD'] && !keys['ArrowRight'] &&
-          !keys['KeyS'] && !keys['ArrowDown'] &&
-          !keys['KeyA'] && !keys['ArrowLeft']
-        ) {
-          activeDir = -1;
-        }
       });
 
-      document.querySelectorAll('.dpad-btn').forEach((btn) => {
-        const d = Number(btn.getAttribute('data-dir'));
+      // 绑定左翼车体参照系 (Tank-Centric) 方向键
+      document.querySelectorAll('#hull-dpad .dpad-btn').forEach((btn) => {
+        const cmd = btn.getAttribute('data-hull');
         const start = (e) => {
           e.preventDefault();
-          activeDir = d;
+          activeHullCommands.add(cmd);
           btn.classList.add('pressed');
         };
         const end = (e) => {
           e.preventDefault();
-          if (activeDir === d) activeDir = -1;
+          activeHullCommands.delete(cmd);
           btn.classList.remove('pressed');
         };
         btn.addEventListener('pointerdown', start);
         btn.addEventListener('pointerup', end);
+        btn.addEventListener('pointercancel', end);
         btn.addEventListener('pointerleave', end);
       });
 
-      document.getElementById('btn-fire').addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        fireTank(p1, 'p1');
-      });
+      // 绑定右翼开火键两侧的独立炮塔左旋 / 右旋按钮
+      const btnTurretCcw = document.getElementById('btn-turret-ccw');
+      const btnTurretCw = document.getElementById('btn-turret-cw');
+      const btnFire = document.getElementById('btn-fire');
 
-      // LAN Dual-Channel Session (Host 权威世界快照 + 四象限砖墙同步)
+      function bindTurretBtn(btn, dirVal) {
+        const start = (e) => {
+          e.preventDefault();
+          turretTurnDir = dirVal;
+          turretHoldFrames = 0;
+          btn.classList.add('pressed');
+        };
+        const end = (e) => {
+          e.preventDefault();
+          if (turretTurnDir === dirVal) {
+            turretTurnDir = 0;
+            turretHoldFrames = 0;
+          }
+          btn.classList.remove('pressed');
+        };
+        btn.addEventListener('pointerdown', start);
+        btn.addEventListener('pointerup', end);
+        btn.addEventListener('pointercancel', end);
+        btn.addEventListener('pointerleave', end);
+      }
+      bindTurretBtn(btnTurretCcw, -1);
+      bindTurretBtn(btnTurretCw, 1);
+
+      btnFire.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        btnFire.classList.add('pressed');
+        const isClient = lan.isConnected() && lanRole === 'client';
+        fireTank(isClient ? p2 : p1, isClient ? 'p2' : 'p1');
+      });
+      const releaseFire = () => btnFire.classList.remove('pressed');
+      btnFire.addEventListener('pointerup', releaseFire);
+      btnFire.addEventListener('pointercancel', releaseFire);
+      btnFire.addEventListener('pointerleave', releaseFire);
+
+      // 局域网双通道同步 (360° 连续车体角 hullAng + 炮塔角 turretAng + 异形工事毁伤)
       const lan = NexusSDK.createLanSession('tank-battle', store.getAuth().room);
       let lanRole = 'host';
 
@@ -930,16 +1709,16 @@
         const el = document.getElementById('hud-lan');
         lanRole = st.role || 'host';
         if (st.connected) {
-          el.textContent = `LAN 已直连 (${st.peerLatencyMs}ms · ${lanRole.toUpperCase()})`;
+          el.textContent = `LAN 1~5ms (${lanRole.toUpperCase()})`;
           el.style.color = '#dfc08e';
           p2.isRemote = true;
         } else if (st.failoverActive) {
-          el.textContent = '3s 断线自愈 · AI 僚机已接管';
+          el.textContent = '3s 自愈 · AI 僚机接管';
           el.style.color = '#c48f5a';
           p2.isRemote = false;
         } else {
-          el.textContent = 'AI 战术僚机协同中';
-          el.style.color = '#9eb0c7';
+          el.textContent = '360° 陀螺火控协同';
+          el.style.color = '#c48f5a';
           p2.isRemote = false;
         }
       });
@@ -949,15 +1728,45 @@
         if (msg.type === 'p2_state') {
           p2.x = Number(msg.x) || p2.x;
           p2.y = Number(msg.y) || p2.y;
-          p2.dir = Number(msg.dir) || 0;
+          if (typeof msg.hullAng === 'number') p2.hullAng = msg.hullAng;
+          if (typeof msg.turretAng === 'number') p2.turretAng = msg.turretAng;
+          if (typeof msg.dispersion === 'number') p2.dispersion = msg.dispersion;
           p2.movePhase += 0.35;
-          if (msg.fire) fireTank(p2, 'p2');
+          if (msg.fire && lanRole === 'host') fireTank(p2, 'p2');
         } else if (msg.type === 'world_sync' && lanRole === 'client') {
+          if (msg.p1 && typeof msg.p1 === 'object') {
+            p1.x = Number(msg.p1.x) || p1.x;
+            p1.y = Number(msg.p1.y) || p1.y;
+            if (typeof msg.p1.hullAng === 'number') p1.hullAng = msg.p1.hullAng;
+            if (typeof msg.p1.turretAng === 'number') p1.turretAng = msg.p1.turretAng;
+            if (typeof msg.p1.dispersion === 'number') p1.dispersion = msg.p1.dispersion;
+            if (typeof msg.p1.hp === 'number') p1.hp = msg.p1.hp;
+            if (typeof msg.p1.rank === 'number') p1.rank = msg.p1.rank;
+            if (typeof msg.p1.lives === 'number') p1.lives = msg.p1.lives;
+            if (typeof msg.p1.shield === 'number') p1.shield = msg.p1.shield;
+          }
+          if (msg.p2 && typeof msg.p2 === 'object') {
+            if (typeof msg.p2.hp === 'number') p2.hp = msg.p2.hp;
+            if (typeof msg.p2.rank === 'number') p2.rank = msg.p2.rank;
+            if (typeof msg.p2.shield === 'number') p2.shield = msg.p2.shield;
+          }
           if (Array.isArray(msg.enemies)) enemies = msg.enemies;
-          if (Array.isArray(msg.bullets)) bullets = msg.bullets;
+          if (Array.isArray(msg.bullets)) {
+            bullets = msg.bullets.map((b) => ({
+              ...b,
+              dmg: Number(b.dmg) || 1,
+              breakSteel: !!b.breakSteel,
+              fragBonus: !!b.fragBonus
+            }));
+          }
           if (typeof msg.empTimer === 'number') empTimer = msg.empTimer;
           if (typeof msg.fortifyTimer === 'number') fortifyTimer = msg.fortifyTimer;
           if (typeof msg.remainingSpawns === 'number') remainingSpawns = msg.remainingSpawns;
+          if (typeof msg.score === 'number') score = msg.score;
+          if (typeof msg.stage === 'number' && msg.stage !== stage) {
+            stage = msg.stage;
+            buildStageMap(stage);
+          }
           updateHud();
         }
       });
@@ -966,13 +1775,14 @@
         if (!msg || typeof msg !== 'object') return;
         if (msg.type === 'fortify') {
           fortifyTimer = 1200;
-          setBaseWall(2);
+          rebuildBasePerimeter(true);
           NexusSDK.audio.upgrade();
-        } else if (msg.type === 'brick_hit') {
-          const { r, c, mask, tile } = msg;
-          if (map[r] && brickMask[r]) {
-            brickMask[r][c] = mask;
-            map[r][c] = tile;
+        } else if (msg.type === 'poly_obs_hit') {
+          const idx = obstacles.findIndex((o) => o.id === msg.id);
+          if (idx >= 0) {
+            obstacles[idx].hp = msg.hp;
+            obstacles[idx].sectorMask = msg.sectorMask;
+            if (obstacles[idx].hp <= 0) obstacles.splice(idx, 1);
             terrainDirty = true;
           }
         } else if (msg.type === 'crate_spawn' && msg.crate) {
@@ -980,39 +1790,98 @@
         }
       });
 
-      function updateAIWingman() {
+      // 2P 智能 AI 僚机：与玩家/敌坦同源调用 stepTankKinematicsAndDispersion + fireTank
+      function updateAIWingman(dt) {
         if (p2.isRemote && lan.isConnected()) return;
-        if (Math.random() < 0.04) {
-          const target = enemies[0];
-          if (target) {
-            const dx = target.x - p2.x;
-            const dy = target.y - p2.y;
-            if (Math.abs(dx) > Math.abs(dy)) p2.dir = dx > 0 ? 1 : 3;
-            else p2.dir = dy > 0 ? 2 : 0;
+        const target = enemies[0];
+        const patrolX = 410 + Math.sin(performance.now() * 0.0008) * 75;
+        const patrolY = 485 + Math.cos(performance.now() * 0.0006) * 45;
+        const destX = target ? (target.x * 0.35 + patrolX * 0.65) : patrolX;
+        const destY = target ? Math.min(545, Math.max(360, target.y + 160)) : patrolY;
+
+        let tDiff = Math.PI;
+        if (target) {
+          const aimAng = Math.atan2(target.x - p2.x, -(target.y - p2.y));
+          tDiff = shortestAngleDiff(p2.turretAng, aimAng);
+        }
+
+        // 若目标进入射界且主炮装填临近，触发短停制动缩圈 (Short-Halt Brake)
+        if (target && Math.abs(tDiff) < 0.35 && p2.cd <= 14 && (p2.haltTimer || 0) <= 0 && (p2.dispersion || DISP_MIN) > 0.036) {
+          p2.haltTimer = 34;
+        }
+
+        let p2Throttle = 0;
+        let p2Steer = 0;
+        const prevX = p2.x, prevY = p2.y;
+
+        if ((p2.haltTimer || 0) > 0) {
+          p2.haltTimer--;
+          p2Throttle = 0;
+          p2Steer = 0;
+        } else {
+          const desiredHullAng = Math.atan2(destX - p2.x, -(destY - p2.y));
+          if ((p2.aiSteerTimer || 0) > 0) {
+            p2.aiSteerTimer--;
+            p2Steer = p2.avoidDir || 1;
           } else {
-            p2.dir = Math.floor(Math.random() * 4);
+            const hullDiff = shortestAngleDiff(p2.hullAng, desiredHullAng);
+            if (Math.abs(hullDiff) > 0.06) {
+              p2Steer = Math.sign(hullDiff) * Math.min(1, Math.abs(hullDiff) / (1.50 * dt));
+            }
+          }
+          if (Math.hypot(destX - p2.x, destY - p2.y) > 24) {
+            p2Throttle = 1;
           }
         }
-        const d = DIRS[p2.dir];
-        const nx = p2.x + d.dx * 1.9;
-        const ny = p2.y + d.dy * 1.9;
-        if (canMoveRect(nx, ny)) {
-          p2.x = nx; p2.y = ny;
-          p2.movePhase += 0.32;
-          recordTread(p2);
-        } else {
-          p2.dir = (p2.dir + 1) % 4;
+
+        // 2P 炮塔独立 360° 索敌瞄准
+        let wTur = 0;
+        if (target) {
+          const stepT = Math.sign(tDiff) * Math.min(Math.abs(tDiff), 2.15 * dt);
+          wTur = stepT / dt;
+          p2.turretAng = normalizeAngle(p2.turretAng + stepT);
         }
-        if (Math.random() < 0.08) fireTank(p2, 'p2');
+
+        // 调用统一的底盘加减速、转向降速与动态移动散布方程 (2P 车速 58 px/s)
+        stepTankKinematicsAndDispersion(p2, p2Throttle, p2Steer, wTur, 58, 38, 1.50, dt);
+
+        if (p2Throttle > 0 && Math.hypot(p2.x - prevX, p2.y - prevY) < 58 * dt * 0.25 && Math.abs(p2.vLin) > 20 && (p2.aiSteerTimer || 0) <= 0) {
+          p2.avoidDir = (p2.avoidDir || 1) * -1;
+          p2.aiSteerTimer = 24;
+        }
+
+        if (target && Math.abs(tDiff) < 0.18 && p2.cd <= 0 && (p2.dispersion <= 0.042 || p2.haltTimer === 1)) {
+          fireTank(p2, 'p2');
+          p2.haltTimer = 0;
+        }
       }
 
       function updateHud() {
+        const ctrlTank = (lan.isConnected() && lanRole === 'client') ? p2 : p1;
+        const rSpec = RANK_SPECS[Math.min(4, Math.max(0, ctrlTank.rank || 1))];
+        const hullDeg = Math.round(((normalizeAngle(ctrlTank.hullAng) * 180) / Math.PI + 360) % 360);
+        const turDeg = Math.round(((normalizeAngle(ctrlTank.turretAng) * 180) / Math.PI + 360) % 360);
+        const accPct = getTankAccuracyPct(ctrlTank);
+        const isStationary = Math.abs(ctrlTank.vLin || 0) < 3 && Math.abs(ctrlTank.wHull || 0) < 0.08;
+        const isPinpoint = isStationary && accPct >= 92;
+        const effVel = isPinpoint ? Math.round(rSpec.bulletSpd * 1.12) : rSpec.bulletSpd;
         document.getElementById('hud-stage').textContent = `第 ${stage} 关`;
         document.getElementById('hud-enemies').textContent = `${remainingSpawns + enemies.length} 辆`;
         document.getElementById('hud-coins').textContent = (saveData.currency?.tankCoins ?? 0).toLocaleString();
-        document.getElementById('hud-rank').textContent = `Rank ${p1.rank}`;
-        document.getElementById('hud-hp').textContent = `HP${p1.hp}·${baseAlive ? '完好' : '被毁'}`;
-        document.getElementById('hud-lives').textContent = `×${p1.lives} 车组`;
+        document.getElementById('hud-angles').textContent = `${hullDeg}°/${turDeg}°`;
+        const ammoEl = document.getElementById('hud-ammo-vel');
+        if (ammoEl) {
+          if (ctrlTank.cd > 0) {
+            const remSec = (ctrlTank.cd / 60).toFixed(1);
+            ammoEl.textContent = `装填${remSec}s·${accPct}%`;
+            ammoEl.style.color = '#f59e0b';
+          } else {
+            ammoEl.textContent = isPinpoint ? `精瞄${accPct}%·${effVel}` : `精度${accPct}%·${effVel}`;
+            ammoEl.style.color = isPinpoint ? '#fde047' : (accPct < 60 ? '#fb7185' : '#cbd5e1');
+          }
+        }
+        document.getElementById('hud-hp').textContent = `装甲${ctrlTank.hp}·${baseAlive ? '完好' : '被毁'}`;
+        document.getElementById('hud-lives').textContent = `${ctrlTank.rank}阶 · ×${p1.lives}车组`;
         document.getElementById('hud-score').textContent = score.toLocaleString();
       }
 
@@ -1020,8 +1889,14 @@
         if (window.NexusSDK && !window.NexusSDK.isGameplayActive()) return;
         if (battleOver) return;
 
-        if (p1.cd > 0) p1.cd--;
-        if (p2.cd > 0) p2.cd--;
+        if (p1.cd > 0) {
+          p1.cd--;
+          if (p1.cd === 0 || p1.cd % 6 === 0) updateHud();
+        }
+        if (p2.cd > 0) {
+          p2.cd--;
+          if ((lan.isConnected() && lanRole === 'client') && (p2.cd === 0 || p2.cd % 6 === 0)) updateHud();
+        }
         if (p1.shield > 0) p1.shield--;
         if (p2.shield > 0) p2.shield--;
         if (p1.recoil > 0) p1.recoil = Math.max(0, p1.recoil - 0.12);
@@ -1031,152 +1906,253 @@
 
         if (fortifyTimer > 0) {
           fortifyTimer--;
-          if (fortifyTimer === 0) setBaseWall(1);
+          if (fortifyTimer === 0) rebuildBasePerimeter(false);
         }
         if (empTimer > 0) empTimer--;
 
-        // Move P1
-        if (activeDir >= 0) {
-          p1.dir = activeDir;
-          p1.turretAng = DIRS[activeDir].ang;
-          const d = DIRS[activeDir];
-          const spd = 2.4 + (p1.rank * 0.2);
-          const nx = p1.x + d.dx * spd;
-          const ny = p1.y + d.dy * spd;
-          if (canMoveRect(nx, ny)) {
-            p1.x = nx; p1.y = ny;
-            p1.movePhase += 0.38;
-            recordTread(p1);
-          } else {
-            const perpX = d.dy !== 0 ? 1 : 0;
-            const perpY = d.dx !== 0 ? 1 : 0;
-            for (const snap of [-2, 2, -4, 4, -6, 6]) {
-              if (canMoveRect(nx + perpX * snap, ny + perpY * snap)) {
-                p1.x += perpX * Math.sign(snap) * 1.8;
-                p1.y += perpY * Math.sign(snap) * 1.8;
-                p1.movePhase += 0.25;
-                break;
-              }
-            }
-          }
-          if (lan.isConnected()) {
-            lan.sendFast({ type: 'p2_state', x: p1.x, y: p1.y, dir: p1.dir });
+        // =====================================================================
+        // 1. 车体参照系 (Tank-Centric) 连续移动与差速转向 + 陀螺稳定独立炮塔控制 (Host 控 P1 / Client 控 P2)
+        // =====================================================================
+        const isClientMode = lan.isConnected() && lanRole === 'client';
+        const ctrlTank = isClientMode ? p2 : p1;
+        const rSpec = RANK_SPECS[Math.min(4, Math.max(0, ctrlTank.rank || 1))];
+        let throttle = 0; // +1: 沿车头前进, -1: 沿车尾倒车
+        let hullSteer = 0; // -1: 车体逆时针左转, +1: 车体顺时针右转
+
+        if (keys['KeyW'] || keys['ArrowUp'] || activeHullCommands.has('fwd') || activeHullCommands.has('fwd-ccw') || activeHullCommands.has('fwd-cw')) {
+          throttle += 1;
+        }
+        if (keys['KeyS'] || keys['ArrowDown'] || activeHullCommands.has('rev') || activeHullCommands.has('rev-ccw') || activeHullCommands.has('rev-cw')) {
+          throttle -= 1;
+        }
+        if (keys['KeyA'] || keys['ArrowLeft'] || activeHullCommands.has('ccw') || activeHullCommands.has('fwd-ccw') || activeHullCommands.has('rev-ccw')) {
+          hullSteer -= 1;
+        }
+        if (keys['KeyD'] || keys['ArrowRight'] || activeHullCommands.has('cw') || activeHullCommands.has('fwd-cw') || activeHullCommands.has('rev-cw')) {
+          hullSteer += 1;
+        }
+
+        // 右翼独立炮塔旋转按钮 & 键盘 (Q/J 左旋, E/L 右旋)：双阶阻尼 (点按精瞄 / 长按液压高速调炮)
+        let effTurretDir = turretTurnDir;
+        if (keys['KeyQ'] || keys['KeyJ']) effTurretDir = -1;
+        if (keys['KeyE'] || keys['KeyL']) effTurretDir = 1;
+
+        let ctrlWTurret = 0;
+        if (effTurretDir !== 0) {
+          turretHoldFrames++;
+          const dampingFactor = turretHoldFrames < 10 ? 0.48 : 1.0;
+          const turretOmega = 2.85 * dampingFactor; // 最大 163°/s 独立调炮角速度
+          ctrlWTurret = effTurretDir * turretOmega;
+          ctrlTank.turretAng = normalizeAngle(ctrlTank.turretAng + ctrlWTurret * DT);
+        }
+
+        // 调用统一的底盘加减速、转向降速与动态移动散布方程
+        const prevAcc = getTankAccuracyPct(ctrlTank);
+        stepTankKinematicsAndDispersion(ctrlTank, throttle, hullSteer, ctrlWTurret, rSpec.fwdSpd, rSpec.revSpd, rSpec.turnRate, DT);
+        const currAcc = getTankAccuracyPct(ctrlTank);
+        if (prevAcc !== currAcc) updateHud();
+
+        if ((hullSteer !== 0 || Math.abs(ctrlTank.vLin) > 1 || effTurretDir !== 0) && netFrameTick % 3 === 0) {
+          updateHud();
+          if (isClientMode) {
+            lan.sendFast({
+              type: 'p2_state',
+              x: Math.round(p2.x),
+              y: Math.round(p2.y),
+              hullAng: Number(p2.hullAng.toFixed(3)),
+              turretAng: Number(p2.turretAng.toFixed(3)),
+              dispersion: Number(p2.dispersion.toFixed(3))
+            });
           }
         }
 
-        // Update AI Wingman
-        updateAIWingman();
+        // 2. 更新 2P AI 僚机 (与玩家共享同一底盘加减速与移动散布方程)
+        updateAIWingman(DT);
 
-        // Spawn Enemies
-        spawnCooldown--;
-        if (spawnCooldown <= 0) {
-          spawnEnemy();
-          spawnCooldown = 110;
+        // 3. 敌坦刷新与 360° 车炮分离 + 减速滑行 + 移动散布 + 短停精瞄 (与玩家 100% 同源机制)
+        if (!isClientMode) {
+          spawnCooldown--;
+          if (spawnCooldown <= 0) {
+            spawnEnemy();
+            spawnCooldown = 105;
+          }
         }
 
-        // Move Enemies
+        const p1InCanopy = canopyBushes.some((bs) => Math.hypot(p1.x - bs.x, p1.y - bs.y) < bs.r + 14);
+        const p1DetectRadius = p1InCanopy ? 138 : 250; // 纳米伪装林带使敌坦索敌半径缩短 45%
+
         enemies.forEach((en) => {
           if (en.recoil > 0) en.recoil = Math.max(0, en.recoil - 0.1);
-          if (empTimer > 0) return; // EMP 全屏静默期间冻结移动与开火
+          if (empTimer > 0) return;
           if (en.cd > 0) en.cd--;
-          const d = DIRS[en.dir];
-          const nx = en.x + d.dx * en.speed;
-          const ny = en.y + d.dy * en.speed;
-          if (canMoveRect(nx, ny, en.size || TILE * 1.75)) {
-            en.x = nx; en.y = ny;
-            en.movePhase = (en.movePhase || 0) + 0.32;
-            recordTread(en);
-          } else {
-            en.dir = Math.random() < 0.45 ? 2 : Math.floor(Math.random() * 4);
+
+          const eSpec = ENEMY_SPECS[en.type] || ENEMY_SPECS.scout;
+          const distP1 = Math.hypot(p1.x - en.x, p1.y - en.y);
+          const aimTarget = (distP1 < Math.hypot(eagleBase.x - en.x, eagleBase.y - en.y) * (p1InCanopy ? 0.65 : 1.15))
+            ? p1
+            : eagleBase;
+          const desiredTurret = Math.atan2(aimTarget.x - en.x, -(aimTarget.y - en.y));
+          const tDiff = shortestAngleDiff(en.turretAng, desiredTurret);
+
+          // 敌军短停缩圈状态机 (Short-Halt Aim Settling):
+          // - 除 raider (边移动边散射突击) 外，其余敌坦在装填临近且炮口指向目标附近时，自动松开油门触发短停制动缩圈
+          if (en.type !== 'raider') {
+            const triggerCd = en.type === 'shooter' ? 24 : 18;
+            if (en.cd <= triggerCd && Math.abs(tDiff) < 0.32 && (en.haltTimer || 0) <= 0 && (en.dispersion || DISP_MIN) > eSpec.settleGoal) {
+              en.haltTimer = eSpec.haltFrames;
+            }
           }
-          // 独立炮塔微摆索敌角
-          en.turretAng = DIRS[en.dir].ang + Math.sin((en.movePhase || 0) * 0.35) * 0.14;
-          if (en.cd <= 0) {
-            en.cd = en.type === 'shooter' ? 45 : 75;
-            en.recoil = 1.0;
-            const bd = DIRS[en.dir];
-            bullets.push({
-              x: en.x + TILE * 0.9 + bd.dx * 12,
-              y: en.y + TILE * 0.9 + bd.dy * 12,
-              vx: bd.dx * 4.6,
-              vy: bd.dy * 4.6,
-              owner: 'enemy',
-              breakSteel: en.type === 'boss',
-              dmg: 1
-            });
+
+          let enThrottle = 0;
+          let enSteer = 0;
+          const prevX = en.x, prevY = en.y;
+
+          if ((en.haltTimer || 0) > 0) {
+            // 短停缩圈阶段：切断油门与转向，依靠 stepTankKinematicsAndDispersion 平滑减速滑行至静止并快速收拢散布圈
+            en.haltTimer--;
+            enThrottle = 0;
+            enSteer = 0;
+          } else {
+            // 巡航推进阶段：计算目标方位差速转向与油门推进
+            const targetX = en.type === 'raider' ? eagleBase.x : (distP1 < p1DetectRadius ? p1.x : eagleBase.x);
+            const targetY = en.type === 'raider' ? eagleBase.y : (distP1 < p1DetectRadius ? p1.y : eagleBase.y);
+            const desiredHull = Math.atan2(targetX - en.x, -(targetY - en.y));
+            const maxStepHull = (en.turnRate || eSpec.turnRate) * DT;
+
+            if (en.aiSteerTimer > 0) {
+              en.aiSteerTimer--;
+              enSteer = en.avoidDir || 1;
+            } else {
+              const hDiff = shortestAngleDiff(en.hullAng, desiredHull);
+              if (Math.abs(hDiff) > 0.04) {
+                enSteer = Math.sign(hDiff) * Math.min(1, Math.abs(hDiff) / maxStepHull);
+              }
+            }
+            enThrottle = 1;
+          }
+
+          // 敌坦炮塔独立 360° 旋转锁定目标
+          const maxStepTur = (en.turretRate || eSpec.turretRate) * DT;
+          const stepTur = Math.sign(tDiff) * Math.min(Math.abs(tDiff), maxStepTur);
+          const enWTurret = stepTur / DT;
+          en.turretAng = normalizeAngle(en.turretAng + stepTur);
+
+          // 调用与玩家 100% 相同的重装底盘加减速、转向自动降速与动态移动散布解算器！
+          stepTankKinematicsAndDispersion(
+            en,
+            enThrottle,
+            enSteer,
+            enWTurret,
+            en.speed || eSpec.speed,
+            (en.speed || eSpec.speed) * 0.65,
+            en.turnRate || eSpec.turnRate,
+            DT
+          );
+
+          // 若推进受阻位移过小，则启动连续角速度切向绕障
+          if (enThrottle > 0 && Math.hypot(en.x - prevX, en.y - prevY) < (en.speed || eSpec.speed) * DT * 0.25 && Math.abs(en.vLin) > 15 && (en.aiSteerTimer || 0) <= 0) {
+            en.avoidDir = (en.avoidDir || 1) * (Math.random() < 0.25 ? -1 : 1);
+            en.aiSteerTimer = 26;
+          }
+
+          // 触发统一火控击发函数 fireTank(en, 'enemy')
+          const readyToFire = !isClientMode && en.cd <= 0 && Math.abs(tDiff) < 0.26 && (en.dispersion <= eSpec.fireMaxDisp || en.haltTimer === 1);
+          if (readyToFire) {
+            en.haltTimer = 0;
+            fireTank(en, 'enemy');
           }
         });
 
-        // Update Bullets
+        // =====================================================================
+        // 4. 高初速穿甲弹连续射线扫掠检测 (CCD Raycast) 与斜面物理跳弹
+        // =====================================================================
         for (let i = bullets.length - 1; i >= 0; i--) {
           const b = bullets[i];
-          b.x += b.vx;
-          b.y += b.vy;
-          if (b.x < 0 || b.y < 0 || b.x >= GRID * TILE || b.y >= GRID * TILE) {
+          const x0 = b.x;
+          const y0 = b.y;
+          const x1 = x0 + b.vx * DT;
+          const y1 = y0 + b.vy * DT;
+          b.prevX = x0;
+          b.prevY = y0;
+
+          if (x1 < 0 || y1 < 0 || x1 >= LOGICAL_SIZE || y1 >= LOGICAL_SIZE) {
             bullets.splice(i, 1);
-            continue;
-          }
-          const c = Math.floor(b.x / TILE);
-          const r = Math.floor(b.y / TILE);
-          const t = map[r]?.[c];
-          if (t === 1) {
-            if (damageBrickTile(r, c, b.x, b.y, b.vx, b.vy, b.breakSteel)) {
-              explode(b.x, b.y, '#b5604a', 6);
-              NexusSDK.audio.hit();
-              if (lan.isConnected()) {
-                lan.sendReliable({ type: 'brick_hit', r, c, mask: brickMask[r][c], tile: map[r][c] });
-              }
-              bullets.splice(i, 1);
-              continue;
-            }
-          } else if (t === 2) {
-            if (b.breakSteel) {
-              map[r][c] = 0;
-              terrainDirty = true;
-            }
-            explode(b.x, b.y, '#9eb0c7', 6);
-            NexusSDK.audio.hit();
-            bullets.splice(i, 1);
-            continue;
-          } else if (t === 5) {
-            // 鹰标核心地堡被任何敌我炮弹击中即触发防线失守结算 (严禁 2 秒自动复活后门)
-            baseAlive = false;
-            explode(13 * TILE, 24.5 * TILE, '#c97a63', 28);
-            NexusSDK.audio.explosion();
-            updateHud();
-            bullets.splice(i, 1);
-            triggerGameOver('防线失守 · 统帅地堡被毁', '八角铸钢统帅鹰标地堡遭穿甲弹击穿，防线作战失利。请重新部署或返回军械库整备。');
             continue;
           }
 
-          // Check Bullet vs Enemies
+          // 4.1 预计算与地堡/单位的最早碰撞时间参数 earliestUnitT，防止贴墙单位被掩体优先吞弹
+          let earliestUnitT = 2.0;
+          const eagleHit = intersectSegmentCircle(x0, y0, x1, y1, eagleBase.x, eagleBase.y, eagleBase.r - 2);
+          if (eagleHit && eagleHit.t < earliestUnitT) earliestUnitT = eagleHit.t;
+          if (b.owner !== 'enemy') {
+            for (let j = 0; j < enemies.length; j++) {
+              const hEn = intersectSegmentCircle(x0, y0, x1, y1, enemies[j].x, enemies[j].y, enemies[j].r + 3);
+              if (hEn && hEn.t < earliestUnitT) earliestUnitT = hEn.t;
+            }
+          } else {
+            const hP1Pre = intersectSegmentCircle(x0, y0, x1, y1, p1.x, p1.y, p1.r + 2);
+            if (hP1Pre && hP1Pre.t < earliestUnitT) earliestUnitT = hP1Pre.t;
+            const hP2Pre = intersectSegmentCircle(x0, y0, x1, y1, p2.x, p2.y, p2.r + 2);
+            if (hP2Pre && hP2Pre.t < earliestUnitT) earliestUnitT = hP2Pre.t;
+          }
+
+          // 检测与异形多边形/圆形掩体的连续射线交点 (仅当掩体交点先于单位交点时才拦截/跳弹)
+          const obsHit = traceBulletObstacles(x0, y0, x1, y1);
+          if (obsHit && obsHit.t <= earliestUnitT) {
+            const action = handleBulletObstacleHit(b, obsHit);
+            if (action === 'consumed') {
+              bullets.splice(i, 1);
+              continue;
+            } else if (action === 'ricochet') {
+              continue; // 发生斜面镜面跳弹，继续飞行
+            }
+          }
+
+          b.x = x1;
+          b.y = y1;
+
+          // 4.2 检测与八角统帅鹰标核心地堡的连续碰撞
+          if (eagleHit) {
+            baseAlive = false;
+            explode(eagleBase.x, eagleBase.y, '#c97a63', 28);
+            NexusSDK.audio.explosion();
+            updateHud();
+            bullets.splice(i, 1);
+            triggerGameOver('防线失守 · 统帅地堡被毁', '八角铸钢统帅鹰标地堡遭高初速穿甲弹击穿，防线作战失利。请重新部署或返回军械库整备。');
+            continue;
+          }
+
+          // 4.3 我方穿甲弹 vs 敌方坦克 (连续线段-圆求交 + 定点破片加成)
           if (b.owner !== 'enemy') {
             let hitEnemy = false;
             for (let j = enemies.length - 1; j >= 0; j--) {
               const en = enemies[j];
-              const sz = en.size || TILE * 1.8;
-              if (b.x > en.x && b.x < en.x + sz && b.y > en.y && b.y < en.y + sz) {
-                en.hp -= b.dmg;
+              const hEn = intersectSegmentCircle(x0, y0, x1, y1, en.x, en.y, en.r + 3);
+              if (hEn) {
                 hitEnemy = true;
-                // 命中精英红光闪烁敌车或击毁敌车时掉落五类战术空投箱
+                const effDmg = Number(b.dmg) || 1;
+                en.hp -= effDmg;
+                if (b.fragBonus) {
+                  explode(hEn.x, hEn.y, '#fde047', 9);
+                  spawnFloatText(en.x, en.y - 18, `定点破片 -${effDmg}`, '#fde047');
+                }
                 if (en.isElite) {
                   en.isElite = false;
-                  spawnRandomCrate();
+                  spawnRandomCrate(en.x, en.y);
                 }
                 if (en.hp <= 0) {
-                  explode(en.x + sz / 2, en.y + sz / 2, '#d8b584', 14);
+                  explode(en.x, en.y, '#d8b584', 15);
                   NexusSDK.audio.explosion();
-                  score += en.type === 'boss' ? 1500 : 200;
-                  saveData.currency.tankCoins += en.type === 'boss' ? 150 : 25;
+                  const bSpec = ENEMY_BOUNTIES[en.type] || ENEMY_BOUNTIES.scout;
+                  score += bSpec.score;
+                  saveData.currency.tankCoins += bSpec.coins;
                   if (score > (saveData.stats.highScore || 0)) saveData.stats.highScore = score;
                   store.save(saveData);
-                  if (Math.random() < 0.35) {
-                    spawnRandomCrate();
-                  }
+                  if (Math.random() < 0.35) spawnRandomCrate(en.x, en.y);
                   enemies.splice(j, 1);
                   updateHud();
                 } else {
-                  explode(b.x, b.y, '#c48f5a', 5);
+                  explode(hEn.x, hEn.y, '#c48f5a', 6);
                   NexusSDK.audio.hit();
                 }
                 break;
@@ -1187,28 +2163,45 @@
               continue;
             }
           } else {
-            // Enemy bullet vs P1 (真实扣血与车组备用履带重生/战败闭环，彻底废除 Math.max(1) 不死锁血)
-            if (b.x > p1.x && b.x < p1.x + TILE * 1.8 && b.y > p1.y && b.y < p1.y + TILE * 1.8) {
+            // 4.4 敌方穿甲弹 vs P1 (支持车体首上摆角跳弹机制 Frontal Armor Angling Ricochet)
+            const hP1 = intersectSegmentCircle(x0, y0, x1, y1, p1.x, p1.y, p1.r + 2);
+            if (hP1) {
               if (p1.shield <= 0) {
+                // 计算是否命中车体正前首上复合装甲斜面并形成摆角跳弹
+                const bLen = Math.hypot(b.vx, b.vy) || 1;
+                const inX = -b.vx / bLen;
+                const inY = -b.vy / bLen;
+                const hullFwdX = Math.sin(p1.hullAng);
+                const hullFwdY = -Math.cos(p1.hullAng);
+                const frontDot = inX * hullFwdX + inY * hullFwdY; // > 0.72 表示命中车体正前方 ±44° 首上区域
+
+                if (frontDot > 0.72 && frontDot < 0.94 && Math.random() < 0.38) {
+                  // 首上摆角成功触发跳弹！
+                  explode(hP1.x, hP1.y, '#fde047', 10);
+                  NexusSDK.audio.hit();
+                  spawnFloatText(p1.x, p1.y - 18, '首上摆角跳弹！', '#fde047');
+                  bullets.splice(i, 1);
+                  continue;
+                }
+
                 p1.hp -= 1;
                 p1.hitShake = 1.0;
-                explode(p1.x + TILE, p1.y + TILE, '#b5604a', 12);
+                explode(p1.x, p1.y, '#ef4444', 12);
                 NexusSDK.audio.warn();
                 if (p1.hp <= 0) {
                   if (p1.lives > 0) {
                     p1.lives -= 1;
                     p1.hp = 3;
                     p1.rank = Math.max(1, p1.rank - 1);
-                    p1.x = 8 * TILE;
-                    p1.y = 22 * TILE;
-                    p1.dir = 0;
+                    p1.x = 205; p1.y = 555; p1.hullAng = 0; p1.turretAng = 0;
+                    p1.vLin = 0; p1.wHull = 0; p1.wTurret = 0; p1.dispersion = DISP_MIN; p1.cd = 0;
                     p1.shield = 180;
-                    spawnFloatText(p1.x + TILE, p1.y, '备用车组投入 · RESPAWN', '#dfc08e');
+                    spawnFloatText(p1.x, p1.y - 16, '备用车组投入战斗', '#fde047');
                   } else {
                     p1.hp = 0;
                     updateHud();
                     bullets.splice(i, 1);
-                    triggerGameOver('装甲全灭 · DEFEAT', '1P 主战坦克与备用履带车组已全部阵亡，防线失守。');
+                    triggerGameOver('装甲全灭 · 防线失守', '1P 主战坦克与备用履带车组已全部阵亡，防线失守。');
                     continue;
                   }
                 } else {
@@ -1219,20 +2212,53 @@
               bullets.splice(i, 1);
               continue;
             }
+
+            // 4.5 敌方穿甲弹 vs P2 协同僚机/副坦 (修复 2P 碰撞漏判，支持首上跳弹与护盾拦截)
+            const hP2 = intersectSegmentCircle(x0, y0, x1, y1, p2.x, p2.y, p2.r + 2);
+            if (hP2) {
+              if (p2.shield <= 0) {
+                const bLen = Math.hypot(b.vx, b.vy) || 1;
+                const inX = -b.vx / bLen;
+                const inY = -b.vy / bLen;
+                const hullFwdX = Math.sin(p2.hullAng);
+                const hullFwdY = -Math.cos(p2.hullAng);
+                const frontDot = inX * hullFwdX + inY * hullFwdY;
+                if (frontDot > 0.72 && frontDot < 0.94 && Math.random() < 0.38) {
+                  explode(hP2.x, hP2.y, '#fde047', 9);
+                  NexusSDK.audio.hit();
+                  spawnFloatText(p2.x, p2.y - 18, '2P 首上跳弹！', '#fde047');
+                  bullets.splice(i, 1);
+                  continue;
+                }
+                p2.hp -= 1;
+                p2.hitShake = 1.0;
+                explode(p2.x, p2.y, '#f59e0b', 10);
+                NexusSDK.audio.hit();
+                if (p2.hp <= 0) {
+                  p2.hp = 3;
+                  p2.x = 419; p2.y = 555; p2.hullAng = 0; p2.turretAng = 0;
+                  p2.vLin = 0; p2.wHull = 0; p2.wTurret = 0; p2.dispersion = DISP_MIN; p2.cd = 0;
+                  p2.shield = 180;
+                  spawnFloatText(p2.x, p2.y - 16, '2P 僚机重整归建', '#f59e0b');
+                } else {
+                  p2.shield = 80;
+                }
+              }
+              bullets.splice(i, 1);
+              continue;
+            }
           }
         }
 
-        // Check Pickup Crates
+        // 5. 空投物资箱拾取检测
         for (let i = crates.length - 1; i >= 0; i--) {
           const cr = crates[i];
           cr.life--;
-          cr.rot = (cr.rot || 0) + 0.05;
-          const dist1 = Math.hypot((p1.x + TILE) - (cr.x + TILE * 0.8), (p1.y + TILE) - (cr.y + TILE * 0.8));
-          const dist2 = Math.hypot((p2.x + TILE) - (cr.x + TILE * 0.8), (p2.y + TILE) - (cr.y + TILE * 0.8));
-          if (dist1 < TILE * 1.55) {
+          cr.rot = (cr.rot || 0) + 0.04;
+          if (Math.hypot(p1.x - cr.x, p1.y - cr.y) < 34) {
             applyCrateEffect(cr, p1);
             crates.splice(i, 1);
-          } else if (dist2 < TILE * 1.55) {
+          } else if (Math.hypot(p2.x - cr.x, p2.y - cr.y) < 34) {
             applyCrateEffect(cr, p2);
             crates.splice(i, 1);
           } else if (cr.life <= 0) {
@@ -1240,31 +2266,52 @@
           }
         }
 
-        // Stage Clear check
-        if (remainingSpawns <= 0 && enemies.length === 0) {
+        // 6. 防区肃清晋级判定
+        if (!isClientMode && remainingSpawns <= 0 && enemies.length === 0) {
           NexusSDK.audio.win();
           stage++;
           saveData.stats.wins = (saveData.stats.wins || 0) + 1;
           saveData.currency.tankCoins += 120;
           store.save(saveData);
           buildStageMap(stage);
-          spawnFloatText(11 * TILE, 12 * TILE, `第 ${stage} 防区解锁 · STAGE CLEAR`, '#dfc08e');
+          spawnFloatText(312, 280, `第 ${stage} 防区解锁 · 全歼敌坦`, '#fde047');
         }
 
-        // Host 定时广播权威世界快照 (Pillar 5 局域网同步完备性)
+        // 7. 局域网 Host 定时广播 360° 连续世界快照 (包含完整 dmg/breakSteel/fragBonus 与 p1/p2 状态)
         netFrameTick++;
         if (lan.isConnected() && lanRole === 'host' && netFrameTick % 4 === 0) {
           lan.sendFast({
             type: 'world_sync',
-            enemies: enemies.map((e) => ({ type: e.type, x: Math.round(e.x), y: Math.round(e.y), dir: e.dir, hp: e.hp, maxHp: e.maxHp, size: e.size, isElite: e.isElite })),
-            bullets: bullets.map((b) => ({ x: Math.round(b.x), y: Math.round(b.y), vx: b.vx, vy: b.vy, owner: b.owner })),
+            p1: {
+              x: Math.round(p1.x), y: Math.round(p1.y),
+              hullAng: Number(p1.hullAng.toFixed(3)), turretAng: Number(p1.turretAng.toFixed(3)),
+              dispersion: Number((p1.dispersion ?? DISP_MIN).toFixed(3)),
+              hp: p1.hp, rank: p1.rank, lives: p1.lives, shield: p1.shield
+            },
+            p2: {
+              hp: p2.hp, rank: p2.rank, shield: p2.shield
+            },
+            enemies: enemies.map((e) => ({
+              type: e.type, x: Math.round(e.x), y: Math.round(e.y),
+              hullAng: Number(e.hullAng.toFixed(2)), turretAng: Number(e.turretAng.toFixed(2)),
+              dispersion: Number((e.dispersion ?? DISP_MIN).toFixed(3)), haltTimer: e.haltTimer || 0,
+              hp: e.hp, maxHp: e.maxHp, size: e.size, r: e.r, isElite: e.isElite
+            })),
+            bullets: bullets.map((b) => ({
+              x: Math.round(b.x), y: Math.round(b.y), prevX: Math.round(b.prevX), prevY: Math.round(b.prevY),
+              vx: Math.round(b.vx), vy: Math.round(b.vy), owner: b.owner,
+              dmg: Number(b.dmg) || 1, breakSteel: !!b.breakSteel,
+              pinpoint: !!b.pinpoint, fragBonus: !!b.fragBonus
+            })),
             empTimer,
             fortifyTimer,
-            remainingSpawns
+            remainingSpawns,
+            score,
+            stage
           });
         }
 
-        // Update particles & floating texts
+        // 8. 更新火花粒子与飘字
         for (let i = particles.length - 1; i >= 0; i--) {
           const pt = particles[i];
           pt.x += pt.vx; pt.y += pt.vy; pt.life--;
@@ -1278,138 +2325,417 @@
         }
       }
 
-      // 多层骨骼运动学解算绘制：支持车体悬挂震颤、炮管轴向后坐回缩 (recoil-y)、炮口制退器闪光与旋转索敌雷达
-      function drawTankSprite(img, tank, ringColor) {
-        const sz = tank.size || TILE * 1.85;
-        const cx = tank.x + sz / 2;
-        const cy = tank.y + sz / 2;
-        const recoil = tank.recoil || 0;
-        const movePhase = tank.movePhase || 0;
-        const shake = (tank.hitShake || 0) * Math.sin(performance.now() * 0.08) * 2.5;
-
-        ctx.save();
-        ctx.translate(cx + shake, cy);
-        ctx.rotate(DIRS[tank.dir].ang);
-
-        // 1. 履带推进微幅悬挂起伏与开火后坐力车体俯仰
-        const heave = 1 + Math.sin(movePhase) * 0.022;
-        const recoilShiftY = recoil * 4.2; // 朝向 -Y 发射时，后坐力向 +Y 回缩
-        ctx.translate(0, recoilShiftY);
-        ctx.scale(heave, 2 - heave);
-
-        if (img && img.complete) {
-          ctx.drawImage(img, -sz / 2, -sz / 2, sz, sz);
+      // =========================================================================
+      // 渲染管线：异形多边形战术掩体缓存 + 车体/炮塔双自由度分离渲染 + 高初速曳光弹道
+      // =========================================================================
+      function fillAndStrokePoly(targetCtx, verts, fillStyle, strokeStyle, lineWidth = 2) {
+        if (!verts || verts.length === 0) return;
+        targetCtx.beginPath();
+        targetCtx.moveTo(verts[0].x, verts[0].y);
+        for (let i = 1; i < verts.length; i++) {
+          targetCtx.lineTo(verts[i].x, verts[i].y);
         }
-
-        // 2. 骨骼级动态叠加：独立旋转索敌雷达扫描线 (part-radar-scanner) 与炮管轴向后坐驻退套筒
-        const radarAng = (performance.now() * 0.0045) % (Math.PI * 2);
-        ctx.save();
-        ctx.translate(sz * 0.12, sz * 0.12);
-        ctx.rotate(radarAng);
-        ctx.strokeStyle = '#dfc08e';
-        ctx.lineWidth = 1.3;
-        ctx.beginPath();
-        ctx.moveTo(-3.5, 0);
-        ctx.lineTo(3.5, 0);
-        ctx.stroke();
-        ctx.restore();
-
-        // 3. 主炮击发瞬间：炮口制退器侧向导轨扩张闪光与驻退复进机高亮
-        if (recoil > 0.15) {
-          ctx.save();
-          ctx.translate(0, -sz * 0.42 + recoil * 3.5);
-          ctx.fillStyle = 'rgba(223, 192, 142, ' + (recoil * 0.85).toFixed(2) + ')';
-          ctx.beginPath();
-          ctx.arc(0, -3, 4.5 * recoil, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = '#c48f5a';
-          ctx.lineWidth = 1.6;
-          ctx.beginPath();
-          ctx.moveTo(-6 * recoil, -2);
-          ctx.lineTo(6 * recoil, -2);
-          ctx.stroke();
-          ctx.restore();
+        targetCtx.closePath();
+        if (fillStyle) {
+          targetCtx.fillStyle = fillStyle;
+          targetCtx.fill();
         }
-
-        // 4. 精英敌车红丹警示脉冲标定框
-        if (tank.isElite && Math.floor(performance.now() / 180) % 2 === 0) {
-          ctx.strokeStyle = '#b85440';
-          ctx.lineWidth = 1.6;
-          ctx.strokeRect(-sz * 0.44, -sz * 0.44, sz * 0.88, sz * 0.88);
+        if (strokeStyle) {
+          targetCtx.strokeStyle = strokeStyle;
+          targetCtx.lineWidth = lineWidth;
+          targetCtx.stroke();
         }
-
-        ctx.restore();
-
-        // 5. 量子护盾环 (Aegis Shield)
-        if (tank.shield > 0) {
-          ctx.save();
-          ctx.strokeStyle = ringColor || '#c48f5a';
-          ctx.lineWidth = 1.8;
-          ctx.setLineDash([5, 3]);
-          ctx.lineDashOffset = -(performance.now() * 0.03);
-          ctx.beginPath();
-          ctx.arc(cx, cy, sz * 0.56, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.restore();
-        }
-      }
-
-      // 四象限砖墙独立裁剪渲染 (part-brick-tl / tr / bl / br)
-      function drawQuadBrickTileToCtx(targetCtx, r, c) {
-        const mask = brickMask[r][c] || 0;
-        if (mask === 0 || !sprites.brick?.complete) return;
-        const x = c * TILE;
-        const y = r * TILE;
-        const half = TILE / 2;
-        if (mask === 15) {
-          targetCtx.drawImage(sprites.brick, x, y, TILE, TILE);
-          return;
-        }
-        // 按 4-bit 掩码独立裁剪 128x128 贴图的四个象限
-        if (mask & 1) targetCtx.drawImage(sprites.brick, 0, 0, 64, 64, x, y, half, half);
-        if (mask & 2) targetCtx.drawImage(sprites.brick, 64, 0, 64, 64, x + half, y, half, half);
-        if (mask & 4) targetCtx.drawImage(sprites.brick, 0, 64, 64, 64, x, y + half, half, half);
-        if (mask & 8) targetCtx.drawImage(sprites.brick, 64, 64, 64, 64, x + half, y + half, half, half);
       }
 
       function rebuildTerrainCache() {
-        terrainCtx.fillStyle = '#1d2128';
+        // 1. 90° 上帝俯视角：六方柱状节理玄武岩与 1200°C 熔岩金脉底板 (STYLE-170)
+        terrainCtx.fillStyle = '#141216';
         terrainCtx.fillRect(0, 0, LOGICAL_SIZE, LOGICAL_SIZE);
 
-        // 微弱拉丝测距网格 (单次批量路径绘制)
-        terrainCtx.strokeStyle = 'rgba(170, 185, 205, 0.055)';
-        terrainCtx.lineWidth = 1;
-        terrainCtx.beginPath();
-        for (let i = 0; i <= GRID; i++) {
-          terrainCtx.moveTo(i * TILE, 0);
-          terrainCtx.lineTo(i * TILE, GRID * TILE);
-          terrainCtx.moveTo(0, i * TILE);
-          terrainCtx.lineTo(GRID * TILE, i * TILE);
-        }
-        terrainCtx.stroke();
-
-        // Pass 1: Ground tiles (4-Quadrant Brick, Steel, Anti-Tank Trench)
-        for (let r = 0; r < GRID; r++) {
-          for (let c = 0; c < GRID; c++) {
-            const t = map[r][c];
-            const x = c * TILE;
-            const y = r * TILE;
-            if (t === 1) {
-              drawQuadBrickTileToCtx(terrainCtx, r, c);
-            } else if (t === 2 && sprites.steel?.complete) {
-              terrainCtx.drawImage(sprites.steel, x, y, TILE, TILE);
-            } else if (t === 4) {
-              terrainCtx.fillStyle = '#14171d';
-              terrainCtx.fillRect(x, y, TILE, TILE);
-              terrainCtx.strokeStyle = 'rgba(133, 152, 176, 0.22)';
-              terrainCtx.beginPath();
-              terrainCtx.moveTo(x + 3, y + TILE * 0.5);
-              terrainCtx.lineTo(x + TILE - 3, y + TILE * 0.5);
-              terrainCtx.stroke();
-            }
+        const hexR = 38;
+        const hexW = Math.sqrt(3) * hexR;
+        const hexH = 1.5 * hexR;
+        for (let row = -1; row <= Math.ceil(LOGICAL_SIZE / hexH) + 1; row++) {
+          for (let col = -1; col <= Math.ceil(LOGICAL_SIZE / hexW) + 1; col++) {
+            const cx = col * hexW + (row % 2 !== 0 ? hexW * 0.5 : 0);
+            const cy = row * hexH;
+            const hexPts = makeRegularPolygon(cx, cy, hexR - 1.4, 6, Math.PI / 6);
+            const shade = ((row * 7 + col * 13) & 3);
+            const fillCol = shade === 0 ? '#1b191f' : shade === 1 ? '#18161c' : shade === 2 ? '#1e1c23' : '#16141a';
+            const isMagmaSeam = ((row * 11 + col * 19) % 5 === 0);
+            const seamStroke = isMagmaSeam ? 'rgba(245, 158, 11, 0.28)' : 'rgba(100, 110, 128, 0.14)';
+            fillAndStrokePoly(terrainCtx, hexPts, fillCol, seamStroke, isMagmaSeam ? 1.4 : 0.9);
           }
         }
+
+        // 2. 下沉式防爆弹坑环与熔岩裂隙辉光 (Topology D: Basalt Crater Rings)
+        const craters = [
+          { x: 170, y: 205, r: 42 },
+          { x: 454, y: 205, r: 40 },
+          { x: 312, y: 312, r: 54 },
+          { x: 200, y: 410, r: 36 },
+          { x: 424, y: 410, r: 36 }
+        ];
+        craters.forEach((cr) => {
+          terrainCtx.save();
+          const cGrad = terrainCtx.createRadialGradient(cr.x, cr.y, cr.r * 0.15, cr.x, cr.y, cr.r);
+          cGrad.addColorStop(0, 'rgba(245, 158, 11, 0.16)');
+          cGrad.addColorStop(0.55, 'rgba(15, 13, 18, 0.68)');
+          cGrad.addColorStop(1, 'rgba(24, 22, 27, 0)');
+          terrainCtx.fillStyle = cGrad;
+          terrainCtx.beginPath();
+          terrainCtx.arc(cr.x, cr.y, cr.r, 0, Math.PI * 2);
+          terrainCtx.fill();
+          const craterRing = makeRegularPolygon(cr.x, cr.y, cr.r * 0.72, 8, 0.2);
+          fillAndStrokePoly(terrainCtx, craterRing, null, 'rgba(245, 158, 11, 0.22)', 1.1);
+          terrainCtx.restore();
+        });
+
+        // 3. 极坐标陀螺火控测距环
+        terrainCtx.save();
+        terrainCtx.strokeStyle = 'rgba(245, 158, 11, 0.06)';
+        terrainCtx.lineWidth = 1;
+        [110, 220, 330].forEach((rad) => {
+          terrainCtx.beginPath();
+          terrainCtx.arc(312, 312, rad, 0, Math.PI * 2);
+          terrainCtx.stroke();
+        });
+        terrainCtx.restore();
+
+        // 4. 绘制所有非方块异形多边形与圆形掩体 (STYLE-170 × STYLE-142)
+        obstacles.forEach((obs) => {
+          terrainCtx.save();
+          if (obs.kind === 'hex-brick') {
+            // 正六边形蜂巢复合砖堡 (支持按受击扇区裁剪剥落)
+            fillAndStrokePoly(terrainCtx, obs.vertices, '#261712', '#d97706', 2);
+            if (sprites.brick?.complete) {
+              terrainCtx.translate(obs.x, obs.y);
+              terrainCtx.rotate(obs.rot);
+              const sz = obs.r * 2.15;
+              const half = sz / 2;
+              const mask = obs.sectorMask ?? 15;
+              if (mask === 15) {
+                terrainCtx.drawImage(sprites.brick, -half, -half, sz, sz);
+              } else {
+                const srcHalf = Math.round((sprites.brick.naturalWidth || 64) / 2);
+                if (mask & 4) terrainCtx.drawImage(sprites.brick, 0, 0, srcHalf, srcHalf, -half, -half, half, half);
+                if (mask & 8) terrainCtx.drawImage(sprites.brick, srcHalf, 0, srcHalf, srcHalf, 0, -half, half, half);
+                if (mask & 1) terrainCtx.drawImage(sprites.brick, 0, srcHalf, srcHalf, srcHalf, -half, 0, half, half);
+                if (mask & 2) terrainCtx.drawImage(sprites.brick, srcHalf, srcHalf, srcHalf, srcHalf, 0, 0, half, half);
+              }
+            } else {
+              fillAndStrokePoly(terrainCtx, obs.vertices, '#6e3828', '#f59e0b', 2.2);
+            }
+          } else if (obs.kind === 'chevron-steel') {
+            // V 型钝角折线防爆跳弹钛钢墙
+            fillAndStrokePoly(terrainCtx, obs.vertices, '#282e3a', '#a855f7', 2.0);
+            if (sprites.steel?.complete) {
+              terrainCtx.translate(obs.x, obs.y);
+              terrainCtx.rotate(obs.rot);
+              const sz = obs.r * 2.0;
+              terrainCtx.drawImage(sprites.steel, -sz / 2, -sz / 2, sz, sz);
+            }
+            fillAndStrokePoly(terrainCtx, obs.vertices, null, '#fde047', 1.2);
+          } else if (obs.kind === 'pillbox') {
+            // 圆形钢筋混凝土暗堡 + 放射折面钛钢穹顶
+            terrainCtx.beginPath();
+            terrainCtx.arc(obs.x, obs.y, obs.r, 0, Math.PI * 2);
+            terrainCtx.fillStyle = '#252932';
+            terrainCtx.fill();
+            terrainCtx.lineWidth = 2.4;
+            terrainCtx.strokeStyle = '#646e80';
+            terrainCtx.stroke();
+
+            const domeVerts = makeRegularPolygon(obs.x, obs.y, obs.r * 0.64, 8, Math.PI / 8);
+            fillAndStrokePoly(terrainCtx, domeVerts, '#363d4a', '#f59e0b', 1.5);
+            terrainCtx.beginPath();
+            terrainCtx.arc(obs.x, obs.y, 4.5, 0, Math.PI * 2);
+            terrainCtx.fillStyle = '#fde047';
+            terrainCtx.fill();
+          } else if (obs.kind === 'dragon-teeth') {
+            // 正三角形龙牙反坦克锥群 (3 枚品字形高标号玄武钛合金三角锥)
+            const offsets = [[0, -8], [-10, 8], [10, 8]];
+            offsets.forEach(([ox, oy]) => {
+              const tri = makeRegularPolygon(obs.x + ox, obs.y + oy, 11, 3, obs.rot - Math.PI / 2);
+              fillAndStrokePoly(terrainCtx, tri, '#2d333f', '#94a3b8', 1.6);
+              terrainCtx.beginPath();
+              terrainCtx.moveTo(obs.x + ox, obs.y + oy);
+              terrainCtx.lineTo(tri[0].x, tri[0].y);
+              terrainCtx.moveTo(obs.x + ox, obs.y + oy);
+              terrainCtx.lineTo(tri[1].x, tri[1].y);
+              terrainCtx.moveTo(obs.x + ox, obs.y + oy);
+              terrainCtx.lineTo(tri[2].x, tri[2].y);
+              terrainCtx.strokeStyle = '#f59e0b';
+              terrainCtx.lineWidth = 1.1;
+              terrainCtx.stroke();
+            });
+          } else if (obs.kind === 'basalt') {
+            // 六方柱状节理玄武岩熔岩金脉岩柱群 (STYLE-170)
+            fillAndStrokePoly(terrainCtx, obs.vertices, '#18161d', '#f59e0b', 2.0);
+            const inner = obs.vertices.map((v) => ({
+              x: obs.x + (v.x - obs.x) * 0.60,
+              y: obs.y + (v.y - obs.y) * 0.60
+            }));
+            fillAndStrokePoly(terrainCtx, inner, '#282530', '#fde047', 1.3);
+          } else if (obs.kind === 'trench') {
+            // 熔岩裂隙反坦克战壕沟渠
+            fillAndStrokePoly(terrainCtx, obs.vertices, '#0e0c10', '#d97706', 1.8);
+          }
+          terrainCtx.restore();
+        });
+
         terrainDirty = false;
+      }
+
+      // 90° 上帝俯视角：车体与放射多面体隐身炮塔完全分离的 360° 双角渲染器 (STYLE-170 × STYLE-142)
+      function drawTankSeparated(spriteKey, fallbackImg, tank, ringColor, isPlayer = false) {
+        const sz = tank.size || 44;
+        const cx = tank.x;
+        const cy = tank.y;
+        const recoil = tank.recoil || 0;
+        const movePhase = tank.movePhase || 0;
+        const shake = (tank.hitShake || 0) * Math.sin(performance.now() * 0.08) * 2.5;
+        const split = splitLayers[spriteKey];
+
+        // 1. 绘制锻造碳纤维与楔形首上车体底盘层 (严格按车体朝向角 tank.hullAng 旋转)
+        ctx.save();
+        ctx.translate(cx + shake, cy);
+        ctx.rotate(tank.hullAng);
+        const heave = 1 + Math.sin(movePhase) * 0.02;
+        ctx.scale(heave, 2 - heave);
+
+        if (split && split.hullImg && split.hullImg.complete && split.hullImg.naturalWidth > 0) {
+          ctx.drawImage(split.hullImg, -sz / 2, -sz / 2, sz, sz);
+        } else {
+          // 离线 file:// 或拆层就绪前：绘制无内置炮塔的 90° 上帝俯视锻造碳纤维与重装双履带底盘（杜绝双炮塔叠影）
+          const hw = sz * 0.42;
+          const hh = sz * 0.46;
+          // 1. 两侧重型差速履带模块
+          ctx.fillStyle = '#18181b';
+          ctx.strokeStyle = '#09090b';
+          ctx.lineWidth = 1.4;
+          ctx.fillRect(-hw, -hh, sz * 0.17, hh * 2);
+          ctx.strokeRect(-hw, -hh, sz * 0.17, hh * 2);
+          ctx.fillRect(hw - sz * 0.17, -hh, sz * 0.17, hh * 2);
+          ctx.strokeRect(hw - sz * 0.17, -hh, sz * 0.17, hh * 2);
+
+          // 2. 楔形多面体车体装甲底盘
+          const hullColor = isPlayer
+            ? '#166534'
+            : (spriteKey === 'p2' ? '#b45309' : (spriteKey === 'shooter' ? '#581c87' : (spriteKey === 'raider' ? '#9a3412' : '#7f1d1d')));
+          const hullVerts = [
+            { x: -hw * 0.56, y: -hh * 0.96 },
+            { x: hw * 0.56, y: -hh * 0.96 },
+            { x: hw * 0.72, y: -hh * 0.55 },
+            { x: hw * 0.72, y: hh * 0.85 },
+            { x: hw * 0.48, y: hh * 0.98 },
+            { x: -hw * 0.48, y: hh * 0.98 },
+            { x: -hw * 0.72, y: hh * 0.85 },
+            { x: -hw * 0.72, y: -hh * 0.55 }
+          ];
+          fillAndStrokePoly(ctx, hullVerts, hullColor, '#09090b', 1.5);
+          // 尾部熔岩散热百叶格栅
+          ctx.fillStyle = '#09090b';
+          ctx.fillRect(-hw * 0.44, hh * 0.45, hw * 0.88, hh * 0.36);
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 1.0;
+          ctx.strokeRect(-hw * 0.44, hh * 0.45, hw * 0.88, hh * 0.36);
+        }
+
+        // 车体正前方楔形首上反应装甲方向棱线 (清晰指示当前车头朝向)
+        ctx.strokeStyle = isPlayer ? '#fde047' : '#ef4444';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(-8, -sz * 0.35);
+        ctx.lineTo(0, -sz * 0.47);
+        ctx.lineTo(8, -sz * 0.35);
+        ctx.stroke();
+        ctx.restore();
+
+        // 2. 绘制陀螺稳定【放射多面体隐身炮塔】与【高温回火蓝-紫-金滑膛炮管】层 (严格按 tank.turretAng 旋转)
+        ctx.save();
+        ctx.translate(cx + shake, cy);
+        ctx.rotate(tank.turretAng);
+
+        // 动态火控散布扇形锥与定点精瞄锁定激光 (1P、2P 与全体敌坦 100% 共享实时渲染，响应战术辅助线开关)
+        const isAlly = isPlayer || spriteKey === 'p2';
+        const showGuides = !(window.NexusSDK && typeof window.NexusSDK.getSettings === 'function') || window.NexusSDK.getSettings('tank-battle').guideLines !== false;
+        if (showGuides) {
+          ctx.save();
+          const sigma = Math.max(DISP_MIN, tank.dispersion ?? DISP_MIN);
+          const accPct = getTankAccuracyPct(tank);
+          const isStat = Math.abs(tank.vLin || 0) < 3 && Math.abs(tank.wHull || 0) < 0.08;
+          const isPinpoint = isStat && accPct >= 92;
+          const coneLen = isPlayer ? 215 : (spriteKey === 'p2' ? 165 : (tank.type === 'shooter' ? 195 : 145));
+          const muzzleY = -sz * 0.50;
+
+          if (isPinpoint) {
+            // 驻停精瞄锁定态 (>=92% 精度)：双线完全合拢为高亮熔岩金/绯红激光锁定束 + 远端菱形精瞄准星
+            ctx.strokeStyle = isAlly ? 'rgba(253, 224, 71, 0.78)' : 'rgba(239, 68, 68, 0.76)';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.moveTo(0, muzzleY);
+            ctx.lineTo(0, -coneLen);
+            ctx.stroke();
+
+            // 远端定点精瞄菱形准星 (Pinpoint Lock Reticle)
+            const lockY = isPlayer ? -148 : -coneLen * 0.76;
+            ctx.strokeStyle = isAlly ? '#fde047' : '#ef4444';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(0, lockY - 6);
+            ctx.lineTo(6, lockY);
+            ctx.lineTo(0, lockY + 6);
+            ctx.lineTo(-6, lockY);
+            ctx.closePath();
+            ctx.stroke();
+          } else {
+            // 运动扩圈与制动缩圈态：绘制 -sigma 与 +sigma 两侧动态包络边界虚线 + 远端散布弧线
+            const leftX = -Math.sin(sigma) * coneLen;
+            const leftY = -Math.cos(sigma) * coneLen;
+            const rightX = Math.sin(sigma) * coneLen;
+            const rightY = -Math.cos(sigma) * coneLen;
+
+            // 扇形浅色半透明填充区
+            ctx.fillStyle = isAlly ? 'rgba(245, 158, 11, 0.06)' : 'rgba(239, 68, 68, 0.07)';
+            ctx.beginPath();
+            ctx.moveTo(0, muzzleY);
+            ctx.lineTo(leftX, leftY);
+            ctx.lineTo(rightX, rightY);
+            ctx.closePath();
+            ctx.fill();
+
+            // 两侧包络边界射线
+            ctx.strokeStyle = isAlly
+              ? (accPct < 55 ? 'rgba(251, 113, 133, 0.48)' : 'rgba(245, 158, 11, 0.52)')
+              : ((tank.haltTimer || 0) > 0 ? 'rgba(239, 68, 68, 0.68)' : 'rgba(239, 68, 68, 0.38)');
+            ctx.lineWidth = 1.25;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(0, muzzleY);
+            ctx.lineTo(leftX, leftY);
+            ctx.moveTo(0, muzzleY);
+            ctx.lineTo(rightX, rightY);
+            ctx.stroke();
+
+            // 远端缩圈校准弧线
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            ctx.arc(0, 0, coneLen * 0.72, -Math.PI / 2 - sigma, -Math.PI / 2 + sigma);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        // 炮管开火后坐力轴向位移 (沿炮塔当前指向反向回缩)
+        const recoilShiftY = recoil * 5.0;
+        ctx.translate(0, recoilShiftY);
+
+        if (split && split.turretImg && split.turretImg.complete && split.turretImg.naturalWidth > 0) {
+          ctx.drawImage(split.turretImg, -sz / 2, -sz / 2, sz, sz);
+        } else {
+          // 90° 上帝俯视原生高精度绘制：放射八角多面体反应装甲隐身炮塔 + 蓝紫金高温回火滑膛炮管 (Topology D + Texture A)
+          const barrelGrad = ctx.createLinearGradient(0, -sz * 0.54, 0, -sz * 0.12);
+          barrelGrad.addColorStop(0, '#fde047');
+          barrelGrad.addColorStop(0.28, '#f59e0b');
+          barrelGrad.addColorStop(0.55, '#c084fc');
+          barrelGrad.addColorStop(0.82, '#6366f1');
+          barrelGrad.addColorStop(1, '#2b313d');
+
+          // 120mm 高温回火滑膛炮管与抽烟装置
+          ctx.fillStyle = barrelGrad;
+          ctx.strokeStyle = isPlayer ? '#fde047' : '#f59e0b';
+          ctx.lineWidth = 1.3;
+          ctx.fillRect(-3.4, -sz * 0.54, 6.8, sz * 0.40);
+          ctx.strokeRect(-3.4, -sz * 0.54, 6.8, sz * 0.40);
+          ctx.fillStyle = '#252a34';
+          ctx.fillRect(-4.6, -sz * 0.34, 9.2, sz * 0.11);
+          ctx.strokeRect(-4.6, -sz * 0.34, 9.2, sz * 0.11);
+
+          // 放射八角多面体折面炮塔壳体 (Radial Faceted Stealth Turret)
+          const rTur = sz * 0.28;
+          const octPts = [
+            { x: -rTur * 0.52, y: -rTur * 0.95 },
+            { x: rTur * 0.52, y: -rTur * 0.95 },
+            { x: rTur * 0.98, y: -rTur * 0.25 },
+            { x: rTur * 0.82, y: rTur * 0.65 },
+            { x: rTur * 0.42, y: rTur * 0.98 },
+            { x: -rTur * 0.42, y: rTur * 0.98 },
+            { x: -rTur * 0.82, y: rTur * 0.65 },
+            { x: -rTur * 0.98, y: -rTur * 0.25 }
+          ];
+          fillAndStrokePoly(ctx, octPts, '#2f3542', isPlayer ? '#f59e0b' : '#94a3b8', 1.6);
+
+          // 放射折角反应装甲内部棱线与陀螺核心舱盖
+          ctx.strokeStyle = 'rgba(253, 224, 71, 0.55)';
+          ctx.lineWidth = 0.9;
+          ctx.beginPath();
+          ctx.moveTo(octPts[0].x, octPts[0].y); ctx.lineTo(0, 0);
+          ctx.moveTo(octPts[1].x, octPts[1].y); ctx.lineTo(0, 0);
+          ctx.moveTo(octPts[3].x, octPts[3].y); ctx.lineTo(0, 0);
+          ctx.moveTo(octPts[6].x, octPts[6].y); ctx.lineTo(0, 0);
+          ctx.stroke();
+
+          ctx.fillStyle = isPlayer ? '#f59e0b' : '#c084fc';
+          ctx.beginPath();
+          ctx.arc(0, 0, sz * 0.08, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // 车长周视光电热像球 (Panoramic Commander Optic Dome)
+        const radarAng = (performance.now() * 0.0045) % (Math.PI * 2);
+        ctx.save();
+        ctx.translate(sz * 0.11, sz * 0.11);
+        ctx.rotate(radarAng);
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(-3.8, 0);
+        ctx.lineTo(3.8, 0);
+        ctx.stroke();
+        ctx.restore();
+
+        // 主炮膛口制退器高膛压熔岩金/回火紫击发闪光
+        if (recoil > 0.15) {
+          ctx.save();
+          ctx.translate(0, -sz * 0.52);
+          ctx.fillStyle = `rgba(253, 224, 71, ${(recoil * 0.92).toFixed(2)})`;
+          ctx.beginPath();
+          ctx.arc(0, -2, 5.8 * recoil, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#c084fc';
+          ctx.lineWidth = 2.0;
+          ctx.beginPath();
+          ctx.moveTo(-8 * recoil, -2);
+          ctx.lineTo(8 * recoil, -2);
+          ctx.stroke();
+          ctx.restore();
+        }
+        ctx.restore();
+
+        // 3. 精英敌坦六角熔岩锁定框与偏导护盾环
+        if (tank.isElite && Math.floor(performance.now() / 180) % 2 === 0) {
+          const hexMark = makeRegularPolygon(cx, cy, sz * 0.54, 6, Math.PI / 6);
+          fillAndStrokePoly(ctx, hexMark, null, '#f59e0b', 1.7);
+        }
+        if (tank.shield > 0) {
+          ctx.save();
+          const shieldHex = makeRegularPolygon(cx, cy, sz * 0.58, 6, performance.now() * 0.001);
+          fillAndStrokePoly(ctx, shieldHex, null, ringColor || '#f59e0b', 1.6);
+          ctx.restore();
+        }
+        // 4. 自动装弹机装填进度条 (1P、2P 与全体敌坦共享显示装填冷却读条)
+        if ((tank.cd || 0) > 0) {
+          const maxCd = Math.max(tank.cd, tank.maxCd || 105);
+          const pct = Math.max(0, Math.min(1, 1 - tank.cd / maxCd));
+          const bw = sz * 0.72;
+          const bx = cx - bw / 2;
+          const by = cy + sz * 0.50 + 3;
+          ctx.fillStyle = 'rgba(15, 18, 24, 0.85)';
+          ctx.fillRect(bx, by, bw, 3.2);
+          ctx.fillStyle = isAlly ? '#f59e0b' : '#c084fc';
+          ctx.fillRect(bx, by, bw * pct, 3.2);
+        }
       }
 
       function render() {
@@ -1421,63 +2747,108 @@
         }
         ctx.drawImage(terrainCacheCanvas, 0, 0, LOGICAL_SIZE, LOGICAL_SIZE);
 
-        // 重型履带碾压地面车辙暗痕
-        ctx.fillStyle = 'rgba(10, 12, 16, 0.35)';
+        // 1. 360° 连续弯曲重型双履带车辙印
+        ctx.fillStyle = 'rgba(10, 12, 16, 0.36)';
         treadMarks.forEach((tm) => {
-          if (tm.dir === 0 || tm.dir === 2) {
-            ctx.fillRect(tm.x - 14, tm.y - 3, 6, 4);
-            ctx.fillRect(tm.x + 8, tm.y - 3, 6, 4);
-          } else {
-            ctx.fillRect(tm.x - 3, tm.y - 14, 4, 6);
-            ctx.fillRect(tm.x - 3, tm.y + 8, 4, 6);
-          }
+          ctx.save();
+          ctx.translate(tm.x, tm.y);
+          ctx.rotate(tm.ang);
+          ctx.fillRect(-13, -3, 5, 4);
+          ctx.fillRect(8, -3, 5, 4);
+          ctx.restore();
         });
 
-        // Base Eagle (2x2 tiles at col 12, row 24)
+        // 2. 八角铸钢统帅鹰标核心地堡
+        ctx.save();
+        const octBase = makeRegularPolygon(eagleBase.x, eagleBase.y, eagleBase.r + 4, 8, Math.PI / 8);
+        fillAndStrokePoly(ctx, octBase, '#222730', '#c48f5a', 2.0);
         if (sprites.eagle?.complete) {
-          ctx.save();
           if (!baseAlive) ctx.globalAlpha = 0.32;
-          ctx.drawImage(sprites.eagle, 12 * TILE, 24 * TILE, TILE * 2, TILE * 2);
-          ctx.restore();
+          ctx.drawImage(sprites.eagle, eagleBase.x - 24, eagleBase.y - 24, 48, 48);
         }
+        ctx.restore();
 
-        // Pickup Crates (带自转战利品核心与战术类型钢印标签)
+        // 3. 八角战术空投补给箱
         crates.forEach((cr) => {
-          const cx = cr.x + TILE * 0.8;
-          const cy = cr.y + TILE * 0.8;
           ctx.save();
-          ctx.translate(cx, cy);
+          ctx.translate(cr.x, cr.y);
           if (sprites.crate?.complete) {
-            ctx.drawImage(sprites.crate, -TILE * 0.8, -TILE * 0.8, TILE * 1.6, TILE * 1.6);
+            ctx.drawImage(sprites.crate, -20, -20, 40, 40);
           }
-          ctx.strokeStyle = cr.color || '#dfc08e';
-          ctx.lineWidth = 1.4;
-          ctx.strokeRect(-TILE * 0.72, -TILE * 0.72, TILE * 1.44, TILE * 1.44);
+          const oct = makeRegularPolygon(0, 0, 20, 8, cr.rot);
+          fillAndStrokePoly(ctx, oct, null, cr.color || '#dfc08e', 1.5);
           ctx.fillStyle = '#12151a';
-          ctx.fillRect(-18, TILE * 0.45, 36, 10);
-          ctx.fillStyle = cr.color || '#dfc08e';
-          ctx.font = 'bold 8px Consolas, sans-serif';
+          ctx.fillRect(-18, 12, 36, 10);
+          ctx.fillStyle = cr.color || '#fde047';
+          ctx.font = 'bold 8px "Noto Sans SC", Consolas, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText((cr.kind || 'STAR').toUpperCase(), 0, TILE * 0.45 + 8);
+          ctx.fillText(cr.tag || '晋升', 0, 20);
           ctx.restore();
         });
 
-        // Tanks
-        drawTankSprite(sprites.p1, p1, '#8598b0');
-        drawTankSprite(sprites.p2, p2, '#c48f5a');
+        // 4. 绘制 1P、2P 与敌军战车 (车体与炮塔 360° 独立分离渲染)
+        drawTankSeparated('p1', sprites.p1, p1, '#8598b0', true);
+        drawTankSeparated('p2', sprites.p2, p2, '#c48f5a', false);
         enemies.forEach((en) => {
           const sp = sprites[en.type] || sprites.scout;
-          drawTankSprite(sp, en, '#994e3b');
+          drawTankSeparated(en.type, sp, en, '#994e3b', false);
           if (en.maxHp > 1) {
-            const sz = en.size || TILE * 1.8;
+            const sz = en.size || 44;
             ctx.fillStyle = 'rgba(15, 18, 22, 0.85)';
-            ctx.fillRect(en.x, en.y - 6, sz, 4);
+            ctx.fillRect(en.x - sz / 2, en.y - sz / 2 - 7, sz, 4);
             ctx.fillStyle = '#b5604a';
-            ctx.fillRect(en.x, en.y - 6, sz * (en.hp / en.maxHp), 4);
+            ctx.fillRect(en.x - sz / 2, en.y - sz / 2 - 7, sz * (en.hp / en.maxHp), 4);
           }
         });
 
-        // EMP 电磁静默激活状态覆盖指示
+        // 5. 高初速尾翼稳定脱壳穿甲弹 (带高速曳光尾迹与定点精瞄 +12% 超速熔岩金光束)
+        bullets.forEach((b) => {
+          ctx.save();
+          const grad = ctx.createLinearGradient(b.prevX ?? b.x, b.prevY ?? b.y, b.x, b.y);
+          grad.addColorStop(0, 'rgba(216, 181, 132, 0)');
+          if (b.pinpoint && b.owner !== 'enemy') {
+            grad.addColorStop(0.55, 'rgba(192, 132, 252, 0.85)');
+            grad.addColorStop(1, 'rgba(253, 224, 71, 1)');
+          } else {
+            grad.addColorStop(1, b.owner === 'enemy' ? 'rgba(239, 68, 68, 0.92)' : 'rgba(245, 235, 214, 0.96)');
+          }
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = b.pinpoint ? 3.8 : 3.2;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(b.prevX ?? (b.x - b.vx * DT), b.prevY ?? (b.y - b.vy * DT));
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+
+          const bAng = Math.atan2(b.vy, b.vx);
+          ctx.translate(b.x, b.y);
+          ctx.rotate(bAng);
+          ctx.fillStyle = b.owner === 'enemy' ? '#ef4444' : (b.pinpoint ? '#fde047' : '#dfc08e');
+          ctx.beginPath();
+          ctx.moveTo(b.pinpoint ? 7.2 : 6, 0);
+          ctx.lineTo(-4, -2.4);
+          ctx.lineTo(-4, 2.4);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        });
+
+        // 6. 顶层椭圆形/六角纳米迷彩树冠遮蔽层
+        if (sprites.bush?.complete) {
+          canopyBushes.forEach((bs) => {
+            const nearAlly =
+              Math.hypot(p1.x - bs.x, p1.y - bs.y) < bs.r + 16 ||
+              Math.hypot(p2.x - bs.x, p2.y - bs.y) < bs.r + 16;
+            ctx.save();
+            ctx.globalAlpha = nearAlly ? 0.58 : 0.90;
+            ctx.translate(bs.x, bs.y);
+            ctx.rotate(bs.rot);
+            ctx.drawImage(sprites.bush, -bs.r, -bs.r, bs.r * 2, bs.r * 2);
+            ctx.restore();
+          });
+        }
+
+        // 7. EMP 全屏电磁静默指示
         if (empTimer > 0) {
           ctx.save();
           ctx.strokeStyle = 'rgba(196, 143, 90, 0.45)';
@@ -1489,32 +2860,7 @@
           ctx.restore();
         }
 
-        // Bullets (退火黄铜/钨芯穿甲弹体)
-        bullets.forEach((b) => {
-          ctx.save();
-          ctx.translate(b.x, b.y);
-          ctx.fillStyle = b.owner === 'enemy' ? '#c97a63' : '#d8b584';
-          ctx.beginPath(); ctx.arc(0, 0, 4.2, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#f5ebd6';
-          ctx.beginPath(); ctx.arc(0, 0, 1.8, 0, Math.PI * 2); ctx.fill();
-          ctx.restore();
-        });
-
-        // Pass 2: Bush Canopy (Occlusion layer above tanks)
-        if (sprites.bush?.complete) {
-          for (let i = 0; i < bushCoords.length; i++) {
-            const [r, c] = bushCoords[i];
-            const bx = c * TILE, by = r * TILE;
-            const nearAlly =
-              Math.hypot((p1.x + TILE * 0.9) - (bx + TILE * 0.5), (p1.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4 ||
-              Math.hypot((p2.x + TILE * 0.9) - (bx + TILE * 0.5), (p2.y + TILE * 0.9) - (by + TILE * 0.5)) < TILE * 1.4;
-            ctx.globalAlpha = nearAlly ? 0.62 : 0.90;
-            ctx.drawImage(sprites.bush, bx, by, TILE, TILE);
-          }
-          ctx.globalAlpha = 1.0;
-        }
-
-        // Particles & Floating Texts
+        // 8. 火花粒子与飘字
         particles.forEach((pt) => {
           ctx.fillStyle = pt.color;
           ctx.fillRect(pt.x - 2, pt.y - 2, 3.5, 3.5);
@@ -1539,7 +2885,6 @@
         const stageEl = document.getElementById('tb-insp-rig-stage');
         if (!stageEl || !unitFile) return;
 
-        // 若在 HTTP/HTTPS 环境下，优先动态加载同源 rigs/*.anim.js 与内联 SVG 驱动 28 层骨骼矩阵
         if (window.location.protocol.startsWith('http')) {
           try {
             const baseName = unitFile.replace(/\.svg$/i, '');
@@ -1564,7 +2909,7 @@
                   const elapsed = now - t0;
                   const stateIdx = Math.floor(elapsed / 2200) % states.length;
                   rigMod.applyToSvgDom(svgEl, states[stateIdx], elapsed % 2200, {
-                    aimAngleDeg: Math.sin(elapsed * 0.002) * 18
+                    aimAngleDeg: Math.sin(elapsed * 0.0022) * 35
                   });
                   activeInspectorRigAnim = requestAnimationFrame(tickRig);
                 };
@@ -1575,7 +2920,6 @@
           } catch (_) {}
         }
 
-        // 本地 file:// 离线模式同步骨骼运动预览（驱动检视台精灵执行呼吸、转向与后坐力）
         const imgEl = stageEl.querySelector('img');
         if (!imgEl) return;
         const t0 = performance.now();
@@ -1588,7 +2932,7 @@
           const elapsed = now - t0;
           const cycle = (elapsed % 2400) / 2400;
           const recoilY = cycle > 0.72 && cycle < 0.86 ? 3.5 : 0;
-          const rot = Math.sin(cycle * Math.PI * 2) * 6;
+          const rot = Math.sin(cycle * Math.PI * 2) * 8;
           imgEl.style.transform = `translateY(${recoilY}px) rotate(${rot.toFixed(1)}deg)`;
           activeInspectorRigAnim = requestAnimationFrame(tickLocal);
         };
@@ -1611,12 +2955,11 @@
         requestAnimationFrame(loop);
       }
 
-      // UI Button Bindings
       document.getElementById('btn-fortify-base').addEventListener('click', () => {
         if ((saveData.currency?.tankCoins ?? 0) < 50) return;
         saveData.currency.tankCoins -= 50;
         fortifyTimer = 1200;
-        setBaseWall(2);
+        rebuildBasePerimeter(true);
         lan.sendReliable({ type: 'fortify' });
         NexusSDK.audio.upgrade();
         store.save(saveData);

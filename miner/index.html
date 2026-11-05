@@ -100,7 +100,7 @@
     .modal-card {
       max-width: 560px; width: 100%;
       background: rgba(9, 14, 26, 0.96);
-      border: 1px solid rgba(0, 240, 255, 0.55);
+      border: 1px solid rgba(251, 191, 36, 0.55);
       border-radius: 16px;
       padding: 18px 20px;
       display: flex; flex-direction: column; gap: 12px;
@@ -163,6 +163,20 @@
     </div>
   </div>
 
+  <!-- 局间矿工杂货铺整备弹窗（由第二层菜单底部「打开局间矿工杂货铺整备」唤起，弹窗打开期间计时暂停） -->
+  <div class="modal-backdrop" id="shop-modal" role="dialog" aria-modal="true" aria-labelledby="shop-title">
+    <div class="modal-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <strong id="shop-title" style="font-size:1rem;color:#fbbf24;white-space:nowrap;">局间矿工杂货铺</strong>
+        <span style="font-size:0.8rem;white-space:nowrap;">金条储备：<b id="shop-bars" style="color:#fbbf24;">0</b></span>
+      </div>
+      <div class="shop-grid" id="shop-grid"></div>
+      <div id="shop-msg" style="font-size:0.72rem;color:#d6c7a1;min-height:1em;"></div>
+      <button class="act-btn primary" id="btn-close-shop" style="justify-content:center;min-height:44px;white-space:nowrap;">整备完毕 · 下井开采</button>
+    </div>
+  </div>
+  <button id="btn-open-shop" type="button" hidden aria-hidden="true" tabindex="-1"></button>
+
   <script src="../shared/nexus-sdk.js?v=4.0"></script>
   <script>
     (() => {
@@ -171,7 +185,7 @@
       const store = NexusSDK.createGameStorage('NEXUS_MINI_MINER_', (isAdmin) => ({
         currency: { goldBars: isAdmin ? 999999 : 850 },
         maxStage: isAdmin ? 50 : 1,
-        bestCash: isAdmin ? 888888 : 1200,
+        bestCash: isAdmin ? 888888 : 0,
         dynamites: isAdmin ? 99 : 3,
         tonicBuff: isAdmin ? true : false,
         cloverBuff: isAdmin ? true : false
@@ -419,13 +433,65 @@
         }
       }
 
+      // 局间矿工杂货铺：真实扣除金条并写入存档（雷管库存 / 大力神液压剂 / 四叶草芯片）
+      const SHOP_ITEMS = [
+        { key: 'dynamite', name: '救险高能雷管', desc: '+1 枚，可炸毁已抓笨重石块', cost: 120, sprite: 'item-dynamite.svg',
+          owned: () => false, apply: () => { saveData.dynamites = (saveData.dynamites || 0) + 1; } },
+        { key: 'tonic', name: '大力神液压剂', desc: '回收拉力 +65%（永久）', cost: 300, sprite: 'item-tonic.svg',
+          owned: () => !!saveData.tonicBuff, apply: () => { saveData.tonicBuff = true; } },
+        { key: 'clover', name: '四叶草芯片', desc: '钻石 / 盲盒 1.5x 溢价（永久）', cost: 350, sprite: 'item-clover.svg',
+          owned: () => !!saveData.cloverBuff, apply: () => { saveData.cloverBuff = true; } }
+      ];
+      const shopModal = document.getElementById('shop-modal');
+      function renderShop(msg) {
+        saveData = store.load();
+        const bars = saveData.currency?.goldBars || 0;
+        document.getElementById('shop-bars').textContent = bars.toLocaleString();
+        document.getElementById('shop-msg').textContent = msg || `雷管库存：${saveData.dynamites || 0} 枚`;
+        const grid = document.getElementById('shop-grid');
+        grid.innerHTML = SHOP_ITEMS.map((it) => {
+          const owned = it.owned();
+          const afford = bars >= it.cost;
+          return `
+            <div class="shop-item">
+              <img src="../assets/gold-miner/sprites/${it.sprite}" alt="" />
+              <strong style="font-size:0.8rem;white-space:nowrap;">${it.name}</strong>
+              <span style="font-size:0.66rem;color:#d6c7a1;">${it.desc}</span>
+              <button class="act-btn" data-shop-buy="${it.key}" ${owned || !afford ? 'disabled' : ''} style="min-height:44px;justify-content:center;white-space:nowrap;">
+                ${owned ? '已拥有' : `${it.cost} 金条`}
+              </button>
+            </div>`;
+        }).join('');
+        grid.querySelectorAll('[data-shop-buy]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const it = SHOP_ITEMS.find((x) => x.key === btn.getAttribute('data-shop-buy'));
+            if (!it || it.owned()) return;
+            if ((saveData.currency?.goldBars || 0) < it.cost) { NexusSDK.audio.warn(); renderShop('金条不足'); return; }
+            saveData.currency.goldBars -= it.cost;
+            it.apply();
+            store.save(saveData);
+            NexusSDK.audio.upgrade();
+            updateHud();
+            renderShop(`已购入：${it.name}`);
+          });
+        });
+      }
+      document.getElementById('btn-open-shop').addEventListener('click', () => {
+        renderShop();
+        shopModal.classList.add('active');
+      });
+      document.getElementById('btn-close-shop').addEventListener('click', () => {
+        NexusSDK.audio.tap();
+        shopModal.classList.remove('active');
+      });
+
       // LAN Session
       const lan = NexusSDK.createLanSession('gold-miner', store.getAuth().room);
       lan.onStatus((st) => {
         const el = document.getElementById('hud-lan');
         if (st.connected) {
-          el.textContent = `LAN 双钩合力已连接 (${st.peerLatencyMs}ms)`;
-          el.style.color = '#00f0ff';
+          el.textContent = Number.isFinite(st.peerLatencyMs) ? `LAN 双钩合力已连接 (${st.peerLatencyMs}ms)` : 'LAN 双钩合力已连接 (测速中)';
+          el.style.color = 'var(--gold, #fbbf24)';
           p2Hook.isRemote = true;
         } else {
           el.textContent = '2P 勘探僚机协同起吊中';
@@ -534,7 +600,7 @@
             ctx.drawImage(sp, m.x - sz / 2, m.y - sz / 2, sz, sz);
           }
           if (m.heldBy.length >= 2) {
-            ctx.strokeStyle = '#00f0ff';
+            ctx.strokeStyle = '#fbbf24';
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(m.x, m.y, m.r + 6, 0, Math.PI * 2);

@@ -160,13 +160,11 @@
         </span>
       </div>
       <div class="topbar-controls">
-        <button class="pill-btn" id="btn-pwa-install" title="安装到手机桌面 (支持离线启动)">
-          <img src="./sprites/badge-pwa.svg" alt="" class="nx-badge-img" />
-          <span>安装桌面版</span>
+        <button class="pill-btn" id="btn-pwa-install" aria-label="安装到手机桌面 (支持离线启动)" title="安装到手机桌面 (支持离线启动)">
+          <img src="./sprites/badge-pwa.svg" alt="PWA" class="nx-badge-img" style="width:20px;height:20px;" />
         </button>
-        <button class="pill-btn" id="btn-fullscreen-toggle" title="切换全屏">
-          <img src="./sprites/badge-fullscreen.svg" alt="" class="nx-badge-img" />
-          <span>全屏横屏</span>
+        <button class="pill-btn" id="btn-fullscreen-toggle" aria-label="切换全屏模式" title="切换全屏模式">
+          <img src="./sprites/badge-fullscreen.svg" alt="全屏" class="nx-badge-img" style="width:20px;height:20px;" />
         </button>
       </div>
     </header>
@@ -352,24 +350,24 @@
         icon: './assets/tank-battle/icon.svg',
         storageKeyPrefix: 'NEXUS_MINI_TANK_',
         multiplayerMode: '本地单机 / 局域网 1~5ms 双坦协同',
-        tagline: '经典坦克大战现代化重构 · 局域网双通道跨手机实时协同守卫鹰标总部',
+        tagline: '360° 全向车炮分离重构 · 陀螺稳定独立火控与异形跳弹工事防线',
         metrics: [
-          { label: '核心玩法', val: '26×26 网格基地守卫' },
-          { label: '美术流派', val: 'STYLE-19 复合反应装甲' },
+          { label: '核心玩法', val: '360° 车炮分离全向防线' },
+          { label: '美术流派', val: 'STYLE-19×113 克虏伯炮钢' },
           { label: '运行环境', val: '本地单机 + 局域网双通道' }
         ],
         features: [
-          { title: '一人一机局域网协同', desc: '摒弃拥挤的手机同屏双摇杆，两名指挥官各自使用手机在同一 Wi-Fi/热点下以 1~5ms 延迟并肩守卫鹰标总部。' },
-          { title: '复合反应装甲与掩体破坏', desc: '红砖墙支持四象限逐块击碎，钛合金钢墙抵御常规炮火，光学迷彩林提供战术隐蔽伏击。' },
+          { title: '360° 车炮解耦与车体参照操控', desc: '左翼方向盘严格以车体自身头尾为参照控制进退与差速转向，右翼开火键两侧独立按钮控制陀螺稳定炮塔 360° 调炮。' },
+          { title: '非方块异形工事与高速跳弹', desc: '摒弃正交方块网格，采用六角复合砖堡、V型防爆钢墙、圆形暗堡与龙牙锥群，配合 760~1380px/s 高初速穿甲弹与斜面跳弹。' },
           { title: '6 模块独立游戏菜单中枢', desc: '点击下方按钮进入第 2 层游戏菜单，即可查看动态骨骼图鉴、修改触控设置、整备坦克硬币或创建局域网房间。' },
           { title: '双向断线 AI 僚机自愈', desc: '无论单人游玩还是局域网任一方来电切后台，3.0 秒内自动切换 AI 战术僚机无缝接管防线。' }
         ],
         gallery: [
-          { src: './assets/tank-battle/preview.png', title: '钢铁防线 · 26×26 战地橄榄防滑钢板游玩界面截图' }
+          { src: './assets/tank-battle/preview.png', title: '钢铁防线 · 360° 车炮分离与异形跳弹工事战术沙盘截图' }
         ],
         defaultSave: (isAdmin) => ({
           currency: { tankCoins: isAdmin ? 999999 : 500 },
-          stats: { wins: isAdmin ? 999 : 5, highScore: isAdmin ? 99999 : 6800 },
+          stats: { wins: isAdmin ? 999 : 0, highScore: isAdmin ? 99999 : 0 },
           rank: isAdmin ? 4 : 1
         })
       },
@@ -403,7 +401,7 @@
         defaultSave: (isAdmin) => ({
           currency: { warMerits: isAdmin ? 999999 : 1200, scraps: isAdmin ? 99999 : 150 },
           unlockedShips: isAdmin ? 4 : 1,
-          highestWave: isAdmin ? 100 : 12
+          highestWave: isAdmin ? 100 : 1
         })
       },
       {
@@ -433,8 +431,8 @@
         ],
         defaultSave: (isAdmin) => ({
           currency: { goldBars: isAdmin ? 999999 : 850 },
-          maxStage: isAdmin ? 50 : 6,
-          bestCash: isAdmin ? 888888 : 14200
+          maxStage: isAdmin ? 50 : 1,
+          bestCash: isAdmin ? 888888 : 0
         })
       },
       {
@@ -466,7 +464,7 @@
         ],
         defaultSave: (isAdmin) => ({
           currency: { sugarCrystals: isAdmin ? 99999 : 600 },
-          goldenPuddings: isAdmin ? 30 : 4,
+          goldenPuddings: isAdmin ? 30 : 0,
           clearedChapters: isAdmin ? 5 : 1
         })
       },
@@ -500,8 +498,8 @@
         ],
         defaultSave: (isAdmin) => ({
           currency: { genePoints: isAdmin ? 999999 : 1500, helixShards: isAdmin ? 9999 : 80 },
-          arenaTier: isAdmin ? '虚空主宰 (Tier VI)' : '真核纪 (Tier II)',
-          winStreak: isAdmin ? 88 : 3
+          arenaTier: isAdmin ? '虚空主宰 (Tier VI)' : '',
+          winStreak: isAdmin ? 88 : 0
         })
       }
     ];
@@ -519,12 +517,9 @@
 
     function ensureGameSavesForUser(user) {
       const isAdmin = user.userId === 'u_admin_001';
-      GAMES_CATALOG.forEach((game) => {
-        const key = `${game.storageKeyPrefix}${user.userId}`;
-        if (!localStorage.getItem(key)) {
-          localStorage.setItem(key, JSON.stringify(game.defaultSave(isAdmin)));
-        }
-      });
+      // 存档单一事实源：各微游首次运行时由 NexusSDK.createGameStorage 按自身默认工厂初始化，
+      // 门户不再抢先写入任何（可能与游戏内默认值冲突的）预置存档。
+      void isAdmin;
     }
 
     function getCurrentSession() {
@@ -539,9 +534,9 @@
         }
       } catch (_) {}
       const defaultSession = {
-        userId: 'u_admin_001',
-        username: 'admin',
-        nickname: '最高统帅 · 管理员',
+        userId: 'u_commander_01',
+        username: 'commander',
+        nickname: '先锋指挥官',
         isGuest: false,
         token: randomHex(32)
       };
@@ -714,8 +709,7 @@
       const params = new URLSearchParams({
         userId: currentUser.userId,
         userName: currentUser.nickname,
-        token: currentUser.token || '',
-        room: currentRoomCode
+        token: currentUser.token || ''
       });
       portalShell?.setAttribute('inert', '');
       overlay.classList.add('active');

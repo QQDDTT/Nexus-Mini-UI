@@ -1,166 +1,112 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="enemy-mammoth-rig" data-root-anchor="64,68" data-has-aura="true">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <radialGradient id="mm-shadow-grad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#12151a" stop-opacity="0.78" />
-      <stop offset="65%" stop-color="#171b22" stop-opacity="0.38" />
-      <stop offset="100%" stop-color="#171b22" stop-opacity="0" />
-    </radialGradient>
-    <radialGradient id="mm-aura-field" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#9e4736" stop-opacity="0.32" />
-      <stop offset="58%" stop-color="#c48f5a" stop-opacity="0.14" />
-      <stop offset="100%" stop-color="#171b22" stop-opacity="0" />
-    </radialGradient>
-    <linearGradient id="mm-hull-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#334155" />
-      <stop offset="50%" stop-color="#242a34" />
-      <stop offset="100%" stop-color="#171b22" />
+    <!-- STYLE-170 x STYLE-142: Quad-Track Super-Heavy Mammoth Fortress Tank -->
+    <linearGradient id="em-hull" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fca5a5"/>
+      <stop offset="20%" stop-color="#dc2626"/>
+      <stop offset="50%" stop-color="#7f1d1d"/>
+      <stop offset="80%" stop-color="#3f1d24"/>
+      <stop offset="100%" stop-color="#14070a"/>
     </linearGradient>
-    <linearGradient id="mm-crimson-edge" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#dfc08e" />
-      <stop offset="35%" stop-color="#9e4736" />
-      <stop offset="100%" stop-color="#4f2018" />
+    <linearGradient id="em-carbon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#52525b"/>
+      <stop offset="35%" stop-color="#27272a"/>
+      <stop offset="70%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#09090b"/>
     </linearGradient>
-    <linearGradient id="mm-rim-glow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#d8dee9" stop-opacity="0.95" />
-      <stop offset="45%" stop-color="#9e4736" stop-opacity="0.8" />
-      <stop offset="100%" stop-color="#c48f5a" stop-opacity="0" />
+    <!-- Heat-Blued Twin 155mm Heavy Siege Barrels -->
+    <linearGradient id="em-barrel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="22%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#c084fc"/>
+      <stop offset="75%" stop-color="#4338ca"/>
+      <stop offset="100%" stop-color="#18181b"/>
     </linearGradient>
-    <radialGradient id="mm-core-glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#d8dee9" />
-      <stop offset="40%" stop-color="#9e4736" />
-      <stop offset="100%" stop-color="#4f2018" stop-opacity="0" />
+    <linearGradient id="em-turret-facet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fecaca"/>
+      <stop offset="24%" stop-color="#ef4444"/>
+      <stop offset="55%" stop-color="#991b1b"/>
+      <stop offset="82%" stop-color="#31102f"/>
+      <stop offset="100%" stop-color="#0f0714"/>
+    </linearGradient>
+    <radialGradient id="em-magma-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ef4444" stop-opacity="0.38"/>
+      <stop offset="65%" stop-color="#991b1b" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#09090b" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <!-- [鍏夊奖灞?1] 瓒呴噸鍨嬭溅搴曟帴瑙﹁蒋闃村奖璐村浘 (z=1, multiply) -->
-  <!-- [鍏夊奖灞?2A] 鐚╃孩瓒呰浇鍙嶅簲鍫嗗鍏夌幆 (z=4, screen) -->
-  <!-- [鍏夊奖灞?2B] 鐚╃孩瓒呰浇鍙嶅簲鍫嗗唴鍏夌幆 (z=5, screen) -->
-  <!-- [鍏夊奖灞?3] 鐚涚姼閲嶇偖濞佸帇鎵弿鍏夐敟 (z=8, screen) -->
-  <!-- [楠ㄩ閮ㄤ欢 1A] 鍓嶅乏鐙珛瑁呯敳灞ュ甫鎬绘垚 (z=14) -->
-  <!-- [楠ㄩ閮ㄤ欢 1B] 鍓嶅彸鐙珛瑁呯敳灞ュ甫鎬绘垚 (z=14) -->
-  <!-- [楠ㄩ閮ㄤ欢 1C] 鍚庡乏鐙珛瑁呯敳灞ュ甫鎬绘垚 (z=15) -->
-  <!-- [楠ㄩ閮ㄤ欢 1D] 鍚庡彸鐙珛瑁呯敳灞ュ甫鎬绘垚 (z=15) -->
-  <!-- [楠ㄩ閮ㄤ欢 2] 瓒呴噸鍨嬪鏍煎弽搴旇鐢茶溅浣?(z=25) -->
-  <!-- [楠ㄩ閮ㄤ欢 3A] 宸﹁溅鑲╁壇瀵煎脊鍙戝皠浜曡埍鐩?(z=30) -->
-  <!-- [楠ㄩ閮ㄤ欢 3B] 鍙宠溅鑲╁壇瀵煎脊鍙戝皠浜曡埍鐩?(z=30) -->
-  <!-- [楠ㄩ閮ㄤ欢 4A] 宸﹂噸鍨嬪悗鍧愬姏鏀诲煄宸ㄧ偖 (z=35) -->
-  <!-- [楠ㄩ閮ㄤ欢 4B] 鍙抽噸鍨嬪悗鍧愬姏鏀诲煄宸ㄧ偖 (z=35) -->
-  <!-- [楠ㄩ閮ㄤ欢 5] 鐚涚姼涓绘棆杞牎鍨掔偖濉?(z=40) -->
-  <!-- [鍏夊奖灞?4] 瑁呯敳杈圭紭鍙楀厜楂樺厜鏄犲皠璐村浘 (z=45, plus-lighter) -->
-  <!-- [鍏夊奖灞?5] 椤跺眰鐚╃孩瓒呰浇鐢靛姬鍐?(z=65, screen) -->
-  <g id="part-shadow-cast" data-pivot="64,70" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
-    <ellipse cx="64" cy="70" rx="58" ry="54" fill="url(#mm-shadow-grad)" />
-    <ellipse cx="64" cy="68" rx="46" ry="46" fill="#12151a" fill-opacity="0.52" />
+
+  <!-- 1. Ground Cast Shadow & Heavy Hexagonal Basalt Magma Footprint -->
+  <ellipse id="part-shadow-cast" cx="34" cy="36" rx="28" ry="28" fill="#030406" opacity="0.88"/>
+  <polygon id="part-aura-ring-outer" points="32,2 60,17 60,47 32,62 4,47 4,17" fill="url(#em-magma-aura)" stroke="#ef4444" stroke-width="1.1" stroke-opacity="0.5"/>
+  <polygon id="part-aura-ring-inner" points="32,7 55,19 55,45 32,57 9,45 9,19" fill="none" stroke="#f59e0b" stroke-width="0.9" stroke-opacity="0.38"/>
+
+  <!-- 2. Siege Floodlight Cone -->
+  <polygon id="part-light-cone-main" points="32,14 12,0 52,0" fill="#ef4444" opacity="0.2"/>
+
+  <!-- 3. Quad Articulated Heavy Armored Track Pods -->
+  <g id="part-track-front-L">
+    <rect x="4" y="8" width="10" height="22" rx="2" fill="url(#em-carbon)" stroke="#09090b" stroke-width="1.4"/>
+    <path d="M5 12 H13 M5 17 H13 M5 22 H13 M5 26 H13" stroke="#71717a" stroke-width="1.4"/>
   </g>
-  <g id="part-aura-ring-outer" data-pivot="64,68" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
-    <circle cx="64" cy="68" r="58" fill="url(#mm-aura-field)" />
-    <path fill="none" stroke="#9e4736" stroke-width="1.5" stroke-opacity="0.72" d="M116.39,83.02 A54.5,54.5 0 0,1 79.02,120.39 M48.98,120.39 A54.5,54.5 0 0,1 11.61,83.02 M11.61,52.98 A54.5,54.5 0 0,1 48.98,15.61 M79.02,15.61 A54.5,54.5 0 0,1 116.39,52.98 M64,9.5 L64,18.5 M64,117.5 L64,126.5 M5.5,68 L14.5,68 M113.5,68 L122.5,68" stroke-linejoin="bevel" />
-    <path fill="none" stroke="#8695ab" stroke-width="0.85" stroke-opacity="0.58" d="M111.39,81.59 A49.3,49.3 0 0,1 77.59,115.39 M50.41,115.39 A49.3,49.3 0 0,1 16.61,81.59 M16.61,54.41 A49.3,49.3 0 0,1 50.41,20.61 M77.59,20.61 A49.3,49.3 0 0,1 111.39,54.41 M64,14.7 L64,23.7 M64,112.3 L64,121.3 M10.7,68 L19.7,68 M108.3,68 L117.3,68" stroke-linejoin="bevel" />
-    <line x1="111.3" y1="68" x2="120.5" y2="68" stroke="#9e4736" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="97.4" y1="101.4" x2="104" y2="108" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="64" y1="115.3" x2="64" y2="124.5" stroke="#9e4736" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="30.6" y1="101.4" x2="24" y2="108" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="16.7" y1="68" x2="7.5" y2="68" stroke="#9e4736" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="30.6" y1="34.6" x2="24" y2="28" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="64" y1="20.7" x2="64" y2="11.5" stroke="#9e4736" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="97.4" y1="34.6" x2="104" y2="28" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
-    <rect x="100.3" y="104.3" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
-    <rect x="23.3" y="104.3" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
-    <rect x="23.3" y="27.3" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
-    <rect x="100.3" y="27.3" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
+  <g id="part-track-front-R">
+    <rect x="50" y="8" width="10" height="22" rx="2" fill="url(#em-carbon)" stroke="#09090b" stroke-width="1.4"/>
+    <path d="M51 12 H59 M51 17 H59 M51 22 H59 M51 26 H59" stroke="#71717a" stroke-width="1.4"/>
   </g>
-  <g id="part-aura-ring-inner" data-pivot="64,68" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
-    <path fill="none" stroke="#c48f5a" stroke-width="1.1" stroke-opacity="0.68" d="M104.18,79.52 A41.8,41.8 0 0,1 75.52,108.18 M52.48,108.18 A41.8,41.8 0 0,1 23.82,79.52 M23.82,56.48 A41.8,41.8 0 0,1 52.48,27.82 M75.52,27.82 A41.8,41.8 0 0,1 104.18,56.48 M64,22.2 L64,31.2 M64,104.8 L64,113.8 M18.2,68 L27.2,68 M100.8,68 L109.8,68" stroke-linejoin="bevel" />
-    <circle cx="105.8" cy="68" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
-    <circle cx="84.9" cy="104.2" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
-    <circle cx="43.1" cy="104.2" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
-    <circle cx="22.2" cy="68" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
-    <circle cx="43.1" cy="31.8" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
-    <circle cx="84.9" cy="31.8" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
+  <g id="part-track-rear-L">
+    <rect x="4" y="34" width="10" height="23" rx="2" fill="url(#em-carbon)" stroke="#09090b" stroke-width="1.4"/>
+    <path d="M5 38 H13 M5 43 H13 M5 48 H13 M5 53 H13" stroke="#71717a" stroke-width="1.4"/>
   </g>
-  <g id="part-light-cone-main" data-pivot="64,48" data-parent="part-turret-body" data-z-index="8" data-blend="screen" style="mix-blend-mode: screen">
-    <polygon points="64,48 34,4 94,4" fill="url(#mm-aura-field)" opacity="0.65" />
-    <line x1="54" y1="46" x2="46" y2="4" stroke="#9e4736" stroke-width="0.8" />
-    <line x1="74" y1="46" x2="82" y2="4" stroke="#9e4736" stroke-width="0.8" />
+  <g id="part-track-rear-R">
+    <rect x="50" y="34" width="10" height="23" rx="2" fill="url(#em-carbon)" stroke="#09090b" stroke-width="1.4"/>
+    <path d="M51 38 H59 M51 43 H59 M51 48 H59 M51 53 H59" stroke="#71717a" stroke-width="1.4"/>
   </g>
-  <g id="part-track-front-L" data-pivot="20,42" data-parent="part-hull-chassis" data-z-index="14" data-blend="normal" data-motion="scroll-uv-left">
-    <rect x="11" y="20" width="18" height="42" rx="4" fill="#14171d" stroke="#9e4736" stroke-width="2.0" />
-    <rect x="13" y="23" width="14" height="36" rx="2" fill="#242a34" stroke="#4f2018" stroke-width="0.9" />
-    <path d="M12 28 H28 M12 36 H28 M12 44 H28 M12 52 H28" stroke="#c48f5a" stroke-width="1.2" />
-    <circle cx="20" cy="30" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
-    <circle cx="20" cy="50" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
+
+  <!-- 4. Super-Heavy Reactive Slab Hull Chassis -->
+  <g id="part-hull-chassis">
+    <polygon points="20,7 44,7 52,15 52,51 44,58 20,58 12,51 12,15" fill="url(#em-hull)" stroke="#09090b" stroke-width="1.6"/>
+    <!-- Front Bulldozer Spaced ERA Glacis -->
+    <polygon points="18,9 46,9 49,18 15,18" fill="url(#em-carbon)" stroke="#fca5a5" stroke-width="0.7" stroke-opacity="0.5"/>
+    <!-- Rear Twin Fusion Reactor Grille -->
+    <rect x="18" y="46" width="28" height="9" rx="1.5" fill="#09090b" stroke="#f97316" stroke-width="1"/>
+    <path d="M21 49 H43 M21 52 H43" stroke="#fde047" stroke-width="1.4"/>
   </g>
-  <g id="part-track-front-R" data-pivot="108,42" data-parent="part-hull-chassis" data-z-index="14" data-blend="normal" data-motion="scroll-uv-right">
-    <rect x="99" y="20" width="18" height="42" rx="4" fill="#14171d" stroke="#9e4736" stroke-width="2.0" />
-    <rect x="101" y="23" width="14" height="36" rx="2" fill="#242a34" stroke="#4f2018" stroke-width="0.9" />
-    <path d="M100 28 H116 M100 36 H116 M100 44 H116 M100 52 H116" stroke="#c48f5a" stroke-width="1.2" />
-    <circle cx="108" cy="30" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
-    <circle cx="108" cy="50" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
+
+  <!-- 5. Twin Heat-Blued Siege Cannons -->
+  <g id="part-barrel-heavy-L">
+    <rect x="21" y="1" width="6.5" height="23" rx="1.2" fill="url(#em-barrel)" stroke="#09090b" stroke-width="1.2"/>
+    <rect x="20" y="1" width="8.5" height="4" rx="1" fill="#fde047" stroke="#09090b" stroke-width="0.8"/>
   </g>
-  <g id="part-track-rear-L" data-pivot="20,90" data-parent="part-hull-chassis" data-z-index="15" data-blend="normal" data-motion="scroll-uv-left">
-    <rect x="11" y="68" width="18" height="44" rx="4" fill="#14171d" stroke="#9e4736" stroke-width="2.0" />
-    <rect x="13" y="71" width="14" height="38" rx="2" fill="#242a34" stroke="#4f2018" stroke-width="0.9" />
-    <path d="M12 76 H28 M12 84 H28 M12 92 H28 M12 100 H28" stroke="#c48f5a" stroke-width="1.2" />
-    <circle cx="20" cy="80" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
-    <circle cx="20" cy="100" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
+  <g id="part-barrel-heavy-R">
+    <rect x="36.5" y="1" width="6.5" height="23" rx="1.2" fill="url(#em-barrel)" stroke="#09090b" stroke-width="1.2"/>
+    <rect x="35.5" y="1" width="8.5" height="4" rx="1" fill="#fde047" stroke="#09090b" stroke-width="0.8"/>
   </g>
-  <g id="part-track-rear-R" data-pivot="108,90" data-parent="part-hull-chassis" data-z-index="15" data-blend="normal" data-motion="scroll-uv-right">
-    <rect x="99" y="68" width="18" height="44" rx="4" fill="#14171d" stroke="#9e4736" stroke-width="2.0" />
-    <rect x="101" y="71" width="14" height="38" rx="2" fill="#242a34" stroke="#4f2018" stroke-width="0.9" />
-    <path d="M100 76 H116 M100 84 H116 M100 92 H116 M100 100 H116" stroke="#c48f5a" stroke-width="1.2" />
-    <circle cx="108" cy="80" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
-    <circle cx="108" cy="100" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
+
+  <!-- 6. Radial Octagonal Multi-Faceted Stealth Fortress Turret & Side Missile Pods -->
+  <g id="part-missile-pod-L">
+    <polygon points="9,24 16,21 16,39 9,36" fill="url(#em-carbon)" stroke="#f87171" stroke-width="1"/>
+    <circle cx="12.5" cy="26" r="1.3" fill="#fde047"/>
+    <circle cx="12.5" cy="30" r="1.3" fill="#fde047"/>
+    <circle cx="12.5" cy="34" r="1.3" fill="#fde047"/>
   </g>
-  <g id="part-hull-chassis" data-pivot="64,68" data-parent="root" data-z-index="25" data-blend="normal">
-    <polygon points="32,18 96,18 102,32 102,102 92,112 36,112 26,102 26,32" fill="url(#mm-hull-obsidian)" stroke="url(#mm-crimson-edge)" stroke-width="2.4" stroke-linejoin="bevel" />
-    <rect x="34" y="24" width="60" height="80" rx="4" fill="#242a34" stroke="#4f2018" stroke-width="1.2" />
-    <path d="M34 38 H94 M34 94 H94 M48 24 V38 M64 24 V38 M80 24 V38" stroke="#9e4736" stroke-width="0.8" stroke-opacity="0.75" />
-    <rect x="42" y="106" width="12" height="6" rx="1" fill="#2e1512" stroke="#c48f5a" stroke-width="1.0" />
-    <rect x="74" y="106" width="12" height="6" rx="1" fill="#2e1512" stroke="#c48f5a" stroke-width="1.0" />
-    <circle cx="52" cy="58" r="1.5" fill="#c48f5a" stroke="#12151a" stroke-width="0.6" />
-    <circle cx="76" cy="58" r="1.5" fill="#c48f5a" stroke="#12151a" stroke-width="0.6" />
-    <circle cx="52" cy="78" r="1.5" fill="#c48f5a" stroke="#12151a" stroke-width="0.6" />
-    <circle cx="76" cy="78" r="1.5" fill="#c48f5a" stroke="#12151a" stroke-width="0.6" />
+  <g id="part-missile-pod-R">
+    <polygon points="48,21 55,24 55,36 48,39" fill="url(#em-carbon)" stroke="#f87171" stroke-width="1"/>
+    <circle cx="51.5" cy="26" r="1.3" fill="#fde047"/>
+    <circle cx="51.5" cy="30" r="1.3" fill="#fde047"/>
+    <circle cx="51.5" cy="34" r="1.3" fill="#fde047"/>
   </g>
-  <g id="part-missile-pod-L" data-pivot="38,78" data-parent="part-hull-chassis" data-z-index="30" data-blend="normal" data-motion="slide-open-left">
-    <circle cx="38" cy="78" r="4" fill="#1e232b" stroke="#c48f5a" stroke-width="1.2" />
-    <rect x="30" y="64" width="14" height="26" rx="2" fill="#2e1512" stroke="#c48f5a" stroke-width="1.5" />
-    <circle cx="37" cy="71" r="2.2" fill="#9e4736" />
-    <circle cx="37" cy="78" r="2.2" fill="#9e4736" />
-    <circle cx="37" cy="85" r="2.2" fill="#9e4736" />
+  <g id="part-turret-body">
+    <polygon points="25,14 39,14 48,23 48,37 39,45 25,45 16,37 16,23" fill="url(#em-turret-facet)" stroke="#09090b" stroke-width="1.6"/>
+    <!-- Radial Stealth Armor Facets -->
+    <polygon points="25,14 39,14 32,30" fill="#fecaca" opacity="0.34"/>
+    <polygon points="39,14 48,23 32,30" fill="#f87171" opacity="0.25"/>
+    <polygon points="16,23 25,14 32,30" fill="#ef4444" opacity="0.22"/>
+    <polygon points="16,23 16,37 32,30" fill="#450a0a" opacity="0.55"/>
+    <polygon points="48,23 48,37 32,30" fill="#2e1065" opacity="0.5"/>
+    <polygon points="16,37 25,45 39,45 48,37 32,30" fill="#09090b" opacity="0.72"/>
   </g>
-  <g id="part-missile-pod-R" data-pivot="90,78" data-parent="part-hull-chassis" data-z-index="30" data-blend="normal" data-motion="slide-open-right">
-    <circle cx="90" cy="78" r="4" fill="#1e232b" stroke="#c48f5a" stroke-width="1.2" />
-    <rect x="84" y="64" width="14" height="26" rx="2" fill="#2e1512" stroke="#c48f5a" stroke-width="1.5" />
-    <circle cx="91" cy="71" r="2.2" fill="#9e4736" />
-    <circle cx="91" cy="78" r="2.2" fill="#9e4736" />
-    <circle cx="91" cy="85" r="2.2" fill="#9e4736" />
-  </g>
-  <g id="part-barrel-heavy-L" data-pivot="54,48" data-parent="part-turret-body" data-z-index="35" data-blend="normal" data-motion="recoil-y-alt-L">
-    <circle cx="54" cy="48" r="6.5" fill="#1e232b" stroke="#9e4736" stroke-width="1.5" />
-    <rect x="49" y="6" width="10" height="42" rx="2" fill="url(#mm-hull-obsidian)" stroke="url(#mm-crimson-edge)" stroke-width="1.9" />
-    <rect x="48" y="4" width="12" height="6" rx="1" fill="#4f2018" stroke="#dfc08e" stroke-width="1.2" />
-    <line x1="54" y1="12" x2="54" y2="42" stroke="#c48f5a" stroke-width="1.1" />
-  </g>
-  <g id="part-barrel-heavy-R" data-pivot="74,48" data-parent="part-turret-body" data-z-index="35" data-blend="normal" data-motion="recoil-y-alt-R">
-    <circle cx="74" cy="48" r="6.5" fill="#1e232b" stroke="#9e4736" stroke-width="1.5" />
-    <rect x="69" y="6" width="10" height="42" rx="2" fill="url(#mm-hull-obsidian)" stroke="url(#mm-crimson-edge)" stroke-width="1.9" />
-    <rect x="68" y="4" width="12" height="6" rx="1" fill="#4f2018" stroke="#dfc08e" stroke-width="1.2" />
-    <line x1="74" y1="12" x2="74" y2="42" stroke="#c48f5a" stroke-width="1.1" />
-  </g>
-  <g id="part-turret-body" data-pivot="64,66" data-parent="part-hull-chassis" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
-    <polygon points="44,42 84,42 92,58 88,88 76,96 52,96 40,88 36,58" fill="url(#mm-hull-obsidian)" stroke="url(#mm-crimson-edge)" stroke-width="2.3" stroke-linejoin="bevel" />
-    <polygon points="48,46 80,46 86,58 82,84 72,90 56,90 46,84 42,58" fill="#1e232b" stroke="#63291f" stroke-width="1.1" />
-    <circle cx="64" cy="68" r="12" fill="url(#mm-core-glow)" />
-    <circle cx="64" cy="68" r="3.5" fill="#d8dee9" />
-  </g>
-  <g id="part-light-rim-body" data-pivot="64,68" data-parent="part-hull-chassis" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
-    <path d="M32 18 H96 L102 32 M26 32 L32 18" stroke="url(#mm-rim-glow)" stroke-width="2.6" stroke-linecap="round" />
-    <path d="M44 42 H84 L92 58" stroke="url(#mm-rim-glow)" stroke-width="2.4" stroke-linecap="round" />
-  </g>
-  <g id="part-aura-corona-top" data-pivot="64,68" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
-    <path d="M22 26 L30 18 L26 10 M106 26 L98 18 L102 10" stroke="#9e4736" stroke-width="1.3" stroke-linecap="round" />
-    <circle cx="26" cy="10" r="2.2" fill="#dfc08e" />
-    <circle cx="102" cy="10" r="2.2" fill="#dfc08e" />
-    <circle cx="64" cy="6" r="2.4" fill="#d8dee9" />
-  </g>
+
+  <!-- 7. Specular Chamfer Rim & Molten Core -->
+  <path id="part-light-rim-body" d="M16,23 L25,14 L39,14 L48,23" fill="none" stroke="#fef08a" stroke-width="1.4" stroke-linecap="round"/>
+  <polygon id="part-aura-corona-top" points="32,24 38,30 32,36 26,30" fill="#fde047" stroke="#dc2626" stroke-width="1.2"/>
 </svg>

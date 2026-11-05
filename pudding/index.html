@@ -85,9 +85,9 @@
       transition: all 0.14s ease;
     }
     .tower-btn.active {
-      background: rgba(0, 240, 255, 0.18);
+      background: rgba(253, 224, 71, 0.18);
       border-color: var(--cyan);
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.36);
+      box-shadow: 0 0 14px rgba(253, 224, 71, 0.36);
       transform: translateY(-2px);
     }
     .tower-btn img { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
@@ -113,7 +113,7 @@
     .modal-card {
       max-width: 460px; width: 100%;
       background: rgba(9, 14, 26, 0.96);
-      border: 1px solid rgba(0, 240, 255, 0.55);
+      border: 1px solid rgba(253, 224, 71, 0.55);
       border-radius: 16px;
       padding: 18px 20px;
       display: flex; flex-direction: column; gap: 12px;
@@ -185,7 +185,7 @@
 
       const store = NexusSDK.createGameStorage('NEXUS_MINI_PUDDING_', (isAdmin) => ({
         currency: { sugarCrystals: isAdmin ? 99999 : 600 },
-        goldenPuddings: isAdmin ? 30 : 4,
+        goldenPuddings: isAdmin ? 30 : 0,
         clearedChapters: isAdmin ? 5 : 1
       }));
       let saveData = store.load();
@@ -212,7 +212,7 @@
       const CELL = 60; // 16*60 = 960, 9*60 = 540
 
       const TOWER_DEFS = {
-        boba:    { cost: 100, range: 165, cd: 24, dmg: 18, color: '#00f0ff' },
+        boba:    { cost: 100, range: 165, cd: 24, dmg: 18, color: '#fb7185' },
         frost:   { cost: 120, range: 150, cd: 38, dmg: 12, color: '#38bdf8', slow: 0.55 },
         sun:     { cost: 160, range: 135, cd: 52, dmg: 26, color: '#fbbf24', aoe: true },
         missile: { cost: 180, range: 260, cd: 55, dmg: 45, color: '#f43f5e' },
@@ -666,7 +666,7 @@
       document.getElementById('btn-speed').addEventListener('click', (e) => {
         NexusSDK.audio.tap();
         speedMult = speedMult === 1 ? 2 : 1;
-        e.currentTarget.style.background = speedMult === 2 ? 'rgba(0, 240, 255, 0.22)' : 'var(--panel)';
+        e.currentTarget.style.background = speedMult === 2 ? 'rgba(253, 224, 71, 0.22)' : 'var(--panel)';
         e.currentTarget.style.borderColor = speedMult === 2 ? 'var(--cyan)' : 'var(--border)';
       });
 
@@ -674,7 +674,7 @@
       // Pre-place 1 starter Boba Tower so action starts immediately
       towers.push({
         c: 3, r: 3, x: 3 * CELL + 30, y: 3 * CELL + 30,
-        type: 'boba', level: 1, range: 165, cdMax: 24, cd: 0, dmg: 18, color: '#00f0ff', slow: 0, aoe: false
+        type: 'boba', level: 1, range: 165, cdMax: 24, cd: 0, dmg: 18, color: '#fb7185', slow: 0, aoe: false
       });
       updateHud();
       requestAnimationFrame(loop);

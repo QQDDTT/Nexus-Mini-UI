@@ -105,24 +105,26 @@
       border: 1px solid rgba(148, 163, 184, 0.2);
       background: rgba(15, 23, 42, 0.72);
       color: var(--mg-text-secondary);
-      font-size: 0.72rem;
-      font-weight: 700;
-      white-space: nowrap;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
       transition: all 0.15s ease;
+    }
+    .nav-tab-btn svg {
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
     }
     .nav-tab-btn:hover {
       border-color: var(--mg-border-hover);
       color: var(--mg-text-primary);
     }
     .nav-tab-btn.active {
-      background: rgba(0, 240, 255, 0.14);
+      background: rgba(45, 212, 191, 0.14);
       border-color: var(--mg-accent-cyan);
       color: var(--mg-accent-cyan);
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.22);
+      box-shadow: 0 0 12px rgba(45, 212, 191, 0.22);
     }
     .nav-gp-badge {
       display: flex;
@@ -184,7 +186,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 4px;
-      border-bottom: 1px solid rgba(0, 240, 255, 0.14);
+      border-bottom: 1px solid rgba(45, 212, 191, 0.14);
       padding-bottom: 3px;
       white-space: nowrap;
     }
@@ -198,7 +200,7 @@
       padding: 0 16px;
       border-radius: 10px;
       border: 1.5px solid #67e8f9;
-      background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
+      background: linear-gradient(135deg, #2dd4bf 0%, #0284c7 100%);
       color: #030712;
       font-size: 0.8rem;
       font-weight: 900;
@@ -208,7 +210,7 @@
       justify-content: center;
       gap: 6px;
       white-space: nowrap;
-      box-shadow: 0 0 18px rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 18px rgba(45, 212, 191, 0.35);
       transition: transform 0.12s ease, box-shadow 0.15s ease;
     }
     .cta-primary:active { transform: scale(0.96); }
@@ -299,8 +301,8 @@
     .sp-card:hover, .species-card:hover { border-color: var(--mg-border-hover); }
     .sp-card.selected, .species-card.selected {
       border-color: var(--mg-accent-cyan);
-      background: rgba(0, 240, 255, 0.09);
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.18);
+      background: rgba(45, 212, 191, 0.09);
+      box-shadow: 0 0 14px rgba(45, 212, 191, 0.18);
     }
     .sp-card-top {
       display: flex;
@@ -312,7 +314,7 @@
       height: 42px;
       border-radius: 8px;
       background: rgba(3, 7, 18, 0.75);
-      border: 1px solid rgba(0, 240, 255, 0.18);
+      border: 1px solid rgba(45, 212, 191, 0.18);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -341,9 +343,9 @@
       border-radius: 4px;
       font-size: 0.6rem;
       font-weight: 700;
-      background: rgba(0, 240, 255, 0.14);
+      background: rgba(45, 212, 191, 0.14);
       color: var(--mg-accent-cyan);
-      border: 1px solid rgba(0, 240, 255, 0.3);
+      border: 1px solid rgba(45, 212, 191, 0.3);
       white-space: nowrap;
     }
     .badge-tag.gold {
@@ -392,7 +394,7 @@
     }
     .torso-btn.active {
       border-color: var(--mg-accent-cyan);
-      background: rgba(0, 240, 255, 0.12);
+      background: rgba(45, 212, 191, 0.12);
     }
     .torso-btn img { width: 28px; height: 28px; object-fit: contain; }
     .torso-btn .t-name { font-size: 0.65rem; font-weight: 800; white-space: nowrap; }
@@ -422,7 +424,7 @@
       height: 22px;
       border-radius: 5px;
       background: rgba(3, 7, 18, 0.85);
-      border: 1px solid rgba(0, 240, 255, 0.22);
+      border: 1px solid rgba(45, 212, 191, 0.22);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -439,7 +441,7 @@
     }
     .mg-select, .mg-input, .slot-select {
       background: rgba(3, 7, 18, 0.9);
-      border: 1px solid rgba(0, 240, 255, 0.28);
+      border: 1px solid rgba(45, 212, 191, 0.28);
       border-radius: 6px;
       color: var(--mg-text-primary);
       font-size: 0.62rem;
@@ -476,7 +478,7 @@
     }
     *::-webkit-scrollbar { width: 4px; height: 4px; }
     *::-webkit-scrollbar-track { background: rgba(3, 7, 18, 0.4); }
-    *::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.28); border-radius: 4px; }
+    *::-webkit-scrollbar-thumb { background: rgba(45, 212, 191, 0.28); border-radius: 4px; }
 
     .stat-mini-grid {
       display: grid;
@@ -525,14 +527,14 @@
       min-width: 44px;
       min-height: 44px;
       border-radius: 7px;
-      border: 1px solid rgba(0, 240, 255, 0.25);
+      border: 1px solid rgba(45, 212, 191, 0.25);
       background: rgba(15, 23, 42, 0.9);
       color: var(--mg-text-primary);
       font-size: 0.76rem;
       font-weight: 800;
       cursor: pointer;
     }
-    .numpad-btn:active { background: rgba(0, 240, 255, 0.22); }
+    .numpad-btn:active { background: rgba(45, 212, 191, 0.22); }
 
     /* 页面 6：游戏画面 (纯 SVG 图标 HUD + 局内基因库抽屉) */
     #petri-canvas {
@@ -625,8 +627,8 @@
       min-width: 62px;
       min-height: 62px;
       border: 2px solid var(--mg-accent-cyan);
-      background: radial-gradient(circle at 35% 35%, rgba(0, 240, 255, 0.28), rgba(13, 20, 36, 0.92));
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
+      background: radial-gradient(circle at 35% 35%, rgba(45, 212, 191, 0.28), rgba(13, 20, 36, 0.92));
+      box-shadow: 0 0 20px rgba(45, 212, 191, 0.35);
     }
     .pure-svg-btn.skill-orb {
       width: 54px;
@@ -659,7 +661,7 @@
       z-index: 600;
       background: rgba(7, 12, 24, 0.95);
       backdrop-filter: blur(16px);
-      border: 1.5px solid rgba(0, 240, 255, 0.42);
+      border: 1.5px solid rgba(45, 212, 191, 0.42);
       border-radius: 14px;
       padding: 10px 12px;
       display: none;
@@ -674,7 +676,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      border-bottom: 1px solid rgba(45, 212, 191, 0.2);
       padding-bottom: 6px;
     }
     .drawer-body {
@@ -732,12 +734,24 @@
       <span>微界演化</span>
     </div>
     <div class="nav-tabs">
-      <button class="nav-tab-btn" data-page="intro" id="tab-btn-intro">1.游戏介绍</button>
-      <button class="nav-tab-btn" data-page="gene-bank" id="tab-btn-gene-bank">2.基因库</button>
-      <button class="nav-tab-btn" data-page="fossil" id="tab-btn-fossil">3.化石记录</button>
-      <button class="nav-tab-btn active" data-page="editor" id="tab-btn-editor">4.编辑页面</button>
-      <button class="nav-tab-btn" data-page="lobby" id="tab-btn-lobby">5.游戏大厅</button>
-      <button class="nav-tab-btn" data-page="arena" id="tab-btn-arena" style="border-color:rgba(16,185,129,0.45);color:#6ee7b7;">6.游戏画面</button>
+      <button class="nav-tab-btn" data-page="intro" id="tab-btn-intro" title="1. 游戏介绍" aria-label="游戏介绍">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </button>
+      <button class="nav-tab-btn" data-page="gene-bank" id="tab-btn-gene-bank" title="2. 基因库" aria-label="基因库">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      </button>
+      <button class="nav-tab-btn" data-page="fossil" id="tab-btn-fossil" title="3. 化石记录" aria-label="化石记录">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <button class="nav-tab-btn active" data-page="editor" id="tab-btn-editor" title="4. 物种编辑" aria-label="物种编辑">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+      </button>
+      <button class="nav-tab-btn" data-page="lobby" id="tab-btn-lobby" title="5. 局域网大厅" aria-label="局域网大厅">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </button>
+      <button class="nav-tab-btn" data-page="arena" id="tab-btn-arena" title="6. 演化战场" aria-label="演化战场" style="border-color:rgba(16,185,129,0.45);color:#6ee7b7;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
     </div>
     <div class="nav-gp-badge" title="当前种群共享基因值储备">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="12 2 21 8.5 17.5 20 6.5 20 3 8.5"/></svg>
@@ -822,7 +836,7 @@
           <span class="sec-sub">点击卡片查看详情、设为出战或勾选投入沙盘</span>
         </div>
         <div class="species-card-grid" id="gb-card-list"></div>
-        <div style="margin-top:auto;padding-top:6px;border-top:1px solid rgba(0,240,255,0.14);display:flex;align-items:center;gap:6px;">
+        <div style="margin-top:auto;padding-top:6px;border-top:1px solid rgba(45,212,191,0.14);display:flex;align-items:center;gap:6px;">
           <input type="text" class="mg-input" id="gb-import-input" placeholder="粘贴 Base64URL 基因序列码导入物种..." style="flex:1;" />
           <button class="btn-ghost gold" id="gb-import-btn">导入基因码</button>
           <button class="btn-ghost" id="gb-new-species-btn">+ 新建物种</button>
@@ -980,13 +994,13 @@
       <div class="glass-col">
         <div class="sec-title">
           <span>5. 局域网联机大厅 (房间在房主的移动端设备上运行)</span>
-          <span class="sec-sub" id="lobby-lan-status-badge" style="color:var(--mg-accent-emerald);">WebRTC 双通道就绪 (1~5ms)</span>
+          <span class="sec-sub" id="lobby-lan-status-badge" style="color:var(--mg-text-secondary);">局域网会话初始化中...</span>
         </div>
 
-        <div style="background:rgba(0,240,255,0.07);border:1px solid rgba(0,240,255,0.3);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;">
+        <div style="background:rgba(45,212,191,0.07);border:1px solid rgba(45,212,191,0.3);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;">
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <strong style="font-size:0.74rem;color:var(--mg-accent-cyan);">【建立房间 · 房主移动端设备直接运行沙盘世界】</strong>
-            <span class="badge-tag gold" id="lobby-host-room-code">房间号: 8426</span>
+            <span class="badge-tag gold" id="lobby-host-room-code">房间号: --</span>
           </div>
           <div style="font-size:0.64rem;color:var(--mg-text-secondary);line-height:1.4;">
             房间实例直接创建并运行在<strong>房主（Host）的移动设备</strong>上（承载 2800×1800 物理碰撞、昼夜交替、局部食物刷新、64 活体分模式隔离配额与感官 AOI 权威视野裁剪）。
@@ -1078,8 +1092,8 @@
         </div>
         <!-- 能量值 Energy 进度条 (电光青) -->
         <div class="icon-meter" title="能量值 (Energy / 饱食度)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#00f0ff"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <div class="meter-track"><div class="meter-fill" id="hud-energy-bar" style="width:85%;background:linear-gradient(90deg,#0284c7,#00f0ff);"></div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#2dd4bf"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <div class="meter-track"><div class="meter-fill" id="hud-energy-bar" style="width:85%;background:linear-gradient(90deg,#0284c7,#2dd4bf);"></div></div>
         </div>
         <!-- 基因值 GP 进度环条 (电弧金) -->
         <div class="icon-meter" title="种群共享基因值 (GP)">
@@ -1094,9 +1108,9 @@
 
       <!-- 右上角返回游戏大厅纯图标胶囊 + 微缩生态雷达 -->
       <div style="display:flex;align-items:center;gap:8px;pointer-events:auto;">
-        <canvas id="arena-minimap" width="44" height="44" style="width:44px;height:44px;border-radius:50%;background:rgba(7,12,24,0.85);border:1.5px solid rgba(0,240,255,0.4);" title="2800×1800 微观培养皿态势雷达"></canvas>
+        <canvas id="arena-minimap" width="44" height="44" style="width:44px;height:44px;border-radius:50%;background:rgba(7,12,24,0.85);border:1.5px solid rgba(45,212,191,0.4);" title="2800×1800 微观培养皿态势雷达"></canvas>
         <button class="pure-svg-btn" id="arena-back-lobby-btn" style="width:44px;height:44px;min-width:44px;min-height:44px;" aria-label="返回六大页面导航大厅" title="返回游戏大厅 / 编辑页面">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         </button>
       </div>
     </header>
@@ -1105,8 +1119,8 @@
     <div class="arena-bottom-hud">
       <div class="arena-btn-cluster">
         <!-- [SVG:基因库] 呼出局内修改物种、存入基因库与加载基因库抽屉 -->
-        <button class="pure-svg-btn" id="btn-open-genebank" style="border-color:rgba(0,240,255,0.7);" aria-label="局内基因库与物种进化" title="局内修改物种 / 存入基因库 / 加载基因库">
-          <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <button class="pure-svg-btn" id="btn-open-genebank" style="border-color:rgba(45,212,191,0.7);" aria-label="局内基因库与物种进化" title="局内修改物种 / 存入基因库 / 加载基因库">
+          <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 4c5 0 11 16 16 16"/>
             <path d="M20 4c-5 0-11 16-16 16"/>
             <line x1="6.5" y1="8" x2="17.5" y2="8"/>
@@ -1123,7 +1137,7 @@
           </svg>
         </button>
         <!-- [SVG:感官锥] 显隐感官视野扇区/声呐环与仇恨锁定连线 -->
-        <button class="pure-svg-btn" id="btn-toggle-fov" style="border-color:rgba(0,240,255,0.45);" aria-label="切换感官范围与仇恨连线辅助层" title="显隐感官视野边界与仇恨锁定线">
+        <button class="pure-svg-btn" id="btn-toggle-fov" style="border-color:rgba(45,212,191,0.45);" aria-label="切换感官范围与仇恨连线辅助层" title="显隐感官视野边界与仇恨锁定线">
           <img id="fov-btn-organ-img" src="../assets/micro-genesis/sprites/sensory-ear-lv2.svg" alt="" />
         </button>
       </div>
@@ -1177,7 +1191,7 @@
           </div>
           <div class="torso-row" id="drawer-torso-row"></div>
           <div class="slot-editor-list" id="drawer-slot-list" style="flex:1;overflow-y:auto;"></div>
-          <div style="display:flex;align-items:center;gap:6px;padding-top:4px;border-top:1px solid rgba(0,240,255,0.15);">
+          <div style="display:flex;align-items:center;gap:6px;padding-top:4px;border-top:1px solid rgba(45,212,191,0.15);">
             <input type="text" class="mg-input" id="drawer-save-name-input" maxlength="12" placeholder="物种名称 (≤12字)" style="width:115px;" />
             <button class="btn-ghost gold" id="drawer-save-to-gb-btn" style="flex:1;">
               存入基因库 (0 消耗保存)
@@ -1928,7 +1942,7 @@
           ctx.fill();
           ctx.lineWidth = 1.8 * scale;
           ctx.strokeStyle = org.faction === 'player'
-            ? `rgba(0, 240, 255, ${pulseAlpha})`
+            ? `rgba(45, 212, 191, ${pulseAlpha})`
             : (org.isBoss ? `rgba(251, 191, 36, ${pulseAlpha})` : `rgba(226, 232, 240, ${pulseAlpha})`);
           ctx.stroke();
 
@@ -1983,8 +1997,8 @@
         }
 
         // 视觉彩色生物荧光模式
-        let fillTint = 'rgba(0, 240, 255, 0.16)';
-        let strokeTint = 'rgba(0, 240, 255, 0.72)';
+        let fillTint = 'rgba(45, 212, 191, 0.16)';
+        let strokeTint = 'rgba(45, 212, 191, 0.72)';
         if (org.faction === 'enemy' || org.faction === 'wild') {
           if (bp.dietType === 'herbivore') {
             fillTint = 'rgba(16, 185, 129, 0.18)';
@@ -2069,7 +2083,7 @@
         if (org.faction === 'player' && !org.isAlpha && !org.formerKin) {
           ctx.beginPath();
           ctx.arc(0, 0, baseR * 1.45, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(0, 240, 255, 0.38)';
+          ctx.strokeStyle = 'rgba(45, 212, 191, 0.38)';
           ctx.lineWidth = 1.2;
           ctx.setLineDash([4, 4]);
           ctx.stroke();
@@ -2575,7 +2589,7 @@
             ctx.fillRect(0, 0, w, h);
 
             // 培养皿微网格
-            ctx.strokeStyle = 'rgba(0, 240, 255, 0.07)';
+            ctx.strokeStyle = 'rgba(45, 212, 191, 0.07)';
             ctx.lineWidth = 1;
             for (let x = 20; x < w; x += 32) {
               ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
@@ -2599,9 +2613,9 @@
               ctx.moveTo(0, 0);
               ctx.arc(0, 0, r, -halfRad, halfRad);
               ctx.closePath();
-              ctx.fillStyle = 'rgba(0, 240, 255, 0.12)';
+              ctx.fillStyle = 'rgba(45, 212, 191, 0.12)';
               ctx.fill();
-              ctx.strokeStyle = 'rgba(0, 240, 255, 0.45)';
+              ctx.strokeStyle = 'rgba(45, 212, 191, 0.45)';
               ctx.lineWidth = 1.2;
               ctx.stroke();
               ctx.restore();
@@ -2684,45 +2698,72 @@
        * 8. 页面 5：游戏大厅 (#page-lobby —— 局域网房间在房主移动端设备运行)
        * ===================================================================== */
       let lanSession = null;
-      let lanRoomCode = String(Math.floor(1000 + Math.random() * 9000));
-      let guestInputCode = '';
+      let lanRoomCode = '';
       let isLanGuest = false;
+      let lanStatusBound = false;
+      let lobbyRoomSig = '';
+      let lastLobbyConnState = '';
 
-      function initLanHostSession(code, asGuest = false) {
-        if (lanSession && lanSession.destroy) lanSession.destroy();
-        lanRoomCode = code;
-        isLanGuest = Boolean(asGuest);
+      function syncLobbyLanBadges(st) {
+        const s = st || (lanSession && lanSession.getStatus ? lanSession.getStatus() : null);
+        if (!s) return;
+        lanRoomCode = s.roomCode;
+        isLanGuest = s.role === 'client' && s.connected;
         const badgeEl = document.getElementById('lobby-host-room-code');
-        if (badgeEl) badgeEl.textContent = '房间号: ' + lanRoomCode;
+        if (badgeEl) badgeEl.textContent = '房间号: ' + s.roomCode;
         const statusEl = document.getElementById('lobby-lan-status-badge');
         if (statusEl) {
-          statusEl.textContent = isLanGuest
-            ? '客机已连入房主移动端 (' + lanRoomCode + ')'
-            : '房主移动端已建房 (' + lanRoomCode + ')';
+          const rtt = Number.isFinite(s.peerLatencyMs) ? s.peerLatencyMs + 'ms' : '测速中';
+          const via = s.transport === 'webrtc' ? 'WebRTC' : '同设备通道';
+          const text = s.connected
+            ? `已联机 · ${s.role === 'host' ? '房主' : '客机'} · 实测 RTT ${rtt} (${via})`
+            : s.connState === 'connecting' ? '握手连接中...'
+            : (s.connState === 'failed' || s.connState === 'disconnected') ? (s.lastError || '连接已断开')
+            : '本机房主广播中 · 等待客机加入';
+          statusEl.textContent = text;
+          statusEl.style.color = s.connected ? 'var(--mg-accent-emerald)'
+            : (s.connState === 'failed' || s.connState === 'disconnected') ? '#f43f5e' : 'var(--mg-text-secondary)';
         }
-
-        lanSession = NexusSDK.createLanSession('micro-genesis', lanRoomCode);
-        const onMsg = (msg) => {
-          if (!msg || typeof msg !== 'object') return;
-          if (msg.type === 'GUEST_JOIN') {
+        if (s.connState !== lastLobbyConnState) {
+          if (s.connState === 'connected') {
             NexusSDK.audio.pickup();
-            showToast('局域网客机已连入房主移动设备房间 (' + lanRoomCode + ')！');
-            if (statusEl) statusEl.textContent = '客机已连接 · 房主移动端权威同步中';
-          } else if (msg.type === 'GUEST_INPUT' && !isLanGuest && arenaState.running && arenaState.rivalAlpha) {
-            // 房主移动端接收客机操控指令驱动 2P 始祖
-            arenaState.rivalAlpha.targetAngle = Number(msg.angle) || 0;
-            if (msg.skill) triggerEntityActiveSkill(arenaState.rivalAlpha);
-            if (msg.mitosis) tryMitosisReproduce(arenaState.rivalAlpha);
-          } else if (msg.type === 'HOST_STATE' && isLanGuest && arenaState.running && arenaState.rivalAlpha) {
-            // 客机接收房主移动端 20Hz 权威状态帧同步
-            if (Number.isFinite(msg.hostX)) arenaState.rivalAlpha.x = msg.hostX;
-            if (Number.isFinite(msg.hostY)) arenaState.rivalAlpha.y = msg.hostY;
-            if (Number.isFinite(msg.hostAng)) arenaState.rivalAlpha.angle = msg.hostAng;
-            if (Number.isFinite(msg.hostHp)) arenaState.rivalAlpha.hp = msg.hostHp;
+            showToast(s.role === 'host' ? `客机已加入房间 (${s.roomCode})` : `已加入房间 ${s.roomCode}（房主已应答）`);
+          } else if ((s.connState === 'failed' || s.connState === 'disconnected') && s.lastError) {
+            showToast(s.lastError);
           }
-        };
-        if (lanSession.onReliable) lanSession.onReliable(onMsg);
-        if (lanSession.onFast) lanSession.onFast(onMsg);
+          lastLobbyConnState = s.connState;
+        }
+      }
+
+      // 与第二层菜单「⑥ 局域网管理」共用同一 SDK 会话单例（杜绝双套大厅各自广播不同房间号）
+      function initLanHostSession() {
+        lanSession = NexusSDK.createLanSession('micro-genesis');
+        if (!lanStatusBound) {
+          lanStatusBound = true;
+          const onMsg = (msg) => {
+            if (!msg || typeof msg !== 'object') return;
+            if (msg.type === 'GUEST_INPUT' && !isLanGuest && arenaState.running && arenaState.rivalAlpha) {
+              // 房主移动端接收客机操控指令驱动 2P 始祖
+              arenaState.rivalAlpha.targetAngle = Number(msg.angle) || 0;
+              if (msg.skill) triggerEntityActiveSkill(arenaState.rivalAlpha);
+              if (msg.mitosis) tryMitosisReproduce(arenaState.rivalAlpha);
+            } else if (msg.type === 'HOST_STATE' && isLanGuest && arenaState.running && arenaState.rivalAlpha) {
+              // 客机接收房主移动端 20Hz 权威状态帧同步
+              if (Number.isFinite(msg.hostX)) arenaState.rivalAlpha.x = msg.hostX;
+              if (Number.isFinite(msg.hostY)) arenaState.rivalAlpha.y = msg.hostY;
+              if (Number.isFinite(msg.hostAng)) arenaState.rivalAlpha.angle = msg.hostAng;
+              if (Number.isFinite(msg.hostHp)) arenaState.rivalAlpha.hp = msg.hostHp;
+            }
+          };
+          lanSession.onReliable(onMsg);
+          lanSession.onFast(onMsg);
+          lanSession.onStatus((st) => {
+            syncLobbyLanBadges(st);
+            renderLobbyRoomList();
+          });
+          lanSession.onRooms(() => renderLobbyRoomList());
+        }
+        syncLobbyLanBadges();
       }
 
       function renderLobbyPage() {
@@ -2774,28 +2815,36 @@
         renderLobbyRoomList();
       }
 
-      function renderLobbyRoomList() {
+      function renderLobbyRoomList(force) {
         const listEl = document.getElementById('lobby-room-list');
         if (!listEl) return;
-        if (!lanSession) {
-          initLanHostSession('MG-' + Math.floor(100 + Math.random() * 900), false);
+        if (!lanSession) initLanHostSession();
+        const rooms = lanSession.getAvailableRooms();
+        const sig = JSON.stringify(rooms.map((r) => [r.roomCode, r.players, r.isSelfHost, r.isCurrentJoined, r.isConnecting, r.rttMs]));
+        if (!force && sig === lobbyRoomSig && listEl.childElementCount > 0) return;
+        lobbyRoomSig = sig;
+        if (rooms.length === 0) {
+          listEl.innerHTML = `<div style="font-size:0.64rem;color:var(--mg-text-secondary);padding:6px 2px;">暂无已发现的房间。同设备其他窗口建房后会实时出现；跨手机联机请在第二层菜单「⑥ 局域网管理」使用离线握手码。</div>`;
+          return;
         }
-        const rooms = (lanSession && lanSession.getAvailableRooms) ? lanSession.getAvailableRooms() : [];
         listEl.innerHTML = rooms.map((rm) => {
-          const isJoined = isLanGuest && lanRoomCode === rm.roomCode;
-          const isSelf = !isLanGuest && lanRoomCode === rm.roomCode;
+          const isJoined = rm.isCurrentJoined;
+          const isSelf = rm.isSelfHost;
+          const rtt = Number.isFinite(rm.rttMs) ? `${rm.rttMs}ms` : '加入后实测';
+          const full = !isSelf && !isJoined && rm.players === '2/2';
+          const label = isJoined ? '已连入' : rm.isConnecting ? '握手中' : isSelf ? '本机房主' : (full ? '已满' : '加入');
           return `
             <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border-radius:8px;background:rgba(3,24,28,0.75);border:1px solid ${isJoined ? 'var(--mg-accent-cyan)' : 'var(--mg-border-subtle)'};">
               <div style="min-width:0;flex:1;">
                 <div style="font-size:0.7rem;font-weight:800;color:var(--mg-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                  <span style="color:var(--mg-accent-cyan);font-family:Consolas,monospace;">[${rm.roomCode}]</span> ${rm.title}
+                  <span style="color:var(--mg-accent-cyan);font-family:Consolas,monospace;">[${NexusSDK.escapeHtml ? NexusSDK.escapeHtml(rm.roomCode) : rm.roomCode}]</span> ${NexusSDK.escapeHtml ? NexusSDK.escapeHtml(rm.title) : rm.title}
                 </div>
                 <div style="font-size:0.6rem;color:var(--mg-text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                  房主: ${rm.hostName} · ${rm.modeName} · <span style="color:var(--mg-accent-emerald);">${rm.players} (${rm.rttMs || 2}ms)</span>
+                  房主: ${NexusSDK.escapeHtml ? NexusSDK.escapeHtml(rm.hostName) : rm.hostName} · <span style="color:var(--mg-accent-emerald);">${rm.players} (${rtt})</span>
                 </div>
               </div>
-              <button type="button" class="btn-ghost" data-lobby-join-code="${rm.roomCode}" style="min-height:44px;padding:0 10px;font-size:0.66rem;border-color:${isJoined ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-cyan)'};color:${isJoined ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-cyan)'};">
-                ${isJoined ? '已连入' : (isSelf ? '本机房主' : '一键加入')}
+              <button type="button" class="btn-ghost" data-lobby-join-code="${rm.roomCode}" ${(rm.isConnecting || full) ? 'disabled' : ''} style="min-height:44px;padding:0 10px;font-size:0.66rem;white-space:nowrap;border-color:${isJoined ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-cyan)'};color:${isJoined ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-cyan)'};">
+                ${label}
               </button>
             </div>
           `;
@@ -2805,11 +2854,16 @@
           btn.addEventListener('click', () => {
             const targetCode = btn.getAttribute('data-lobby-join-code');
             if (!targetCode) return;
-            NexusSDK.audio.win();
-            initLanHostSession(targetCode, true);
-            if (lanSession && lanSession.joinRoom) lanSession.joinRoom(targetCode, 'client');
-            showToast('已一键加入局域网房间：' + targetCode);
-            renderLobbyRoomList();
+            const st = lanSession.getStatus();
+            if ((st.role === 'host' && st.roomCode === targetCode) || (st.connected && st.roomCode === targetCode)) {
+              NexusSDK.audio.tap();
+              showToast(st.connected ? '已在该房间内，可直接出击' : '这是本机房间，等待客机加入');
+              return;
+            }
+            NexusSDK.audio.tap();
+            lanSession.joinRoom(targetCode, 'client');
+            showToast('正在与房间 ' + targetCode + ' 握手...');
+            renderLobbyRoomList(true);
           });
         });
       }
@@ -2821,17 +2875,17 @@
       });
 
       document.getElementById('lobby-create-room-btn')?.addEventListener('click', () => {
-        const newCode = 'MG-' + Math.floor(100 + Math.random() * 900);
-        initLanHostSession(newCode, false);
+        if (!lanSession) initLanHostSession();
+        lanSession.leave();
         NexusSDK.audio.upgrade();
-        showToast('已在房主移动端建立局域网房间：' + newCode);
-        renderLobbyRoomList();
+        showToast('已在房主移动端建立局域网房间：' + lanSession.getRoomCode());
+        renderLobbyRoomList(true);
       });
 
       document.getElementById('lobby-refresh-rooms-btn')?.addEventListener('click', () => {
-        if (lanSession && lanSession.refreshRooms) lanSession.refreshRooms();
+        if (lanSession) lanSession.refreshRooms();
         NexusSDK.audio.tap();
-        renderLobbyRoomList();
+        renderLobbyRoomList(true);
         showToast('已刷新局域网可加入房间列表');
       });
 
@@ -3597,7 +3651,7 @@
         const mode = PHEROMONE_MODES[arenaState.pheromoneIdx];
         const btn = document.getElementById('btn-pheromone');
         const svg = document.getElementById('pheromone-svg-ico');
-        const color = mode === 'forage' ? '#10b981' : (mode === 'guard' ? '#00f0ff' : '#ef4444');
+        const color = mode === 'forage' ? '#10b981' : (mode === 'guard' ? '#2dd4bf' : '#ef4444');
         if (btn) btn.style.borderColor = color;
         if (svg) svg.setAttribute('stroke', color);
         NexusSDK.audio.tap();
@@ -4278,7 +4332,7 @@
         ctx.fillStyle = sonarWireframeMode ? '#030712' : (isNight ? '#020612' : arenaState.biome.bgTint);
         ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
 
-        ctx.strokeStyle = sonarWireframeMode ? 'rgba(148, 163, 184, 0.08)' : 'rgba(0, 240, 255, 0.06)';
+        ctx.strokeStyle = sonarWireframeMode ? 'rgba(148, 163, 184, 0.08)' : 'rgba(45, 212, 191, 0.06)';
         ctx.lineWidth = 1;
         const startX = Math.floor((camX - viewW * 0.5) / 80) * 80;
         const startY = Math.floor((camY - viewH * 0.5) / 80) * 80;
@@ -4363,7 +4417,7 @@
             ctx.stroke();
             ctx.setLineDash([]);
           } else {
-            ctx.fillStyle = h.type === 'ink' ? 'rgba(5, 8, 18, 0.82)' : (h.type === 'venom' ? 'rgba(16, 185, 129, 0.22)' : 'rgba(0, 240, 255, 0.35)');
+            ctx.fillStyle = h.type === 'ink' ? 'rgba(5, 8, 18, 0.82)' : (h.type === 'venom' ? 'rgba(16, 185, 129, 0.22)' : 'rgba(45, 212, 191, 0.35)');
             ctx.fill();
           }
         });
@@ -4444,7 +4498,7 @@
                 const arcSpan = Math.min(0.32, bodyExtent / Math.max(80, effSonarR));
                 ctx.beginPath();
                 ctx.arc(alpha.x, alpha.y, effSonarR, edgeAng - arcSpan, edgeAng + arcSpan);
-                ctx.strokeStyle = `rgba(0, 240, 255, ${echoAlpha * 0.85})`;
+                ctx.strokeStyle = `rgba(45, 212, 191, ${echoAlpha * 0.85})`;
                 ctx.lineWidth = 2.4;
                 ctx.stroke();
               }
@@ -4573,7 +4627,7 @@
             ctx.moveTo(alpha.x, alpha.y);
             ctx.arc(alpha.x, alpha.y, effRange, alpha.angle - halfRad, alpha.angle + halfRad);
             ctx.closePath();
-            ctx.strokeStyle = 'rgba(0, 240, 255, 0.35)';
+            ctx.strokeStyle = 'rgba(45, 212, 191, 0.35)';
             ctx.lineWidth = 1.4;
             ctx.stroke();
           }
@@ -4604,7 +4658,7 @@
           arenaState.organisms.forEach((o) => {
             const mx = (o.x / WORLD_W) * 40 + 2;
             const my = (o.y / WORLD_H) * 40 + 2;
-            mctx.fillStyle = o === alpha ? '#00f0ff' : (o.colonyId === 'player_colony' ? '#10b981' : (o.isBoss ? '#fbbf24' : '#ef4444'));
+            mctx.fillStyle = o === alpha ? '#2dd4bf' : (o.colonyId === 'player_colony' ? '#10b981' : (o.isBoss ? '#fbbf24' : '#ef4444'));
             mctx.fillRect(mx - 1.5, my - 1.5, o === alpha || o.isBoss ? 3.5 : 2, o === alpha || o.isBoss ? 3.5 : 2);
           });
         }

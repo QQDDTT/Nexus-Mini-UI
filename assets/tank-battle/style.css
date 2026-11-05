@@ -5,42 +5,43 @@
  */
 
 :root {
-  /* ===== [5] 50% 基础底色体系：浸油发蓝炮钢与冷拔拉丝钨钢底板（低对比度柔和暗部） ===== */
-  --void: #1b1f26;
-  --tb-bg-void: #1b1f26;
-  --tb-bg-steel: #242932;
-  --tb-bg-battlefloor: #1d2128;
+  /* ===== [5] 50% 基础底色体系：六方柱状节理玄武岩与锻造碳钛钢底板 (STYLE-170 × STYLE-142) ===== */
+  --void: #141215;
+  --tb-bg-void: #141215;
+  --tb-bg-steel: #1d1a1f;
+  --tb-bg-battlefloor: #18161b;
 
-  /* ===== [3] 30% 结构层与 4px 厚断面铣削倒角乌金钢板 ===== */
-  --panel: #2b313a;
-  --tb-plate-grad: linear-gradient(165deg, #353c47 0%, #292f38 65%, #22272f 100%);
-  --tb-plate-selected-grad: linear-gradient(165deg, #3f4855 0%, #303742 65%, #272d36 100%);
-  --tb-dock-grad: linear-gradient(180deg, #313842 0%, #242931 100%);
-  --tb-well-bg: #1a1e24;
-  --tb-bevel-top: #5a6575;
-  --tb-bevel-left: #4b5563;
-  --tb-bevel-right: #1a1e24;
-  --tb-bevel-bottom: #13161b;
-  --border: #4a5462;
+  /* ===== [3] 30% 结构层与 4px 厚断面铣削倒角锻造碳钛钢面板 ===== */
+  --panel: #282c34;
+  --tb-plate-grad: linear-gradient(165deg, #3a414e 0%, #282c34 65%, #1b1d24 100%);
+  --tb-plate-selected-grad: linear-gradient(165deg, #434b5a 0%, #303642 65%, #222630 100%);
+  --tb-dock-grad: linear-gradient(180deg, #313742 0%, #22262e 100%);
+  --tb-well-bg: #16181e;
+  --tb-bevel-top: #646e80;
+  --tb-bevel-left: #4b5362;
+  --tb-bevel-right: #181a20;
+  --tb-bevel-bottom: #101116;
+  --border: #4b5362;
 
-  /* ===== [1] 10% 绝对焦点点睛：退火紫铜/黄铜弹壳色 + 冷拔钨钢银 + 防锈红丹底漆 ===== */
-  --cyan: #c48f5a;
-  --gold: #e0be99;
-  --red: #b5604a;
-  --green: #7a9a82;
-  --tb-brass: #c48f5a;
-  --tb-brass-bright: #e0be99;
-  --tb-brass-deep: #6b4b2b;
-  --tb-tungsten: #8598b0;
-  --tb-primer-red: #b5604a;
+  /* ===== [1] 10% 绝对焦点点睛：1200°C 熔岩琥珀金 + 高温回火紫罗兰 ===== */
+  --cyan: #f59e0b;
+  --gold: #fde047;
+  --red: #ef4444;
+  --green: #22c55e;
+  --tb-brass: #f59e0b;
+  --tb-brass-bright: #fde047;
+  --tb-brass-deep: #9a3412;
+  --tb-tungsten: #c084fc;
+  --tb-primer-red: #ef4444;
 
-  /* ===== 低对比度柔和金属文字色阶 ===== */
-  --text: #d6deea;
-  --muted: #909ba8;
+  /* ===== 高辨识度金属文字色阶 ===== */
+  --text: #e2e8f0;
+  --muted: #94a3b8;
 }
 
 /* 根视口拉丝钨钢底纹 */
-html, body {
+html,
+body {
   background-color: var(--tb-bg-void) !important;
   background-image:
     repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.014) 0px, rgba(255, 255, 255, 0.014) 1px, transparent 1px, transparent 3px),
@@ -56,6 +57,7 @@ html, body {
 #nx-tier2-menu .tb-inspector-dock {
   position: relative;
 }
+
 .tb-rivets::before,
 .tb-rivets::after,
 .tb-armor-plate::before,
@@ -72,12 +74,14 @@ html, body {
   pointer-events: none;
   z-index: 3;
 }
+
 .tb-rivets::before,
 .tb-armor-plate::before,
 #nx-tier2-menu .tb-unit-card::before {
   top: 5px;
   left: 5px;
 }
+
 .tb-rivets::after,
 .tb-armor-plate::after,
 #nx-tier2-menu .tb-unit-card::after {
@@ -97,10 +101,7 @@ html, body {
     inset 0 2px 0 rgba(255, 255, 255, 0.16),
     inset 0 -3px 0 #12151a !important;
   padding:
-    max(6px, env(safe-area-inset-top))
-    max(10px, env(safe-area-inset-right))
-    max(6px, env(safe-area-inset-bottom))
-    max(10px, env(safe-area-inset-left)) !important;
+    max(6px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)) !important;
   gap: 6px !important;
 }
 
@@ -205,6 +206,7 @@ html, body {
   height: 100%;
   min-height: 0;
 }
+
 .tb-roster-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -212,6 +214,7 @@ html, body {
   gap: 7px;
   min-height: 0;
 }
+
 .tb-unit-card {
   background: var(--tb-plate-grad);
   border-top: 2px solid #5a6575;
@@ -229,9 +232,11 @@ html, body {
   transition: transform 0.12s ease, border-color 0.12s ease;
   min-height: 0;
 }
+
 .tb-unit-card:hover {
   border-top-color: #8598b0;
 }
+
 .tb-unit-card.selected {
   background: var(--tb-plate-selected-grad);
   border-top: 2px solid #c48f5a;
@@ -240,6 +245,7 @@ html, body {
   border-bottom: 4px solid #17120e;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.75), inset 0 0 0 1px rgba(196, 143, 90, 0.28);
 }
+
 .tb-unit-card-head {
   display: flex;
   justify-content: space-between;
@@ -249,9 +255,11 @@ html, body {
   font-weight: 700;
   color: #8f9aa8;
 }
+
 .tb-unit-card.selected .tb-unit-card-head {
   color: #deb487;
 }
+
 .tb-unit-svg-wrap {
   flex: 1;
   display: flex;
@@ -259,12 +267,14 @@ html, body {
   justify-content: center;
   min-height: 0;
 }
+
 .tb-unit-svg-wrap img {
   width: 52px;
   height: 52px;
   object-fit: contain;
   filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.75));
 }
+
 .tb-unit-card-foot {
   display: flex;
   justify-content: space-between;
@@ -276,6 +286,7 @@ html, body {
   padding-top: 3px;
   white-space: nowrap;
 }
+
 .tb-unit-card-foot small {
   font-size: 0.6rem;
   font-family: "Consolas", monospace;
@@ -297,6 +308,7 @@ html, body {
   color: #c5ced9;
   min-height: 0;
 }
+
 .tb-insp-header {
   display: flex;
   justify-content: space-between;
@@ -304,18 +316,21 @@ html, body {
   border-bottom: 2px solid #1b1f26;
   padding-bottom: 5px;
 }
+
 .tb-insp-title {
   font-size: 0.8rem;
   font-weight: 800;
   color: #e0c19e;
   letter-spacing: 0.04em;
 }
+
 .tb-insp-code {
   font-size: 0.62rem;
   font-family: "Consolas", monospace;
   color: #909ba8;
   margin-top: 2px;
 }
+
 .tb-insp-preview-box {
   display: flex;
   align-items: center;
@@ -326,6 +341,7 @@ html, body {
   padding: 5px 8px;
   margin: 3px 0;
 }
+
 .tb-insp-preview-box img,
 .tb-insp-preview-box svg {
   width: 60px;
@@ -334,23 +350,27 @@ html, body {
   flex-shrink: 0;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.8));
 }
+
 .tb-insp-specs {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
+
 .tb-spec-line {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 0.64rem;
 }
+
 .tb-spec-line .lbl {
   width: 48px;
   color: #9aa5b4;
   white-space: nowrap;
 }
+
 .tb-spec-track {
   flex: 1;
   height: 7px;
@@ -358,13 +378,16 @@ html, body {
   border: 1px solid #3b434f;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.85);
 }
+
 .tb-spec-fill {
   height: 100%;
   background: linear-gradient(90deg, #5c6d82, #8598b0);
 }
+
 .tb-spec-fill.brass {
   background: linear-gradient(90deg, #91663c, #c48f5a);
 }
+
 .tb-spec-val {
   width: 42px;
   text-align: right;
@@ -373,11 +396,13 @@ html, body {
   font-weight: 700;
   color: #d6deea;
 }
+
 .tb-mode-selector {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
 }
+
 .tb-mode-pill {
   min-height: 44px;
   display: flex;
@@ -392,6 +417,7 @@ html, body {
   cursor: pointer;
   white-space: nowrap;
 }
+
 .tb-mode-pill.active {
   background: linear-gradient(180deg, #3c4450 0%, #2d343e 100%);
   color: #e0be99;
@@ -410,13 +436,107 @@ html, body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.75) !important;
 }
 
+/* 第三层右翼火控舱：开火键双翼独立炮塔转向按钮组 (↺ 炮塔左旋 · FIRE · ↻ 炮塔右旋) */
+.turret-fire-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+}
+
+.turret-turn-btn {
+  min-width: 44px;
+  width: 44px;
+  min-height: 64px;
+  height: 64px;
+  background: linear-gradient(180deg, #3a424f 0%, #262c35 100%);
+  color: #dfc08e;
+  border-top: 1.5px solid #5b6778;
+  border-left: 1.5px solid #4b5563;
+  border-right: 1.5px solid #1a1e24;
+  border-bottom: 3px solid #13161b;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  touch-action: none;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.7);
+  font-family: "Consolas", "Noto Sans SC", monospace;
+  font-size: 0.58rem;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.turret-turn-btn:active,
+.turret-turn-btn.pressed {
+  background: linear-gradient(180deg, #4b5668 0%, #343c48 100%);
+  color: #f3dcc0;
+  border-top-color: #c48f5a;
+  transform: translateY(1px);
+}
+
 @media (max-width: 760px) {
+  #nx-tier2-menu .nx-t2-header {
+    padding: 0 5px !important;
+    gap: 3px !important;
+  }
+
+  #nx-tier2-menu .nx-t2-brand {
+    gap: 4px !important;
+  }
+
+  #nx-tier2-menu .nx-t2-brand img {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  #nx-tier2-menu .nx-t2-title {
+    font-size: 0.68rem !important;
+    letter-spacing: 0 !important;
+  }
+
+  #nx-tier2-menu .nx-t2-sub {
+    display: none !important;
+  }
+
+  #nx-tier2-menu .nx-t2-tabs {
+    gap: 2px !important;
+  }
+
+  #nx-tier2-menu .nx-t2-tab {
+    padding: 0 4px !important;
+    font-size: 0.58rem !important;
+    min-width: 44px !important;
+  }
+
   .tb-roster-workbench {
     grid-template-columns: 1.15fr 0.85fr;
     gap: 6px;
   }
+
   .tb-unit-svg-wrap img {
     width: 40px;
     height: 40px;
+  }
+
+  .tb-inspector-dock {
+    padding: 5px 8px;
+  }
+
+  .tb-insp-preview-box {
+    padding: 3px 6px;
+    margin: 2px 0;
+  }
+
+  .tb-insp-preview-box img,
+  .tb-insp-preview-box svg,
+  #tb-insp-rig-stage {
+    width: 48px !important;
+    height: 48px !important;
   }
 }

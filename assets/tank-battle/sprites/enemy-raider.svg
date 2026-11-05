@@ -1,159 +1,100 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="enemy-raider-rig" data-root-anchor="64,68" data-has-aura="true">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <radialGradient id="rd-shadow-grad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#12151a" stop-opacity="0.72" />
-      <stop offset="62%" stop-color="#171b22" stop-opacity="0.32" />
-      <stop offset="100%" stop-color="#171b22" stop-opacity="0" />
-    </radialGradient>
-    <radialGradient id="rd-aura-field" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#b85440" stop-opacity="0.28" />
-      <stop offset="55%" stop-color="#8695ab" stop-opacity="0.14" />
-      <stop offset="100%" stop-color="#171b22" stop-opacity="0" />
-    </radialGradient>
-    <linearGradient id="rd-hull-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#384252" />
-      <stop offset="52%" stop-color="#242a34" />
-      <stop offset="100%" stop-color="#171b22" />
+    <!-- STYLE-170 x STYLE-142: 5-Stop Gooch Warm-to-Cool Interceptor Armor -->
+    <linearGradient id="er-hull" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="24%" stop-color="#ea580c"/>
+      <stop offset="55%" stop-color="#9a3412"/>
+      <stop offset="82%" stop-color="#431407"/>
+      <stop offset="100%" stop-color="#180905"/>
     </linearGradient>
-    <linearGradient id="rd-neon-edge" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#d8dee9" />
-      <stop offset="35%" stop-color="#9e4736" />
-      <stop offset="100%" stop-color="#8695ab" />
+    <linearGradient id="er-carbon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#52525b"/>
+      <stop offset="35%" stop-color="#27272a"/>
+      <stop offset="70%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#09090b"/>
     </linearGradient>
-    <linearGradient id="rd-rim-glow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#d8dee9" stop-opacity="0.95" />
-      <stop offset="45%" stop-color="#9e4736" stop-opacity="0.75" />
-      <stop offset="100%" stop-color="#8695ab" stop-opacity="0" />
+    <!-- Heat-Blued Twin Plasma Barrel Gradient -->
+    <linearGradient id="er-barrel-temper" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="20%" stop-color="#f97316"/>
+      <stop offset="48%" stop-color="#c084fc"/>
+      <stop offset="75%" stop-color="#4338ca"/>
+      <stop offset="100%" stop-color="#1e293b"/>
     </linearGradient>
-    <radialGradient id="rd-core-glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#d8dee9" />
-      <stop offset="45%" stop-color="#9e4736" />
-      <stop offset="100%" stop-color="#8695ab" stop-opacity="0" />
+    <linearGradient id="er-turret-facet" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#fdba74"/>
+      <stop offset="28%" stop-color="#f97316"/>
+      <stop offset="60%" stop-color="#9a3412"/>
+      <stop offset="85%" stop-color="#3b0764"/>
+      <stop offset="100%" stop-color="#13071e"/>
+    </linearGradient>
+    <radialGradient id="er-magma-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fb923c" stop-opacity="0.34"/>
+      <stop offset="65%" stop-color="#ea580c" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#09090b" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <!-- [鍏夊奖灞?1] 杞﹀簳鎺ヨЕ杞槾褰辫创鍥?(z=1, multiply) -->
-  <!-- [鍏夊奖灞?2A] 绱潚鍙岀浉鍏夌幆澶栫幆 (z=4, screen) -->
-  <!-- [鍏夊奖灞?2B] 绱潚鍙岀浉鍏夌幆鍐呯幆 (z=5, screen) -->
-  <!-- [鍏夊奖灞?3] 绐佸嚮鍙岃仈鐏帶鍏夐敟 (z=8, screen) -->
-  <!-- [楠ㄩ閮ㄤ欢 1A] 宸︽帹杩涘柗鍙ｅ熬鐒?(z=10) -->
-  <!-- [楠ㄩ閮ㄤ欢 1B] 鍙虫帹杩涘柗鍙ｅ熬鐒?(z=10) -->
-  <!-- [楠ㄩ閮ㄤ欢 2A] 宸︾嫭绔嬬獊鍑诲饱甯︽€绘垚 (z=15) -->
-  <!-- [楠ㄩ閮ㄤ欢 2B] 鍙崇嫭绔嬬獊鍑诲饱甯︽€绘垚 (z=15) -->
-  <!-- [楠ㄩ閮ㄤ欢 3] 鍙嶅簲瑁呯敳绐佸嚮搴曠洏 (z=25) -->
-  <!-- [楠ㄩ閮ㄤ欢 4A] 宸︿氦鏇垮悗鍧愬姏绛夌瀛愮偖绠?(z=35) -->
-  <!-- [楠ㄩ閮ㄤ欢 4B] 鍙充氦鏇垮悗鍧愬姏绛夌瀛愮偖绠?(z=35) -->
-  <!-- [楠ㄩ閮ㄤ欢 5] 360掳 鐙珛鏃嬭浆绐佸嚮鐐 (z=40) -->
-  <!-- [鍏夊奖灞?4] 杞︿綋涓庣偖濉斿彈鍏夎竟缂橀珮鍏夎创鍥?(z=45, plus-lighter) -->
-  <!-- [鍏夊奖灞?5] 椤跺眰绱潚鐢靛姬鍐?(z=65, screen) -->
-  <g id="part-shadow-cast" data-pivot="64,70" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
-    <ellipse cx="64" cy="70" rx="52" ry="50" fill="url(#rd-shadow-grad)" />
-    <ellipse cx="64" cy="68" rx="38" ry="42" fill="#12151a" fill-opacity="0.48" />
+
+  <!-- 1. Cast Shadow & Hexagonal Basalt Magma Footprint -->
+  <ellipse id="part-shadow-cast" cx="34" cy="35" rx="25" ry="26" fill="#040507" opacity="0.84"/>
+  <polygon id="part-aura-ring-outer" points="32,4 58,18 58,46 32,60 6,46 6,18" fill="url(#er-magma-aura)" stroke="#fb923c" stroke-width="0.9" stroke-opacity="0.42"/>
+  <polygon id="part-aura-ring-inner" points="32,9 52,20 52,44 32,55 12,44 12,20" fill="none" stroke="#f97316" stroke-width="0.8" stroke-opacity="0.32"/>
+
+  <!-- 2. Forward Targeting Cone & Twin Overdrive Exhaust Plumes -->
+  <polygon id="part-light-cone-main" points="32,16 15,2 49,2" fill="#fb923c" opacity="0.18"/>
+  <g id="part-exhaust-plume-L">
+    <polygon points="18,54 22,63 26,54" fill="#f97316" opacity="0.9"/>
+    <polygon points="20,54 22,59 24,54" fill="#fef08a"/>
   </g>
-  <g id="part-aura-ring-outer" data-pivot="64,68" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
-    <circle cx="64" cy="68" r="58" fill="url(#rd-aura-field)" />
-    <path fill="none" stroke="#9e4736" stroke-width="1.5" stroke-opacity="0.72" d="M116.39,83.02 A54.5,54.5 0 0,1 79.02,120.39 M48.98,120.39 A54.5,54.5 0 0,1 11.61,83.02 M11.61,52.98 A54.5,54.5 0 0,1 48.98,15.61 M79.02,15.61 A54.5,54.5 0 0,1 116.39,52.98 M64,9.5 L64,18.5 M64,117.5 L64,126.5 M5.5,68 L14.5,68 M113.5,68 L122.5,68" stroke-linejoin="bevel" />
-    <path fill="none" stroke="#8695ab" stroke-width="0.85" stroke-opacity="0.58" d="M111.39,81.59 A49.3,49.3 0 0,1 77.59,115.39 M50.41,115.39 A49.3,49.3 0 0,1 16.61,81.59 M16.61,54.41 A49.3,49.3 0 0,1 50.41,20.61 M77.59,20.61 A49.3,49.3 0 0,1 111.39,54.41 M64,14.7 L64,23.7 M64,112.3 L64,121.3 M10.7,68 L19.7,68 M108.3,68 L117.3,68" stroke-linejoin="bevel" />
-    <line x1="111.3" y1="68" x2="120.5" y2="68" stroke="#9e4736" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="97.4" y1="101.4" x2="104" y2="108" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="64" y1="115.3" x2="64" y2="124.5" stroke="#9e4736" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="30.6" y1="101.4" x2="24" y2="108" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="16.7" y1="68" x2="7.5" y2="68" stroke="#9e4736" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="30.6" y1="34.6" x2="24" y2="28" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="64" y1="20.7" x2="64" y2="11.5" stroke="#9e4736" stroke-width="1.4" stroke-opacity="0.8" />
-    <line x1="97.4" y1="34.6" x2="104" y2="28" stroke="#c48f5a" stroke-width="1.4" stroke-opacity="0.8" />
-    <rect x="100.3" y="104.3" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
-    <rect x="23.3" y="104.3" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
-    <rect x="23.3" y="27.3" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
-    <rect x="100.3" y="27.3" width="4.4" height="4.4" fill="#c48f5a" stroke="#12151a" stroke-width="0.7" />
+  <g id="part-exhaust-plume-R">
+    <polygon points="38,54 42,63 46,54" fill="#f97316" opacity="0.9"/>
+    <polygon points="40,54 42,59 44,54" fill="#fef08a"/>
   </g>
-  <g id="part-aura-ring-inner" data-pivot="64,68" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
-    <path fill="none" stroke="#c48f5a" stroke-width="1.1" stroke-opacity="0.68" d="M104.18,79.52 A41.8,41.8 0 0,1 75.52,108.18 M52.48,108.18 A41.8,41.8 0 0,1 23.82,79.52 M23.82,56.48 A41.8,41.8 0 0,1 52.48,27.82 M75.52,27.82 A41.8,41.8 0 0,1 104.18,56.48 M64,22.2 L64,31.2 M64,104.8 L64,113.8 M18.2,68 L27.2,68 M100.8,68 L109.8,68" stroke-linejoin="bevel" />
-    <circle cx="105.8" cy="68" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
-    <circle cx="84.9" cy="104.2" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
-    <circle cx="43.1" cy="104.2" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
-    <circle cx="22.2" cy="68" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
-    <circle cx="43.1" cy="31.8" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
-    <circle cx="84.9" cy="31.8" r="2.0" fill="#9e4736" stroke="#12151a" stroke-width="0.65" />
+
+  <!-- 3. Swept-Wing Armored Tracks -->
+  <g id="part-track-left">
+    <polygon points="7,12 16,9 16,55 7,52" fill="url(#er-carbon)" stroke="#09090b" stroke-width="1.4"/>
+    <path d="M8 16 H15 M8 22 H15 M8 28 H15 M8 34 H15 M8 40 H15 M8 46 H15" stroke="#71717a" stroke-width="1.3"/>
   </g>
-  <g id="part-light-cone-main" data-pivot="64,50" data-parent="part-turret-body" data-z-index="8" data-blend="screen" style="mix-blend-mode: screen">
-    <polygon points="64,50 38,6 90,6" fill="url(#rd-aura-field)" opacity="0.65" />
-    <line x1="55" y1="48" x2="46" y2="6" stroke="#9e4736" stroke-width="0.7" />
-    <line x1="73" y1="48" x2="82" y2="6" stroke="#8695ab" stroke-width="0.7" />
+  <g id="part-track-right">
+    <polygon points="48,9 57,12 57,52 48,55" fill="url(#er-carbon)" stroke="#09090b" stroke-width="1.4"/>
+    <path d="M49 16 H56 M49 22 H56 M49 28 H56 M49 34 H56 M49 40 H56 M49 46 H56" stroke="#71717a" stroke-width="1.3"/>
   </g>
-  <g id="part-exhaust-plume-L" data-pivot="46,106" data-parent="part-hull-chassis" data-z-index="10" data-blend="screen" data-motion="scale-pulse" style="mix-blend-mode: screen">
-    <polygon points="41,104 51,104 49,122 46,126 43,122" fill="#9e4736" fill-opacity="0.8" />
-    <polygon points="43,104 49,104 46,118" fill="#8695ab" />
-    <circle cx="46" cy="112" r="1.8" fill="#d8dee9" />
+
+  <!-- 4. Forward-Swept Winged ERA Hull Chassis -->
+  <g id="part-hull-chassis">
+    <polygon points="32,7 50,15 52,32 46,54 18,54 12,32 14,15" fill="url(#er-hull)" stroke="#18181b" stroke-width="1.5"/>
+    <!-- Forged Carbon ERA Reactive Blocks -->
+    <polygon points="16,16 29,11 29,24 14,27" fill="url(#er-carbon)" stroke="#fdba74" stroke-width="0.6" stroke-opacity="0.5"/>
+    <polygon points="48,16 35,11 35,24 50,27" fill="url(#er-carbon)" stroke="#fdba74" stroke-width="0.6" stroke-opacity="0.5"/>
+    <!-- Rear Turbine Deck -->
+    <rect x="20" y="42" width="24" height="9" rx="1.5" fill="#18181b" stroke="#ea580c" stroke-width="0.9"/>
+    <path d="M23 45 H41 M23 48 H41" stroke="#fb923c" stroke-width="1.3"/>
   </g>
-  <g id="part-exhaust-plume-R" data-pivot="82,106" data-parent="part-hull-chassis" data-z-index="10" data-blend="screen" data-motion="scale-pulse" style="mix-blend-mode: screen">
-    <polygon points="77,104 87,104 85,122 82,126 79,122" fill="#9e4736" fill-opacity="0.8" />
-    <polygon points="79,104 85,104 82,118" fill="#8695ab" />
-    <circle cx="82" cy="112" r="1.8" fill="#d8dee9" />
+
+  <!-- 5. Twin Heat-Blued Rapid Plasma Cannons -->
+  <g id="part-barrel-plasma-L">
+    <rect x="22" y="2" width="5" height="22" rx="1.2" fill="url(#er-barrel-temper)" stroke="#09090b" stroke-width="1.1"/>
+    <rect x="21.5" y="2" width="6" height="3.5" rx="0.8" fill="#fef08a"/>
   </g>
-  <g id="part-track-left" data-pivot="26,68" data-parent="part-hull-chassis" data-z-index="15" data-blend="normal" data-motion="scroll-uv-left">
-    <rect x="17" y="24" width="16" height="84" rx="4" fill="#14171d" stroke="#9e4736" stroke-width="1.9" />
-    <rect x="19" y="28" width="12" height="76" rx="2" fill="#242a34" stroke="#2d3542" stroke-width="0.9" />
-    <path d="M18 34 H32 M18 46 H32 M18 58 H32 M18 70 H32 M18 82 H32 M18 94 H32" stroke="#8695ab" stroke-width="1.1" stroke-opacity="0.75" />
-    <circle cx="25" cy="34" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
-    <circle cx="25" cy="66" r="3" fill="#1e232b" stroke="#8695ab" stroke-width="1.0" />
-    <circle cx="25" cy="96" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
+  <g id="part-barrel-plasma-R">
+    <rect x="37" y="2" width="5" height="22" rx="1.2" fill="url(#er-barrel-temper)" stroke="#09090b" stroke-width="1.1"/>
+    <rect x="36.5" y="2" width="6" height="3.5" rx="0.8" fill="#fef08a"/>
   </g>
-  <g id="part-track-right" data-pivot="102,68" data-parent="part-hull-chassis" data-z-index="15" data-blend="normal" data-motion="scroll-uv-right">
-    <rect x="95" y="24" width="16" height="84" rx="4" fill="#14171d" stroke="#9e4736" stroke-width="1.9" />
-    <rect x="97" y="28" width="12" height="76" rx="2" fill="#242a34" stroke="#2d3542" stroke-width="0.9" />
-    <path d="M96 34 H110 M96 46 H110 M96 58 H110 M96 70 H110 M96 82 H110 M96 94 H110" stroke="#8695ab" stroke-width="1.1" stroke-opacity="0.75" />
-    <circle cx="103" cy="34" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
-    <circle cx="103" cy="66" r="3" fill="#1e232b" stroke="#8695ab" stroke-width="1.0" />
-    <circle cx="103" cy="96" r="3" fill="#1e232b" stroke="#9e4736" stroke-width="1.0" />
+
+  <!-- 6. Radial Multi-Faceted Stealth Interceptor Turret -->
+  <g id="part-turret-body">
+    <polygon points="32,14 46,22 43,39 32,44 21,39 18,22" fill="url(#er-turret-facet)" stroke="#09090b" stroke-width="1.5"/>
+    <polygon points="32,14 46,22 32,29" fill="#fed7aa" opacity="0.3"/>
+    <polygon points="32,14 18,22 32,29" fill="#fb923c" opacity="0.22"/>
+    <polygon points="18,22 21,39 32,29" fill="#431407" opacity="0.52"/>
+    <polygon points="46,22 43,39 32,29" fill="#2e1065" opacity="0.48"/>
+    <polygon points="21,39 32,44 43,39 32,29" fill="#09090b" opacity="0.68"/>
+    <polygon points="32,23 38,29 32,35 26,29" fill="#18181b" stroke="#fb923c" stroke-width="1.1"/>
   </g>
-  <g id="part-hull-chassis" data-pivot="64,68" data-parent="root" data-z-index="25" data-blend="normal">
-    <polygon points="40,20 88,20 96,36 96,98 86,106 42,106 32,98 32,36" fill="url(#rd-hull-obsidian)" stroke="url(#rd-neon-edge)" stroke-width="2.2" stroke-linejoin="bevel" />
-    <polygon points="44,26 84,26 90,38 90,94 82,100 46,100 38,94 38,38" fill="#242a34" stroke="#2d3542" stroke-width="1.1" />
-    <polygon points="46,26 82,26 76,40 52,40" fill="#1f242d" stroke="#8695ab" stroke-width="0.9" />
-    <path d="M38 46 H90 M38 86 H90 M46 26 L54 40 H74 L82 26" stroke="#8695ab" stroke-width="0.75" stroke-opacity="0.7" />
-    <rect x="42" y="100" width="8" height="4" rx="1" fill="#384252" stroke="#9e4736" stroke-width="0.9" />
-    <rect x="78" y="100" width="8" height="4" rx="1" fill="#384252" stroke="#9e4736" stroke-width="0.9" />
-    <circle cx="44" cy="34" r="1.5" fill="#8695ab" />
-    <circle cx="84" cy="34" r="1.5" fill="#8695ab" />
-    <circle cx="44" cy="92" r="1.5" fill="#9e4736" />
-    <circle cx="84" cy="92" r="1.5" fill="#9e4736" />
-    <circle cx="52" cy="58" r="1.5" fill="#c48f5a" stroke="#12151a" stroke-width="0.6" />
-    <circle cx="76" cy="58" r="1.5" fill="#c48f5a" stroke="#12151a" stroke-width="0.6" />
-    <circle cx="52" cy="78" r="1.5" fill="#c48f5a" stroke="#12151a" stroke-width="0.6" />
-    <circle cx="76" cy="78" r="1.5" fill="#c48f5a" stroke="#12151a" stroke-width="0.6" />
-  </g>
-  <g id="part-barrel-plasma-L" data-pivot="55,50" data-parent="part-turret-body" data-z-index="35" data-blend="normal" data-motion="recoil-y-alt-L">
-    <circle cx="55" cy="50" r="6" fill="#1e232b" stroke="#9e4736" stroke-width="1.5" />
-    <rect x="51" y="10" width="8" height="40" rx="2" fill="url(#rd-hull-obsidian)" stroke="url(#rd-neon-edge)" stroke-width="1.8" />
-    <rect x="50" y="8" width="10" height="5" rx="1" fill="#1f242d" stroke="#8695ab" stroke-width="1.1" />
-    <line x1="55" y1="14" x2="55" y2="44" stroke="#8695ab" stroke-width="1.1" />
-    <circle cx="55" cy="10" r="1.8" fill="#d8dee9" />
-  </g>
-  <g id="part-barrel-plasma-R" data-pivot="73,50" data-parent="part-turret-body" data-z-index="35" data-blend="normal" data-motion="recoil-y-alt-R">
-    <circle cx="73" cy="50" r="6" fill="#1e232b" stroke="#9e4736" stroke-width="1.5" />
-    <rect x="69" y="10" width="8" height="40" rx="2" fill="url(#rd-hull-obsidian)" stroke="url(#rd-neon-edge)" stroke-width="1.8" />
-    <rect x="68" y="8" width="10" height="5" rx="1" fill="#1f242d" stroke="#8695ab" stroke-width="1.1" />
-    <line x1="73" y1="14" x2="73" y2="44" stroke="#8695ab" stroke-width="1.1" />
-    <circle cx="73" cy="10" r="1.8" fill="#d8dee9" />
-  </g>
-  <g id="part-turret-body" data-pivot="64,68" data-parent="part-hull-chassis" data-z-index="40" data-blend="normal" data-motion="aim-rotate-360">
-    <circle cx="64" cy="68" r="23" fill="#14171d" stroke="#8695ab" stroke-width="1.4" />
-    <polygon points="48,44 80,44 88,60 82,84 72,92 56,92 46,84 40,60" fill="url(#rd-hull-obsidian)" stroke="url(#rd-neon-edge)" stroke-width="2.1" stroke-linejoin="bevel" />
-    <polygon points="52,48 76,48 82,60 76,80 68,86 60,86 52,80 46,60" fill="#1e232b" stroke="#b85440" stroke-width="1.0" />
-    <path d="M46 60 L64 54 L82 60 M52 80 L64 74 L76 80" stroke="#8695ab" stroke-width="0.7" stroke-opacity="0.7" />
-    <circle cx="64" cy="68" r="9" fill="url(#rd-core-glow)" />
-    <circle cx="64" cy="68" r="2.5" fill="#d8dee9" />
-  </g>
-  <g id="part-light-rim-body" data-pivot="64,68" data-parent="part-hull-chassis" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
-    <path d="M40 20 H88 L96 36 M32 36 L40 20" stroke="url(#rd-rim-glow)" stroke-width="2.4" stroke-linecap="round" />
-    <path d="M48 44 H80 L88 60" stroke="url(#rd-rim-glow)" stroke-width="2.2" stroke-linecap="round" />
-    <line x1="32" y1="84" x2="42" y2="106" stroke="#8695ab" stroke-width="1.5" stroke-opacity="0.75" />
-    <line x1="96" y1="84" x2="86" y2="106" stroke="#8695ab" stroke-width="1.5" stroke-opacity="0.75" />
-  </g>
-  <g id="part-aura-corona-top" data-pivot="64,68" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
-    <path d="M28 30 L36 22 L32 14 M100 30 L92 22 L96 14" stroke="#8695ab" stroke-width="1.1" stroke-linecap="round" />
-    <circle cx="32" cy="14" r="2.0" fill="#d8dee9" />
-    <circle cx="96" cy="14" r="2.0" fill="#d8dee9" />
-    <circle cx="64" cy="8" r="2.0" fill="#9e4736" />
-  </g>
+
+  <!-- 7. Specular Edge Highlight & Core -->
+  <path id="part-light-rim-body" d="M18,22 L32,14 L46,22 M15,15 L32,8 L49,15" fill="none" stroke="#fef08a" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/>
+  <circle id="part-aura-corona-top" cx="32" cy="29" r="2.8" fill="#fef08a" stroke="#f97316" stroke-width="1"/>
 </svg>

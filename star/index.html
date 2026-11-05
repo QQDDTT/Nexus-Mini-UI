@@ -419,12 +419,15 @@
   <!-- 右下角：WCS 武器火控、阵营/底盘切换与 3栏船坞改装入口 -->
   <div class="right-wcs-cluster">
     <div class="wcs-top-row">
-      <button class="tac-btn gold" id="btn-open-dock" title="打开星际船坞 3 栏正交改装台">
-        <img id="btn-mod-ico" src="../assets/star-defender/sprites/module-railgun.svg" alt="" style="width:22px;height:22px;object-fit:contain;" />
-        <span id="btn-mod-lbl">船坞改装</span>
+      <button class="tac-btn gold" id="btn-open-dock" aria-label="打开星际船坞改装台" title="打开星际船坞改装台" style="width:50px;height:50px;padding:0;">
+        <img id="btn-mod-ico" src="../assets/star-defender/sprites/module-railgun.svg" alt="改装" style="width:28px;height:28px;object-fit:contain;" />
+        <span id="btn-mod-lbl" style="display:none;">船坞改装</span>
       </button>
-      <button class="tac-btn" id="btn-switch-faction" title="实时切换赫利俄斯/格拉基斯阵营涂装">
-        <span id="btn-fac-lbl">阵营: 金箔</span>
+      <button class="tac-btn" id="btn-switch-faction" aria-label="切换阵营涂装" title="实时切换赫利俄斯/格拉基斯阵营涂装" style="width:50px;height:50px;padding:0;">
+        <span id="btn-fac-ico" style="display:inline-flex;align-items:center;justify-content:center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2"><circle cx="12" cy="12" r="5" fill="#f59e0b" fill-opacity="0.3"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>
+        </span>
+        <span id="btn-fac-lbl" style="display:none;">阵营: 赫</span>
       </button>
     </div>
     <div class="wcs-bot-row">
@@ -931,12 +934,26 @@
         const isGlacies = (saveData.faction || 'helios') === 'glacies';
         document.documentElement.setAttribute('data-faction', isGlacies ? 'glacies' : 'helios');
         document.getElementById('hud-faction-tag').textContent = isGlacies ? '格拉基斯' : '赫利俄斯';
-        document.getElementById('btn-fac-lbl').textContent = isGlacies ? '阵营: 深冷' : '阵营: 金箔';
+        const facIco = document.getElementById('btn-fac-ico');
+        if (facIco) {
+          facIco.innerHTML = isGlacies
+            ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14"/><circle cx="12" cy="12" r="3" fill="#0284c7" fill-opacity="0.3"/></svg>'
+            : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2"><circle cx="12" cy="12" r="5" fill="#f59e0b" fill-opacity="0.3"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>';
+        }
+        const btnFac = document.getElementById('btn-switch-faction');
+        if (btnFac) {
+          btnFac.title = isGlacies ? '当前阵营: 格拉基斯极地 (点击切换为赫利俄斯)' : '当前阵营: 赫利俄斯金箔 (点击切换为格拉基斯)';
+        }
+        const lblFac = document.getElementById('btn-fac-lbl');
+        if (lblFac) lblFac.textContent = isGlacies ? '格拉基斯' : '赫利俄斯';
         document.getElementById('btn-hull-ico').src = `../assets/star-defender/sprites/${isGlacies ? spec.glaciesFile : spec.heliosFile}?v=20261101`;
 
         const mod = MODULE_SPECS[saveData.activeModule] || MODULE_SPECS.railgun;
         document.getElementById('btn-mod-ico').src = `../assets/star-defender/sprites/${mod.file}?v=20261101`;
-        document.getElementById('btn-mod-lbl').textContent = mod.name;
+        const lblMod = document.getElementById('btn-mod-lbl');
+        if (lblMod) lblMod.textContent = mod.name;
+        const btnDock = document.getElementById('btn-open-dock');
+        if (btnDock) btnDock.title = `打开星际船坞改装台 (当前搭载: ${mod.name})`;
         updateHud();
       }
 
@@ -1495,7 +1512,7 @@
       lan.onStatus((st) => {
         const el = document.getElementById('hud-lan');
         if (st.connected) {
-          el.textContent = `LAN 双舰直连 (${st.peerLatencyMs}ms)`;
+          el.textContent = `LAN 双舰直连 (${Number.isFinite(st.peerLatencyMs) ? st.peerLatencyMs + 'ms' : '测速中'})`;
           el.style.color = '#00f0ff';
           wingman.isRemote = true;
         } else {
