@@ -1250,6 +1250,7 @@
    * 6. Standardized Tier 2 (6-Module Game Menu Hub) & Tier 3 Shell UI
    * ========================================================================= */
   let gameplayActive = false;
+  let lanRoomSessionEstablished = false;
   let openTier2MenuFn = null;
   let enterTier3GameplayFn = null;
   let currentSettingsObj = {
@@ -1789,6 +1790,7 @@
     let lanOfflineIn = '';
     let lanOfflineMsg = '';
     let lanViewMode = 'lobby'; // 'lobby' | 'room'
+    lanRoomSessionEstablished = false; // 严格记录房间是否已建立/加入
     let showHandshakeJoin = false;
     let lanRerenderBoundTo = null;
     let lanRerenderPending = false;
@@ -2732,6 +2734,7 @@
             if (activeLanInstance.leave) activeLanInstance.leave();
             lanOfflineOut = ''; lanOfflineIn = ''; lanOfflineMsg = '';
             lanViewMode = 'room';
+            lanRoomSessionEstablished = true;
             AudioEngine.upgrade();
             renderTier2Module();
           };
@@ -2760,6 +2763,7 @@
               lanOfflineOut = await activeLanInstance.acceptOfflineOffer(inputVal);
               lanOfflineMsg = '已响应，请将应答码复制回传。';
               lanViewMode = 'room';
+              lanRoomSessionEstablished = true;
             } catch (err) {
               lanOfflineMsg = '加入失败：' + (err && err.message ? err.message : err);
             }
@@ -2773,6 +2777,7 @@
               const cur = activeLanInstance.getStatus();
               if (cur.roomCode === targetCode) {
                 lanViewMode = 'room';
+                lanRoomSessionEstablished = true;
                 AudioEngine.tap();
                 renderTier2Module();
                 return;
@@ -2780,13 +2785,15 @@
               AudioEngine.tap();
               activeLanInstance.join(targetCode);
               lanViewMode = 'room';
+              lanRoomSessionEstablished = true;
               renderTier2Module();
             });
           });
         } else {
           // ==========================================
-          // 视图 2：房间内界面 (带 [◀ 返回大厅] 与席位/握手)
+          // 视图 2：房间内界面 (带 [◀ 返回大厅] 与席位/开局/握手)
           // ==========================================
+          lanRoomSessionEstablished = true;
           body.innerHTML = `
             <div class="nx-t2-card" style="display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box;overflow-y:auto;padding:14px 18px;">
               <!-- 房间内顶部导航栏 -->
@@ -2798,7 +2805,7 @@
                   </button>
                   <div style="display:flex;align-items:center;gap:8px;">
                     <span style="font-size:0.95rem;font-weight:900;color:var(--cyan,#f59e0b);font-family:Consolas,monospace;">[${escapeHtml(st.roomCode || lanCode)}]</span>
-                    <span style="font-size:0.86rem;font-weight:800;color:var(--text,#f8fafc);">${curRole === 'host' ? '房主房间' : '客机已加入房间'}</span>
+                    <span style="font-size:0.86rem;font-weight:800;color:var(--text,#f8fafc);">${curRole === 'host' ? '房主房间 (已建立)' : '客机已加入房间'}</span>
                   </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:10px;font-size:0.72rem;">
@@ -2810,7 +2817,7 @@
 
               <!-- 房间内左右双卡片 -->
               <div class="nx-t2-grid2" style="display:grid;grid-template-columns:1fr 1.25fr;gap:12px;flex:1;min-height:0;">
-                <!-- 左卡片：双席位状态与 AI 僚机接管 -->
+                <!-- 左卡片：双席位状态、AI 僚机与立即开局主按钮 -->
                 <div style="display:flex;flex-direction:column;gap:10px;background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;">
                   <div style="font-size:0.78rem;font-weight:900;color:var(--text,#f8fafc);display:flex;align-items:center;justify-content:space-between;">
                     <span>房间席位 (2/2)</span>
@@ -2840,7 +2847,7 @@
                   </div>
 
                   <!-- 3.0s 断线 AI 僚机接管开关 -->
-                  <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:rgba(0,0,0,0.3);border-radius:8px;border:1px dashed rgba(255,255,255,0.12);">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:rgba(0,0,0,0.3);border-radius:8px;border:1px dashed rgba(255,255,255,0.12);">
                     <div>
                       <div style="font-size:0.72rem;font-weight:800;color:var(--text,#f8fafc);">3.0s 断线 AI 僚机接管</div>
                       <div style="font-size:0.62rem;color:var(--muted,#94a3b8);">对端失联后由本地 AI 僚机无缝补位</div>
@@ -2849,6 +2856,12 @@
                       ${autoAi ? '已开启' : '已关闭'}
                     </button>
                   </div>
+
+                  <!-- 本机房主立即开局主按钮 -->
+                  <button class="nx-t2-btn primary" id="nx-lan-room-launch-btn" style="min-height:46px;padding:0 14px;font-size:0.86rem;font-weight:900;letter-spacing:0.5px;box-shadow:0 0 16px rgba(251,191,36,0.35);margin-top:auto;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>${curRole === 'host' ? '🔥 本机房主 · 立即开局 (单机+AI僚机/联机)' : '客机已就绪 · 等待房主发车'}</span>
+                  </button>
                 </div>
 
                 <!-- 右卡片：跨设备离线 SDP 握手工具 (同 Wi-Fi / 手机热点 · 零公网) -->
@@ -2873,8 +2886,13 @@
           // 房间内事件绑定
           document.getElementById('nx-lan-back-to-lobby-btn')?.addEventListener('click', () => {
             lanViewMode = 'lobby';
+            lanRoomSessionEstablished = false;
             AudioEngine.tap();
             renderTier2Module();
+          });
+
+          document.getElementById('nx-lan-room-launch-btn')?.addEventListener('click', () => {
+            enterTier3GameplayFn();
           });
 
           document.getElementById('nx-lan-toggle-ai')?.addEventListener('click', () => {
@@ -2935,7 +2953,23 @@
           });
         }
       }
-window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
+
+      // 动态更新底部主行动按钮文本，保证与房间生命周期严格一致
+      const enterBtn = document.getElementById('nx-btn-enter-tier3');
+      if (enterBtn) {
+        const enterTxt = enterBtn.querySelector('span');
+        if (enterTxt) {
+          if (currentMenuTab === 'lan') {
+            enterTxt.textContent = lanViewMode === 'lobby' ? '+ 创建房间以开局' : '🔥 房间已就绪 · 立即开局';
+          } else {
+            enterTxt.textContent = lanRoomSessionEstablished
+              ? (isStarRoster ? '点火出击 · 进入轨道防线' : (isHeavyArmory ? '解锁炮塔闭锁 · 投入防线' : '开始游戏 · 进入游玩界面'))
+              : '建立房间 · 准备出击';
+          }
+        }
+      }
+
+      window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
         detail: { tab: currentMenuTab, unitFile: null }
       }));
     }
@@ -2962,6 +2996,25 @@ window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
 
     // Tier 2 -> Tier 3 (Enter Gameplay Scene)
     enterTier3GameplayFn = () => {
+      // 铁律：只有建立房间后才能运行，杜绝未建房私自启动！
+      if (!lanRoomSessionEstablished || !activeLanInstance || !activeLanInstance.getStatus().roomCode) {
+        if (activeLanInstance && activeLanInstance.leave) {
+          activeLanInstance.leave();
+        }
+        lanOfflineOut = ''; lanOfflineIn = ''; lanOfflineMsg = '';
+        lanViewMode = 'room';
+        lanRoomSessionEstablished = true;
+        currentMenuTab = 'lan';
+        menuEl.classList.add('active');
+        AudioEngine.upgrade();
+        renderTier2Module();
+        const stLine = document.getElementById('nx-t2-status-line');
+        if (stLine) {
+          stLine.innerHTML = `<span style="color:var(--gold,#fbbf24);font-weight:bold;">已为您创建专属对战房间！请在房间就绪后点击【立即开局】开始战斗。</span>`;
+        }
+        return false;
+      }
+
       AudioEngine.win();
       menuEl.classList.remove('active');
       gameplayActive = true;
@@ -2971,6 +3024,20 @@ window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
         const arenaBtn = document.querySelector('[data-page="arena"]');
         if (arenaBtn) arenaBtn.click();
       }
+      if (window.parent && window.parent !== window) {
+        try { window.parent.postMessage({ type: 'NEXUS_ENTER_TIER3' }, '*'); } catch (_) {}
+      }
+
+      const st = activeLanInstance.getStatus();
+      window.dispatchEvent(new CustomEvent('nexus:gameplay-started', {
+        detail: {
+          gameId,
+          roomCode: st.roomCode,
+          role: st.role,
+          connected: st.connected
+        }
+      }));
+      return true;
     };
 
     openTier2MenuFn = (tabName) => {
@@ -2984,6 +3051,9 @@ window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
       if (window.parent && window.parent !== window) {
         try { window.parent.postMessage({ type: 'NEXUS_WAKE_HOST_BACK' }, '*'); } catch (_) {}
       }
+      window.dispatchEvent(new CustomEvent('nexus:gameplay-stopped', {
+        detail: { gameId }
+      }));
     };
 
     document.getElementById('nx-btn-enter-tier3')?.addEventListener('click', enterTier3GameplayFn);
@@ -3100,6 +3170,7 @@ window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
     resolveAuthIdentity,
     getSettings: () => currentSettingsObj,
     isGameplayActive: () => gameplayActive,
+    isRoomSessionActive: () => lanRoomSessionEstablished && !!(activeLanInstance && activeLanInstance.getStatus().roomCode),
     openTier2Menu: (tab) => { if (openTier2MenuFn) openTier2MenuFn(tab); },
     enterTier3Gameplay: () => { if (enterTier3GameplayFn) enterTier3GameplayFn(); }
   };

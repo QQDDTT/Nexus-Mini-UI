@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v12.0-star-text-harmony';
+const CACHE_NAME = 'nexus-mini-portal-v13.0-enforce-room-only-launch';
 const CORE_ASSETS = [
   './',
   './index.html',

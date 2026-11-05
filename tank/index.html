@@ -2949,9 +2949,41 @@
         if (box) mountInspectorRigAnimation(box.getAttribute('data-unit-file'));
       }, 60);
 
+      function startBattleFromRoom() {
+        stage = 1;
+        score = 0;
+        p1.lives = 2;
+        p1.alive = true;
+        p1.hp = p1.maxHp;
+        bullets.length = 0;
+        enemyTanks.length = 0;
+        particles.length = 0;
+        buildStageMap(1);
+        updateHud();
+      }
+
+      function stopBattleProcess() {
+        bullets.length = 0;
+        enemyTanks.length = 0;
+        particles.length = 0;
+      }
+
+      window.addEventListener('nexus:gameplay-started', () => {
+        startBattleFromRoom();
+      });
+
+      window.addEventListener('nexus:gameplay-stopped', () => {
+        stopBattleProcess();
+      });
+
       function loop() {
-        step();
-        render();
+        const canRun = window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
+        if (canRun) {
+          step();
+          render();
+        } else {
+          render();
+        }
         requestAnimationFrame(loop);
       }
 
@@ -2966,7 +2998,6 @@
         updateHud();
       });
 
-      buildStageMap(1);
       requestAnimationFrame(loop);
     })();
   </script>

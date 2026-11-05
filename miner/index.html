@@ -629,9 +629,37 @@
         });
       }
 
+      function startBattleFromRoom() {
+        stage = 1;
+        p1Cash = 0;
+        p2Cash = 0;
+        floatingTexts.length = 0;
+        explosions.length = 0;
+        generateMineStage(1);
+        updateHud();
+      }
+
+      function stopBattleProcess() {
+        floatingTexts.length = 0;
+        explosions.length = 0;
+      }
+
+      window.addEventListener('nexus:gameplay-started', () => {
+        startBattleFromRoom();
+      });
+
+      window.addEventListener('nexus:gameplay-stopped', () => {
+        stopBattleProcess();
+      });
+
       function loop() {
-        step();
-        render();
+        const canRun = window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
+        if (canRun) {
+          step();
+          render();
+        } else {
+          render();
+        }
         requestAnimationFrame(loop);
       }
 
@@ -652,7 +680,6 @@
         if (e.code === 'KeyW' || e.code === 'ArrowUp') useDynamite();
       });
 
-      generateMineStage(1);
       requestAnimationFrame(loop);
     })();
   </script>

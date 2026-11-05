@@ -3284,9 +3284,41 @@
         if (box) mountInspectorRigAnimation(box.getAttribute('data-unit-file'));
       }, 60);
 
+      function startBattleFromRoom() {
+        projectiles.length = 0;
+        enemies.length = 0;
+        particles.length = 0;
+        fighterSquadron.length = 0;
+        wave = 1;
+        stationHp = stationMaxHp;
+        syncShipSpecs();
+        spawnWave(1);
+        updateHud();
+      }
+
+      function stopBattleProcess() {
+        projectiles.length = 0;
+        enemies.length = 0;
+        particles.length = 0;
+      }
+
+      window.addEventListener('nexus:gameplay-started', () => {
+        startBattleFromRoom();
+      });
+
+      window.addEventListener('nexus:gameplay-stopped', () => {
+        stopBattleProcess();
+      });
+
       function loop() {
-        step();
-        render();
+        const canRun = window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
+        if (canRun) {
+          step();
+          render();
+        } else {
+          // 未通过房间建立启动时，仅绘制宁静背景，严禁私自推进物理步进与敌人刷新
+          render();
+        }
         requestAnimationFrame(loop);
       }
 
@@ -3317,7 +3349,6 @@
       };
 
       syncShipSpecs();
-      spawnWave(1);
       requestAnimationFrame(loop);
 
       // 支持 URL 参数自动化截图验证 (?autostart=1&mod=plasma&dock=1)
