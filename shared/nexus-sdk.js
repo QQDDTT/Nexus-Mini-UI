@@ -1993,54 +1993,46 @@
         if (isStarRoster) {
           const curFaction = saveData.faction || 'helios';
           document.documentElement.setAttribute('data-faction', curFaction);
-          let filteredUnits = meta.starRosterUnits.filter((item, idx) => {
-            item._origIdx = idx;
-            if (starCategory === 'hull') return item.cat === 'hull';
-            if (starCategory === 'module') return item.cat === 'module';
-            if (starCategory === 'zerg') return item.cat === 'zerg';
-            return true;
+
+          // 核心规约：飞船列表（舰艇清单）仅收录星舰与战机 (cat === 'hull')，绝不混入武器模块 (cat === 'module') 或异虫
+          const allShips = meta.starRosterUnits
+            .map((item, idx) => ({ ...item, _origIdx: idx }))
+            .filter((item) => item.cat === 'hull');
+
+          let filteredUnits = allShips.filter((item) => {
+            if (starCategory === 'interceptor') return item.hullKey === 'hullDelta' || item.no === 'FD-01';
+            if (starCategory === 'cruiser') return item.hullKey === 'hullWing';
+            if (starCategory === 'capital') return item.hullKey === 'hullRing' || item.hullKey === 'hullCross';
+            if (starCategory === 'faction') return item.faction === curFaction || item.faction === 'all';
+            return true; // 'all'
           });
-          if (starCategory === 'all') {
-            filteredUnits = [...filteredUnits].sort((a, b) => {
-              const rank = (it) => {
-                if (it.cat === 'hull' && (it.faction === curFaction || it.faction === 'all')) return 0;
-                if (it.cat === 'module') return 1;
-                if (it.cat === 'zerg') return 2;
-                return 3;
-              };
-              return rank(a) - rank(b) || (a._origIdx - b._origIdx);
-            });
-          }
+
+          // 针对当前选中的阵营进行优先排序
+          filteredUnits.sort((a, b) => {
+            const rank = (it) => {
+              if (it.faction === curFaction) return 0;
+              if (it.faction === 'all') return 1;
+              return 2;
+            };
+            return rank(a) - rank(b) || (a._origIdx - b._origIdx);
+          });
+
+          // 保证选中的是指针内的合法飞船，不出现越界
           if (!filteredUnits.some((it) => it._origIdx === selectedUnitIdx)) {
-            selectedUnitIdx = filteredUnits[0] ? filteredUnits[0]._origIdx : 0;
+            const defaultShip = filteredUnits.find(it => it.faction === curFaction) || filteredUnits[0];
+            selectedUnitIdx = defaultShip ? defaultShip._origIdx : 0;
           }
-          const u = meta.starRosterUnits[selectedUnitIdx] || meta.starRosterUnits[0];
+          const u = meta.starRosterUnits[selectedUnitIdx] || allShips[0];
           const merits = (saveData.currency?.warMerits ?? 1200).toLocaleString();
           const scraps = (saveData.currency?.scraps ?? 150).toLocaleString();
-          const wLv = saveData.weaponLv ?? 1;
           const activeHullKey = saveData.selectedHull || 'hullDelta';
-          const isCurrentFlagship = u.cat === 'hull' && u.hullKey === activeHullKey && u.faction === curFaction;
+          const isCurrentFlagship = u.hullKey === activeHullKey && (u.faction === curFaction || u.faction === 'all');
 
-          let actionBtnHtml = '';
-          if (u.cat === 'hull') {
-            actionBtnHtml = `
-              <button class="sd-action-pill equip" id="sd-btn-equip-unit">
-                ${isCurrentFlagship ? '★ 当前旗舰·已就绪' : '★ 设为出战旗舰'}
-              </button>
-            `;
-          } else if (u.cat === 'module') {
-            actionBtnHtml = `
-              <button class="sd-action-pill equip" id="sd-btn-equip-unit">
-                ⚙ 挂载至旗舰方舱
-              </button>
-            `;
-          } else {
-            actionBtnHtml = `
-              <button class="sd-action-pill equip" id="sd-btn-equip-unit">
-                ⌖ 载入弹道模拟场
-              </button>
-            `;
-          }
+          const actionBtnHtml = `
+            <button class="sd-action-pill equip" id="sd-btn-equip-unit">
+              ${isCurrentFlagship ? '★ 当前旗舰 · 已就绪' : '★ 设为出战旗舰'}
+            </button>
+          `;
 
           body.innerHTML = `
             <div class="sd-roster-workbench">
@@ -2054,10 +2046,10 @@
                   </button>
                 </div>
                 <div class="sd-cat-pills">
-                  <button class="sd-pill-btn ${starCategory === 'all' ? 'active' : ''}" data-sd-cat="all">全部 (${meta.starRosterUnits.length})</button>
-                  <button class="sd-pill-btn ${starCategory === 'hull' ? 'active' : ''}" data-sd-cat="hull">星舰与战机 (${meta.starRosterUnits.filter(x => x.cat === 'hull').length})</button>
-                  <button class="sd-pill-btn ${starCategory === 'module' ? 'active' : ''}" data-sd-cat="module">方舱 (${meta.starRosterUnits.filter(x => x.cat === 'module').length})</button>
-                  <button class="sd-pill-btn ${starCategory === 'zerg' ? 'active' : ''}" data-sd-cat="zerg">虫群 (${meta.starRosterUnits.filter(x => x.cat === 'zerg').length})</button>
+                  <button class="sd-pill-btn ${starCategory === 'all' ? 'active' : ''}" data-sd-cat="all">全部星舰 (${allShips.length})</button>
+                  <button class="sd-pill-btn ${starCategory === 'interceptor' ? 'active' : ''}" data-sd-cat="interceptor">截击与战机 (${allShips.filter(x => x.hullKey === 'hullDelta' || x.no === 'FD-01').length})</button>
+                  <button class="sd-pill-btn ${starCategory === 'cruiser' ? 'active' : ''}" data-sd-cat="cruiser">巡洋舰 (${allShips.filter(x => x.hullKey === 'hullWing').length})</button>
+                  <button class="sd-pill-btn ${starCategory === 'capital' ? 'active' : ''}" data-sd-cat="capital">母舰与旗舰 (${allShips.filter(x => x.hullKey === 'hullRing' || x.hullKey === 'hullCross').length})</button>
                 </div>
               </div>
 
@@ -2080,65 +2072,63 @@
                   `).join('')}
                 </div>
 
-                <div class="sd-inspector-dock" id="sd-insp-preview-box" data-unit-cat="${u.cat}" data-unit-file="${u.file}">
-                  <!-- 顶部金铭牌标题 -->
-                  <div class="sd-stage-top-plaque">
-                    <div style="min-width:0;">
-                      <div class="sd-insp-title">${u.fullTitle}</div>
-                      <div class="sd-insp-code">${u.subCode}</div>
+                <div class="sd-inspector-dock">
+                  <div class="sd-inspector-header">
+                    <div>
+                      <h3 class="sd-inspector-title">${u.fullTitle || u.name}</h3>
+                      <p class="sd-inspector-sub">${u.subCode || ''}</p>
                     </div>
-                    <span class="sd-insp-badge">${u.no} · Lv.${wLv}</span>
+                    <div class="sd-rank-badge">${u.no} · Lv.5</div>
                   </div>
 
-                  <!-- 中左：24K金刻度陀飞轮星盘内嵌巨幅实体剖析区 -->
-                  <div class="sd-astrolabe-specimen-well">
-                    <div class="sd-insp-rig-stage" id="sd-insp-rig-stage">
-                      <img src="../assets/${meta.id}/sprites/${u.file}?v=20261102a" alt="${u.name}" />
-                    </div>
-                  </div>
-
-                  <!-- 中右：三联圆柱形蓝宝石发光真空管遥测计 (Armor / Ballistics / Reactor Core) -->
-                  <div class="sd-vacuum-tubes-stack">
-                    <div class="sd-vacuum-tube">
-                      <div class="sd-tube-plasma-bar">
-                        <div class="sd-tube-plasma-fill" style="width:${u.armorPct}%"></div>
-                      </div>
-                      <div class="sd-tube-label-row">
-                        <span class="sd-tube-name">Armor · ${u.cat === 'zerg' ? '甲壳' : '装甲'}</span>
-                        <span class="sd-tube-val">${u.armorVal}</span>
+                  <div class="sd-stat-cylinders">
+                    <div class="sd-cylinder" style="--cyl-pct:${u.armorPct || 70}%;">
+                      <div class="sd-cyl-core">
+                        <div class="sd-cyl-liquid"></div>
+                        <div class="sd-cyl-label">
+                          <span>Armor · 装甲</span>
+                          <strong>${u.armorVal || '680 HP'}</strong>
+                        </div>
                       </div>
                     </div>
-
-                    <div class="sd-vacuum-tube">
-                      <div class="sd-tube-plasma-bar">
-                        <div class="sd-tube-plasma-fill ballistics" style="width:${u.velPct}%"></div>
-                      </div>
-                      <div class="sd-tube-label-row">
-                        <span class="sd-tube-name">Ballistics · ${u.cat === 'zerg' ? '机动' : '弹道'}</span>
-                        <span class="sd-tube-val">${u.velVal}</span>
+                    <div class="sd-cylinder" style="--cyl-pct:${u.velPct || 80}%;">
+                      <div class="sd-cyl-core">
+                        <div class="sd-cyl-liquid vel"></div>
+                        <div class="sd-cyl-label">
+                          <span>Ballistics · 航速</span>
+                          <strong>${u.velVal || '430 m/s'}</strong>
+                        </div>
                       </div>
                     </div>
-
-                    <div class="sd-vacuum-tube">
-                      <div class="sd-tube-plasma-bar">
-                        <div class="sd-tube-plasma-fill reactor" style="width:${u.pwrPct}%"></div>
-                      </div>
-                      <div class="sd-tube-label-row">
-                        <span class="sd-tube-name">Reactor Core · ${u.cat === 'zerg' ? '能级' : '堆芯'}</span>
-                        <span class="sd-tube-val">${u.pwrVal}</span>
+                    <div class="sd-cylinder" style="--cyl-pct:${u.pwrPct || 85}%;">
+                      <div class="sd-cyl-core">
+                        <div class="sd-cyl-liquid pwr"></div>
+                        <div class="sd-cyl-label">
+                          <span>Reactor Core · 堆芯</span>
+                          <strong>${u.pwrVal || '185 MW'}</strong>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <!-- 左下角(陀飞轮旁)：三色挂点宝石铭牌与船坞改装/旗舰切换按钮组 -->
-                  <div class="sd-stage-bottom-left-controls">
-                    <div class="sd-hardpoint-strip">
-                      <span class="sd-hp-tag w">红W</span>
-                      <span class="sd-hp-tag b">绿B</span>
-                      <span class="sd-hp-tag p">紫P</span>
-                      <span style="color:#fde68a;overflow:hidden;text-overflow:ellipsis;">${u.zoneSpec} · 战功:${merits}</span>
+                  <div class="sd-reticle-radar-wrap">
+                    <div class="sd-reticle-radar">
+                      <div class="sd-radar-sweeper"></div>
+                      <div class="sd-radar-center-svg">
+                        <img src="../assets/${meta.id}/sprites/${u.file}?v=20261102a" alt="${u.name}" />
+                      </div>
                     </div>
-                    <div class="sd-horology-sub-btns">
+                  </div>
+
+                  <div class="sd-spec-strip">
+                    <span class="pill red">红W</span>
+                    <span class="pill grn">绿B</span>
+                    <span class="pill pur">紫P</span>
+                    <span class="txt">${u.zoneSpec || 'W:2S+2M | B:3×1格 | P:2×M · 严格分区'}</span>
+                  </div>
+
+                  <div class="sd-inspector-actions">
+                    <div class="sd-action-pills">
                       ${actionBtnHtml}
                       <button class="sd-action-pill" id="sd-btn-open-dockyard">
                         ⚙ 船坞 3 栏改装
@@ -2146,7 +2136,7 @@
                     </div>
                   </div>
 
-                  <!-- 右下角缺口：3D 滚花 24K 金 T 型推杆与圆形 ENGAGE 点火表冠鼓轮 -->
+                  <!-- 右下角推杆与圆形 ENGAGE 点火表冠鼓轮 -->
                   <button class="sd-engage-throttle-widget" id="sd-btn-throttle-engage" title="点火出击 · 进入轨道防线">
                     <div class="sd-engage-drum-label">
                       <strong>ENGAGE</strong>
@@ -2191,30 +2181,15 @@
           document.getElementById('sd-btn-equip-unit')?.addEventListener('click', () => {
             AudioEngine.upgrade();
             const cur = getSaveDataSafe();
-            if (u.cat === 'hull') {
-              cur.selectedHull = u.hullKey || 'hullDelta';
-              cur.faction = u.faction || 'helios';
+            cur.selectedHull = u.hullKey || 'hullDelta';
+            if (u.faction && u.faction !== 'all') {
+              cur.faction = u.faction;
               document.documentElement.setAttribute('data-faction', cur.faction);
-              if (activeStoreInstance) activeStoreInstance.save(cur);
-              else localStorage.setItem(`${meta.storagePrefix}${auth.userId}`, JSON.stringify(cur));
-              window.dispatchEvent(new CustomEvent('nexus:star-config-changed', { detail: cur }));
-              renderTier2Module();
-            } else if (u.cat === 'module') {
-              if (u.zone === 'B' || u.modKey === 'hangar' || u.modKey === 'shield') {
-                cur.internalBay = u.modKey;
-              } else if (u.zone === 'P' || u.modKey === 'thrusterCompound' || u.modKey === 'thrusterVector' || u.modKey === 'thrusterCruise') {
-                cur.engineType = u.modKey;
-              } else if (u.zone !== 'CORE' && u.modKey && u.modKey !== 'station') {
-                cur.activeModule = u.modKey;
-              }
-              if (activeStoreInstance) activeStoreInstance.save(cur);
-              else localStorage.setItem(`${meta.storagePrefix}${auth.userId}`, JSON.stringify(cur));
-              window.dispatchEvent(new CustomEvent('nexus:star-config-changed', { detail: cur }));
-              if (enterTier3GameplayFn) enterTier3GameplayFn();
-              if (meta.triggerStudio) meta.triggerStudio();
-            } else {
-              if (enterTier3GameplayFn) enterTier3GameplayFn();
             }
+            if (activeStoreInstance) activeStoreInstance.save(cur);
+            else localStorage.setItem(`${meta.storagePrefix}${auth.userId}`, JSON.stringify(cur));
+            window.dispatchEvent(new CustomEvent('nexus:star-config-changed', { detail: cur }));
+            renderTier2Module();
           });
 
           document.getElementById('sd-btn-open-dockyard')?.addEventListener('click', () => {
@@ -2226,12 +2201,6 @@
           document.getElementById('sd-btn-throttle-engage')?.addEventListener('click', () => {
             AudioEngine.upgrade();
             if (enterTier3GameplayFn) enterTier3GameplayFn();
-          });
-
-          document.getElementById('sd-btn-mode-toggle')?.addEventListener('click', () => {
-            AudioEngine.tap();
-            selectedModeId = selectedModeId === 'solo-campaign' ? 'lan-coop' : 'solo-campaign';
-            renderTier2Module();
           });
 
           window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
@@ -2963,460 +2932,8 @@
             renderTier2Module();
           });
         }
-      } else if (currentMenuTab === 'details') {
-        body.innerHTML = `
-          <div style="font-size:0.74rem;font-weight:800;color:var(--cyan,#f59e0b);">
-            核心物理与数值机制百科 (零远端通信 · 100% 客户端确定性解算)
-          </div>
-          <div class="nx-t2-grid2">
-            ${meta.formulas.map((f) => `
-              <div class="nx-t2-card">
-                <h4>${f.title}</h4>
-                <p>${f.desc}</p>
-              </div>
-            `).join('')}
-          </div>
-          <div style="font-size:0.74rem;font-weight:800;color:var(--gold,#fbbf24);margin-top:2px;">
-            本游戏专属多层 SVG 矢量贴图与同源骨骼图鉴 (${meta.sprites.length} 项核心实体)
-          </div>
-          <div class="nx-t2-sprites">
-            ${meta.sprites.map((sp) => `
-              <div class="nx-t2-sp-item">
-                <img src="../assets/${meta.id}/sprites/${sp.file}?v=20261101" alt="${sp.name}" />
-                <div style="font-size:0.68rem;font-weight:700;color:var(--text,#f8fafc);white-space:nowrap;">${sp.name}</div>
-                <div style="font-size:0.6rem;color:var(--muted,#94a3b8);white-space:nowrap;">${sp.role}</div>
-              </div>
-            `).join('')}
-          </div>
-        `;
-      } else if (currentMenuTab === 'settings') {
-        body.innerHTML = `
-          <div class="nx-t2-grid2">
-            <div class="nx-t2-card">
-              <h4>离散瞬态音效开关 (严格 &le; 0.20s 衰减防噪音铁律)</h4>
-              <p style="margin-bottom:8px;">全武器与交互采用单次离散瞬态脉冲合成，杜绝任何持续长音或循环嗡鸣。</p>
-              <div style="display:flex;gap:8px;">
-                <button class="nx-t2-btn" id="nx-set-mute-toggle" style="border-color:var(--cyan,#f59e0b);">
-                  ${userSettings.muted ? '当前：已静音 (点击开启瞬态音效)' : '当前：瞬态音效已开启 (点击静音)'}
-                </button>
-                <button class="nx-t2-btn" id="nx-set-vol-cycle">
-                  脉冲音量档位：${Math.round(userSettings.volume * 100)}%
-                </button>
-              </div>
-            </div>
-            <div class="nx-t2-card">
-              <h4>移动端全屏横屏操控与震动反馈</h4>
-              <p style="margin-bottom:8px;">全部触控按钮满足 &ge; 44&times;44px 最小物理命中热区，适配刘海与灵动岛安全区。</p>
-              <div style="display:flex;gap:8px;">
-                <button class="nx-t2-btn" id="nx-set-haptic-toggle">
-                  震动反馈：${userSettings.haptics ? '已开启' : '已关闭'}
-                </button>
-                <button class="nx-t2-btn" id="nx-set-layout-toggle">
-                  触控布局：${userSettings.touchLayout === 'standard' ? '标准横屏双区' : '紧凑拇指热区'}
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="nx-t2-card" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-            <div>
-              <h4>60fps 渲染粒子、光影档位与战术辅助线</h4>
-              <p>针对移动设备 GPU 优化：支持切换高精满帧/竞技省电粒子档位，以及开关弹道散布辅助线。</p>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="nx-t2-btn" id="nx-set-particle-toggle">
-                画质档位：${userSettings.particleTier === 'high' ? '60Hz 高精满帧' : '竞技省电模式'}
-              </button>
-              <button class="nx-t2-btn" id="nx-set-guide-toggle">
-                战术辅助线：${userSettings.guideLines !== false ? '已开启' : '已关闭'}
-              </button>
-            </div>
-          </div>
-        `;
-        document.getElementById('nx-set-mute-toggle')?.addEventListener('click', () => {
-          userSettings.muted = !userSettings.muted;
-          saveSettings(userSettings);
-          if (!userSettings.muted) AudioEngine.tap();
-          renderTier2Module();
-        });
-        document.getElementById('nx-set-vol-cycle')?.addEventListener('click', () => {
-          userSettings.volume = userSettings.volume >= 1.0 ? 0.65 : (userSettings.volume >= 0.6 ? 0.35 : 1.0);
-          saveSettings(userSettings);
-          AudioEngine.tap();
-          renderTier2Module();
-        });
-        document.getElementById('nx-set-haptic-toggle')?.addEventListener('click', () => {
-          userSettings.haptics = !userSettings.haptics;
-          saveSettings(userSettings);
-          if (userSettings.haptics && navigator.vibrate) navigator.vibrate(18);
-          AudioEngine.tap();
-          renderTier2Module();
-        });
-        document.getElementById('nx-set-layout-toggle')?.addEventListener('click', () => {
-          userSettings.touchLayout = userSettings.touchLayout === 'standard' ? 'compact' : 'standard';
-          saveSettings(userSettings);
-          AudioEngine.tap();
-          renderTier2Module();
-        });
-        document.getElementById('nx-set-particle-toggle')?.addEventListener('click', () => {
-          userSettings.particleTier = userSettings.particleTier === 'high' ? 'eco' : 'high';
-          saveSettings(userSettings);
-          AudioEngine.tap();
-          renderTier2Module();
-        });
-        document.getElementById('nx-set-guide-toggle')?.addEventListener('click', () => {
-          userSettings.guideLines = userSettings.guideLines === false;
-          saveSettings(userSettings);
-          AudioEngine.tap();
-          renderTier2Module();
-        });
-      } else if (currentMenuTab === 'assets') {
-        const metrics = meta.getMetrics(saveData);
-        const nsKey = `${meta.storagePrefix}${auth.userId}`;
-        const encodedSave = btoa(encodeURIComponent(JSON.stringify(saveData)));
-        body.innerHTML = `
-          <div class="nx-t2-grid3">
-            ${metrics.map((m) => `
-              <div class="nx-t2-card">
-                <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">${m.label}</div>
-                <div style="font-size:0.88rem;font-weight:800;color:${m.gold ? 'var(--gold,#fbbf24)' : 'var(--text,#f8fafc)'};margin-top:2px;">${m.val}</div>
-              </div>
-            `).join('')}
-          </div>
-          <div class="nx-t2-grid2">
-            <div class="nx-t2-card">
-              <h4>统帅身份切换与战备资材整备 (${escapeHtml(nsKey)})</h4>
-              <p style="margin-bottom:8px;">100% 客户端本地隔离持久化存储。支持一键切换最高统帅调试档 (admin) 或领取本地战备补给：</p>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button class="nx-t2-btn" id="nx-asset-bonus-btn" style="border-color:var(--gold,#fbbf24);color:var(--gold,#fbbf24);">
-                  + 领取本地战备补给
-                </button>
-                <button class="nx-t2-btn" id="nx-asset-admin-btn">
-                  ${auth.isAdmin ? '切换至标准指挥官档' : '切换 admin 满配统帅档'}
-                </button>
-              </div>
-            </div>
-            <div class="nx-t2-card">
-              <h4>本地存档备份码导出与恢复 (零远端服务器依赖)</h4>
-              <div style="display:flex;gap:6px;margin-top:6px;">
-                <input type="text" class="nx-t2-input" id="nx-asset-save-input" value="${encodedSave}" />
-                <button class="nx-t2-btn" id="nx-asset-copy-btn">复制存档</button>
-                <button class="nx-t2-btn" id="nx-asset-import-btn">导入恢复</button>
-              </div>
-            </div>
-          </div>
-        `;
-        document.getElementById('nx-asset-bonus-btn')?.addEventListener('click', () => {
-          const cur = getSaveDataSafe();
-          meta.grantBonus(cur);
-          if (activeStoreInstance) activeStoreInstance.save(cur);
-          else localStorage.setItem(nsKey, JSON.stringify(cur));
-          AudioEngine.upgrade();
-          renderTier2Module();
-        });
-        document.getElementById('nx-asset-admin-btn')?.addEventListener('click', () => {
-          AudioEngine.upgrade();
-          if (activeStoreInstance) {
-            activeStoreInstance.switchProfile(auth.isAdmin ? 'commander' : 'admin');
-          }
-          window.location.reload();
-        });
-        document.getElementById('nx-asset-copy-btn')?.addEventListener('click', () => {
-          const val = document.getElementById('nx-asset-save-input')?.value || '';
-          navigator.clipboard?.writeText(val).catch(() => {});
-          AudioEngine.win();
-        });
-        document.getElementById('nx-asset-import-btn')?.addEventListener('click', () => {
-          try {
-            const rawStr = document.getElementById('nx-asset-save-input')?.value.trim();
-            const parsed = JSON.parse(decodeURIComponent(atob(rawStr)));
-            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-              delete parsed.__proto__;
-              delete parsed.constructor;
-              delete parsed.prototype;
-              if (parsed.currency && typeof parsed.currency === 'object') {
-                Object.keys(parsed.currency).forEach((k) => {
-                  const v = Number(parsed.currency[k]);
-                  parsed.currency[k] = Number.isFinite(v) ? Math.max(0, Math.min(9999999, Math.floor(v))) : 0;
-                });
-              }
-              if (parsed.rank !== undefined) {
-                const rk = Number(parsed.rank);
-                parsed.rank = Number.isFinite(rk) ? Math.max(1, Math.min(4, Math.floor(rk))) : 1;
-              }
-              if (parsed.stats && typeof parsed.stats === 'object') {
-                Object.keys(parsed.stats).forEach((k) => {
-                  const v = Number(parsed.stats[k]);
-                  parsed.stats[k] = Number.isFinite(v) ? Math.max(0, Math.min(99999999, Math.floor(v))) : 0;
-                });
-              }
-              if (activeStoreInstance) activeStoreInstance.save(parsed);
-              else localStorage.setItem(nsKey, JSON.stringify(parsed));
-              AudioEngine.win();
-              window.location.reload();
-            }
-          } catch (_) {
-            AudioEngine.warn();
-          }
-        });
-      } else if (currentMenuTab === 'services') {
-        let storageBytes = 0;
-        try {
-          for (let i = 0; i < localStorage.length; i++) {
-            const k = localStorage.key(i);
-            storageBytes += (k.length + (localStorage.getItem(k) || '').length) * 2;
-          }
-        } catch (_) {}
-        body.innerHTML = `
-          <div class="nx-t2-grid3">
-            <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">离线 PWA 资源服务</div>
-              <div id="nx-srv-sw-status" style="font-size:0.82rem;font-weight:800;color:#10b981;margin-top:2px;">${swCacheStatus}</div>
-            </div>
-            <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">客户端物理/渲染帧率基准</div>
-              <div style="font-size:0.82rem;font-weight:800;color:var(--cyan,#f59e0b);margin-top:2px;">${Number.isFinite(measuredFps) ? measuredFps + ' FPS (实测 rAF 帧率)' : '采样中...'}</div>
-            </div>
-            <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">本地存储占用 / 音频节点</div>
-              <div style="font-size:0.82rem;font-weight:800;color:var(--gold,#fbbf24);margin-top:2px;">${(storageBytes / 1024).toFixed(1)} KB · Audio: ${AudioEngine.getState()}</div>
-            </div>
-          </div>
-          <div class="nx-t2-grid2">
-            <div class="nx-t2-card">
-              <h4>PWA 离线缓存校验与刷新 (Service Worker &amp; CacheStorage)</h4>
-              <p style="margin-bottom:8px;">静态资源、SVG 矢量精灵与骨骼动画脚本均缓存在本地浏览器，支持无外网离线启动。</p>
-              <button class="nx-t2-btn" id="nx-svc-refresh-sw" style="border-color:var(--cyan,#f59e0b);">
-                校验并刷新本地离线缓存
-              </button>
-            </div>
-            <div class="nx-t2-card">
-              <h4>离散瞬态音频自愈与 60Hz 帧率基准自检</h4>
-              <p style="margin-bottom:8px;">若移动浏览器切后台后声音挂起，可一键重置 Web Audio 瞬态合成器或重测帧率。</p>
-              <div style="display:flex;gap:8px;">
-                <button class="nx-t2-btn" id="nx-svc-heal-audio">重置音频上下文并试音</button>
-                <button class="nx-t2-btn" id="nx-svc-bench-fps">执行 60Hz 帧率基准诊断</button>
-              </div>
-            </div>
-          </div>
-        `;
-        document.getElementById('nx-svc-refresh-sw')?.addEventListener('click', async () => {
-          AudioEngine.tap();
-          swCacheStatus = '正在校验离线运行环境与 CacheStorage...';
-          renderTier2Module();
-          await probeSwAndCacheStatus(true);
-          AudioEngine.win();
-          renderTier2Module();
-        });
-        document.getElementById('nx-svc-heal-audio')?.addEventListener('click', () => {
-          AudioEngine.resetContext();
-          renderTier2Module();
-        });
-        document.getElementById('nx-svc-bench-fps')?.addEventListener('click', () => {
-          AudioEngine.tap();
-          let frames = 0;
-          const t0 = performance.now();
-          function sample() {
-            frames++;
-            if (performance.now() - t0 < 500) {
-              requestAnimationFrame(sample);
-            } else {
-              measuredFps = Math.round((frames * 1000) / (performance.now() - t0));
-              AudioEngine.win();
-              renderTier2Module();
-            }
-          }
-          requestAnimationFrame(sample);
-        });
-      } else if (currentMenuTab === 'lan') {
-        if (!activeLanInstance) {
-          activeLanInstance = createLanSession(gameId);
-        }
-        bindLanAutoRerender();
-        const st = activeLanInstance.getStatus ? activeLanInstance.getStatus() : {};
-        const autoAi = activeLanInstance.getAutoAiTakeover();
-        const rooms = activeLanInstance.getAvailableRooms ? activeLanInstance.getAvailableRooms() : [];
-        const otherRooms = rooms.filter((r) => !r.isSelfHost);
-        const curRole = st.role || 'host';
-        const connStateText = {
-          hosting: '房间广播中 · 等待客机加入',
-          connecting: '握手连接中...',
-          connected: '已联机协同',
-          disconnected: '对端已断开 · 房间重新广播中',
-          failed: '加入失败 · 已恢复为本机房主'
-        }[st.connState] || '房间广播中';
-        const transportText = st.transport === 'webrtc' ? 'WebRTC DataChannel 直连'
-          : st.transport === 'broadcast' ? '同设备 BroadcastChannel (WebRTC 协商中)'
-          : '未连接';
-        const rttText = (st.connected && Number.isFinite(st.peerLatencyMs)) ? `${st.peerLatencyMs}ms RTT` : '-- ms';
-        const stateColor = st.connected ? '#10b981' : (st.connState === 'failed' || st.connState === 'disconnected' ? '#f43f5e' : 'var(--gold,#fbbf24)');
-        lanLastSig = JSON.stringify([st.roomCode, st.role, st.connState, st.connected, st.transport, st.lastError, st.failoverActive, st.autoAiTakeover,
-          rooms.map((r) => [r.roomCode, r.players, r.isSelfHost, r.isCurrentJoined, r.isConnecting])]);
-        body.innerHTML = `
-          <div class="nx-t2-grid3">
-            <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">当前房间状态 (${curRole === 'host' ? '房主 Host' : '客机 Client'})</div>
-              <div style="font-size:0.88rem;font-weight:900;color:var(--cyan,#f59e0b);letter-spacing:0.04em;margin-top:2px;">
-                ${escapeHtml(st.roomCode || lanCode)}
-              </div>
-              <div style="font-size:0.7rem;font-weight:700;color:${stateColor};margin-top:2px;">${escapeHtml(connStateText)}${st.peerName && st.connected ? ' · 对端: ' + escapeHtml(st.peerName) : ''}</div>
-            </div>
-            <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">实测往返延迟 / 传输通道</div>
-              <div id="nx-lan-rtt" style="font-size:0.82rem;font-weight:800;color:${st.connected ? '#10b981' : 'var(--muted,#94a3b8)'};margin-top:2px;">${escapeHtml(rttText)}</div>
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);margin-top:2px;">${escapeHtml(transportText)}</div>
-            </div>
-            <div class="nx-t2-card" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-              <div>
-                <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">3.0s 断线 AI 僚机接管</div>
-                <div style="font-size:0.74rem;font-weight:800;color:${autoAi ? '#10b981' : 'var(--muted,#94a3b8)'};margin-top:2px;">${autoAi ? '已开启' : '已关闭'}${st.failoverActive ? ' · AI 接管中' : ''}</div>
-              </div>
-              <div style="display:flex;gap:6px;">
-                <button class="nx-t2-btn" id="nx-lan-toggle-ai">${autoAi ? '关闭' : '开启'}</button>
-                <button class="nx-t2-btn" id="nx-lan-new-room" style="border-color:var(--cyan,#f59e0b);">${curRole === 'client' || st.connected ? '退出并新建' : '+ 新建房间'}</button>
-              </div>
-            </div>
-          </div>
-          ${st.lastError ? `<div class="nx-t2-card" style="border-color:#f43f5e;color:#fda4af;font-size:0.7rem;">${escapeHtml(st.lastError)}</div>` : ''}
-
-          <div class="nx-t2-grid2">
-            <div class="nx-t2-card" style="display:flex;flex-direction:column;gap:6px;">
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
-                <div>
-                  <h4 style="margin-bottom:1px;">同设备房间列表 (实时信标 · ${otherRooms.length} 个其他房间)</h4>
-                  <p>仅列出本设备其他标签页/窗口真实广播的房间；跨手机联机请使用右侧离线握手码。</p>
-                </div>
-                <button class="nx-t2-btn" id="nx-lan-refresh-btn" style="border-color:var(--gold,#fbbf24);color:var(--gold,#fbbf24);">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                  <span>刷新 (${rooms.length})</span>
-                </button>
-              </div>
-              <div class="nx-lan-room-list" id="nx-lan-room-list">
-                ${rooms.length === 0 ? `<div style="font-size:0.7rem;color:var(--muted,#94a3b8);padding:8px 2px;">暂无已发现的房间。</div>` : ''}
-                ${rooms.map((rm) => {
-                  const isJoined = rm.isCurrentJoined;
-                  const isSelf = rm.isSelfHost;
-                  const rtt = Number.isFinite(rm.rttMs) ? `${rm.rttMs}ms` : '加入后实测';
-                  const btnText = isJoined ? '已加入 · 进入战局'
-                    : rm.isConnecting ? '握手中...'
-                    : isSelf ? '本机房主 · 立即开局'
-                    : (rm.players === '2/2' ? '房间已满' : '加入房间');
-                  return `
-                    <div class="nx-lan-room-row ${isJoined ? 'joined' : ''}">
-                      <div class="nx-lan-room-info">
-                        <div class="nx-lan-room-title">
-                          <span style="color:var(--cyan,#f59e0b);font-family:Consolas,monospace;">[${escapeHtml(rm.roomCode)}]</span>
-                          <span>${escapeHtml(rm.title)}</span>
-                        </div>
-                        <div class="nx-lan-room-meta">
-                          <span>房主: ${escapeHtml(rm.hostName)}</span>
-                          <span>·</span>
-                          <span>人数 ${escapeHtml(rm.players)} · <span class="${Number.isFinite(rm.rttMs) ? 'nx-lan-live-rtt' : ''}">${escapeHtml(rtt)}</span></span>
-                        </div>
-                      </div>
-                      <button class="nx-t2-btn" data-lan-join-room="${escapeHtml(rm.roomCode)}" ${(rm.isConnecting || (!isSelf && !isJoined && rm.players === '2/2')) ? 'disabled' : ''} style="border-color:${isJoined ? '#10b981' : 'var(--cyan,#f59e0b)'};color:${isJoined ? '#10b981' : 'var(--text,#f8fafc)'};">
-                        ${btnText}
-                      </button>
-                    </div>
-                  `;
-                }).join('')}
-              </div>
-            </div>
-
-            <div class="nx-t2-card" style="display:flex;flex-direction:column;gap:6px;">
-              <h4 style="margin-bottom:1px;">跨设备离线 SDP 握手码 (同 Wi-Fi / 手机热点 · 零公网)</h4>
-              <p>房主：① 生成邀请码发给客机 → ③ 粘贴客机返回的应答码。客机：② 粘贴邀请码生成应答码回传。</p>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button class="nx-t2-btn" id="nx-lan-offline-offer">① 房主生成邀请码</button>
-                <button class="nx-t2-btn" id="nx-lan-offline-copy" ${lanOfflineOut ? '' : 'disabled'}>复制输出码</button>
-              </div>
-              <textarea id="nx-lan-offline-out" readonly placeholder="此处显示本机生成的邀请码 / 应答码" style="width:100%;min-height:44px;max-height:64px;font-size:0.6rem;font-family:Consolas,monospace;background:rgba(0,0,0,0.35);color:var(--text,#f8fafc);border:1px solid rgba(148,163,184,0.3);border-radius:6px;padding:4px;resize:none;">${escapeHtml(lanOfflineOut)}</textarea>
-              <textarea id="nx-lan-offline-in" placeholder="粘贴对方发来的邀请码（客机）或应答码（房主）" style="width:100%;min-height:44px;max-height:64px;font-size:0.6rem;font-family:Consolas,monospace;background:rgba(0,0,0,0.35);color:var(--text,#f8fafc);border:1px solid rgba(148,163,184,0.3);border-radius:6px;padding:4px;resize:none;">${escapeHtml(lanOfflineIn)}</textarea>
-              <button class="nx-t2-btn" id="nx-lan-offline-apply">② / ③ 提交对方握手码</button>
-              ${lanOfflineMsg ? `<div style="font-size:0.66rem;color:var(--muted,#94a3b8);">${escapeHtml(lanOfflineMsg)}</div>` : ''}
-            </div>
-          </div>
-        `;
-        document.getElementById('nx-lan-toggle-ai')?.addEventListener('click', () => {
-          activeLanInstance.setAutoAiTakeover(!activeLanInstance.getAutoAiTakeover());
-          AudioEngine.tap();
-          renderTier2Module();
-        });
-        document.getElementById('nx-lan-new-room')?.addEventListener('click', () => {
-          if (activeLanInstance.leave) activeLanInstance.leave();
-          lanOfflineOut = ''; lanOfflineIn = ''; lanOfflineMsg = '';
-          AudioEngine.upgrade();
-          renderTier2Module();
-        });
-        document.getElementById('nx-lan-refresh-btn')?.addEventListener('click', () => {
-          activeLanInstance.refreshRooms();
-          AudioEngine.tap();
-          renderTier2Module();
-        });
-        document.getElementById('nx-lan-offline-in')?.addEventListener('input', (e) => {
-          lanOfflineIn = e.target.value;
-        });
-        document.getElementById('nx-lan-offline-offer')?.addEventListener('click', async () => {
-          AudioEngine.tap();
-          lanOfflineMsg = '正在收集局域网 ICE 候选并生成邀请码...';
-          renderTier2Module();
-          try {
-            lanOfflineOut = await activeLanInstance.createOfflineOffer();
-            lanOfflineMsg = '邀请码已生成，请发送给客机，并等待客机回传应答码。';
-          } catch (err) {
-            lanOfflineMsg = '生成失败：' + (err && err.message ? err.message : err);
-          }
-          renderTier2Module();
-        });
-        document.getElementById('nx-lan-offline-copy')?.addEventListener('click', async () => {
-          try {
-            await navigator.clipboard.writeText(lanOfflineOut);
-            lanOfflineMsg = '已复制到剪贴板。';
-          } catch (_) {
-            const ta = document.getElementById('nx-lan-offline-out');
-            if (ta) { ta.select(); try { document.execCommand('copy'); lanOfflineMsg = '已复制到剪贴板。'; } catch (__) { lanOfflineMsg = '请手动长按选择复制。'; } }
-          }
-          AudioEngine.tap();
-          renderTier2Module();
-        });
-        document.getElementById('nx-lan-offline-apply')?.addEventListener('click', async () => {
-          const code = (document.getElementById('nx-lan-offline-in')?.value || lanOfflineIn).trim();
-          if (!code) { lanOfflineMsg = '请先粘贴对方的握手码。'; renderTier2Module(); return; }
-          AudioEngine.tap();
-          try {
-            const isOfferCode = (() => { try { return JSON.parse(decodeURIComponent(escape(atob(code.replace(/\s+/g, ''))))).k === 'offer'; } catch (_) { return false; } })();
-            if (isOfferCode) {
-              lanOfflineMsg = '正在生成应答码...';
-              renderTier2Module();
-              lanOfflineOut = await activeLanInstance.acceptOfflineOffer(code);
-              lanOfflineMsg = '应答码已生成，请回传给房主；房主提交后将自动建立 WebRTC 直连。';
-            } else {
-              await activeLanInstance.acceptOfflineAnswer(code);
-              lanOfflineMsg = '已提交应答码，等待 WebRTC 通道打开...';
-            }
-            lanOfflineIn = '';
-          } catch (err) {
-            lanOfflineMsg = '握手失败：' + (err && err.message ? err.message : err);
-          }
-          renderTier2Module();
-        });
-        body.querySelectorAll('[data-lan-join-room]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const targetCode = btn.getAttribute('data-lan-join-room');
-            if (!targetCode) return;
-            const cur = activeLanInstance.getStatus();
-            const isSelf = cur.role === 'host' && cur.roomCode === targetCode;
-            if (isSelf || (cur.connected && cur.roomCode === targetCode)) {
-              AudioEngine.win();
-              if (enterTier3GameplayFn) enterTier3GameplayFn();
-              return;
-            }
-            activeLanInstance.joinRoom(targetCode, 'client');
-            AudioEngine.tap();
-            renderTier2Module();
-          });
-        });
       }
-      window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
+window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
         detail: { tab: currentMenuTab, unitFile: null }
       }));
     }
