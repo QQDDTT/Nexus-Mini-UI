@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v11.4-iconic-ui';
+const CACHE_NAME = 'nexus-mini-portal-v11.5-autohide-back-pill';
 const CORE_ASSETS = [
   './',
   './index.html',

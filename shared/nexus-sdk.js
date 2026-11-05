@@ -2760,6 +2760,9 @@
       document.body.classList.remove('nx-in-tier3');
       menuEl.classList.add('active');
       renderTier2Module();
+      if (window.parent && window.parent !== window) {
+        try { window.parent.postMessage({ type: 'NEXUS_WAKE_HOST_BACK' }, '*'); } catch (_) {}
+      }
     };
 
     document.getElementById('nx-btn-enter-tier3')?.addEventListener('click', enterTier3GameplayFn);
@@ -2769,6 +2772,9 @@
       menuEl.classList.remove('active');
       gameplayActive = true;
       document.body.classList.add('nx-in-tier3');
+      if (window.parent && window.parent !== window) {
+        try { window.parent.postMessage({ type: 'NEXUS_ENTER_TIER3' }, '*'); } catch (_) {}
+      }
       if (meta.triggerStudio) meta.triggerStudio();
     });
 

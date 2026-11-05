@@ -950,6 +950,17 @@ body.guard-locked .screen-guard-overlay {
   display: flex;
 }
 
+#arcade-back-hotzone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 140px;
+  height: 80px;
+  z-index: 5049;
+  pointer-events: auto;
+  background: transparent;
+}
+
 .arcade-return-pill,
 .arcade-back-pill {
   position: fixed;
@@ -963,13 +974,44 @@ body.guard-locked .screen-guard-overlay {
   min-height: 44px;
   padding: 0 12px;
   border-radius: var(--nexus-radius-pill);
-  background: var(--nexus-surface-card);
-  border: 2.5px solid var(--nexus-border-ink);
-  color: var(--nexus-text-main);
-  font-size: 0.76rem;
-  font-weight: 900;
-  box-shadow: var(--nexus-hard-shadow-sm);
+  background: rgba(23, 21, 19, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  color: #f4efe6;
+  font-size: 0.74rem;
+  font-weight: 800;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
   cursor: pointer;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.18s ease,
+              border-color 0.18s ease;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.arcade-return-pill:hover,
+.arcade-back-pill:hover {
+  background: rgba(36, 32, 28, 0.96);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  transform: translate3d(0, 0, 0) scale(1.02);
+}
+
+.arcade-return-pill:active,
+.arcade-back-pill:active {
+  transform: translate3d(0, 0, 0) scale(0.96);
+}
+
+.arcade-return-pill.auto-hidden,
+.arcade-back-pill.auto-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(-18px, -12px, 0) scale(0.88);
 }
 
 .modal-backdrop {
