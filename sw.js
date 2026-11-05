@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v11.5-autohide-back-pill';
+const CACHE_NAME = 'nexus-mini-portal-v11.6-themed-topleft-buttons';
 const CORE_ASSETS = [
   './',
   './index.html',

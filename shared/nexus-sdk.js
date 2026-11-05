@@ -1266,6 +1266,7 @@
     const meta = GAME_META_DB[gameId] || GAME_META_DB['star-defender'];
     const gameTitle = options.gameTitle || meta.name;
     const settingsKey = `NEXUS_SETTINGS_${gameId}`;
+    document.body.setAttribute('data-game', gameId);
 
     function loadSettings() {
       try {
@@ -1302,14 +1303,16 @@
     style.textContent = `
       .nx-return-pill {
         position: fixed;
-        top: max(10px, env(safe-area-inset-top));
-        right: max(14px, env(safe-area-inset-right));
+        top: max(8px, env(safe-area-inset-top));
+        left: max(10px, env(safe-area-inset-left));
+        right: auto;
         z-index: 8400;
-        min-width: 68px;
+        width: 44px;
         height: 44px;
+        min-width: 44px;
         min-height: 44px;
-        padding: 0 12px;
-        border-radius: 9999px;
+        padding: 0;
+        border-radius: 10px;
         background: var(--panel, var(--mg-glass-panel, rgba(9, 14, 26, 0.94)));
         border: 1.5px solid var(--cyan, var(--mg-accent-cyan, rgba(0, 240, 255, 0.55)));
         color: var(--text, var(--mg-text-primary, #f8fafc));
@@ -1318,17 +1321,125 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 5px;
         cursor: pointer;
         white-space: nowrap;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
         transition: all 0.15s ease;
       }
       .nx-return-pill:hover {
-        filter: brightness(1.12);
+        filter: brightness(1.15);
+        transform: scale(1.05);
       }
       .nx-return-pill:active {
-        transform: scale(0.96);
+        transform: scale(0.95);
+      }
+
+      #nx-btn-back-tier1 {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0;
+        margin-right: 6px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: all 0.15s ease;
+      }
+      #nx-btn-back-tier1:hover {
+        filter: brightness(1.15);
+        transform: scale(1.05);
+      }
+      #nx-btn-back-tier1:active {
+        transform: scale(0.95);
+      }
+
+      /* ===== 1. 星轨防线 (Star Defender) 风格: 钛金金箔与离子天青 ===== */
+      #nx-tier2-menu[data-game="star-defender"] #nx-btn-back-tier1,
+      body[data-game="star-defender"] .nx-return-pill {
+        background: linear-gradient(135deg, rgba(9, 18, 38, 0.94) 0%, rgba(12, 25, 56, 0.94) 100%) !important;
+        border: 1.5px solid #fbbf24 !important;
+        color: #fbbf24 !important;
+        box-shadow: 0 0 12px rgba(251, 191, 36, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+        border-radius: 10px !important;
+      }
+      #nx-tier2-menu[data-game="star-defender"] #nx-btn-back-tier1:hover,
+      body[data-game="star-defender"] .nx-return-pill:hover {
+        background: linear-gradient(135deg, rgba(12, 25, 56, 0.98) 0%, rgba(16, 36, 78, 0.98) 100%) !important;
+        border-color: #fde047 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 18px rgba(253, 224, 71, 0.6) !important;
+      }
+
+      /* ===== 2. 钢铁防线 (Tank Battle) 风格: 克虏伯炮钢与军绿 ===== */
+      #nx-tier2-menu[data-game="tank-battle"] #nx-btn-back-tier1,
+      body[data-game="tank-battle"] .nx-return-pill {
+        background: linear-gradient(180deg, #242a34 0%, #171b22 100%) !important;
+        border: 2px solid #566170 !important;
+        color: #22c55e !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+        border-radius: 6px !important;
+      }
+      #nx-tier2-menu[data-game="tank-battle"] #nx-btn-back-tier1:hover,
+      body[data-game="tank-battle"] .nx-return-pill:hover {
+        background: linear-gradient(180deg, #2e3542 0%, #1f242d 100%) !important;
+        border-color: #22c55e !important;
+        color: #4ade80 !important;
+        box-shadow: 0 0 14px rgba(34, 197, 94, 0.45) !important;
+      }
+
+      /* ===== 3. 保卫布丁 (Pudding Defense) 风格: 烘焙可可棕与马卡龙草莓粉 ===== */
+      #nx-tier2-menu[data-game="pudding-defense"] #nx-btn-back-tier1,
+      body[data-game="pudding-defense"] .nx-return-pill {
+        background: linear-gradient(180deg, #3b1d11 0%, #23120b 100%) !important;
+        border: 2.5px solid #fb7185 !important;
+        color: #fde047 !important;
+        box-shadow: 0 4px 12px rgba(35, 18, 11, 0.7), 0 2px 0 #fb7185 !important;
+        border-radius: 16px !important;
+      }
+      #nx-tier2-menu[data-game="pudding-defense"] #nx-btn-back-tier1:hover,
+      body[data-game="pudding-defense"] .nx-return-pill:hover {
+        background: linear-gradient(180deg, #4d2616 0%, #2e170e 100%) !important;
+        border-color: #f43f5e !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 16px rgba(251, 113, 133, 0.5), 0 3px 0 #f43f5e !important;
+      }
+
+      /* ===== 4. 掘金先锋 (Gold Miner) 风格: 锻造黄铜与玄武地层 ===== */
+      #nx-tier2-menu[data-game="gold-miner"] #nx-btn-back-tier1,
+      body[data-game="gold-miner"] .nx-return-pill {
+        background: linear-gradient(180deg, #3a2517 0%, #23150d 100%) !important;
+        border: 2px solid #d97706 !important;
+        color: #fbbf24 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(245, 158, 11, 0.35) !important;
+        border-radius: 8px !important;
+      }
+      #nx-tier2-menu[data-game="gold-miner"] #nx-btn-back-tier1:hover,
+      body[data-game="gold-miner"] .nx-return-pill:hover {
+        background: linear-gradient(180deg, #4a301e 0%, #2f1d12 100%) !important;
+        border-color: #f59e0b !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 16px rgba(245, 158, 11, 0.5) !important;
+      }
+
+      /* ===== 5. 微界演化 (Micro Genesis) 风格: 深海培养皿暗青与荧光绿 ===== */
+      #nx-tier2-menu[data-game="micro-genesis"] #nx-btn-back-tier1,
+      body[data-game="micro-genesis"] .nx-return-pill {
+        background: linear-gradient(135deg, #041f24 0%, #062c30 100%) !important;
+        border: 1.5px solid #2dd4bf !important;
+        color: #2dd4bf !important;
+        box-shadow: 0 0 14px rgba(45, 212, 191, 0.35) !important;
+        border-radius: 12px !important;
+      }
+      #nx-tier2-menu[data-game="micro-genesis"] #nx-btn-back-tier1:hover,
+      body[data-game="micro-genesis"] .nx-return-pill:hover {
+        background: linear-gradient(135deg, #07353a 0%, #0a464d 100%) !important;
+        border-color: #5eead4 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 20px rgba(94, 234, 212, 0.6) !important;
       }
 
       /* ===== 第 2 层 · 游戏菜单 (Tier 2: 6-Module Game Menu Hub) ===== */
@@ -1758,6 +1869,7 @@
 
     const menuEl = document.createElement('div');
     menuEl.id = 'nx-tier2-menu';
+    menuEl.setAttribute('data-game', gameId);
     // Check URL param: start in Tier 2 Menu by default unless ?tier=3 is explicitly passed
     const urlParams = new URLSearchParams(window.location.search);
     const startInTier3 = urlParams.get('tier') === '3';
@@ -1774,9 +1886,8 @@
     menuEl.innerHTML = `
       <header class="nx-t2-header">
         <div class="nx-t2-brand">
-          <button class="nx-t2-btn" id="nx-btn-back-tier1" title="返回第 1 层平台主页">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="15 18 9 12 15 6"/></svg>
-            <span>${(isHeavyArmory || isStarRoster) ? '返回大厅' : '返回主页'}</span>
+          <button class="nx-t2-btn" id="nx-btn-back-tier1" title="退回第一层平台主页清单" aria-label="退回平台主页">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/><line x1="9" y1="12" x2="20" y2="12"/></svg>
           </button>
           ${isStarRoster ? `
             <span class="sd-crest-status-led"><span class="dot"></span>Fleet Status</span>
@@ -2786,8 +2897,7 @@
       btn.setAttribute('aria-label', '暂停并返回游戏菜单');
       btn.setAttribute('title', '暂停并返回第 2 层游戏菜单');
       btn.innerHTML = `
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-        <span>菜单</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
       `;
       btn.addEventListener('click', () => {
         openTier2MenuFn('home');

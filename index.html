@@ -750,7 +750,7 @@
       });
       portalShell?.setAttribute('inert', '');
       overlay.classList.add('active');
-      showArcadeBackBtn();
+      hideArcadeBackBtn();
       iframe.onload = () => {
         try { iframe.focus(); } catch (_) {}
       };
