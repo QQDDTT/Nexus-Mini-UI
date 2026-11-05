@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v11.6-themed-topleft-buttons';
+const CACHE_NAME = 'nexus-mini-portal-v11.7-clean-intro-card';
 const CORE_ASSETS = [
   './',
   './index.html',
