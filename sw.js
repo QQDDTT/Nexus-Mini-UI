@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v11.7-clean-intro-card';
+const CACHE_NAME = 'nexus-mini-portal-v11.8-lan-lobby-redesign';
 const CORE_ASSETS = [
   './',
   './index.html',

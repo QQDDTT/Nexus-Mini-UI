@@ -231,11 +231,6 @@
 
   <!-- 全屏内联微游容器 (Arcade Fullscreen Frame · 配备宿主级防死锁返回胶囊按钮) -->
   <div id="arcade-frame-overlay">
-    <div id="arcade-back-hotzone" aria-hidden="true" title="触摸或悬浮呼出返回主页按钮"></div>
-    <button class="arcade-back-pill" id="btn-arcade-host-back" type="button" title="退回第一层平台主页清单">
-      <svg class="nx-ico" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      <span>◀ 返回主页清单</span>
-    </button>
     <iframe id="game-iframe" title="Nexus-Mini Fullscreen Game Frame" allow="fullscreen; autoplay" style="width:100%;height:100%;border:none;display:block;background:#171513;"></iframe>
   </div>
 
@@ -693,41 +688,8 @@
      * 5. 全屏内联微游容器：加载目标游戏第 2 层 (Game Menu Hub) + 同源安全握手
      * ========================================================================= */
     /* =========================================================================
-     * 5. 全屏微游容器 (Arcade Fullscreen Frame) & 自动隐藏返回胶囊
+     * 5. 全屏微游容器 (Arcade Fullscreen Frame · 由各微游自洽左上角按钮直接控制返回)
      * ========================================================================= */
-    let arcadeBackTimer = null;
-    const ARCADE_HIDE_DELAY_MS = 2800;
-
-    function showArcadeBackBtn() {
-      const btn = document.getElementById('btn-arcade-host-back');
-      if (!btn) return;
-      btn.classList.remove('auto-hidden');
-      resetArcadeBackTimer();
-    }
-
-    function hideArcadeBackBtn() {
-      const btn = document.getElementById('btn-arcade-host-back');
-      if (!btn) return;
-      btn.classList.add('auto-hidden');
-    }
-
-    function resetArcadeBackTimer() {
-      if (arcadeBackTimer) {
-        clearTimeout(arcadeBackTimer);
-        arcadeBackTimer = null;
-      }
-      arcadeBackTimer = setTimeout(() => {
-        hideArcadeBackBtn();
-      }, ARCADE_HIDE_DELAY_MS);
-    }
-
-    function stopArcadeBackTimer() {
-      if (arcadeBackTimer) {
-        clearTimeout(arcadeBackTimer);
-        arcadeBackTimer = null;
-      }
-    }
-
     function launchArcadeSandbox() {
       NexusAudio.launch();
       const portalShell = document.getElementById('portal-shell');
@@ -740,7 +702,6 @@
       });
       portalShell?.setAttribute('inert', '');
       overlay.classList.add('active');
-      hideArcadeBackBtn();
       iframe.onload = () => {
         try { iframe.focus(); } catch (_) {}
       };
@@ -749,9 +710,6 @@
 
     function exitArcadeFrame() {
       NexusAudio.tap();
-      stopArcadeBackTimer();
-      const btn = document.getElementById('btn-arcade-host-back');
-      btn?.classList.remove('auto-hidden');
       const portalShell = document.getElementById('portal-shell');
       const overlay = document.getElementById('arcade-frame-overlay');
       const iframe = document.getElementById('game-iframe');

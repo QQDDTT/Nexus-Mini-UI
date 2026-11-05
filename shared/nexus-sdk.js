@@ -1788,6 +1788,8 @@
     let lanOfflineOut = '';
     let lanOfflineIn = '';
     let lanOfflineMsg = '';
+    let lanViewMode = 'lobby'; // 'lobby' | 'room'
+    let showHandshakeJoin = false;
     let lanRerenderBoundTo = null;
     let lanRerenderPending = false;
     let lanLastSig = '';
@@ -1802,7 +1804,7 @@
           if (currentMenuTab !== 'lan' || !menuEl.classList.contains('active') || !activeLanInstance) return;
           const st = activeLanInstance.getStatus();
           const rooms = activeLanInstance.getAvailableRooms();
-          const sig = JSON.stringify([st.roomCode, st.role, st.connState, st.connected, st.transport, st.lastError, st.failoverActive, st.autoAiTakeover,
+          const sig = JSON.stringify([lanViewMode, showHandshakeJoin, st.roomCode, st.role, st.connState, st.connected, st.transport, st.lastError, st.failoverActive, st.autoAiTakeover,
             rooms.map((r) => [r.roomCode, r.players, r.isSelfHost, r.isCurrentJoined, r.isConnecting])]);
           if (sig === lanLastSig) {
             // 结构未变：仅原位刷新实测 RTT，避免整页重绘打断点击
@@ -2372,6 +2374,595 @@
             renderTier2Module();
           });
         });
+      } else if (currentMenuTab === 'details') {
+        body.innerHTML = `
+          <div style="font-size:0.74rem;font-weight:800;color:var(--cyan,#f59e0b);">
+            核心物理与数值机制百科 (零远端通信 · 100% 客户端确定性解算)
+          </div>
+          <div class="nx-t2-grid2">
+            ${meta.formulas.map((f) => `
+              <div class="nx-t2-card">
+                <h4>${f.title}</h4>
+                <p>${f.desc}</p>
+              </div>
+            `).join('')}
+          </div>
+          <div style="font-size:0.74rem;font-weight:800;color:var(--gold,#fbbf24);margin-top:2px;">
+            本游戏专属多层 SVG 矢量贴图与同源骨骼图鉴 (${meta.sprites.length} 项核心实体)
+          </div>
+          <div class="nx-t2-sprites">
+            ${meta.sprites.map((sp) => `
+              <div class="nx-t2-sp-item">
+                <img src="../assets/${meta.id}/sprites/${sp.file}?v=20261101" alt="${sp.name}" />
+                <div style="font-size:0.68rem;font-weight:700;color:var(--text,#f8fafc);white-space:nowrap;">${sp.name}</div>
+                <div style="font-size:0.6rem;color:var(--muted,#94a3b8);white-space:nowrap;">${sp.role}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else if (currentMenuTab === 'settings') {
+        body.innerHTML = `
+          <div class="nx-t2-grid2">
+            <div class="nx-t2-card">
+              <h4>离散瞬态音效开关 (严格 &le; 0.20s 衰减防噪音铁律)</h4>
+              <p style="margin-bottom:8px;">全武器与交互采用单次离散瞬态脉冲合成，杜绝任何持续长音或循环嗡鸣。</p>
+              <div style="display:flex;gap:8px;">
+                <button class="nx-t2-btn" id="nx-set-mute-toggle" style="border-color:var(--cyan,#f59e0b);">
+                  ${userSettings.muted ? '当前：已静音 (点击开启瞬态音效)' : '当前：瞬态音效已开启 (点击静音)'}
+                </button>
+                <button class="nx-t2-btn" id="nx-set-vol-cycle">
+                  脉冲音量档位：${Math.round(userSettings.volume * 100)}%
+                </button>
+              </div>
+            </div>
+            <div class="nx-t2-card">
+              <h4>移动端全屏横屏操控与震动反馈</h4>
+              <p style="margin-bottom:8px;">全部触控按钮满足 &ge; 44&times;44px 最小物理命中热区，适配刘海与灵动岛安全区。</p>
+              <div style="display:flex;gap:8px;">
+                <button class="nx-t2-btn" id="nx-set-haptic-toggle">
+                  震动反馈：${userSettings.haptics ? '已开启' : '已关闭'}
+                </button>
+                <button class="nx-t2-btn" id="nx-set-layout-toggle">
+                  触控布局：${userSettings.touchLayout === 'standard' ? '标准横屏双区' : '紧凑拇指热区'}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="nx-t2-card" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+            <div>
+              <h4>60fps 渲染粒子、光影档位与战术辅助线</h4>
+              <p>针对移动设备 GPU 优化：支持切换高精满帧/竞技省电粒子档位，以及开关弹道散布辅助线。</p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="nx-t2-btn" id="nx-set-particle-toggle">
+                画质档位：${userSettings.particleTier === 'high' ? '60Hz 高精满帧' : '竞技省电模式'}
+              </button>
+              <button class="nx-t2-btn" id="nx-set-guide-toggle">
+                战术辅助线：${userSettings.guideLines !== false ? '已开启' : '已关闭'}
+              </button>
+            </div>
+          </div>
+        `;
+        document.getElementById('nx-set-mute-toggle')?.addEventListener('click', () => {
+          userSettings.muted = !userSettings.muted;
+          saveSettings(userSettings);
+          if (!userSettings.muted) AudioEngine.tap();
+          renderTier2Module();
+        });
+        document.getElementById('nx-set-vol-cycle')?.addEventListener('click', () => {
+          userSettings.volume = userSettings.volume >= 1.0 ? 0.65 : (userSettings.volume >= 0.6 ? 0.35 : 1.0);
+          saveSettings(userSettings);
+          AudioEngine.tap();
+          renderTier2Module();
+        });
+        document.getElementById('nx-set-haptic-toggle')?.addEventListener('click', () => {
+          userSettings.haptics = !userSettings.haptics;
+          saveSettings(userSettings);
+          if (userSettings.haptics && navigator.vibrate) navigator.vibrate(18);
+          AudioEngine.tap();
+          renderTier2Module();
+        });
+        document.getElementById('nx-set-layout-toggle')?.addEventListener('click', () => {
+          userSettings.touchLayout = userSettings.touchLayout === 'standard' ? 'compact' : 'standard';
+          saveSettings(userSettings);
+          AudioEngine.tap();
+          renderTier2Module();
+        });
+        document.getElementById('nx-set-particle-toggle')?.addEventListener('click', () => {
+          userSettings.particleTier = userSettings.particleTier === 'high' ? 'eco' : 'high';
+          saveSettings(userSettings);
+          AudioEngine.tap();
+          renderTier2Module();
+        });
+        document.getElementById('nx-set-guide-toggle')?.addEventListener('click', () => {
+          userSettings.guideLines = userSettings.guideLines === false;
+          saveSettings(userSettings);
+          AudioEngine.tap();
+          renderTier2Module();
+        });
+      } else if (currentMenuTab === 'assets') {
+        const metrics = meta.getMetrics(saveData);
+        const nsKey = `${meta.storagePrefix}${auth.userId}`;
+        const encodedSave = btoa(encodeURIComponent(JSON.stringify(saveData)));
+        body.innerHTML = `
+          <div class="nx-t2-grid3">
+            ${metrics.map((m) => `
+              <div class="nx-t2-card">
+                <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">${m.label}</div>
+                <div style="font-size:0.88rem;font-weight:800;color:${m.gold ? 'var(--gold,#fbbf24)' : 'var(--text,#f8fafc)'};margin-top:2px;">${m.val}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="nx-t2-grid2">
+            <div class="nx-t2-card">
+              <h4>统帅身份切换与战备资材整备 (${escapeHtml(nsKey)})</h4>
+              <p style="margin-bottom:8px;">100% 客户端本地隔离持久化存储。支持一键切换最高统帅调试档 (admin) 或领取本地战备补给：</p>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button class="nx-t2-btn" id="nx-asset-bonus-btn" style="border-color:var(--gold,#fbbf24);color:var(--gold,#fbbf24);">
+                  + 领取本地战备补给
+                </button>
+                <button class="nx-t2-btn" id="nx-asset-admin-btn">
+                  ${auth.isAdmin ? '切换至标准指挥官档' : '切换 admin 满配统帅档'}
+                </button>
+              </div>
+            </div>
+            <div class="nx-t2-card">
+              <h4>本地存档备份码导出与恢复 (零远端服务器依赖)</h4>
+              <div style="display:flex;gap:6px;margin-top:6px;">
+                <input type="text" class="nx-t2-input" id="nx-asset-save-input" value="${encodedSave}" />
+                <button class="nx-t2-btn" id="nx-asset-copy-btn">复制存档</button>
+                <button class="nx-t2-btn" id="nx-asset-import-btn">导入恢复</button>
+              </div>
+            </div>
+          </div>
+        `;
+        document.getElementById('nx-asset-bonus-btn')?.addEventListener('click', () => {
+          const cur = getSaveDataSafe();
+          meta.grantBonus(cur);
+          if (activeStoreInstance) activeStoreInstance.save(cur);
+          else localStorage.setItem(nsKey, JSON.stringify(cur));
+          AudioEngine.upgrade();
+          renderTier2Module();
+        });
+        document.getElementById('nx-asset-admin-btn')?.addEventListener('click', () => {
+          AudioEngine.upgrade();
+          if (activeStoreInstance) {
+            activeStoreInstance.switchProfile(auth.isAdmin ? 'commander' : 'admin');
+          }
+          window.location.reload();
+        });
+        document.getElementById('nx-asset-copy-btn')?.addEventListener('click', () => {
+          const val = document.getElementById('nx-asset-save-input')?.value || '';
+          navigator.clipboard?.writeText(val).catch(() => {});
+          AudioEngine.win();
+        });
+        document.getElementById('nx-asset-import-btn')?.addEventListener('click', () => {
+          try {
+            const rawStr = document.getElementById('nx-asset-save-input')?.value.trim();
+            const parsed = JSON.parse(decodeURIComponent(atob(rawStr)));
+            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+              delete parsed.__proto__;
+              delete parsed.constructor;
+              delete parsed.prototype;
+              if (parsed.currency && typeof parsed.currency === 'object') {
+                Object.keys(parsed.currency).forEach((k) => {
+                  const v = Number(parsed.currency[k]);
+                  parsed.currency[k] = Number.isFinite(v) ? Math.max(0, Math.min(9999999, Math.floor(v))) : 0;
+                });
+              }
+              if (parsed.rank !== undefined) {
+                const rk = Number(parsed.rank);
+                parsed.rank = Number.isFinite(rk) ? Math.max(1, Math.min(4, Math.floor(rk))) : 1;
+              }
+              if (parsed.stats && typeof parsed.stats === 'object') {
+                Object.keys(parsed.stats).forEach((k) => {
+                  const v = Number(parsed.stats[k]);
+                  parsed.stats[k] = Number.isFinite(v) ? Math.max(0, Math.min(99999999, Math.floor(v))) : 0;
+                });
+              }
+              if (activeStoreInstance) activeStoreInstance.save(parsed);
+              else localStorage.setItem(nsKey, JSON.stringify(parsed));
+              AudioEngine.win();
+              window.location.reload();
+            }
+          } catch (_) {
+            AudioEngine.warn();
+          }
+        });
+      } else if (currentMenuTab === 'services') {
+        let storageBytes = 0;
+        try {
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            storageBytes += (k.length + (localStorage.getItem(k) || '').length) * 2;
+          }
+        } catch (_) {}
+        body.innerHTML = `
+          <div class="nx-t2-grid3">
+            <div class="nx-t2-card">
+              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">离线 PWA 资源服务</div>
+              <div id="nx-srv-sw-status" style="font-size:0.82rem;font-weight:800;color:#10b981;margin-top:2px;">${swCacheStatus}</div>
+            </div>
+            <div class="nx-t2-card">
+              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">客户端物理/渲染帧率基准</div>
+              <div style="font-size:0.82rem;font-weight:800;color:var(--cyan,#f59e0b);margin-top:2px;">${Number.isFinite(measuredFps) ? measuredFps + ' FPS (实测 rAF 帧率)' : '采样中...'}</div>
+            </div>
+            <div class="nx-t2-card">
+              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">本地存储占用 / 音频节点</div>
+              <div style="font-size:0.82rem;font-weight:800;color:var(--gold,#fbbf24);margin-top:2px;">${(storageBytes / 1024).toFixed(1)} KB · Audio: ${AudioEngine.getState()}</div>
+            </div>
+          </div>
+          <div class="nx-t2-grid2">
+            <div class="nx-t2-card">
+              <h4>PWA 离线缓存校验与刷新 (Service Worker &amp; CacheStorage)</h4>
+              <p style="margin-bottom:8px;">静态资源、SVG 矢量精灵与骨骼动画脚本均缓存在本地浏览器，支持无外网离线启动。</p>
+              <button class="nx-t2-btn" id="nx-svc-refresh-sw" style="border-color:var(--cyan,#f59e0b);">
+                校验并刷新本地离线缓存
+              </button>
+            </div>
+            <div class="nx-t2-card">
+              <h4>离散瞬态音频自愈与 60Hz 帧率基准自检</h4>
+              <p style="margin-bottom:8px;">若移动浏览器切后台后声音挂起，可一键重置 Web Audio 瞬态合成器或重测帧率。</p>
+              <div style="display:flex;gap:8px;">
+                <button class="nx-t2-btn" id="nx-svc-heal-audio">重置音频上下文并试音</button>
+                <button class="nx-t2-btn" id="nx-svc-bench-fps">执行 60Hz 帧率基准诊断</button>
+              </div>
+            </div>
+          </div>
+        `;
+        document.getElementById('nx-svc-refresh-sw')?.addEventListener('click', async () => {
+          AudioEngine.tap();
+          swCacheStatus = '正在校验离线运行环境与 CacheStorage...';
+          renderTier2Module();
+          await probeSwAndCacheStatus(true);
+          AudioEngine.win();
+          renderTier2Module();
+        });
+        document.getElementById('nx-svc-heal-audio')?.addEventListener('click', () => {
+          AudioEngine.resetContext();
+          renderTier2Module();
+        });
+        document.getElementById('nx-svc-bench-fps')?.addEventListener('click', () => {
+          AudioEngine.tap();
+          let frames = 0;
+          const t0 = performance.now();
+          function sample() {
+            frames++;
+            if (performance.now() - t0 < 500) {
+              requestAnimationFrame(sample);
+            } else {
+              measuredFps = Math.round((frames * 1000) / (performance.now() - t0));
+              AudioEngine.win();
+              renderTier2Module();
+            }
+          }
+          requestAnimationFrame(sample);
+        });
+      } else if (currentMenuTab === 'lan') {
+        if (!activeLanInstance) {
+          activeLanInstance = createLanSession(gameId);
+        }
+        bindLanAutoRerender();
+        const st = activeLanInstance.getStatus ? activeLanInstance.getStatus() : {};
+        const autoAi = activeLanInstance.getAutoAiTakeover();
+        const rooms = activeLanInstance.getAvailableRooms ? activeLanInstance.getAvailableRooms() : [];
+        const curRole = st.role || 'host';
+        const connStateText = {
+          hosting: '房间广播中 · 等待客机加入',
+          connecting: '握手连接中...',
+          connected: '已联机协同',
+          disconnected: '对端已断开 · 房间重新广播中',
+          failed: '加入失败 · 已恢复为本机房主'
+        }[st.connState] || '房间广播中';
+        const transportText = st.transport === 'webrtc' ? 'WebRTC DataChannel 直连'
+          : st.transport === 'broadcast' ? '同设备 BroadcastChannel'
+          : '未连接';
+        const rttText = (st.connected && Number.isFinite(st.peerLatencyMs)) ? `${st.peerLatencyMs}ms RTT` : '-- ms';
+        const stateColor = st.connected ? '#10b981' : (st.connState === 'failed' || st.connState === 'disconnected' ? '#f43f5e' : 'var(--gold,#fbbf24)');
+        lanLastSig = JSON.stringify([lanViewMode, showHandshakeJoin, st.roomCode, st.role, st.connState, st.connected, st.transport, st.lastError, st.failoverActive, st.autoAiTakeover,
+          rooms.map((r) => [r.roomCode, r.players, r.isSelfHost, r.isCurrentJoined, r.isConnecting])]);
+
+        if (lanViewMode === 'lobby') {
+          // ==========================================
+          // 视图 1：纯净房间列表大厅 (零多模块杂乱切割)
+          // ==========================================
+          body.innerHTML = `
+            <div class="nx-t2-card" style="display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box;overflow-y:auto;padding:14px 18px;">
+              <!-- 大厅顶部操作栏 -->
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,0.12);padding-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan,#f59e0b)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                  <div>
+                    <h4 style="margin:0;font-size:0.95rem;font-weight:900;color:var(--text,#f8fafc);letter-spacing:0.02em;">局域网房间大厅 · 房间列表</h4>
+                    <div style="font-size:0.68rem;color:var(--muted,#94a3b8);margin-top:2px;">基于本地信标与 WebRTC P2P 直连 · 零公网服务器依赖</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <button class="nx-t2-btn" id="nx-lan-refresh-btn" title="刷新局域网广播列表" style="min-height:38px;padding:0 12px;font-size:0.75rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    <span>刷新列表 (${rooms.length})</span>
+                  </button>
+                  <button class="nx-t2-btn" id="nx-lan-toggle-handshake-btn" title="离线 SDP 握手码加房" style="min-height:38px;padding:0 12px;font-size:0.75rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    <span>离线握手加房</span>
+                  </button>
+                  <button class="nx-t2-btn primary" id="nx-lan-create-room-btn" title="创建新的局域网房间" style="min-height:38px;padding:0 14px;font-size:0.75rem;font-weight:900;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>+ 创建新房间</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 离线握手加入抽屉 -->
+              ${showHandshakeJoin ? `
+                <div style="background:rgba(0,0,0,0.35);border:1.5px solid var(--cyan,#f59e0b);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+                  <div style="font-size:0.76rem;font-weight:800;color:var(--cyan,#f59e0b);">跨设备离线 SDP 握手码加入</div>
+                  <textarea id="nx-lan-quick-code-in" placeholder="粘贴对方发来的邀请码（客机）或应答码（房主）" style="width:100%;min-height:50px;max-height:80px;font-size:0.68rem;font-family:Consolas,monospace;background:rgba(0,0,0,0.5);color:var(--text,#f8fafc);border:1px solid rgba(148,163,184,0.35);border-radius:6px;padding:6px;resize:none;">${escapeHtml(lanOfflineIn)}</textarea>
+                  <div style="display:flex;gap:8px;justify-content:flex-end;">
+                    <button class="nx-t2-btn" id="nx-lan-quick-code-cancel" style="min-height:34px;padding:0 12px;font-size:0.72rem;">取消</button>
+                    <button class="nx-t2-btn primary" id="nx-lan-quick-code-submit" style="min-height:34px;padding:0 14px;font-size:0.72rem;">提交并进入房间</button>
+                  </div>
+                  ${lanOfflineMsg ? `<div style="font-size:0.7rem;color:var(--gold,#fbbf24);">${escapeHtml(lanOfflineMsg)}</div>` : ''}
+                </div>
+              ` : ''}
+
+              <!-- 房间列表本体 (仅展示列表，不拆分多模块) -->
+              <div class="nx-lan-room-list" id="nx-lan-room-list" style="display:flex;flex-direction:column;gap:8px;flex:1;overflow-y:auto;padding-right:4px;">
+                ${rooms.length === 0 ? `
+                  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 12px;gap:12px;color:var(--muted,#94a3b8);text-align:center;">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45;"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                    <div style="font-size:0.86rem;font-weight:800;color:var(--text,#f8fafc);">当前局域网暂无其他房间</div>
+                    <div style="font-size:0.72rem;max-width:360px;line-height:1.4;">可在同 Wi-Fi / 热点下让另一台设备或打开新标签页创建房间，或直接点击下方按钮创建自己的房间。</div>
+                    <button class="nx-t2-btn primary" id="nx-lan-empty-create-btn" style="min-height:38px;padding:0 18px;margin-top:6px;font-weight:900;">
+                      + 立即创建我的房间
+                    </button>
+                  </div>
+                ` : rooms.map((rm) => {
+                  const isSelf = rm.isSelfHost;
+                  const isJoined = rm.isCurrentJoined;
+                  const rtt = Number.isFinite(rm.rttMs) ? `${rm.rttMs}ms` : '局域网直连';
+                  const btnText = isSelf ? '进入我的房间 ➔'
+                    : isJoined ? '进入房间 ➔'
+                    : (rm.players === '2/2' ? '房间已满' : '加入房间 ➔');
+                  return `
+                    <div class="nx-lan-room-row ${isJoined ? 'joined' : ''}" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;gap:12px;">
+                      <div class="nx-lan-room-info" style="display:flex;flex-direction:column;gap:3px;flex:1;">
+                        <div class="nx-lan-room-title" style="display:flex;align-items:center;gap:8px;font-size:0.84rem;font-weight:800;">
+                          <span style="color:var(--cyan,#f59e0b);font-family:Consolas,monospace;font-weight:900;">[${escapeHtml(rm.roomCode)}]</span>
+                          <span style="color:var(--text,#f8fafc);">${escapeHtml(rm.title)}</span>
+                          ${isSelf ? `<span style="font-size:0.62rem;background:rgba(251,191,36,0.2);color:var(--gold,#fbbf24);border:1px solid rgba(251,191,36,0.5);border-radius:4px;padding:2px 6px;font-weight:900;">本机房主</span>` : ''}
+                          ${isJoined ? `<span style="font-size:0.62rem;background:rgba(16,185,129,0.2);color:#10b981;border:1px solid rgba(16,185,129,0.5);border-radius:4px;padding:2px 6px;font-weight:900;">已在房内</span>` : ''}
+                        </div>
+                        <div class="nx-lan-room-meta" style="font-size:0.7rem;color:var(--muted,#94a3b8);display:flex;align-items:center;gap:10px;">
+                          <span>房主: <strong style="color:var(--text,#f8fafc);">${escapeHtml(rm.hostName)}</strong></span>
+                          <span>·</span>
+                          <span>人数: <strong style="color:var(--text,#f8fafc);">${escapeHtml(rm.players)}</strong></span>
+                          <span>·</span>
+                          <span>通道: <span class="${Number.isFinite(rm.rttMs) ? 'nx-lan-live-rtt' : ''}" style="color:var(--cyan,#f59e0b);">${escapeHtml(rtt)}</span></span>
+                        </div>
+                      </div>
+                      <button class="nx-t2-btn ${isSelf || isJoined ? 'primary' : ''}" data-lan-room-action="${escapeHtml(rm.roomCode)}" ${(rm.isConnecting || (!isSelf && !isJoined && rm.players === '2/2')) ? 'disabled' : ''} style="min-width:120px;min-height:42px;font-size:0.76rem;font-weight:800;">
+                        ${btnText}
+                      </button>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+
+          // 大厅事件绑定
+          document.getElementById('nx-lan-refresh-btn')?.addEventListener('click', () => {
+            activeLanInstance.refreshRooms();
+            AudioEngine.tap();
+            renderTier2Module();
+          });
+          const createRoomFn = () => {
+            if (activeLanInstance.leave) activeLanInstance.leave();
+            lanOfflineOut = ''; lanOfflineIn = ''; lanOfflineMsg = '';
+            lanViewMode = 'room';
+            AudioEngine.upgrade();
+            renderTier2Module();
+          };
+          document.getElementById('nx-lan-create-room-btn')?.addEventListener('click', createRoomFn);
+          document.getElementById('nx-lan-empty-create-btn')?.addEventListener('click', createRoomFn);
+
+          document.getElementById('nx-lan-toggle-handshake-btn')?.addEventListener('click', () => {
+            showHandshakeJoin = !showHandshakeJoin;
+            AudioEngine.tap();
+            renderTier2Module();
+          });
+
+          document.getElementById('nx-lan-quick-code-cancel')?.addEventListener('click', () => {
+            showHandshakeJoin = false;
+            AudioEngine.tap();
+            renderTier2Module();
+          });
+
+          document.getElementById('nx-lan-quick-code-submit')?.addEventListener('click', async () => {
+            const inputVal = (document.getElementById('nx-lan-quick-code-in')?.value || '').trim();
+            if (!inputVal) { lanOfflineMsg = '请先粘贴握手码。'; renderTier2Module(); return; }
+            AudioEngine.tap();
+            try {
+              lanOfflineIn = inputVal;
+              lanOfflineMsg = '正在响应握手...';
+              lanOfflineOut = await activeLanInstance.acceptOfflineOffer(inputVal);
+              lanOfflineMsg = '已响应，请将应答码复制回传。';
+              lanViewMode = 'room';
+            } catch (err) {
+              lanOfflineMsg = '加入失败：' + (err && err.message ? err.message : err);
+            }
+            renderTier2Module();
+          });
+
+          body.querySelectorAll('[data-lan-room-action]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const targetCode = btn.getAttribute('data-lan-room-action');
+              if (!targetCode) return;
+              const cur = activeLanInstance.getStatus();
+              if (cur.roomCode === targetCode) {
+                lanViewMode = 'room';
+                AudioEngine.tap();
+                renderTier2Module();
+                return;
+              }
+              AudioEngine.tap();
+              activeLanInstance.join(targetCode);
+              lanViewMode = 'room';
+              renderTier2Module();
+            });
+          });
+        } else {
+          // ==========================================
+          // 视图 2：房间内界面 (带 [◀ 返回大厅] 与席位/握手)
+          // ==========================================
+          body.innerHTML = `
+            <div class="nx-t2-card" style="display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box;overflow-y:auto;padding:14px 18px;">
+              <!-- 房间内顶部导航栏 -->
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,0.12);padding-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <button class="nx-t2-btn" id="nx-lan-back-to-lobby-btn" title="返回房间列表" style="min-height:36px;padding:0 12px;font-size:0.74rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline><line x1="9" y1="12" x2="20" y2="12"></line></svg>
+                    <span>返回大厅</span>
+                  </button>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:0.95rem;font-weight:900;color:var(--cyan,#f59e0b);font-family:Consolas,monospace;">[${escapeHtml(st.roomCode || lanCode)}]</span>
+                    <span style="font-size:0.86rem;font-weight:800;color:var(--text,#f8fafc);">${curRole === 'host' ? '房主房间' : '客机已加入房间'}</span>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:0.72rem;">
+                  <span style="color:var(--muted,#94a3b8);">状态: <strong style="color:${stateColor};">${escapeHtml(connStateText)}</strong></span>
+                  <span style="color:var(--muted,#94a3b8);">|</span>
+                  <span style="color:var(--muted,#94a3b8);">延迟: <strong id="nx-lan-rtt" class="nx-lan-live-rtt" style="color:var(--cyan,#f59e0b);">${escapeHtml(rttText)}</strong></span>
+                </div>
+              </div>
+
+              <!-- 房间内左右双卡片 -->
+              <div class="nx-t2-grid2" style="display:grid;grid-template-columns:1fr 1.25fr;gap:12px;flex:1;min-height:0;">
+                <!-- 左卡片：双席位状态与 AI 僚机接管 -->
+                <div style="display:flex;flex-direction:column;gap:10px;background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;">
+                  <div style="font-size:0.78rem;font-weight:900;color:var(--text,#f8fafc);display:flex;align-items:center;justify-content:space-between;">
+                    <span>房间席位 (2/2)</span>
+                    <span style="font-size:0.68rem;color:var(--cyan,#f59e0b);font-family:Consolas,monospace;">${escapeHtml(transportText)}</span>
+                  </div>
+
+                  <!-- 席位 1 (房主 Host) -->
+                  <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;">
+                    <div style="width:32px;height:32px;border-radius:50%;background:rgba(251,191,36,0.2);border:1.5px solid var(--gold,#fbbf24);display:flex;align-items:center;justify-content:center;color:var(--gold,#fbbf24);font-weight:900;font-size:0.75rem;">1</div>
+                    <div style="flex:1;">
+                      <div style="font-size:0.78rem;font-weight:800;color:var(--text,#f8fafc);">${curRole === 'host' ? escapeHtml(activeLanInstance.getUserName ? activeLanInstance.getUserName() : '房主 (我)') : '房主 (Host)'}</div>
+                      <div style="font-size:0.64rem;color:var(--gold,#fbbf24);">席位 1 · 房主 (准备就绪)</div>
+                    </div>
+                  </div>
+
+                  <!-- 席位 2 (客机 Client / AI 僚机) -->
+                  <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;">
+                    <div style="width:32px;height:32px;border-radius:50%;background:${st.connected ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.08)'};border:1.5px solid ${st.connected ? '#10b981' : 'rgba(255,255,255,0.25)'};display:flex;align-items:center;justify-content:center;color:${st.connected ? '#10b981' : 'var(--muted,#94a3b8)'};font-weight:900;font-size:0.75rem;">2</div>
+                    <div style="flex:1;">
+                      <div style="font-size:0.78rem;font-weight:800;color:var(--text,#f8fafc);">
+                        ${st.connected ? (curRole === 'client' ? escapeHtml(activeLanInstance.getUserName ? activeLanInstance.getUserName() : '客机 (我)') : '客机已接入') : '等待客机直连加入...'}
+                      </div>
+                      <div style="font-size:0.64rem;color:${st.connected ? '#10b981' : 'var(--muted,#94a3b8)'};">
+                        ${st.connected ? '席位 2 · 客机 (已联机协同)' : '同 Wi-Fi / 热点直连或右侧离线握手'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 3.0s 断线 AI 僚机接管开关 -->
+                  <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:rgba(0,0,0,0.3);border-radius:8px;border:1px dashed rgba(255,255,255,0.12);">
+                    <div>
+                      <div style="font-size:0.72rem;font-weight:800;color:var(--text,#f8fafc);">3.0s 断线 AI 僚机接管</div>
+                      <div style="font-size:0.62rem;color:var(--muted,#94a3b8);">对端失联后由本地 AI 僚机无缝补位</div>
+                    </div>
+                    <button class="nx-t2-btn" id="nx-lan-toggle-ai" style="min-height:32px;padding:0 10px;font-size:0.7rem;color:${autoAi ? '#10b981' : 'var(--muted,#94a3b8)'};border-color:${autoAi ? '#10b981' : 'rgba(255,255,255,0.2)'};">
+                      ${autoAi ? '已开启' : '已关闭'}
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 右卡片：跨设备离线 SDP 握手工具 (同 Wi-Fi / 手机热点 · 零公网) -->
+                <div style="display:flex;flex-direction:column;gap:6px;background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;">
+                  <div style="font-size:0.78rem;font-weight:900;color:var(--text,#f8fafc);">跨设备离线 SDP 握手工具</div>
+                  <div style="font-size:0.64rem;color:var(--muted,#94a3b8);line-height:1.35;">
+                    房主：① 生成邀请码发给客机 → ③ 粘贴客机返回的应答码。客机：② 粘贴邀请码生成应答码回传。
+                  </div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;">
+                    <button class="nx-t2-btn" id="nx-lan-offline-offer" style="min-height:32px;padding:0 10px;font-size:0.7rem;">① 房主生成邀请码</button>
+                    <button class="nx-t2-btn" id="nx-lan-offline-copy" ${lanOfflineOut ? '' : 'disabled'} style="min-height:32px;padding:0 10px;font-size:0.7rem;">复制输出码</button>
+                  </div>
+                  <textarea id="nx-lan-offline-out" readonly placeholder="此处显示本机生成的邀请码 / 应答码" style="width:100%;min-height:40px;max-height:56px;font-size:0.6rem;font-family:Consolas,monospace;background:rgba(0,0,0,0.45);color:var(--text,#f8fafc);border:1px solid rgba(148,163,184,0.3);border-radius:6px;padding:4px;resize:none;">${escapeHtml(lanOfflineOut)}</textarea>
+                  <textarea id="nx-lan-offline-in" placeholder="粘贴对方发来的邀请码（客机）或应答码（房主）" style="width:100%;min-height:40px;max-height:56px;font-size:0.6rem;font-family:Consolas,monospace;background:rgba(0,0,0,0.45);color:var(--text,#f8fafc);border:1px solid rgba(148,163,184,0.3);border-radius:6px;padding:4px;resize:none;">${escapeHtml(lanOfflineIn)}</textarea>
+                  <button class="nx-t2-btn" id="nx-lan-offline-apply" style="min-height:32px;padding:0 10px;font-size:0.7rem;">② / ③ 提交对方握手码</button>
+                  ${lanOfflineMsg ? `<div style="font-size:0.64rem;color:var(--gold,#fbbf24);">${escapeHtml(lanOfflineMsg)}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+
+          // 房间内事件绑定
+          document.getElementById('nx-lan-back-to-lobby-btn')?.addEventListener('click', () => {
+            lanViewMode = 'lobby';
+            AudioEngine.tap();
+            renderTier2Module();
+          });
+
+          document.getElementById('nx-lan-toggle-ai')?.addEventListener('click', () => {
+            activeLanInstance.setAutoAiTakeover(!activeLanInstance.getAutoAiTakeover());
+            AudioEngine.tap();
+            renderTier2Module();
+          });
+
+          document.getElementById('nx-lan-offline-in')?.addEventListener('input', (e) => {
+            lanOfflineIn = e.target.value;
+          });
+
+          document.getElementById('nx-lan-offline-offer')?.addEventListener('click', async () => {
+            AudioEngine.tap();
+            lanOfflineMsg = '正在收集局域网 ICE 候选并生成邀请码...';
+            renderTier2Module();
+            try {
+              lanOfflineOut = await activeLanInstance.createOfflineOffer();
+              lanOfflineMsg = '邀请码已生成，请发送给客机，并等待客机回传应答码。';
+            } catch (err) {
+              lanOfflineMsg = '生成失败：' + (err && err.message ? err.message : err);
+            }
+            renderTier2Module();
+          });
+
+          document.getElementById('nx-lan-offline-copy')?.addEventListener('click', async () => {
+            try {
+              await navigator.clipboard.writeText(lanOfflineOut);
+              lanOfflineMsg = '已复制到剪贴板。';
+            } catch (_) {
+              const ta = document.getElementById('nx-lan-offline-out');
+              if (ta) { ta.select(); try { document.execCommand('copy'); lanOfflineMsg = '已复制到剪贴板。'; } catch (__) { lanOfflineMsg = '请手动长按选择复制。'; } }
+            }
+            AudioEngine.tap();
+            renderTier2Module();
+          });
+
+          document.getElementById('nx-lan-offline-apply')?.addEventListener('click', async () => {
+            const code = (document.getElementById('nx-lan-offline-in')?.value || lanOfflineIn).trim();
+            if (!code) { lanOfflineMsg = '请先粘贴对方的握手码。'; renderTier2Module(); return; }
+            AudioEngine.tap();
+            try {
+              const isOfferCode = (() => { try { return JSON.parse(decodeURIComponent(escape(atob(code.replace(/\s+/g, ''))))).k === 'offer'; } catch (_) { return false; } })();
+              if (isOfferCode) {
+                lanOfflineMsg = '正在生成应答码...';
+                renderTier2Module();
+                lanOfflineOut = await activeLanInstance.acceptOfflineOffer(code);
+                lanOfflineMsg = '应答码已生成，请回传给房主；房主提交后将自动建立 WebRTC 直连。';
+              } else {
+                await activeLanInstance.acceptOfflineAnswer(code);
+                lanOfflineMsg = '已提交应答码，等待 WebRTC 通道打开...';
+              }
+              lanOfflineIn = '';
+            } catch (err) {
+              lanOfflineMsg = '握手失败：' + (err && err.message ? err.message : err);
+            }
+            renderTier2Module();
+          });
+        }
       } else if (currentMenuTab === 'details') {
         body.innerHTML = `
           <div style="font-size:0.74rem;font-weight:800;color:var(--cyan,#f59e0b);">
