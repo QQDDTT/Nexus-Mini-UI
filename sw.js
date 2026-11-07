@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v20.0-momus-audit-genesis';
+const CACHE_NAME = 'nexus-mini-portal-v21.0-sensory-fusion';
 const CORE_ASSETS = [
   './',
   './index.html',
