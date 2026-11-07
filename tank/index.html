@@ -120,70 +120,99 @@
       color: #dfc08e;
     }
 
-    /* 左翼：以车体为参照系 (Tank-Centric) 机械液压十字/八向差速方向盘 (每个按键严格 >= 44x44px) */
-    .dpad-housing {
-      width: 142px;
-      height: 142px;
-      margin: 0 auto;
-      background: #181c22;
-      border: 2px solid #444d59;
-      border-radius: 4px;
-      box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.88), 0 1px 0 rgba(255, 255, 255, 0.08);
-      display: grid;
-      grid-template-columns: repeat(3, 44px);
-      grid-template-rows: repeat(3, 44px);
-      gap: 2px;
-      padding: 2px;
+    /* 左翼：全向液压车体操纵摇杆 (简化单拇指 360° 矢量推进与转向，触控热区 138x138px / 摇杆帽 56x56px >= 44x44px) */
+    .joystick-housing {
+      width: 138px;
+      height: 138px;
+      margin: 4px auto;
+      background: radial-gradient(circle at 50% 50%, #15191f 0%, #1f252e 68%, #2c3440 100%);
+      border: 2.5px solid #4a5464;
+      border-radius: 50%;
+      box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.92), 0 2px 6px rgba(0, 0, 0, 0.75), 0 0 0 2px #14171c;
+      position: relative;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      align-content: center;
+      touch-action: none;
+      user-select: none;
+      cursor: grab;
     }
-    .dpad-btn {
-      width: 44px;
-      height: 44px;
-      min-width: 44px;
-      min-height: 44px;
-      background: linear-gradient(180deg, #3a424f 0%, #292f38 100%);
-      color: #b6c0cc;
-      border-top: 1.5px solid #5b6778;
-      border-left: 1.5px solid #4b5563;
-      border-right: 1.5px solid #1a1e24;
-      border-bottom: 3px solid #13161b;
-      border-radius: 2px;
+    .joystick-housing::before,
+    .joystick-housing::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      background: rgba(182, 192, 204, 0.14);
+    }
+    .joystick-housing::before {
+      width: 82%;
+      height: 1px;
+    }
+    .joystick-housing::after {
+      width: 1px;
+      height: 82%;
+    }
+    .joystick-ring-guide {
+      position: absolute;
+      width: 88px;
+      height: 88px;
+      border: 1px dashed rgba(223, 192, 142, 0.28);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .joystick-cardinal {
+      position: absolute;
+      font-size: 0.48rem;
+      font-weight: 800;
+      color: #7d8998;
+      font-family: "Consolas", monospace;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .joystick-cardinal.n { top: 5px; left: 50%; transform: translateX(-50%); color: #dfc08e; }
+    .joystick-cardinal.s { bottom: 5px; left: 50%; transform: translateX(-50%); }
+    .joystick-cardinal.w { left: 6px; top: 50%; transform: translateY(-50%); }
+    .joystick-cardinal.e { right: 6px; top: 50%; transform: translateY(-50%); }
+    .joystick-knob {
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      min-height: 56px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 35%, #525d6e 0%, #363e4a 58%, #232830 100%);
+      border-top: 2px solid #c48f5a;
+      border-left: 2px solid #738296;
+      border-right: 2px solid #1b2026;
+      border-bottom: 3px solid #12151a;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.85), inset 0 1px 2px rgba(255, 255, 255, 0.22);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      touch-action: none;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.65);
-      font-size: 0.5rem;
-      font-family: "Consolas", "Noto Sans SC", monospace;
-      font-weight: 700;
-      white-space: nowrap;
-      line-height: 1;
-      gap: 1px;
-    }
-    .dpad-btn.diag {
-      background: linear-gradient(180deg, #2d343f 0%, #20252d 100%);
-      color: #7d8998;
-      border-color: #46505e #171b20 #111418 #3b4350;
-      font-size: 0.56rem;
-    }
-    .dpad-btn:active,
-    .dpad-btn.pressed {
-      background: linear-gradient(180deg, #495363 0%, #363e4a 100%);
+      position: relative;
+      z-index: 2;
+      pointer-events: none;
+      transition: transform 0.05s linear;
       color: #dfc08e;
-      border-top-color: #c48f5a;
-      transform: translateY(1px);
+      font-size: 0.52rem;
+      font-weight: 800;
+      font-family: "Consolas", "Noto Sans SC", monospace;
+      letter-spacing: 0.02em;
     }
-    .dpad-axle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.48rem;
-      color: #8598b0;
-      font-family: "Consolas", monospace;
-      text-align: center;
+    .joystick-housing.active .joystick-knob {
+      transition: none;
+      background: radial-gradient(circle at 38% 35%, #667387 0%, #424c5a 58%, #2b313b 100%);
+      border-top-color: #f59e0b;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.9), 0 0 12px rgba(217, 119, 6, 0.45);
+      color: #fde68a;
+    }
+    .joystick-knob-core {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(223, 192, 142, 0.65);
+      background: rgba(20, 24, 30, 0.65);
+      margin-bottom: 1px;
     }
 
     /* 中央 1:1 铸钢防盾 360° 全向战术沙盘取景框 */
@@ -470,41 +499,21 @@
         </div>
       </div>
 
-      <!-- 车体参照系 (Tank-Centric) 机械十字/八向差速方向键 (▲沿车头前进 ▼沿车尾倒车 ◀车体左转 ▶车体右转) -->
+      <!-- 全向液压车体操纵摇杆 (简化单拇指 360° 矢量推进与转向) -->
       <div>
-        <div class="dpad-housing" id="hull-dpad">
-          <button class="dpad-btn diag" data-hull="fwd-ccw" aria-label="前左差速" title="前左差速 (W+A)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="17" y1="17" x2="7" y2="7"/><polyline points="17 7 7 7 7 17"/></svg>
-          </button>
-          <button class="dpad-btn" data-hull="fwd" aria-label="车头前进" title="车头前进 (W)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 3 21 16 3 16"/></svg>
-          </button>
-          <button class="dpad-btn diag" data-hull="fwd-cw" aria-label="前右差速" title="前右差速 (W+D)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-          </button>
-
-          <button class="dpad-btn" data-hull="ccw" aria-label="车体左旋" title="车体左旋 (A)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="3 12 16 3 16 21"/></svg>
-          </button>
-          <div class="dpad-axle" title="车体参照系差速转向">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="16" rx="3"/><line x1="8" y1="4" x2="8" y2="20"/><line x1="16" y1="4" x2="16" y2="20"/></svg>
+        <div class="joystick-housing" id="hull-joystick" role="slider" aria-label="全向车体移动摇杆" title="拖动摇杆控制车体 360° 移动方向 (或使用 WASD)">
+          <div class="joystick-ring-guide"></div>
+          <span class="joystick-cardinal n">N</span>
+          <span class="joystick-cardinal s">S</span>
+          <span class="joystick-cardinal w">W</span>
+          <span class="joystick-cardinal e">E</span>
+          <div class="joystick-knob" id="hull-joystick-knob">
+            <div class="joystick-knob-core"></div>
+            <span>MOVE</span>
           </div>
-          <button class="dpad-btn" data-hull="cw" aria-label="车体右旋" title="车体右旋 (D)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="21 12 8 21 8 3"/></svg>
-          </button>
-
-          <button class="dpad-btn diag" data-hull="rev-ccw" aria-label="倒车左偏" title="倒车左偏 (S+A)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>
-          </button>
-          <button class="dpad-btn" data-hull="rev" aria-label="车尾倒退" title="车尾倒退 (S)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 21 3 8 21 8"/></svg>
-          </button>
-          <button class="dpad-btn diag" data-hull="rev-cw" aria-label="倒车右偏" title="倒车右偏 (S+D)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="7" y1="7" x2="17" y2="17"/><polyline points="7 17 17 17 17 7"/></svg>
-          </button>
         </div>
         <div style="font-size:0.54rem;text-align:center;font-family:Consolas,monospace;color:#8592a1;margin-top:2px;white-space:nowrap;">
-          车体参照系差速履带 (WASD)
+          全向车体移动摇杆 (或 WASD)
         </div>
       </div>
     </aside>

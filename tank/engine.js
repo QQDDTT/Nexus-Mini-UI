@@ -1072,9 +1072,10 @@
       }
 
       // =========================================================================
-      // 输入控制：左侧车体参照系方向键 + 右侧开火键双翼独立炮塔旋转按钮 (支持多点触控无冲)
+      // 输入控制：左侧全向车体移动摇杆 + 右侧开火键双翼独立炮塔旋转按钮 (支持多点触控无冲)
       // =========================================================================
       const activeHullCommands = new Set();
+      const joyState = { active: false, pointerId: null, dx: 0, dy: 0 };
       let turretTurnDir = 0; // -1: 炮塔逆时针左旋, +1: 炮塔顺时针右旋
       let turretHoldFrames = 0;
       const keys = {};
@@ -1091,24 +1092,74 @@
         keys[e.code] = false;
       });
 
-      // 绑定左翼车体参照系 (Tank-Centric) 方向键
-      document.querySelectorAll('#hull-dpad .dpad-btn').forEach((btn) => {
-        const cmd = btn.getAttribute('data-hull');
-        const start = (e) => {
+      // 绑定左翼全向液压车体移动摇杆 (#hull-joystick)
+      const joyHousing = document.getElementById('hull-joystick');
+      const joyKnob = document.getElementById('hull-joystick-knob');
+      const JOY_MAX_RADIUS = 41;
+
+      function updateJoystickFromClientPoint(clientX, clientY) {
+        if (!joyHousing) return;
+        const rect = joyHousing.getBoundingClientRect();
+        const cx = rect.left + rect.width * 0.5;
+        const cy = rect.top + rect.height * 0.5;
+        let rx = clientX - cx;
+        let ry = clientY - cy;
+        const dist = Math.hypot(rx, ry);
+        const maxR = Math.max(24, Math.min(JOY_MAX_RADIUS, rect.width * 0.31));
+        if (dist > maxR) {
+          rx = (rx / dist) * maxR;
+          ry = (ry / dist) * maxR;
+        }
+        joyState.dx = rx / maxR;
+        joyState.dy = ry / maxR;
+        if (joyKnob) {
+          joyKnob.style.transform = `translate3d(${rx.toFixed(1)}px, ${ry.toFixed(1)}px, 0)`;
+        }
+      }
+
+      function resetJoystick() {
+        joyState.active = false;
+        joyState.pointerId = null;
+        joyState.dx = 0;
+        joyState.dy = 0;
+        if (joyHousing) joyHousing.classList.remove('active');
+        if (joyKnob) joyKnob.style.transform = 'translate3d(0px, 0px, 0)';
+      }
+
+      if (joyHousing) {
+        joyHousing.addEventListener('pointerdown', (e) => {
           e.preventDefault();
-          activeHullCommands.add(cmd);
-          btn.classList.add('pressed');
-        };
-        const end = (e) => {
+          joyState.active = true;
+          joyState.pointerId = e.pointerId;
+          joyHousing.classList.add('active');
+          try { joyHousing.setPointerCapture(e.pointerId); } catch (_) {}
+          updateJoystickFromClientPoint(e.clientX, e.clientY);
+        });
+        joyHousing.addEventListener('pointermove', (e) => {
+          if (!joyState.active || (joyState.pointerId !== null && e.pointerId !== joyState.pointerId)) return;
           e.preventDefault();
-          activeHullCommands.delete(cmd);
-          btn.classList.remove('pressed');
+          updateJoystickFromClientPoint(e.clientX, e.clientY);
+        });
+        const onJoyEnd = (e) => {
+          if (joyState.pointerId !== null && e.pointerId !== undefined && e.pointerId !== joyState.pointerId) return;
+          resetJoystick();
         };
-        btn.addEventListener('pointerdown', start);
-        btn.addEventListener('pointerup', end);
-        btn.addEventListener('pointercancel', end);
-        btn.addEventListener('pointerleave', end);
-      });
+        joyHousing.addEventListener('pointerup', onJoyEnd);
+        joyHousing.addEventListener('pointercancel', onJoyEnd);
+        joyHousing.addEventListener('lostpointercapture', () => resetJoystick());
+      }
+      window.__tankJoystick = {
+        state: joyState,
+        setVector(dx, dy) {
+          joyState.active = Math.hypot(dx, dy) > 0.05;
+          joyState.dx = Math.max(-1, Math.min(1, dx));
+          joyState.dy = Math.max(-1, Math.min(1, dy));
+          if (joyKnob) {
+            joyKnob.style.transform = `translate3d(${(joyState.dx * JOY_MAX_RADIUS).toFixed(1)}px, ${(joyState.dy * JOY_MAX_RADIUS).toFixed(1)}px, 0)`;
+          }
+        },
+        reset: resetJoystick
+      };
 
       // 绑定右翼开火键两侧的独立炮塔左旋 / 右旋按钮
       const btnTurretCcw = document.getElementById('btn-turret-ccw');
@@ -1530,17 +1581,32 @@
         let throttle = 0; // +1: 沿车头前进, -1: 沿车尾倒车
         let hullSteer = 0; // -1: 车体逆时针左转, +1: 车体顺时针右转
 
-        if (keys['KeyW'] || keys['ArrowUp'] || activeHullCommands.has('fwd') || activeHullCommands.has('fwd-ccw') || activeHullCommands.has('fwd-cw')) {
-          throttle += 1;
-        }
-        if (keys['KeyS'] || keys['ArrowDown'] || activeHullCommands.has('rev') || activeHullCommands.has('rev-ccw') || activeHullCommands.has('rev-cw')) {
-          throttle -= 1;
-        }
-        if (keys['KeyA'] || keys['ArrowLeft'] || activeHullCommands.has('ccw') || activeHullCommands.has('fwd-ccw') || activeHullCommands.has('rev-ccw')) {
-          hullSteer -= 1;
-        }
-        if (keys['KeyD'] || keys['ArrowRight'] || activeHullCommands.has('cw') || activeHullCommands.has('fwd-cw') || activeHullCommands.has('rev-cw')) {
-          hullSteer += 1;
+        const joyMag = Math.min(1, Math.hypot(joyState.dx, joyState.dy));
+        if (joyState.active && joyMag > 0.14) {
+          // 摇杆简化模式：推向任意 360° 方向时，车体自动转向摇杆指向并平滑推进 ("指哪走哪")
+          const targetHullAng = Math.atan2(joyState.dx, -joyState.dy);
+          const angDiff = shortestAngleDiff(ctrlTank.hullAng, targetHullAng);
+          if (Math.abs(angDiff) < 0.04) {
+            ctrlTank.hullAng = targetHullAng;
+            hullSteer = 0;
+          } else {
+            hullSteer = Math.max(-1, Math.min(1, angDiff / 0.36));
+          }
+          // 若角度偏差较小则全速推进；若正在大幅度掉头则边低速推进边快速转向
+          throttle = joyMag * (Math.abs(angDiff) > 1.15 ? 0.35 : 1.0);
+        } else {
+          if (keys['KeyW'] || keys['ArrowUp'] || activeHullCommands.has('fwd') || activeHullCommands.has('fwd-ccw') || activeHullCommands.has('fwd-cw')) {
+            throttle += 1;
+          }
+          if (keys['KeyS'] || keys['ArrowDown'] || activeHullCommands.has('rev') || activeHullCommands.has('rev-ccw') || activeHullCommands.has('rev-cw')) {
+            throttle -= 1;
+          }
+          if (keys['KeyA'] || keys['ArrowLeft'] || activeHullCommands.has('ccw') || activeHullCommands.has('fwd-ccw') || activeHullCommands.has('rev-ccw')) {
+            hullSteer -= 1;
+          }
+          if (keys['KeyD'] || keys['ArrowRight'] || activeHullCommands.has('cw') || activeHullCommands.has('fwd-cw') || activeHullCommands.has('rev-cw')) {
+            hullSteer += 1;
+          }
         }
 
         // 右翼独立炮塔旋转按钮 & 键盘 (Q/J 左旋, E/L 右旋)：双阶阻尼 (点按精瞄 / 长按液压高速调炮)

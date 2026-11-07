@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v15.0-room-gated-engine-template';
+const CACHE_NAME = 'nexus-mini-portal-v16.0-joystick-missile-sonar';
 const CORE_ASSETS = [
   './',
   './index.html',

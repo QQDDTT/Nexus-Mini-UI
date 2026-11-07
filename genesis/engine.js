@@ -683,6 +683,57 @@
         ctx.restore();
       }
 
+      // 听觉声呐色彩分类法则：同类 = 绿色 (#10b981, 16,185,129)，食物/可捕食猎物 = 黄色 (#fbbf24, 251,191,36)，危险/敌害 = 红色 (#ef4444, 239,68,68)
+      function classifySonarRelation(org, observer) {
+        const ref = observer || (typeof arenaState !== 'undefined' ? arenaState.alpha : null);
+        if (!org) return 'danger';
+        if (
+          org === ref ||
+          org.faction === 'player' ||
+          (ref && org.colonyId && org.colonyId === ref.colonyId) ||
+          (ref && org.blueprint?.speciesId && org.blueprint.speciesId === ref.blueprint?.speciesId)
+        ) {
+          return 'kin'; // 同类：绿色
+        }
+        // 若非 Boss 且为体型不大于玩家的可捕食草食猎物（当玩家为肉食/杂食时视作活体食物）
+        const refDiet = ref?.blueprint?.dietType || 'omnivore';
+        if (!org.isBoss && org.blueprint?.dietType === 'herbivore' && (refDiet === 'carnivore' || refDiet === 'omnivore') && (org.radius || 16) <= (ref?.radius || 18) * 1.05) {
+          return 'food'; // 食物：黄色
+        }
+        return 'danger'; // 危险：红色
+      }
+
+      function getSonarPalette(relation, alpha = 0.92) {
+        if (relation === 'kin') {
+          return {
+            fill: `rgba(6, 56, 38, ${0.86 * alpha})`,
+            stroke: `rgba(16, 185, 129, ${alpha})`,
+            core: `rgba(52, 211, 153, ${alpha * 0.96})`,
+            sub: `rgba(16, 185, 129, ${alpha * 0.72})`,
+            filter: 'sepia(100%) saturate(380%) hue-rotate(95deg) brightness(115%) contrast(130%)',
+            hex: '#10b981'
+          };
+        }
+        if (relation === 'food') {
+          return {
+            fill: `rgba(56, 40, 6, ${0.86 * alpha})`,
+            stroke: `rgba(251, 191, 36, ${alpha})`,
+            core: `rgba(253, 224, 71, ${alpha * 0.96})`,
+            sub: `rgba(251, 191, 36, ${alpha * 0.72})`,
+            filter: 'sepia(100%) saturate(420%) hue-rotate(8deg) brightness(128%) contrast(130%)',
+            hex: '#fbbf24'
+          };
+        }
+        return {
+          fill: `rgba(62, 10, 16, ${0.88 * alpha})`,
+          stroke: `rgba(239, 68, 68, ${alpha})`,
+          core: `rgba(248, 113, 113, ${alpha * 0.96})`,
+          sub: `rgba(239, 68, 68, ${alpha * 0.72})`,
+          filter: 'sepia(100%) saturate(460%) hue-rotate(315deg) brightness(112%) contrast(135%)',
+          hex: '#ef4444'
+        };
+      }
+
       function drawOrganism(ctx, org, opts = {}) {
         const bp = org.blueprint;
         const torso = TORSOS[bp.torsoId] || TORSOS['torso-t2-stream'];
@@ -741,14 +792,14 @@
         ctx.closePath();
 
         if (isSonar) {
-          // 听觉 360° 声呐雷达定格视图：深黑底色 + 银白/冷青声呐脉冲线框 + 定格器官贴图轮廓
+          // 听觉 360° 声呐雷达定格视图：危险=红色 (#ef4444)，食物=黄色 (#fbbf24)，同类=绿色 (#10b981)
           const pulseAlpha = opts.sonarAlpha !== undefined ? opts.sonarAlpha : 0.92;
-          ctx.fillStyle = `rgba(8, 15, 28, ${0.88 * pulseAlpha})`;
+          const relation = opts.sonarRelation || classifySonarRelation(org, opts.observer);
+          const pal = getSonarPalette(relation, pulseAlpha);
+          ctx.fillStyle = pal.fill;
           ctx.fill();
-          ctx.lineWidth = 1.8 * scale;
-          ctx.strokeStyle = org.faction === 'player'
-            ? `rgba(45, 212, 191, ${pulseAlpha})`
-            : (org.isBoss ? `rgba(251, 191, 36, ${pulseAlpha})` : `rgba(226, 232, 240, ${pulseAlpha})`);
+          ctx.lineWidth = 1.9 * scale;
+          ctx.strokeStyle = pal.stroke;
           ctx.stroke();
 
           // 声呐内部脊椎回波环与器官几何线框
@@ -756,9 +807,7 @@
             ctx.beginPath();
             ctx.arc(pt.x, pt.y, pt.r * 0.62, 0, Math.PI * 2);
             ctx.lineWidth = 1.0 * scale;
-            ctx.strokeStyle = idx === 0
-              ? `rgba(56, 189, 248, ${pulseAlpha * 0.95})`
-              : `rgba(148, 163, 184, ${pulseAlpha * 0.65})`;
+            ctx.strokeStyle = idx === 0 ? pal.core : pal.sub;
             ctx.stroke();
           });
 
@@ -769,13 +818,13 @@
           ctx.lineTo(head.x + head.r * 0.85, head.y + head.r * 0.35);
           ctx.moveTo(tail.x - tail.r * 0.8, tail.y);
           ctx.lineTo(tail.x - tail.r * 1.55, tail.y + Math.sin(phase * 1.6) * (tail.r * 0.45));
-          ctx.strokeStyle = `rgba(248, 250, 252, ${pulseAlpha})`;
+          ctx.strokeStyle = pal.core;
           ctx.stroke();
 
-          // 叠加单色高对比声呐滤镜渲染全部定格器官 SVG 贴图 (确保听觉边缘裁剪时完整展现局部器官影像)
+          // 叠加分类色彩声呐滤镜渲染全部定格器官 SVG 贴图 (确保听觉边缘裁剪时完整展现局部器官影像且红/黄/绿一目了然)
           ctx.save();
-          ctx.filter = 'grayscale(100%) brightness(145%) contrast(135%)';
-          ctx.globalAlpha *= pulseAlpha * 0.85;
+          ctx.filter = pal.filter;
+          ctx.globalAlpha *= pulseAlpha * 0.88;
           const locoListSonar = bp.slots.locomotion || [];
           locoListSonar.forEach((loco, idx) => {
             const spec = ORGAN_CATALOG[loco.id].levels[loco.level];
@@ -3418,8 +3467,11 @@
             ctx.clip();
             ctx.beginPath();
             ctx.arc(f.x, f.y, f.radius * 0.9, 0, Math.PI * 2);
-            ctx.strokeStyle = f.type === 'meat' ? 'rgba(248, 250, 252, 0.85)' : 'rgba(148, 163, 184, 0.55)';
-            ctx.lineWidth = 1.2;
+            // 听觉系统中：食物统一调整为黄色 (#fbbf24)
+            ctx.fillStyle = f.type === 'meat' ? 'rgba(251, 191, 36, 0.28)' : 'rgba(251, 191, 36, 0.18)';
+            ctx.fill();
+            ctx.strokeStyle = f.type === 'meat' ? 'rgba(251, 191, 36, 0.95)' : 'rgba(251, 191, 36, 0.78)';
+            ctx.lineWidth = 1.4;
             ctx.stroke();
             ctx.restore();
           } else {
@@ -3433,7 +3485,10 @@
           ctx.beginPath();
           ctx.arc(h.x, h.y, h.radius, 0, Math.PI * 2);
           if (sonarWireframeMode) {
-            ctx.strokeStyle = 'rgba(226, 232, 240, 0.55)';
+            // 听觉系统中：区域危险调整为红色 (#ef4444)
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.14)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(239, 68, 68, 0.82)';
             ctx.setLineDash([5, 4]);
             ctx.stroke();
             ctx.setLineDash([]);
@@ -3447,7 +3502,7 @@
         arenaState.projectiles.forEach((p) => {
           ctx.beginPath();
           ctx.arc(p.x, p.y, 4.0, 0, Math.PI * 2);
-          ctx.fillStyle = sonarWireframeMode ? '#f8fafc' : '#fbbf24';
+          ctx.fillStyle = sonarWireframeMode ? '#ef4444' : '#fbbf24';
           ctx.fill();
         });
 
@@ -3455,6 +3510,7 @@
         arenaState.organisms.forEach((org) => {
           if (Math.abs(org.x - camX) > viewW * 0.65 || Math.abs(org.y - camY) > viewH * 0.65) return;
           const dist = Math.hypot(org.x - alpha.x, org.y - alpha.y);
+          const sonarRel = classifySonarRelation(org, alpha);
           if (org !== alpha) {
             if (sonarWireframeMode) {
               const targetSpeed = Math.hypot(org.vx || 0, org.vy || 0);
@@ -3506,7 +3562,9 @@
               drawOrganism(ctx, org, {
                 freezePhase: org.sonarSnapPhase,
                 sonarWireframe: true,
-                sonarAlpha: echoAlpha
+                sonarAlpha: echoAlpha,
+                sonarRelation: sonarRel,
+                observer: alpha
               });
               org.x = savedX;
               org.y = savedY;
@@ -3517,9 +3575,10 @@
               if (Math.abs(snapDist - effSonarR) < bodyExtent) {
                 const edgeAng = Math.atan2(org.sonarRelY, org.sonarRelX);
                 const arcSpan = Math.min(0.32, bodyExtent / Math.max(80, effSonarR));
+                const edgePal = getSonarPalette(sonarRel, echoAlpha * 0.9);
                 ctx.beginPath();
                 ctx.arc(alpha.x, alpha.y, effSonarR, edgeAng - arcSpan, edgeAng + arcSpan);
-                ctx.strokeStyle = `rgba(45, 212, 191, ${echoAlpha * 0.85})`;
+                ctx.strokeStyle = edgePal.stroke;
                 ctx.lineWidth = 2.4;
                 ctx.stroke();
               }
@@ -3538,7 +3597,9 @@
           drawOrganism(ctx, org, {
             timeSec: arenaState.timeSec,
             freezePhase: sonarWireframeMode ? (alphaSnapTick * 6.5 + (org.phaseOffset || 0)) : undefined,
-            sonarWireframe: sonarWireframeMode
+            sonarWireframe: sonarWireframeMode,
+            sonarRelation: sonarRel,
+            observer: alpha
           });
         });
       }
@@ -3738,7 +3799,7 @@
         }
       } catch (_e) {}
       // 调试探针导出
-      window.__debugGenesis = () => ({ arenaState, resolveOrganismCollisions, spawnOrganismEntity });
+      window.__debugGenesis = () => ({ arenaState, resolveOrganismCollisions, spawnOrganismEntity, classifySonarRelation, getSonarPalette });
     })();
     }
 

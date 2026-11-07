@@ -629,11 +629,15 @@
         }
       }
 
-      // 法则5：制导导弹投射物速度快(6.0~7.8 px/f，低于火炮的13.2~16.5 px/f)、转向敏捷追踪目标，恒速纯角度偏转不掉速，但拥有实体 HP 可被防御火力(Point-Defense)摧毁
-      function spawnGuidedMissile(x, y, launchAngle, dmg, color = '#fbbf24', aoe = 32, isTorpedo = false, customHp = null, customSpeed = null, customTurn = null) {
+      // 法则5：制导导弹投射物速度快(6.0~7.8 px/f，低于火炮的13.2~16.5 px/f)、转向敏捷追踪锁定目标；若锁定的目标消失(被击毁或移除)，导弹立即解除制导并沿当前航向直线飞行
+      function spawnGuidedMissile(x, y, launchAngle, dmg, color = '#fbbf24', aoe = 32, isTorpedo = false, customHp = null, customSpeed = null, customTurn = null, lockedTarget = undefined) {
         const spd = customSpeed || (isTorpedo ? 6.0 : 7.4);
         const mHp = customHp || (isTorpedo ? 55 : 18);
         const tRate = customTurn || (isTorpedo ? 0.09 : 0.15);
+        const initialTarget = lockedTarget !== undefined
+          ? lockedTarget
+          : (enemies.length > 0 ? findPriorityTarget(x, y) : null);
+        const hasValidTarget = Boolean(initialTarget && initialTarget.hp > 0 && enemies.includes(initialTarget));
         projectiles.push({
           x,
           y,
@@ -650,7 +654,8 @@
           projKey: 'projMissile',
           projType: 'missile',
           isTorpedo: !!isTorpedo,
-          homing: true,
+          homing: hasValidTarget,
+          target: hasValidTarget ? initialTarget : null,
           aoe,
           seed: Math.random() * 100,
           trail: [{ x, y }],
@@ -701,7 +706,8 @@
               !!mod.isTorpedo,
               mod.missileHp || (mod.isTorpedo ? 55 : 18),
               mod.speed || (mod.isTorpedo ? 6.0 : 7.4),
-              mod.turnRate || 0.15
+              mod.turnRate || 0.15,
+              target
             );
           }
           if (isMain) NexusSDK.audio.shoot();
@@ -1409,7 +1415,11 @@
               28 + (saveData.weaponLv || 1) * 6,
               '#fbbf24',
               34,
-              false
+              false,
+              null,
+              null,
+              null,
+              missileTarget
             );
           });
           ship.auxMissileCd = 34;
@@ -1842,16 +1852,22 @@
         // =====================================================================
         resolveShipShipCollisions();
 
-        // Update Projectiles (with Constant-Speed Angular Homing for Missiles, Straight Ballistics for Cannons, Trail Recording & AOE support)
+        // Update Projectiles (with Constant-Speed Angular Homing for Missiles; once locked target disappears, missile loses guidance and flies straight)
         for (let i = projectiles.length - 1; i >= 0; i--) {
           const p = projectiles[i];
           if (p.homing || p.projType === 'missile') {
             const cruiseSpd = p.cruiseSpeed || Math.max(6.0, Math.hypot(p.vx, p.vy));
             p.cruiseSpeed = cruiseSpd;
             let curHeading = typeof p.heading === 'number' ? p.heading : Math.atan2(p.vy, p.vx);
-            const tgt = enemies.length > 0 ? findPriorityTarget(p.x, p.y) : null;
-            if (tgt) {
-              const desired = Math.atan2(tgt.y - p.y, tgt.x - p.x);
+            if (p.homing) {
+              // 检查导弹锁定的目标是否已消失（死亡或被移除）；若消失则永久解除制导，沿直线飞行
+              if (!p.target || p.target.hp <= 0 || !enemies.includes(p.target)) {
+                p.homing = false;
+                p.target = null;
+              }
+            }
+            if (p.homing && p.target) {
+              const desired = Math.atan2(p.target.y - p.y, p.target.x - p.x);
               const turnRate = p.turnRate || (p.projType === 'missile' ? 0.15 : 0.12);
               const diff = normalizeAngleRad(desired - curHeading);
               curHeading = normalizeAngleRad(curHeading + Math.sign(diff) * Math.min(Math.abs(diff), turnRate));
@@ -2922,7 +2938,7 @@
       function startBattleFromRoom() {
         projectiles.length = 0;
         enemies.length = 0;
-        particles.length = 0;
+        sparks.length = 0;
         fighterSquadron.length = 0;
         wave = 1;
         stationHp = stationMaxHp;
@@ -2934,7 +2950,7 @@
       function stopBattleProcess() {
         projectiles.length = 0;
         enemies.length = 0;
-        particles.length = 0;
+        sparks.length = 0;
       }
 
       window.addEventListener('nexus:gameplay-started', () => {
@@ -3014,7 +3030,7 @@
         }, 120);
       }
       // 调试探针导出
-      window.__debugStar = () => ({ ship, fighterSquadron, enemies, resolveShipShipCollisions });
+      window.__debugStar = () => ({ ship, fighterSquadron, enemies, projectiles, spawnGuidedMissile, resolveShipShipCollisions });
     })();
     }
 
