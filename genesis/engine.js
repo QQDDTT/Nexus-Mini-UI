@@ -953,33 +953,139 @@
           ctx.setLineDash([]);
         }
 
-        // 视觉彩色生物荧光模式
-        let fillTint = 'rgba(45, 212, 191, 0.16)';
-        let strokeTint = 'rgba(45, 212, 191, 0.72)';
+        // 视觉彩色模式：Chroma-Muse [范式C: 高对比果冻软胶 STYLE-30×11] + [构型ABCD: 四大拓扑物种多样性] + [材质D: 生物荧光叶脉神经网与栉水母薄膜虹彩 STYLE-23×96]
+        let coreHex = '#2dd4bf';
+        let subHex = '#0d9488';
+        let veinHex = '#5eead4';
         if (org.faction === 'enemy' || org.faction === 'wild') {
           if (bp.dietType === 'herbivore') {
-            fillTint = 'rgba(16, 185, 129, 0.18)';
-            strokeTint = 'rgba(52, 211, 153, 0.72)';
+            coreHex = '#10b981';
+            subHex = '#047857';
+            veinHex = '#6ee7b7';
           } else if (bp.dietType === 'carnivore') {
-            fillTint = 'rgba(239, 68, 68, 0.18)';
-            strokeTint = 'rgba(248, 113, 113, 0.78)';
+            coreHex = '#fb7185';
+            subHex = '#be123c';
+            veinHex = '#fda4af';
           } else {
-            fillTint = 'rgba(251, 191, 36, 0.18)';
-            strokeTint = 'rgba(251, 191, 36, 0.75)';
+            coreHex = '#fbbf24';
+            subHex = '#b45309';
+            veinHex = '#fde047';
           }
         }
         if (org.isBoss) {
-          fillTint = 'rgba(168, 85, 247, 0.24)';
-          strokeTint = 'rgba(251, 191, 36, 0.92)';
+          coreHex = '#c084fc';
+          subHex = '#6b21a8';
+          veinHex = '#fde047';
         }
         if (org.mimicTimer > 0) {
           ctx.globalAlpha *= 0.48;
         }
-        ctx.fillStyle = fillTint;
+
+        // 1.1 绘制 ABCD 四大差异化生物几何构型拓扑外延层 (保持物种多样性)
+        if (bp.torsoId === 'torso-t1-micro') {
+          // 拓扑 D (T01 原核)：放射六瓣水母伞盖展开拓扑 (Radial 6-Petal Medusoid Bell)
+          const petalCount = 6;
+          for (let p = 0; p < petalCount; p++) {
+            const pAng = (p / petalCount) * Math.PI * 2 + Math.sin(phase * 0.7) * 0.08;
+            const pLen = baseR * (1.28 + 0.10 * Math.sin(phase * 1.4 + p));
+            const px = Math.cos(pAng) * pLen;
+            const py = Math.sin(pAng) * pLen;
+            ctx.beginPath();
+            ctx.arc(px * 0.62, py * 0.62, baseR * 0.46, pAng - 0.85, pAng + 0.85);
+            ctx.fillStyle = 'rgba(45, 212, 191, 0.14)';
+            ctx.fill();
+            ctx.lineWidth = 1.1 * scale;
+            ctx.strokeStyle = p % 2 === 0 ? 'rgba(56, 189, 248, 0.62)' : 'rgba(192, 132, 252, 0.58)';
+            ctx.stroke();
+          }
+        } else if (bp.torsoId === 'torso-t3-predator') {
+          // 拓扑 C (T03 掠食)：非对称铰接蝠鲼宽翼拓扑 (Hinged Manta-Wing Hydrofoil)
+          const wingAnchor = spine[Math.min(spine.length - 1, 1)];
+          const wingFlap = Math.sin(phase * 1.25) * baseR * 0.18;
+          [-1, 1].forEach((side) => {
+            ctx.beginPath();
+            ctx.moveTo(head.x * 0.55, side * head.r * 0.65);
+            ctx.quadraticCurveTo(
+              wingAnchor.x + baseR * 0.15,
+              side * (baseR * 2.15 + wingFlap * side),
+              tail.x * 0.65,
+              side * tail.r * 0.85
+            );
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(244, 63, 94, 0.16)';
+            ctx.fill();
+            ctx.lineWidth = 1.4 * scale;
+            ctx.strokeStyle = side > 0 ? 'rgba(56, 189, 248, 0.72)' : 'rgba(244, 114, 182, 0.72)';
+            ctx.stroke();
+          });
+        } else if (bp.torsoId === 'torso-t4-titan') {
+          // 拓扑 B (T04 泰坦)：中心镂空星环悬浮母体拓扑 (Hollow Star-Ring Orbital Torus)
+          const ringR = baseR * 1.48;
+          ctx.beginPath();
+          ctx.arc(0, 0, ringR, 0, Math.PI * 2);
+          ctx.lineWidth = baseR * 0.24;
+          ctx.strokeStyle = 'rgba(45, 212, 191, 0.16)';
+          ctx.stroke();
+          ctx.lineWidth = 1.5 * scale;
+          ctx.strokeStyle = 'rgba(251, 191, 36, 0.78)';
+          ctx.stroke();
+          for (let k = 0; k < 6; k++) {
+            const oAng = (k / 6) * Math.PI * 2 + phase * 0.18;
+            const ox = Math.cos(oAng) * ringR;
+            const oy = Math.sin(oAng) * ringR;
+            ctx.beginPath();
+            ctx.arc(ox, oy, baseR * 0.14, 0, Math.PI * 2);
+            ctx.fillStyle = k % 2 === 0 ? '#fde047' : '#38bdf8';
+            ctx.fill();
+          }
+        }
+
+        // 1.2 绘制果冻软胶次表面散射包络体 (STYLE-11 Hydro-Jelly SSS) + 栉水母薄膜虹彩边缘 (STYLE-96 Comb-Jelly Iridescence)
+        const jellyGrad = ctx.createRadialGradient(head.x * 0.25, -baseR * 0.25, baseR * 0.1, 0, 0, totalHalfLen + baseR * 1.2);
+        jellyGrad.addColorStop(0, 'rgba(255, 255, 255, 0.34)');
+        jellyGrad.addColorStop(0.38, coreHex + '44');
+        jellyGrad.addColorStop(0.82, subHex + '55');
+        jellyGrad.addColorStop(1, 'rgba(4, 31, 36, 0.72)');
+        ctx.fillStyle = jellyGrad;
         ctx.fill();
-        ctx.lineWidth = (org.isAlpha ? 2.2 : 1.5) * scale;
-        ctx.strokeStyle = strokeTint;
+
+        const iridGrad = ctx.createLinearGradient(-totalHalfLen - baseR, -baseR, totalHalfLen + baseR, baseR);
+        iridGrad.addColorStop(0, '#2dd4bf');
+        iridGrad.addColorStop(0.28, '#38bdf8');
+        iridGrad.addColorStop(0.55, '#c084fc');
+        iridGrad.addColorStop(0.78, '#f472b6');
+        iridGrad.addColorStop(1, '#34d399');
+        ctx.lineWidth = (org.isAlpha ? 2.4 : 1.75) * scale;
+        ctx.strokeStyle = iridGrad;
         ctx.stroke();
+
+        // 1.3 绘制 L-System 生物荧光分叉叶脉神经网 (STYLE-23 Bioluminescent Neural Venation) & 腰果形果冻水滴高光斑 (STYLE-11 Cashew Specular)
+        ctx.save();
+        ctx.strokeStyle = veinHex;
+        ctx.lineWidth = 1.05 * scale;
+        ctx.globalAlpha *= 0.78 + 0.20 * Math.sin(phase * 1.6);
+        ctx.beginPath();
+        for (let i = 0; i < spine.length; i++) {
+          const pt = spine[i];
+          if (i === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
+          // 左右分叉神经叶脉
+          const branchLen = pt.r * 0.72;
+          ctx.moveTo(pt.x, pt.y);
+          ctx.quadraticCurveTo(pt.x + branchLen * 0.25, pt.y - branchLen * 0.45, pt.x - branchLen * 0.2, pt.y - branchLen * 0.82);
+          ctx.moveTo(pt.x, pt.y);
+          ctx.quadraticCurveTo(pt.x + branchLen * 0.25, pt.y + branchLen * 0.45, pt.x - branchLen * 0.2, pt.y + branchLen * 0.82);
+        }
+        ctx.stroke();
+
+        // 每个体节顶部绘制水润腰果形果冻高光斑 (Cashew Water-Drop Highlight)
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.46)';
+        spine.forEach((pt) => {
+          ctx.beginPath();
+          ctx.ellipse(pt.x + pt.r * 0.18, pt.y - pt.r * 0.36, pt.r * 0.32, pt.r * 0.13, -0.35, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.restore();
 
         // ② 绘制尾部/侧翼运动器官 SVG (Locomotion)
         const locoList = bp.slots.locomotion || [];
@@ -1046,11 +1152,16 @@
         } else if (org.faction === 'player' && !org.isAlpha && !org.formerKin) {
           ctx.beginPath();
           ctx.arc(0, 0, baseR * 1.45, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(45, 212, 191, 0.38)';
-          ctx.lineWidth = 1.2;
-          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = 'rgba(45, 212, 191, 0.34)';
+          ctx.lineWidth = 1.1;
           ctx.stroke();
-          ctx.setLineDash([]);
+          for (let v = 0; v < 4; v++) {
+            const vAng = (v / 4) * Math.PI * 2 + phase * 0.25;
+            ctx.beginPath();
+            ctx.arc(Math.cos(vAng) * baseR * 1.45, Math.sin(vAng) * baseR * 1.45, 1.8 * scale, 0, Math.PI * 2);
+            ctx.fillStyle = v % 2 === 0 ? '#5eead4' : '#c084fc';
+            ctx.fill();
+          }
         }
         ctx.restore();
       }
