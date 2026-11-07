@@ -471,8 +471,7 @@
 
       function startBattleFromRoom() {
         stage = 1;
-        p1Cash = 0;
-        p2Cash = 0;
+        cash = 0;
         floatingTexts.length = 0;
         explosions.length = 0;
         generateMineStage(1);
@@ -524,6 +523,7 @@
       });
 
       requestAnimationFrame(loop);
+      window.__debugMiner = () => ({ stage, cash, targetCash, timeLeft, p1Hook, p2Hook, minerals });
     })();
     }
 

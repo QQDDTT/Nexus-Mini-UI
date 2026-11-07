@@ -2498,6 +2498,7 @@
       });
 
       document.getElementById('arena-back-lobby-btn')?.addEventListener('click', () => {
+        if (window.NexusSDK && window.NexusSDK.openTier2Menu) { window.NexusSDK.openTier2Menu('lan'); return; }
         switchPage('lobby');
       });
 

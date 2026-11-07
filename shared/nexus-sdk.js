@@ -2845,15 +2845,15 @@
                   </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px;">
-                  <button class="nx-t2-btn" id="nx-lan-refresh-btn" title="刷新局域网广播列表" style="min-height:38px;padding:0 12px;font-size:0.75rem;">
+                  <button class="nx-t2-btn" id="nx-lan-refresh-btn" title="刷新局域网广播列表" style="min-height:44px;padding:0 12px;font-size:0.75rem;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
                     <span>刷新列表 (${rooms.length})</span>
                   </button>
-                  <button class="nx-t2-btn" id="nx-lan-toggle-handshake-btn" title="离线 SDP 握手码加房" style="min-height:38px;padding:0 12px;font-size:0.75rem;">
+                  <button class="nx-t2-btn" id="nx-lan-toggle-handshake-btn" title="离线 SDP 握手码加房" style="min-height:44px;padding:0 12px;font-size:0.75rem;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
                     <span>离线握手加房</span>
                   </button>
-                  <button class="nx-t2-btn primary" id="nx-lan-create-room-btn" title="创建新的局域网房间" style="min-height:38px;padding:0 14px;font-size:0.75rem;font-weight:900;">
+                  <button class="nx-t2-btn primary" id="nx-lan-create-room-btn" title="创建新的局域网房间" style="min-height:44px;padding:0 14px;font-size:0.75rem;font-weight:900;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     <span>+ 创建新房间</span>
                   </button>
@@ -2866,8 +2866,8 @@
                   <div style="font-size:0.76rem;font-weight:800;color:var(--cyan,#f59e0b);">跨设备离线 SDP 握手码加入</div>
                   <textarea id="nx-lan-quick-code-in" placeholder="粘贴对方发来的邀请码（客机）或应答码（房主）" style="width:100%;min-height:50px;max-height:80px;font-size:0.68rem;font-family:Consolas,monospace;background:rgba(0,0,0,0.5);color:var(--text,#f8fafc);border:1px solid rgba(148,163,184,0.35);border-radius:6px;padding:6px;resize:none;">${escapeHtml(lanOfflineIn)}</textarea>
                   <div style="display:flex;gap:8px;justify-content:flex-end;">
-                    <button class="nx-t2-btn" id="nx-lan-quick-code-cancel" style="min-height:34px;padding:0 12px;font-size:0.72rem;">取消</button>
-                    <button class="nx-t2-btn primary" id="nx-lan-quick-code-submit" style="min-height:34px;padding:0 14px;font-size:0.72rem;">提交并进入房间</button>
+                    <button class="nx-t2-btn" id="nx-lan-quick-code-cancel" style="min-height:44px;padding:0 12px;font-size:0.72rem;">取消</button>
+                    <button class="nx-t2-btn primary" id="nx-lan-quick-code-submit" style="min-height:44px;padding:0 14px;font-size:0.72rem;">提交并进入房间</button>
                   </div>
                   ${lanOfflineMsg ? `<div style="font-size:0.7rem;color:var(--gold,#fbbf24);">${escapeHtml(lanOfflineMsg)}</div>` : ''}
                 </div>
@@ -2880,7 +2880,7 @@
                     <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45;"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
                     <div style="font-size:0.86rem;font-weight:800;color:var(--text,#f8fafc);">当前局域网暂无其他房间</div>
                     <div style="font-size:0.72rem;max-width:360px;line-height:1.4;">可在同 Wi-Fi / 热点下让另一台设备或打开新标签页创建房间，或直接点击下方按钮创建自己的房间。</div>
-                    <button class="nx-t2-btn primary" id="nx-lan-empty-create-btn" style="min-height:38px;padding:0 18px;margin-top:6px;font-weight:900;">
+                    <button class="nx-t2-btn primary" id="nx-lan-empty-create-btn" style="min-height:44px;padding:0 18px;margin-top:6px;font-weight:900;">
                       + 立即创建我的房间
                     </button>
                   </div>
@@ -2996,7 +2996,7 @@
               <!-- 房间内顶部导航栏 -->
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,0.12);padding-bottom:10px;">
                 <div style="display:flex;align-items:center;gap:10px;">
-                  <button class="nx-t2-btn" id="nx-lan-back-to-lobby-btn" title="退出房间并返回房间列表" style="min-height:36px;padding:0 12px;font-size:0.74rem;">
+                  <button class="nx-t2-btn" id="nx-lan-back-to-lobby-btn" title="退出房间并返回房间列表" style="min-height:44px;padding:0 12px;font-size:0.74rem;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline><line x1="9" y1="12" x2="20" y2="12"></line></svg>
                     <span>返回大厅</span>
                   </button>
@@ -3049,7 +3049,7 @@
                       <div style="font-size:0.72rem;font-weight:800;color:var(--text,#f8fafc);">3.0s 断线 AI 僚机接管</div>
                       <div style="font-size:0.62rem;color:var(--muted,#94a3b8);">对端失联或单人开局时由本地 AI 僚机无缝协同</div>
                     </div>
-                    <button class="nx-t2-btn" id="nx-lan-toggle-ai" style="min-height:32px;padding:0 10px;font-size:0.7rem;color:${autoAi ? '#10b981' : 'var(--muted,#94a3b8)'};border-color:${autoAi ? '#10b981' : 'rgba(255,255,255,0.2)'};">
+                    <button class="nx-t2-btn" id="nx-lan-toggle-ai" style="min-height:44px;padding:0 10px;font-size:0.7rem;color:${autoAi ? '#10b981' : 'var(--muted,#94a3b8)'};border-color:${autoAi ? '#10b981' : 'rgba(255,255,255,0.2)'};">
                       ${autoAi ? '已开启' : '已关闭'}
                     </button>
                   </div>
@@ -3068,12 +3068,12 @@
                     房主：① 生成邀请码发给客机 → ③ 粘贴客机返回的应答码。客机：② 粘贴邀请码生成应答码回传。
                   </div>
                   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;">
-                    <button class="nx-t2-btn" id="nx-lan-offline-offer" style="min-height:32px;padding:0 10px;font-size:0.7rem;">① 房主生成邀请码</button>
-                    <button class="nx-t2-btn" id="nx-lan-offline-copy" ${lanOfflineOut ? '' : 'disabled'} style="min-height:32px;padding:0 10px;font-size:0.7rem;">复制输出码</button>
+                    <button class="nx-t2-btn" id="nx-lan-offline-offer" style="min-height:44px;padding:0 10px;font-size:0.7rem;">① 房主生成邀请码</button>
+                    <button class="nx-t2-btn" id="nx-lan-offline-copy" ${lanOfflineOut ? '' : 'disabled'} style="min-height:44px;padding:0 10px;font-size:0.7rem;">复制输出码</button>
                   </div>
                   <textarea id="nx-lan-offline-out" readonly placeholder="此处显示本机生成的邀请码 / 应答码" style="width:100%;min-height:40px;max-height:56px;font-size:0.6rem;font-family:Consolas,monospace;background:rgba(0,0,0,0.45);color:var(--text,#f8fafc);border:1px solid rgba(148,163,184,0.3);border-radius:6px;padding:4px;resize:none;">${escapeHtml(lanOfflineOut)}</textarea>
                   <textarea id="nx-lan-offline-in" placeholder="粘贴对方发来的邀请码（客机）或应答码（房主）" style="width:100%;min-height:40px;max-height:56px;font-size:0.6rem;font-family:Consolas,monospace;background:rgba(0,0,0,0.45);color:var(--text,#f8fafc);border:1px solid rgba(148,163,184,0.3);border-radius:6px;padding:4px;resize:none;">${escapeHtml(lanOfflineIn)}</textarea>
-                  <button class="nx-t2-btn" id="nx-lan-offline-apply" style="min-height:32px;padding:0 10px;font-size:0.7rem;">② / ③ 提交对方握手码</button>
+                  <button class="nx-t2-btn" id="nx-lan-offline-apply" style="min-height:44px;padding:0 10px;font-size:0.7rem;">② / ③ 提交对方握手码</button>
                   ${lanOfflineMsg ? `<div style="font-size:0.64rem;color:var(--gold,#fbbf24);">${escapeHtml(lanOfflineMsg)}</div>` : ''}
                 </div>
               </div>

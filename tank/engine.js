@@ -265,13 +265,13 @@
       const p1 = {
         x: 215, y: 545, r: 18.5, size: 44,
         hullAng: 0, turretAng: 0, vLin: 0, wHull: 0, wTurret: 0, dispersion: DISP_MIN,
-        hp: 3, lives: 2, rank: saveData.rank || 1, shield: 150, cd: 0,
+        hp: 3, maxHp: 3, lives: 2, rank: saveData.rank || 1, shield: 150, cd: 0,
         recoil: 0, movePhase: 0, hitShake: 0
       };
       const p2 = {
         x: 409, y: 545, r: 18.5, size: 44,
         hullAng: 0, turretAng: 0, vLin: 0, wHull: 0, wTurret: 0, dispersion: DISP_MIN, haltTimer: 0,
-        hp: 3, rank: 2, shield: 150, cd: 0, isRemote: false,
+        hp: 3, maxHp: 3, rank: 2, shield: 150, cd: 0, isRemote: false,
         recoil: 0, movePhase: 0, hitShake: 0
       };
 
@@ -2570,7 +2570,7 @@
         score = 0;
         p1.lives = 2;
         p1.alive = true;
-        p1.hp = p1.maxHp;
+        p1.hp = p1.maxHp || 3;
         bullets.length = 0;
         enemies.length = 0;
         particles.length = 0;

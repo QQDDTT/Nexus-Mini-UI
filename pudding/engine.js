@@ -485,7 +485,7 @@
         bullets.length = 0;
         pulses.length = 0;
         towers.length = 0;
-        spawnQueue = 0;
+        spawnQueue = 10;
         spawnTick = 40;
         initObstacles();
         towers.push({
@@ -551,6 +551,7 @@
 
       updateHud();
       requestAnimationFrame(loop);
+      window.__debugPudding = () => ({ gold, wave, puddingHp, towers, monsters, bullets, TOWER_DEFS });
     })();
     }
 
