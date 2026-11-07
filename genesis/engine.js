@@ -279,11 +279,36 @@
       ];
 
       const BIOMES = [
-        { id: 0, name: '1. 浅海温床', sub: '标准昼夜 · 吞天水螅', bgTint: '#041022', bmrMult: 1.0, dragMult: 1.0, forceNight: false, desc: '第一章【浅海温床】：墨蓝深邃底色，白昼丁达尔光束通透，标准昼夜交替（180s周期），关底首领：吞天水螅。' },
-        { id: 1, name: '2. 嗜热喷口', sub: '热液脉冲 · 晶甲熔岩虱', bgTint: '#14080e', bmrMult: 1.05, dragMult: 0.95, forceNight: false, desc: '第二章【嗜热喷口】：深黑底色带暗红地热微裂隙，热泉喷口高频喷射上升流恢复能量，关底首领：晶甲熔岩虱。' },
-        { id: 2, name: '3. 极寒冰隙', sub: '流体凝滞 · 霜刃水母', bgTint: '#03131d', bmrMult: 1.15, dragMult: 1.25, forceNight: false, desc: '第三章【极寒冰隙】：冷黑底色泛极光青冰裂纹理，流体黏阻增加，推荐挂载鞭毛或折跃鳍，关底首领：霜刃水母。' },
-        { id: 3, name: '4. 剧毒沼泽', sub: '酸蚀浓雾 · 千目母体', bgTint: '#07140e', bmrMult: 1.30, dragMult: 1.05, forceNight: false, desc: '第四章【剧毒沼泽】：墨黑底色夹杂酸绿毒泡，基础代谢能耗 +30%，关底首领：千目原质母体（双槽 FIFO 12s 同化）。' },
-        { id: 4, name: '5. 深渊裂谷', sub: '永恒黑夜 · 虚空裂变兽', bgTint: '#02040a', bmrMult: 1.20, dragMult: 1.0, forceNight: true, desc: '第五章【深渊裂谷】：纯黑曜绝对虚空，永恒黑夜使视觉视距缩短 45%，听觉声呐尽显统治力，终极首领：虚空噬菌裂变兽。' }
+        {
+          id: 0, name: '1. 浅海温床', era: '太古宙 · 透光硅藻海', sub: '丁达尔焦散 · 吞天水螅',
+          bgTint: '#041824', bgInner: '#0a3340', bgOuter: '#020c14', outerRgb: '2, 12, 20', accentRgba: '45, 212, 191', secondaryRgba: '52, 211, 153',
+          motif: 'caustics', bmrMult: 1.0, dragMult: 1.0, forceNight: false,
+          desc: '第一章【浅海温床 · 太古宙透光层】：阳光穿透温暖的原初浅海，形成摇曳的丁达尔焦散光网与叶绿素海雪；中央【起源浅滩】涌出原生营养质，关底首领：吞天水螅。'
+        },
+        {
+          id: 1, name: '2. 嗜热喷口', era: '冥古宙 · 黑烟囱裂谷', sub: '熔岩微裂隙 · 晶甲熔岩虱',
+          bgTint: '#16070d', bgInner: '#2b0f19', bgOuter: '#0b0306', outerRgb: '11, 3, 6', accentRgba: '251, 146, 60', secondaryRgba: '244, 63, 94',
+          motif: 'magma', bmrMult: 1.05, dragMult: 0.95, forceNight: false,
+          desc: '第二章【嗜热喷口 · 冥古宙黑烟囱】：海底遍布明灭脉动的地幔熔岩微裂隙与金色硫化余烬气泡，热流使流体阻力 -5%、代谢 +5%，关底首领：晶甲熔岩虱。'
+        },
+        {
+          id: 2, name: '3. 极寒冰隙', era: '新元古代 · 雪球冰川期', sub: '六角冰晶网 · 霜刃水母',
+          bgTint: '#031522', bgInner: '#082c42', bgOuter: '#020911', outerRgb: '2, 9, 17', accentRgba: '56, 189, 248', secondaryRgba: '125, 211, 252',
+          motif: 'frost', bmrMult: 1.15, dragMult: 1.25, forceNight: false,
+          desc: '第三章【极寒冰隙 · 雪球地球期】：百米封冻冰盖下折射出六角冰晶几何裂纹与极光冷流，流体黏阻 +25%，推荐挂载鞭毛或折跃鳍，关底首领：霜刃水母。'
+        },
+        {
+          id: 3, name: '4. 剧毒沼泽', era: '古元古代 · 腐殖酸海盆', sub: '毒沼孢子圈 · 千目母体',
+          bgTint: '#06170f', bgInner: '#0f2e1e', bgOuter: '#030b07', outerRgb: '3, 11, 7', accentRgba: '74, 222, 128', secondaryRgba: '168, 85, 247',
+          motif: 'miasma', bmrMult: 1.30, dragMult: 1.05, forceNight: false,
+          desc: '第四章【剧毒沼泽 · 大氧化腐殖盆地】：海底沉积腐殖磷脂与缓慢鼓泡的酸蚀毒液环，基础代谢能耗 +30%，关底首领：千目原质母体（双槽 FIFO 12s 同化）。'
+        },
+        {
+          id: 4, name: '5. 深渊裂谷', era: '埃迪卡拉 · 超深渊无光带', sub: '永恒黑夜 · 虚空裂变兽',
+          bgTint: '#030510', bgInner: '#0a122c', bgOuter: '#010206', outerRgb: '1, 2, 6', accentRgba: '168, 85, 247', secondaryRgba: '45, 212, 191',
+          motif: 'abyss', bmrMult: 1.20, dragMult: 1.0, forceNight: true,
+          desc: '第五章【深渊裂谷 · 超深渊无光带】：阳光彻底断绝的永恒黑夜，唯生物电脉冲星尘与深渊暗流闪烁，视觉视距缩短 45%，终极首领：虚空噬菌裂变兽。'
+        }
       ];
 
       /* =====================================================================
@@ -1503,14 +1528,26 @@
             const isSonarOnly = st.maxEarLv > 0 && st.maxEyeLv === 0;
 
             ctx.shadowBlur = 0;
-        ctx.clearRect(0, 0, w, h);
-            ctx.fillStyle = isSonarOnly
-              ? '#02050d'
-              : (editorPreviewIsNight ? '#030816' : '#06142b');
+            ctx.clearRect(0, 0, w, h);
+            const cx = w * 0.46;
+            const cy = h * 0.52;
+            const previewBgGrad = ctx.createRadialGradient(cx, cy, 12, cx, cy, Math.max(w, h) * 0.72);
+            if (isSonarOnly) {
+              previewBgGrad.addColorStop(0, '#041222');
+              previewBgGrad.addColorStop(1, '#02050d');
+            } else if (editorPreviewIsNight) {
+              previewBgGrad.addColorStop(0, '#071b2e');
+              previewBgGrad.addColorStop(1, '#020712');
+            } else {
+              previewBgGrad.addColorStop(0, '#0b3240');
+              previewBgGrad.addColorStop(0.6, '#051b28');
+              previewBgGrad.addColorStop(1, '#020b14');
+            }
+            ctx.fillStyle = previewBgGrad;
             ctx.fillRect(0, 0, w, h);
 
-            // 培养皿微网格
-            ctx.strokeStyle = 'rgba(45, 212, 191, 0.07)';
+            // 培养皿微网格与丁达尔焦散微光波纹
+            ctx.strokeStyle = 'rgba(45, 212, 191, 0.065)';
             ctx.lineWidth = 1;
             for (let x = 20; x < w; x += 32) {
               ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
@@ -1518,9 +1555,15 @@
             for (let y = 20; y < h; y += 32) {
               ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
             }
+            for (let i = 0; i < 12; i++) {
+              const px = (i * 47 + Math.sin(tSec * 0.8 + i) * 14 + w) % w;
+              const py = (i * 31 + Math.cos(tSec * 0.7 + i * 1.3) * 12 + h) % h;
+              ctx.fillStyle = i % 2 === 0 ? 'rgba(45, 212, 191, 0.16)' : 'rgba(52, 211, 153, 0.14)';
+              ctx.beginPath();
+              ctx.arc(px, py, 1.4 + (i % 3) * 0.6, 0, Math.PI * 2);
+              ctx.fill();
+            }
 
-            const cx = w * 0.46;
-            const cy = h * 0.52;
             const swimAng = Math.sin(tSec * 1.4) * 0.16;
             const absPreviewR = (st.absSenseRange || 110) * 0.28;
 
@@ -1731,7 +1774,7 @@
             btn.className = 'torso-btn' + (b.id === selectedBiomeId ? ' active' : '');
             btn.innerHTML = `
               <span class="t-name">${b.name}</span>
-              <span class="t-sub">${b.sub}</span>
+              <span class="t-sub">${b.era || b.sub}</span>
             `;
             btn.addEventListener('click', () => {
               selectedBiomeId = b.id;
@@ -1742,6 +1785,9 @@
             });
             biomeListEl.appendChild(btn);
           });
+          const activeBiomeObj = BIOMES.find((b) => b.id === selectedBiomeId) || BIOMES[0];
+          const descEl = document.getElementById('lobby-biome-desc');
+          if (descEl && activeBiomeObj) descEl.textContent = activeBiomeObj.desc;
         }
 
         renderLobbyRoomList();
@@ -3822,6 +3868,306 @@
         return { weight, blurPx, absWeight, eyeWeight, dist, absR };
       }
 
+      // 五大地质演化纪元生物圈的多层视差海雪、深海散景光斑与地貌微结构确定性缓存
+      const biomeDecorCacheMap = {};
+      function getBiomeDecorCache(biomeId) {
+        if (biomeDecorCacheMap[biomeId]) return biomeDecorCacheMap[biomeId];
+        let seed = (biomeId + 1) * 9781 + 1337;
+        const nextRand = () => {
+          seed = (seed * 16807) % 2147483647;
+          return (seed - 1) / 2147483646;
+        };
+
+        // Layer 0.5: 深层散景微囊光斑 (Parallax = 0.32)
+        const ambientBokeh = [];
+        for (let i = 0; i < 42; i++) {
+          ambientBokeh.push({
+            x: nextRand() * WORLD_W,
+            y: nextRand() * WORLD_H,
+            r: 22 + nextRand() * 54,
+            phase: nextRand() * Math.PI * 2,
+            speed: 0.35 + nextRand() * 0.55,
+            isSecondary: nextRand() > 0.55
+          });
+        }
+
+        // Layer 2: 多深度视差海雪与生物荧光胶体微粒 (Parallax = 0.55 ~ 0.92)
+        const marineSnow = [];
+        for (let i = 0; i < 84; i++) {
+          marineSnow.push({
+            x: nextRand() * WORLD_W,
+            y: nextRand() * WORLD_H,
+            r: 1.3 + nextRand() * 2.8,
+            parallax: 0.52 + nextRand() * 0.40,
+            driftX: (nextRand() - 0.5) * 14,
+            driftY: (nextRand() - 0.5) * 14,
+            phase: nextRand() * Math.PI * 2,
+            isSecondary: nextRand() > 0.62
+          });
+        }
+
+        // Layer 1: 五大生物圈专属地质演化地貌与光学微结构 (World-Space 1.0x)
+        const geologyFeatures = [];
+        const featureCount = 22;
+        for (let i = 0; i < featureCount; i++) {
+          const fx = 160 + nextRand() * (WORLD_W - 320);
+          const fy = 140 + nextRand() * (WORLD_H - 280);
+          const radius = 58 + nextRand() * 92;
+          const angle = nextRand() * Math.PI * 2;
+          const phase = nextRand() * Math.PI * 2;
+          const branches = [];
+          const branchCount = 4 + Math.floor(nextRand() * 3);
+          for (let b = 0; b < branchCount; b++) {
+            const bAng = angle + (b / branchCount) * Math.PI * 2 + (nextRand() - 0.5) * 0.45;
+            const bLen = radius * (0.55 + nextRand() * 0.65);
+            branches.push({
+              ang: bAng,
+              len: bLen,
+              midOffset: (nextRand() - 0.5) * 28
+            });
+          }
+          geologyFeatures.push({ x: fx, y: fy, radius, angle, phase, branches });
+        }
+
+        const cache = { ambientBokeh, marineSnow, geologyFeatures };
+        biomeDecorCacheMap[biomeId] = cache;
+        return cache;
+      }
+
+      // 渲染感官外围的深海培养皿流体基底 (Layer 0 —— 让所有感官区域平滑渐变融入深邃活体原汤而非死黑矩形)
+      function renderOuterPetriFluidBase(ctx, camX, camY, viewW, viewH, alpha, biome) {
+        const left = camX - viewW * 0.5;
+        const top = camY - viewH * 0.5;
+        const outerGrad = ctx.createRadialGradient(alpha.x, alpha.y, 60, alpha.x, alpha.y, Math.max(viewW, viewH) * 0.72);
+        outerGrad.addColorStop(0, biome.bgOuter || '#020c14');
+        outerGrad.addColorStop(0.65, '#020710');
+        outerGrad.addColorStop(1, '#010308');
+        ctx.fillStyle = outerGrad;
+        ctx.fillRect(left, top, viewW, viewH);
+
+        // 极微弱的深层原汤散景光斑与暗流纹理，赋予感官盲区深海培养皿呼吸感
+        const cache = getBiomeDecorCache(biome.id);
+        const t = arenaState.timeSec;
+        const rgb = biome.accentRgba || '45, 212, 191';
+        ctx.save();
+        for (let i = 0; i < cache.ambientBokeh.length; i += 2) {
+          const b = cache.ambientBokeh[i];
+          const wx = b.x + (camX - WORLD_W * 0.5) * 0.22 + Math.sin(t * b.speed + b.phase) * 18;
+          const wy = b.y + (camY - WORLD_H * 0.5) * 0.22 + Math.cos(t * b.speed + b.phase) * 18;
+          if (wx + b.r < left || wx - b.r > left + viewW || wy + b.r < top || wy - b.r > top + viewH) continue;
+          const g = ctx.createRadialGradient(wx, wy, 0, wx, wy, b.r);
+          g.addColorStop(0, `rgba(${rgb}, 0.032)`);
+          g.addColorStop(1, `rgba(${rgb}, 0.0)`);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(wx, wy, b.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      // 渲染生物圈专属多层视差流体、地貌裂隙与丁达尔光学背景 (Layer 1 & Layer 2)
+      function renderBiomeEnvironmentBackdrop(ctx, camX, camY, viewW, viewH, isNight, sonarWireframeMode) {
+        const alpha = arenaState.alpha;
+        const st = getEffectiveStats(alpha);
+        const absR = st.absSenseRange || 110;
+        const biome = arenaState.biome || BIOMES[0];
+        const cache = getBiomeDecorCache(biome.id);
+        const left = camX - viewW * 0.5;
+        const top = camY - viewH * 0.5;
+        const right = left + viewW;
+        const bottom = top + viewH;
+        const t = arenaState.timeSec;
+        const priRgb = biome.accentRgba || '45, 212, 191';
+        const secRgb = biome.secondaryRgba || '52, 211, 153';
+
+        // 1. 基底流体径向渐变 (彩色通道呈现章节专属原汤色温，声呐通道呈现深潜雷达微光底色)
+        if (sonarWireframeMode) {
+          const sonarBgGrad = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.35, alpha.x, alpha.y, Math.max(absR + 60, st.sonarRange));
+          sonarBgGrad.addColorStop(0, 'rgba(5, 20, 36, 0.94)');
+          sonarBgGrad.addColorStop(0.62, 'rgba(3, 12, 24, 0.76)');
+          sonarBgGrad.addColorStop(1, `rgba(${biome.outerRgb || '2, 8, 16'}, 0.0)`);
+          ctx.fillStyle = sonarBgGrad;
+          ctx.fillRect(left, top, viewW, viewH);
+        } else {
+          const fluidGrad = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.25, alpha.x, alpha.y, Math.max(viewW, viewH) * 0.65);
+          if (isNight && !biome.forceNight) {
+            fluidGrad.addColorStop(0, '#071a2c');
+            fluidGrad.addColorStop(0.58, '#040e1c');
+            fluidGrad.addColorStop(1, biome.bgOuter || '#020814');
+          } else {
+            fluidGrad.addColorStop(0, biome.bgInner || '#0a3340');
+            fluidGrad.addColorStop(0.58, biome.bgTint || '#041824');
+            fluidGrad.addColorStop(1, biome.bgOuter || '#020c14');
+          }
+          ctx.fillStyle = fluidGrad;
+          ctx.fillRect(left, top, viewW, viewH);
+
+          // 1.1 深海散景微囊光斑 (Layer 0.5 —— 0.32x 视差深度)
+          for (let i = 0; i < cache.ambientBokeh.length; i++) {
+            const b = cache.ambientBokeh[i];
+            const wx = b.x + (camX - WORLD_W * 0.5) * 0.28 + Math.sin(t * b.speed + b.phase) * 20;
+            const wy = b.y + (camY - WORLD_H * 0.5) * 0.28 + Math.cos(t * b.speed + b.phase) * 20;
+            if (wx + b.r < left || wx - b.r > right || wy + b.r < top || wy - b.r > bottom) continue;
+            const rgb = b.isSecondary ? secRgb : priRgb;
+            const pulseA = (isNight ? 0.055 : 0.085) * (0.7 + 0.3 * Math.sin(t * 0.9 + b.phase));
+            const g = ctx.createRadialGradient(wx, wy, 0, wx, wy, b.r);
+            g.addColorStop(0, `rgba(${rgb}, ${pulseA.toFixed(3)})`);
+            g.addColorStop(1, `rgba(${rgb}, 0.0)`);
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(wx, wy, b.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        // 2. 显微镜培养皿坐标网与十字微刻度
+        ctx.strokeStyle = sonarWireframeMode ? 'rgba(56, 189, 248, 0.065)' : `rgba(${priRgb}, 0.055)`;
+        ctx.lineWidth = 1;
+        const startX = Math.floor(left / 80) * 80;
+        const startY = Math.floor(top / 80) * 80;
+        for (let x = startX; x < right; x += 80) {
+          ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+        }
+        for (let y = startY; y < bottom; y += 80) {
+          ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+        }
+
+        // 3. 五大地质演化章节专属光学与海底地貌微结构 (Layer 1)
+        ctx.save();
+        for (let i = 0; i < cache.geologyFeatures.length; i++) {
+          const f = cache.geologyFeatures[i];
+          if (f.x + f.radius * 1.4 < left || f.x - f.radius * 1.4 > right || f.y + f.radius * 1.4 < top || f.y - f.radius * 1.4 > bottom) continue;
+
+          if (sonarWireframeMode) {
+            // 听觉声呐区：将海底地貌转化为随距离衰减的声学地形回波等高线
+            const dFeat = Math.hypot(f.x - alpha.x, f.y - alpha.y);
+            if (dFeat > st.sonarRange + f.radius) continue;
+            const sFactor = getSonarDistanceFactor(dFeat, st.sonarRange, absR);
+            ctx.strokeStyle = `rgba(56, 189, 248, ${(0.18 * sFactor).toFixed(3)})`;
+            ctx.lineWidth = 1.1;
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.radius * 0.55, 0, Math.PI * 2);
+            ctx.stroke();
+            continue;
+          }
+
+          if (biome.motif === 'caustics') {
+            // 第一章【浅海温床】：摇曳的丁达尔焦散光网与透光硅藻环
+            const sway = Math.sin(t * 1.15 + f.phase) * 12;
+            const causticAlpha = isNight ? 0.06 : 0.14;
+            ctx.strokeStyle = `rgba(${priRgb}, ${causticAlpha})`;
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            for (let b = 0; b < f.branches.length; b++) {
+              const br = f.branches[b];
+              const ex = f.x + Math.cos(br.ang + sway * 0.015) * br.len;
+              const ey = f.y + Math.sin(br.ang + sway * 0.015) * br.len;
+              const cx = (f.x + ex) * 0.5 + Math.cos(br.ang + 1.57) * br.midOffset;
+              const cy = (f.y + ey) * 0.5 + Math.sin(br.ang + 1.57) * br.midOffset;
+              ctx.moveTo(f.x + sway * 0.4, f.y);
+              ctx.quadraticCurveTo(cx, cy, ex, ey);
+            }
+            ctx.stroke();
+          } else if (biome.motif === 'magma') {
+            // 第二章【嗜热喷口】：海底脉动地幔熔岩微裂隙与热液喷口光晕
+            const glow = 0.55 + 0.45 * Math.sin(t * 2.2 + f.phase);
+            const ventGrad = ctx.createRadialGradient(f.x, f.y, 4, f.x, f.y, f.radius * 0.75);
+            ventGrad.addColorStop(0, `rgba(251, 146, 60, ${(0.22 * glow).toFixed(3)})`);
+            ventGrad.addColorStop(0.5, `rgba(244, 63, 94, ${(0.09 * glow).toFixed(3)})`);
+            ventGrad.addColorStop(1, 'rgba(244, 63, 94, 0.0)');
+            ctx.fillStyle = ventGrad;
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.radius * 0.75, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = `rgba(251, 146, 60, ${(0.24 * glow).toFixed(3)})`;
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            for (let b = 0; b < f.branches.length; b++) {
+              const br = f.branches[b];
+              const mx = f.x + Math.cos(br.ang) * (br.len * 0.5) + br.midOffset * 0.4;
+              const my = f.y + Math.sin(br.ang) * (br.len * 0.5) - br.midOffset * 0.4;
+              const ex = f.x + Math.cos(br.ang) * br.len;
+              const ey = f.y + Math.sin(br.ang) * br.len;
+              ctx.moveTo(f.x, f.y);
+              ctx.lineTo(mx, my);
+              ctx.lineTo(ex, ey);
+            }
+            ctx.stroke();
+          } else if (biome.motif === 'frost') {
+            // 第三章【极寒冰隙】：六角冰晶几何折射晶格与极光冷流
+            const shimmer = 0.6 + 0.4 * Math.sin(t * 1.4 + f.phase);
+            ctx.strokeStyle = `rgba(125, 211, 252, ${(0.18 * shimmer).toFixed(3)})`;
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            const hexR = f.radius * 0.52;
+            for (let k = 0; k < 6; k++) {
+              const a = f.angle + (k * Math.PI) / 3;
+              const hx = f.x + Math.cos(a) * hexR;
+              const hy = f.y + Math.sin(a) * hexR;
+              if (k === 0) ctx.moveTo(hx, hy);
+              else ctx.lineTo(hx, hy);
+              ctx.moveTo(f.x, f.y);
+              ctx.lineTo(hx, hy);
+            }
+            ctx.closePath();
+            ctx.stroke();
+          } else if (biome.motif === 'miasma') {
+            // 第四章【剧毒沼泽】：腐殖酸海盆缓慢鼓泡扩散的毒沼孢子圈
+            const cycle = (t * 0.38 + f.phase) % 1;
+            const ringR = f.radius * (0.25 + cycle * 0.75);
+            const ringA = (1 - cycle) * 0.22;
+            ctx.strokeStyle = `rgba(74, 222, 128, ${ringA.toFixed(3)})`;
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, ringR, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.06)';
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.radius * 0.38, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // 第五章【深渊裂谷】：埃迪卡拉超深渊暗流等深线与生物电脉冲星云
+            const pulse = 0.5 + 0.5 * Math.sin(t * 1.8 + f.phase);
+            const nebGrad = ctx.createRadialGradient(f.x, f.y, 2, f.x, f.y, f.radius * 0.7);
+            nebGrad.addColorStop(0, `rgba(168, 85, 247, ${(0.18 * pulse).toFixed(3)})`);
+            nebGrad.addColorStop(0.6, `rgba(45, 212, 191, ${(0.07 * pulse).toFixed(3)})`);
+            nebGrad.addColorStop(1, 'rgba(45, 212, 191, 0.0)');
+            ctx.fillStyle = nebGrad;
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.radius * 0.7, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+
+        // 4. 多深度视差生物荧光海雪与胶体微粒 (Layer 2 —— 仅在彩色感官通道渲染)
+        if (!sonarWireframeMode) {
+          ctx.save();
+          for (let i = 0; i < cache.marineSnow.length; i++) {
+            const p = cache.marineSnow[i];
+            const px = (p.x + (camX - WORLD_W * 0.5) * (1 - p.parallax) + Math.sin(t * 0.7 + p.phase) * p.driftX + WORLD_W) % WORLD_W;
+            const py = (p.y + (camY - WORLD_H * 0.5) * (1 - p.parallax) + Math.cos(t * 0.6 + p.phase) * p.driftY + WORLD_H) % WORLD_H;
+            if (px < left - 10 || px > right + 10 || py < top - 10 || py > bottom + 10) continue;
+            const twinkle = 0.14 + 0.18 * Math.sin(t * 2.1 + p.phase);
+            const rgb = p.isSecondary ? secRgb : priRgb;
+            ctx.fillStyle = `rgba(${rgb}, ${twinkle.toFixed(3)})`;
+            ctx.beginPath();
+            ctx.arc(px, py, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        // 5. 培养皿世界边界刻度环框 (2800 × 1800 边缘光学护栏)
+        ctx.save();
+        ctx.strokeStyle = sonarWireframeMode ? 'rgba(56, 189, 248, 0.22)' : `rgba(${priRgb}, 0.28)`;
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(8, 8, WORLD_W - 16, WORLD_H - 16);
+        ctx.restore();
+      }
+
       function renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, sonarWireframeMode) {
         const alpha = arenaState.alpha;
         const st = getEffectiveStats(alpha);
@@ -3830,31 +4176,9 @@
         const pulseCycle = Math.floor(arenaState.timeSec / pulsePeriod);
         const pulseFrac = (arenaState.timeSec % pulsePeriod) / pulsePeriod;
         const waveR = pulseFrac * st.sonarRange;
-        const bgHex = isNight ? '#020612' : arenaState.biome.bgTint;
 
-        // 1. 背景底色与培养皿坐标网格 (声呐通道与彩色通道共享柔和基底，靠径向渐变与背景自然融合)
-        if (sonarWireframeMode) {
-          const sonarBgGrad = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.4, alpha.x, alpha.y, Math.max(absR + 60, st.sonarRange));
-          sonarBgGrad.addColorStop(0, 'rgba(4, 15, 28, 0.92)');
-          sonarBgGrad.addColorStop(0.65, 'rgba(3, 10, 20, 0.72)');
-          sonarBgGrad.addColorStop(1, 'rgba(2, 4, 10, 0.0)');
-          ctx.fillStyle = sonarBgGrad;
-          ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
-        } else {
-          ctx.fillStyle = bgHex;
-          ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
-        }
-
-        ctx.strokeStyle = sonarWireframeMode ? 'rgba(56, 189, 248, 0.06)' : 'rgba(45, 212, 191, 0.06)';
-        ctx.lineWidth = 1;
-        const startX = Math.floor((camX - viewW * 0.5) / 80) * 80;
-        const startY = Math.floor((camY - viewH * 0.5) / 80) * 80;
-        for (let x = startX; x < camX + viewW * 0.5; x += 80) {
-          ctx.beginPath(); ctx.moveTo(x, camY - viewH * 0.5); ctx.lineTo(x, camY + viewH * 0.5); ctx.stroke();
-        }
-        for (let y = startY; y < camY + viewH * 0.5; y += 80) {
-          ctx.beginPath(); ctx.moveTo(camX - viewW * 0.5, y); ctx.lineTo(camX + viewW * 0.5, y); ctx.stroke();
-        }
+        // 1. 渲染五大演化章节专属多层视差流体、地貌微结构与海雪背景
+        renderBiomeEnvironmentBackdrop(ctx, camX, camY, viewW, viewH, isNight, sonarWireframeMode);
 
         // 1.5 绘制中央【起源浅滩 (Genesis Shoal)】新物种摇篮生态庇护区边界环与暖流光晕
         if (arenaState.genesisShoal) {
@@ -4201,9 +4525,10 @@
         ctx.scale(VIEWPORT_ZOOM, VIEWPORT_ZOOM);
         ctx.translate(-camX, -camY);
 
-        // 0. 铺设深邃培养皿环境基底 (所有感官区域外围统一与此背景平滑渐变融合)
-        ctx.fillStyle = '#02050d';
-        ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
+        // 0. 铺设深邃深海培养皿原汤环境基底 (所有感官区域外围统一与此活体流体背景平滑渐变融合)
+        const activeBiome = arenaState.biome || BIOMES[0];
+        const outerRgb = activeBiome.outerRgb || '2, 8, 16';
+        renderOuterPetriFluidBase(ctx, camX, camY, viewW, viewH, alpha, activeBiome);
 
         // 1. 听觉声呐层 (Layer 1 —— 若装备听觉器官，渲染 360° 广域声呐层，信号随距离增加平滑衰减并与背景渐变融合)
         if (hasEar) {
@@ -4213,12 +4538,12 @@
           ctx.clip();
           renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, true);
 
-          // 听觉区外缘径向渐变融合暗角：距离越远信号越弱，在边界处完全融入深海背景，消除生硬圆环切边
+          // 听觉区外缘径向渐变融合暗角：距离越远信号越弱，在边界处完全融入深海原汤背景，消除生硬圆环切边
           const earFadeGrad = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.8, alpha.x, alpha.y, st.sonarRange);
-          earFadeGrad.addColorStop(0, 'rgba(2, 5, 13, 0.0)');
-          earFadeGrad.addColorStop(0.55, 'rgba(2, 5, 13, 0.22)');
-          earFadeGrad.addColorStop(0.82, 'rgba(2, 5, 13, 0.62)');
-          earFadeGrad.addColorStop(1, 'rgba(2, 5, 13, 0.96)');
+          earFadeGrad.addColorStop(0, `rgba(${outerRgb}, 0.0)`);
+          earFadeGrad.addColorStop(0.55, `rgba(${outerRgb}, 0.22)`);
+          earFadeGrad.addColorStop(0.82, `rgba(${outerRgb}, 0.62)`);
+          earFadeGrad.addColorStop(1, `rgba(${outerRgb}, 0.96)`);
           ctx.fillStyle = earFadeGrad;
           ctx.fillRect(alpha.x - st.sonarRange, alpha.y - st.sonarRange, st.sonarRange * 2, st.sonarRange * 2);
           ctx.restore();
@@ -4237,19 +4562,19 @@
 
         renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, false);
 
-        // 2.1 视觉扇形与绝对感知区的径向渐变融合遮罩 (越靠外越柔和融入周围背景/听觉层)
+        // 2.1 视觉扇形与绝对感知区的径向渐变融合遮罩 (越靠外越柔和融入周围深海原汤背景/听觉层)
         const colorRadialFade = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.62, alpha.x, alpha.y, maxColorR);
-        colorRadialFade.addColorStop(0, 'rgba(2, 5, 13, 0.0)');
+        colorRadialFade.addColorStop(0, `rgba(${outerRgb}, 0.0)`);
         if (hasEye && effEyeRange > absR * 1.3) {
           const absStop = Math.min(0.65, (absR * 0.95) / effEyeRange);
-          colorRadialFade.addColorStop(absStop, 'rgba(2, 5, 13, 0.08)');
-          colorRadialFade.addColorStop(0.72, 'rgba(2, 5, 13, 0.42)');
-          colorRadialFade.addColorStop(0.90, 'rgba(2, 5, 13, 0.78)');
+          colorRadialFade.addColorStop(absStop, `rgba(${outerRgb}, 0.08)`);
+          colorRadialFade.addColorStop(0.72, `rgba(${outerRgb}, 0.42)`);
+          colorRadialFade.addColorStop(0.90, `rgba(${outerRgb}, 0.78)`);
         } else {
-          colorRadialFade.addColorStop(0.65, 'rgba(2, 5, 13, 0.35)');
-          colorRadialFade.addColorStop(0.88, 'rgba(2, 5, 13, 0.78)');
+          colorRadialFade.addColorStop(0.65, `rgba(${outerRgb}, 0.35)`);
+          colorRadialFade.addColorStop(0.88, `rgba(${outerRgb}, 0.78)`);
         }
-        colorRadialFade.addColorStop(1, 'rgba(2, 5, 13, 0.97)');
+        colorRadialFade.addColorStop(1, `rgba(${outerRgb}, 0.97)`);
         ctx.fillStyle = colorRadialFade;
         ctx.fillRect(alpha.x - maxColorR, alpha.y - maxColorR, maxColorR * 2, maxColorR * 2);
 
@@ -4266,14 +4591,14 @@
             ctx.moveTo(alpha.x, alpha.y);
             ctx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle + halfEyeRad + eyeAngFeather - span, alpha.angle + halfEyeRad + eyeAngFeather);
             ctx.closePath();
-            ctx.fillStyle = 'rgba(2, 5, 13, 0.22)';
+            ctx.fillStyle = `rgba(${outerRgb}, 0.22)`;
             ctx.fill();
           }
           // 扇区外、绝对感知区外围环带 (absR * 0.72 ~ absR * 1.22) 的平滑过渡环
           const absRingGrad = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.68, alpha.x, alpha.y, absR * 1.22);
-          absRingGrad.addColorStop(0, 'rgba(2, 5, 13, 0.0)');
-          absRingGrad.addColorStop(0.65, 'rgba(2, 5, 13, 0.55)');
-          absRingGrad.addColorStop(1, 'rgba(2, 5, 13, 0.96)');
+          absRingGrad.addColorStop(0, `rgba(${outerRgb}, 0.0)`);
+          absRingGrad.addColorStop(0.65, `rgba(${outerRgb}, 0.55)`);
+          absRingGrad.addColorStop(1, `rgba(${outerRgb}, 0.96)`);
           ctx.beginPath();
           ctx.arc(alpha.x, alpha.y, absR * 1.22, alpha.angle + halfEyeRad, alpha.angle - halfEyeRad + Math.PI * 2);
           ctx.lineTo(alpha.x, alpha.y);

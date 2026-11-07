@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v22.0-sensory-fusion-ui';
+const CACHE_NAME = 'nexus-mini-portal-v23.0-genesis-background';
 const CORE_ASSETS = [
   './',
   './index.html',
