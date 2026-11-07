@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v16.0-joystick-missile-sonar';
+const CACHE_NAME = 'nexus-mini-portal-v17.0-genesis-ecosystem-shoal';
 const CORE_ASSETS = [
   './',
   './index.html',

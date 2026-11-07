@@ -846,8 +846,31 @@
             drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 0.88, head.y + offsetY, baseR * 1.35, baseR * 1.35, 0);
           });
           ctx.restore();
+          if (org.spawnShieldTimer && org.spawnShieldTimer > 0) {
+            ctx.beginPath();
+            ctx.arc(0, 0, baseR * 1.85, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(16, 185, 129, 0.92)';
+            ctx.lineWidth = 2.0 * scale;
+            ctx.setLineDash([4, 3]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
           ctx.restore();
           return;
+        }
+
+        // 5.0 秒【破膜适应期】初生羊水护膜光环
+        if (org.spawnShieldTimer && org.spawnShieldTimer > 0) {
+          const pulseR = baseR * (1.78 + 0.12 * Math.sin((opts.timeSec || 0) * 8.0));
+          ctx.beginPath();
+          ctx.arc(0, 0, pulseR, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(16, 185, 129, 0.14)';
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(52, 211, 153, 0.88)';
+          ctx.lineWidth = 1.8 * scale;
+          ctx.setLineDash([5, 3]);
+          ctx.stroke();
+          ctx.setLineDash([]);
         }
 
         // 视觉彩色生物荧光模式
@@ -1876,13 +1899,16 @@
           poisonDps: 0,
           suppressedTimer: 0,
           squashTimer: 0,
-          // 生态位 NPC 智能角色系统：领主智能 (apex) | 协同智能 (pack) | 群居智能 (herd)
+          // 5.0 秒【破膜适应期】初生免疫护膜 (仅赋予新降生的始祖个体，主动攻击立即解除)
+          spawnShieldTimer: opts.spawnShieldSec !== undefined ? opts.spawnShieldSec : (opts.isAlpha ? 5.0 : 0),
+          // 生态位 NPC 智能角色系统：领主智能 (apex) | 狼群协同智能 (pack) | 羊群群居智能 (herd)
           nicheRole: (function() {
-            if (opts.isBoss || (bp.dietType === 'carnivore' && torso.sizePx >= 48)) return 'apex';
+            if (opts.nicheRole) return opts.nicheRole;
+            if (opts.isBoss || (bp.dietType === 'carnivore' && torso.sizePx >= 38)) return 'apex';
             if (bp.dietType === 'herbivore') return 'herd';
             return 'pack';
           })(),
-          territoryCenter: { x, y, radius: 480 },
+          territoryCenter: opts.territoryCenter || { x, y, radius: 460 },
           territoryAngle: Math.random() * Math.PI * 2,
           packFlankAngle: (Math.random() < 0.5 ? 1 : -1) * (0.55 + Math.random() * 0.35),
           hitAndRunTimer: 0,
@@ -1899,6 +1925,21 @@
           sonarSnapPhase: 0,
           sonarDetectedCycle: -1,
           sonarLastPulseSec: -10
+        };
+      }
+
+      // 辅助函数：将野生捕食者/领主坐标约束在【起源浅滩 (Genesis Shoal)】安全半径之外
+      function clampOutsideGenesisShoal(x, y, minDistFromCenter = 560) {
+        const cx = WORLD_W * 0.5;
+        const cy = WORLD_H * 0.5;
+        const dx = x - cx;
+        const dy = y - cy;
+        const d = Math.hypot(dx, dy);
+        if (d >= minDistFromCenter) return { x, y };
+        const ang = d > 1 ? Math.atan2(dy, dx) : (Math.random() * Math.PI * 2);
+        return {
+          x: Math.max(90, Math.min(WORLD_W - 90, cx + Math.cos(ang) * minDistFromCenter)),
+          y: Math.max(90, Math.min(WORLD_H - 90, cy + Math.sin(ang) * minDistFromCenter))
         };
       }
 
@@ -1939,6 +1980,13 @@
         arenaState.hazards = [];
         arenaState.vents = [];
         arenaState.territories = [];
+        // 【起源浅滩 (Genesis Shoal)】：位于培养皿中央的新物种摇篮生态庇护区 (半径 340px，阻挡野生捕食者与首领入内)
+        arenaState.genesisShoal = {
+          name: '起源浅滩 (Genesis Shoal)',
+          x: WORLD_W * 0.5,
+          y: WORLD_H * 0.5,
+          radius: 340
+        };
 
         arenaState.playerFullBlueprint = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(chosen)));
         if (arenaState.gpRule === 'apex' || arenaState.matchMode === 'free_sandbox') {
@@ -1962,53 +2010,71 @@
           });
         }
 
-        // 生成 12 处生态群落领地 (Ecological Territories)
+        // 生成 12 处外围生态群落领地 (Ecological Territories，避开中央起源浅滩)
         for (let i = 0; i < 12; i++) {
+          const rawTx = 240 + (i % 4) * 760;
+          const rawTy = 260 + Math.floor(i / 4) * 640;
+          const safePos = clampOutsideGenesisShoal(rawTx, rawTy, 580);
           arenaState.territories.push({
-            x: 240 + (i % 4) * 760,
-            y: 280 + Math.floor(i / 4) * 620,
-            radius: 185,
+            x: safePos.x,
+            y: safePos.y,
+            radius: 420,
             ownerColony: null
           });
         }
 
-        // 唯一始祖降生法则：开局仅生成 1 只玩家控制的始祖个体 Alpha
-        const alpha = spawnOrganismEntity(arenaState.playerActiveBlueprint, WORLD_W * 0.5, WORLD_H * 0.5, 'player', {
+        // 唯一始祖降生法则：开局在中央【起源浅滩】内生成 1 只玩家控制的始祖个体 Alpha，并附带 5.0s【破膜适应期】
+        const alpha = spawnOrganismEntity(arenaState.playerActiveBlueprint, arenaState.genesisShoal.x, arenaState.genesisShoal.y, 'player', {
           colonyId: 'player_colony',
           isAlpha: true,
           hpRatio: 1.0,
-          energyRatio: 0.90
+          energyRatio: 0.90,
+          spawnShieldSec: 5.0
         });
         arenaState.alpha = alpha;
         arenaState.organisms.push(alpha);
 
-        // 初始局部微藻群落
+        // 初始局部微藻群落（起源浅滩内部富集微藻温床，供新物种安全觅食繁衍第一代群落）
         arenaState.vents.forEach((v) => spawnAlgaeCluster(v.x, v.y, 12));
-        spawnAlgaeCluster(alpha.x + 180, alpha.y - 120, 14);
+        spawnAlgaeCluster(arenaState.genesisShoal.x, arenaState.genesisShoal.y, 18);
+        spawnAlgaeCluster(alpha.x + 150, alpha.y - 110, 12);
 
-        // 生成野生生态种群与章节首领 (近圈仅分布温和植食微虫供感官探测与捕食，高阶掠食者分布在外圈)
+        // 生成野生生态种群与章节首领：
+        // - 起源浅滩边缘仅分布温和植食羊群 (herd) 供感官探测与早期捕食；
+        // - 狼群捕食者 (pack) 与顶级领主 (apex) 严格分布在外圈独立领地 (距离浅滩中心 >= 560px)
         const wildPool = [
           ...officialFossils,
           ...playerGeneBank.filter((s) => s.wildEnabled && s.speciesId !== chosen.speciesId)
         ];
         for (let i = 0; i < 18; i++) {
           const ringIdx = i % 4;
-          const dist = ringIdx === 0 ? 225 : (ringIdx === 1 ? 280 : (440 + (i % 3) * 220));
           const wBp = ringIdx <= 1 ? officialFossils[0] : wildPool[i % wildPool.length];
+          const isHerb = wBp.dietType === 'herbivore';
+          const dist = isHerb ? (ringIdx === 0 ? 230 : 310) : (580 + (i % 3) * 210);
           const ang = (i / 18) * Math.PI * 2;
-          const wx = WORLD_W * 0.5 + Math.cos(ang) * dist;
-          const wy = WORLD_H * 0.5 + Math.sin(ang) * dist;
+          let wx = WORLD_W * 0.5 + Math.cos(ang) * dist;
+          let wy = WORLD_H * 0.5 + Math.sin(ang) * dist;
+          if (!isHerb) {
+            const safeW = clampOutsideGenesisShoal(wx, wy, 580);
+            wx = safeW.x;
+            wy = safeW.y;
+          }
+          const terr = arenaState.territories[i % arenaState.territories.length];
           arenaState.organisms.push(spawnOrganismEntity(wBp, wx, wy, 'wild', {
-            colonyId: 'wild_' + wBp.speciesId
+            colonyId: 'wild_' + wBp.speciesId,
+            territoryCenter: { x: terr ? terr.x : wx, y: terr ? terr.y : wy, radius: 440 }
           }));
         }
 
-        // 生成关底史诗首领 (Boss)
+        // 生成关底史诗首领 (Boss，属于顶级领主 apex，驻守远端深渊领地)
         const bossBp = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(officialFossils[Math.min(4, selectedBiomeId)])));
         bossBp.speciesName = EPIC_BOSSES[selectedBiomeId].name.split(' ')[1] || '远古首领';
-        const bossEnt = spawnOrganismEntity(bossBp, WORLD_W * 0.78, WORLD_H * 0.28, 'enemy', {
+        const bossPos = clampOutsideGenesisShoal(WORLD_W * 0.80, WORLD_H * 0.25, 720);
+        const bossEnt = spawnOrganismEntity(bossBp, bossPos.x, bossPos.y, 'enemy', {
           colonyId: 'boss_colony',
-          isBoss: true
+          isBoss: true,
+          nicheRole: 'apex',
+          territoryCenter: { x: bossPos.x, y: bossPos.y, radius: 520 }
         });
         bossEnt.maxHp *= 2.4;
         bossEnt.hp = bossEnt.maxHp;
@@ -2123,6 +2189,7 @@
           });
           NexusSDK.audio.pop();
         } else if (sk.type === 'venom') {
+          ent.spawnShieldTimer = 0;
           arenaState.hazards.push({
             type: 'venom',
             x: ent.x,
@@ -2136,6 +2203,7 @@
           });
           NexusSDK.audio.laser();
         } else if (sk.type === 'spike') {
+          ent.spawnShieldTimer = 0;
           const count = sk.spec.spikeCount || 1;
           for (let i = 0; i < count; i++) {
             const spread = count === 1 ? 0 : (i - (count - 1) * 0.5) * 0.16;
@@ -2153,6 +2221,7 @@
           }
           NexusSDK.audio.shoot();
         } else if (sk.type === 'electric') {
+          ent.spawnShieldTimer = 0;
           const elecR = sk.spec.elecR || 140;
           arenaState.hazards.push({
             type: 'electric',
@@ -2556,6 +2625,12 @@
        * ===================================================================== */
       function applyDamage(victim, rawDmg, attacker) {
         if (!victim || victim.hp <= 0) return;
+        // 主动发起攻击时立即解除攻击者的 5 秒【破膜适应期】初生免疫
+        if (attacker && attacker.spawnShieldTimer > 0 && attacker !== victim) {
+          attacker.spawnShieldTimer = 0;
+        }
+        // 处于 5 秒【破膜适应期】的新生始祖完全免疫一切伤害
+        if (victim.spawnShieldTimer && victim.spawnShieldTimer > 0) return;
         const vSt = getEffectiveStats(victim);
         let finalDmg = rawDmg * (1 - vSt.damageReduction);
 
@@ -2646,7 +2721,7 @@
           }
         }
 
-        // 若玩家当前控制的始祖死亡：优先接管存活的同族电脑 NPC，若全灭则降生新始祖
+        // 若玩家当前控制的始祖死亡：优先接管存活的同族电脑 NPC，若全灭则在【起源浅滩】中心降生新始祖并赋予 5s 破膜适应期
         if (victim === arenaState.alpha) {
           const survivingKin = arenaState.organisms
             .filter((o) => o.hp > 0 && o.colonyId === 'player_colony' && !o.formerKin && o !== victim)
@@ -2658,18 +2733,29 @@
             NexusSDK.audio.warn();
             showToast('始祖陨落！镜头与控制权已无缝移交至最健康的同族后代');
           } else {
-            const reborn = spawnOrganismEntity(arenaState.playerActiveBlueprint, WORLD_W * 0.5, WORLD_H * 0.5, 'player', {
+            const shoalX = arenaState.genesisShoal ? arenaState.genesisShoal.x : WORLD_W * 0.5;
+            const shoalY = arenaState.genesisShoal ? arenaState.genesisShoal.y : WORLD_H * 0.5;
+            const reborn = spawnOrganismEntity(arenaState.playerActiveBlueprint, shoalX, shoalY, 'player', {
               colonyId: 'player_colony',
               isAlpha: true,
               hpRatio: 1.0,
-              energyRatio: 0.75
+              energyRatio: 0.85,
+              spawnShieldSec: 5.0
             });
             arenaState.alpha = reborn;
             arenaState.organisms.push(reborn);
+            spawnAlgaeCluster(shoalX, shoalY, 8);
             NexusSDK.audio.warn();
-            showToast('种群全灭！已在培养皿中心重新降生新一代始祖');
+            showToast('种群全灭！已在【起源浅滩】中心重新降生新一代始祖（5秒破膜适应期保护）');
           }
         }
+      }
+
+      // 判断坐标是否位于【起源浅滩 (Genesis Shoal)】生态庇护区内
+      function isInsideGenesisShoal(x, y, margin = 0) {
+        const shoal = arenaState.genesisShoal;
+        if (!shoal) return false;
+        return Math.hypot(x - shoal.x, y - shoal.y) <= (shoal.radius + margin);
       }
 
       // 判断观察者 observer 能否通过自身感官发现 target (02 第 2.3 节 & 04 第 2.2 节)
@@ -2720,19 +2806,30 @@
         const cyc = arenaState.timeSec % 180;
         const isNight = arenaState.biome.forceNight || (cyc >= 82 && cyc <= 170);
 
-        // 环境定时局部刷新微藻 (每 3.5s 在热泉与随机生态点注入能量；黑夜微藻刷新率减半)
+        // 环境定时局部刷新微藻 (每 3.5s 在起源浅滩、热泉与随机生态点注入能量；黑夜微藻刷新率减半)
         if (arenaState.timeSec - arenaState.lastAlgaeSpawnSec >= 3.5) {
           arenaState.lastAlgaeSpawnSec = arenaState.timeSec;
+          if (arenaState.genesisShoal) {
+            spawnAlgaeCluster(arenaState.genesisShoal.x, arenaState.genesisShoal.y, isNight ? 2 : 4);
+          }
           const v = arenaState.vents[Math.floor(Math.random() * arenaState.vents.length)];
           if (v) spawnAlgaeCluster(v.x, v.y, isNight ? 2 : 4);
           spawnAlgaeCluster(200 + Math.random() * (WORLD_W - 400), 200 + Math.random() * (WORLD_H - 400), isNight ? 3 : 6);
         }
 
-        // 补充野生生态种群维持沙盘活力
+        // 补充野生生态种群维持沙盘活力（肉食/杂食掠食者强制生成在【起源浅滩】安全距离 580px 之外）
         if (arenaState.organisms.length < 22 && Math.random() < dt * 0.8) {
           const fBp = officialFossils[Math.floor(Math.random() * officialFossils.length)];
-          arenaState.organisms.push(spawnOrganismEntity(fBp, Math.random() * WORLD_W, Math.random() * WORLD_H, 'wild', {
-            colonyId: 'wild_' + fBp.speciesId
+          let rx = 180 + Math.random() * (WORLD_W - 360);
+          let ry = 180 + Math.random() * (WORLD_H - 360);
+          if (fBp.dietType !== 'herbivore') {
+            const safeW = clampOutsideGenesisShoal(rx, ry, 580);
+            rx = safeW.x;
+            ry = safeW.y;
+          }
+          arenaState.organisms.push(spawnOrganismEntity(fBp, rx, ry, 'wild', {
+            colonyId: 'wild_' + fBp.speciesId,
+            territoryCenter: { x: rx, y: ry, radius: 440 }
           }));
         }
 
@@ -2769,7 +2866,7 @@
             continue;
           }
           arenaState.organisms.forEach((org) => {
-            if (org.hp <= 0 || org.colonyId === h.ownerColony) return;
+            if (org.hp <= 0 || org.colonyId === h.ownerColony || (org.spawnShieldTimer && org.spawnShieldTimer > 0)) return;
             if (Math.hypot(org.x - h.x, org.y - h.y) <= h.radius + org.radius) {
               if (h.type === 'ink') {
                 org.blindTimer = Math.max(org.blindTimer, 1.5);
@@ -2784,6 +2881,7 @@
         // 更新所有生物个体：代谢、感官 AI、转向移动、进食与撕咬
         const alpha = arenaState.alpha;
         const pheromoneMode = PHEROMONE_MODES[arenaState.pheromoneIdx];
+        const shoal = arenaState.genesisShoal;
 
         arenaState.organisms.forEach((org) => {
           if (org.hp <= 0) return;
@@ -2797,6 +2895,7 @@
           if (org.suppressedTimer > 0) org.suppressedTimer = Math.max(0, org.suppressedTimer - dt);
           if (org.slowTimer > 0) org.slowTimer = Math.max(0, org.slowTimer - dt);
           if (org.iceShieldTimer > 0) org.iceShieldTimer = Math.max(0, org.iceShieldTimer - dt);
+          if (org.spawnShieldTimer > 0) org.spawnShieldTimer = Math.max(0, org.spawnShieldTimer - dt);
 
           // 清理第四章首领【千目原质母体】已到期的 12.0s FIFO 同化器官槽位
           if (org.assimilatedOrgans && org.assimilatedOrgans.length > 0) {
@@ -2818,13 +2917,14 @@
           }
 
           // 毒伤结算
-          if (org.poisonTimer > 0) {
+          if (org.poisonTimer > 0 && !(org.spawnShieldTimer > 0)) {
             org.poisonTimer = Math.max(0, org.poisonTimer - dt);
             org.hp = Math.max(1, org.hp - org.poisonDps * dt);
           }
 
-          // 各章节首领专属环境与机制：
-          if (org.isBoss && alpha) {
+          // 各章节首领专属环境与机制（若玩家位于【起源浅滩】内或处于 5s 破膜适应期，免疫首领牵引与压制）：
+          const alphaProtected = alpha && ((alpha.spawnShieldTimer > 0) || isInsideGenesisShoal(alpha.x, alpha.y));
+          if (org.isBoss && alpha && !alphaProtected) {
             const dToAlpha = Math.hypot(alpha.x - org.x, alpha.y - org.y);
             // 第一章首领【阿米巴吞噬巨核】：周期性旋涡吸附 (<260px 向首领中心牵引)
             if (selectedBiomeId === 0 && dToAlpha < 260 && dToAlpha > 12) {
@@ -2883,8 +2983,10 @@
             }
           } else {
             // 电脑 NPC 感官驱动效用 AI 决策 (含感官前置天敌预警与反比平方逃逸向量合成)
+            const role = org.nicheRole || (org.blueprint.dietType === 'herbivore' ? 'herd' : (org.isBoss ? 'apex' : 'pack'));
             const w = org.blueprint.aiWeights;
-            if (org.energy >= org.maxEnergy * (0.95 - 0.15 * w.w_repro) && Math.random() < dt * w.w_repro) {
+            // 领主智能 (apex) 独来独往，野生领主不执行成群分裂繁殖；仅群居 (herd)、协同 (pack) 及玩家同族可执行分裂
+            if ((role !== 'apex' || org.colonyId === 'player_colony') && org.energy >= org.maxEnergy * (0.95 - 0.15 * w.w_repro) && Math.random() < dt * w.w_repro) {
               tryMitosisReproduce(org);
             }
 
@@ -2893,6 +2995,8 @@
             arenaState.foods.forEach((f) => {
               if (f.type === 'algae' && st.herbEff <= 0) return;
               if (f.type === 'meat' && (st.carnEff <= 0 || f.sourceColonyId === org.colonyId)) return;
+              // 野生捕食者不觊觎【起源浅滩】内部的食物
+              if (org.colonyId !== 'player_colony' && org.blueprint.dietType !== 'herbivore' && isInsideGenesisShoal(f.x, f.y)) return;
               const d = Math.hypot(f.x - org.x, f.y - org.y);
               if (d < bestFoodDist && canEntitySenseTarget(org, f, isNight, f.type === 'algae').sensed) {
                 bestFoodDist = d;
@@ -2911,6 +3015,13 @@
 
             arenaState.organisms.forEach((other) => {
               if (other.hp <= 0 || other.colonyId === org.colonyId) return;
+              // 【起源浅滩】与【5秒破膜适应期】双重庇护：野生捕食者忽略处于破膜免疫期或位于起源浅滩内的玩家种群个体
+              if (org.colonyId !== 'player_colony' && (
+                (other.spawnShieldTimer && other.spawnShieldTimer > 0) ||
+                (other.colonyId === 'player_colony' && isInsideGenesisShoal(other.x, other.y))
+              )) {
+                return;
+              }
               const d = Math.hypot(other.x - org.x, other.y - org.y);
               if (canEntitySenseTarget(org, other, isNight, false).sensed) {
                 const selfHatred = org.hatredMap.get(other.id) || 0;
@@ -2958,15 +3069,14 @@
             );
 
             // =====================================================================
-            // NPC 生态位智能决策系统：领主智能 (apex) | 协同智能 (pack) | 群居智能 (herd)
+            // NPC 生态位智能决策系统：羊群群居智能 (herd) | 领主智能 (apex) | 狼群协同智能 (pack)
             // =====================================================================
-            const role = org.nicheRole || (org.blueprint.dietType === 'herbivore' ? 'herd' : (org.isBoss ? 'apex' : 'pack'));
 
-            // 1. 群居智能 (herd): 类似羊群 Boids 凝聚、对齐、分离 + 惊群连锁逃散
+            // 1. 羊群群居智能 (herd): 单位矢量加权 Boids (凝聚 Cohesion + 对齐 Alignment + 分离 Separation) + 结伴采食 + 惊群连锁逃散
             if (role === 'herd') {
               if (org.herdPanicTimer > 0) org.herdPanicTimer = Math.max(0, org.herdPanicTimer - dt);
 
-              // 检查群友是否有人在逃命 -> 触发羊群连锁惊厥
+              // 检查 240px 内群友是否受惊逃逸 -> 触发羊群连锁惊群 (Stampede Cascade)
               if (org.herdPanicTimer <= 0) {
                 for (let ki = 0; ki < arenaState.organisms.length; ki++) {
                   const kin = arenaState.organisms[ki];
@@ -2983,26 +3093,25 @@
               }
 
               if (shouldPreemptiveEvade || org.herdPanicTimer > 0) {
-                // 惊群狂奔：集体朝背离天敌威胁的方向全速冲刺
+                // 惊群狂奔：合成多威胁斥力向量与群友逃跑方向集体冲刺
                 org.isEvading = true;
                 const threat = nearestThreat || org.herdPanicTarget;
-                if (threat) {
-                  const pAng = Math.atan2(org.y - threat.y, org.x - threat.x);
-                  org.targetAngle = pAng;
-                } else {
+                if (evadeX !== 0 || evadeY !== 0) {
                   org.targetAngle = Math.atan2(evadeY, evadeX);
+                } else if (threat) {
+                  org.targetAngle = Math.atan2(org.y - threat.y, org.x - threat.x);
                 }
                 if (nearestThreatDist < 160 && org.skillCd <= 0 && st.activeSkill) {
                   triggerEntityActiveSkill(org);
                 }
               } else {
                 org.isEvading = false;
-                // Boids 算法：向同伴质心靠近 (Cohesion) + 航向对齐 (Alignment)
+                // 单位向量加权 Boids 算法（彻底修复 ±π 算术平均方向翻转 Bug）
                 let cohX = 0, cohY = 0, aliX = 0, aliY = 0, kinCount = 0;
                 arenaState.organisms.forEach((kin) => {
                   if (kin === org || kin.hp <= 0 || kin.colonyId !== org.colonyId) return;
                   const kd = Math.hypot(kin.x - org.x, kin.y - org.y);
-                  if (kd < 220) {
+                  if (kd < 240) {
                     cohX += kin.x;
                     cohY += kin.y;
                     aliX += Math.cos(kin.angle);
@@ -3011,34 +3120,56 @@
                   }
                 });
 
+                let flockVecX = 0;
+                let flockVecY = 0;
+                if (kinCount > 0) {
+                  const cx = (cohX / kinCount) - org.x;
+                  const cy = (cohY / kinCount) - org.y;
+                  const cLen = Math.hypot(cx, cy) || 1;
+                  const aLen = Math.hypot(aliX, aliY) || 1;
+                  flockVecX = (aliX / aLen) * 0.58 + (cx / cLen) * 0.42;
+                  flockVecY = (aliY / aLen) * 0.58 + (cy / cLen) * 0.42;
+                }
+
                 if (bestFood) {
-                  org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
-                } else if (kinCount > 0) {
-                  const centerDir = Math.atan2((cohY / kinCount) - org.y, (cohX / kinCount) - org.x);
-                  const alignDir = Math.atan2(aliY, aliX);
-                  org.targetAngle = alignDir * 0.6 + centerDir * 0.4;
+                  // 结伴采食：70% 朝向微藻食物 + 30% 维持羊群凝聚队形，避免一见食物就散伙
+                  const fx = (bestFood.x - org.x) / Math.max(1, bestFoodDist);
+                  const fy = (bestFood.y - org.y) / Math.max(1, bestFoodDist);
+                  const sumX = fx * 0.72 + flockVecX * 0.28;
+                  const sumY = fy * 0.72 + flockVecY * 0.28;
+                  org.targetAngle = Math.atan2(sumY, sumX);
+                } else if (kinCount > 0 && (flockVecX !== 0 || flockVecY !== 0)) {
+                  org.targetAngle = Math.atan2(flockVecY, flockVecX);
                 } else {
                   org.targetAngle = org.angle + Math.sin(arenaState.timeSec * 0.8 + org.phaseOffset) * 0.22;
                 }
               }
             }
-            // 2. 领主智能 (apex): 独来独往，有大片专属领地，领地意识极强，巡视并狂暴扑杀入侵者
+            // 2. 领主智能 (apex): 顶级掠食者，独来独往，大片专属领地，仅对【感官发现或已激怒】的领地入侵者狂暴扑杀
             else if (role === 'apex') {
               org.isEvading = false;
-              const territory = org.territoryCenter || { x: org.x, y: org.y, radius: 480 };
+              const territory = org.territoryCenter || { x: org.x, y: org.y, radius: 460 };
               const dToTerritory = Math.hypot(org.x - territory.x, org.y - territory.y);
 
-              // 检查是否有异族入侵领地 (以 territoryCenter 为圆心，半径 480px)
+              // 检查是否有异族或另一只领主入侵本领主领地 (必须通过感官探测或受击仇恨感知，杜绝全知透视作弊)
               let intruder = null;
               let intruderDist = 9999;
               arenaState.organisms.forEach((other) => {
-                if (other.hp <= 0 || other === org || other.colonyId === org.colonyId) return;
+                if (other.hp <= 0 || other === org) return;
+                // 同族非领主不视作入侵；但若对方也是 apex 领主（一山不容二虎），同样驱逐
+                if (other.colonyId === org.colonyId && other.nicheRole !== 'apex') return;
+                // 尊重【起源浅滩】与【5秒破膜适应期】保护
+                if ((other.spawnShieldTimer && other.spawnShieldTimer > 0) || (other.colonyId === 'player_colony' && isInsideGenesisShoal(other.x, other.y))) return;
+
                 const dIn = Math.hypot(other.x - territory.x, other.y - territory.y);
-                if (dIn < territory.radius + 60) {
-                  const dToSelf = Math.hypot(other.x - org.x, other.y - org.y);
-                  if (dToSelf < intruderDist) {
-                    intruderDist = dToSelf;
-                    intruder = other;
+                if (dIn < territory.radius + 45) {
+                  const hasHatred = (org.hatredMap.get(other.id) || 0) > 5;
+                  if (hasHatred || canEntitySenseTarget(org, other, isNight, false).sensed) {
+                    const dToSelf = Math.hypot(other.x - org.x, other.y - org.y);
+                    if (dToSelf < intruderDist) {
+                      intruderDist = dToSelf;
+                      intruder = other;
+                    }
                   }
                 }
               });
@@ -3049,34 +3180,35 @@
                 if (intruderDist < 220 && org.skillCd <= 0 && Math.random() < dt * 2.2) {
                   triggerEntityActiveSkill(org);
                 }
-              } else if (bestFood && st.carnEff > 0 && org.energy < org.maxEnergy * 0.75) {
-                // 饱腹进食有机肉块
+              } else if (bestFood && st.carnEff > 0 && org.energy < org.maxEnergy * 0.78) {
+                // 领地内进食有机肉块
                 org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
               } else {
-                // 独来独往领地巡逻：若偏离领地中心则向心引导，否则大半径从容巡航游弋
+                // 独来独往领地巡航：超出领地半径 75% 时向心折返，否则沿专属领地环道从容巡视
                 if (dToTerritory > territory.radius * 0.75) {
                   org.targetAngle = Math.atan2(territory.y - org.y, territory.x - org.x);
                 } else {
-                  org.territoryAngle = (org.territoryAngle || 0) + 0.012;
+                  org.territoryAngle = (org.territoryAngle || 0) + 0.65 * dt;
                   const patrolX = territory.x + Math.cos(org.territoryAngle) * (territory.radius * 0.55);
                   const patrolY = territory.y + Math.sin(org.territoryAngle) * (territory.radius * 0.55);
                   org.targetAngle = Math.atan2(patrolY - org.y, patrolX - org.x);
                 }
               }
             }
-            // 3. 协同智能 (pack): 协同狩猎，呼应同伴广播，扇形包抄合围，交替游走撕咬
+            // 3. 狼群协同智能 (pack): 协同狩猎，同伴感官广播共享目标，动态多翼扇形包抄合围 + 扑咬后侧退游走 (Hit-and-Run)
             else {
               if (org.hitAndRunTimer > 0) org.hitAndRunTimer = Math.max(0, org.hitAndRunTimer - dt);
 
-              // 狼群通信与目标共享：呼应半径 380px 内同伴的目标
+              // 狼群通信与目标共享：呼应半径 380px 内同伴通过感官锁定的目标（且目标未受起源浅滩庇护）
               let sharedPackTarget = nearestEnemy;
               if (!sharedPackTarget) {
                 for (let pi = 0; pi < arenaState.organisms.length; pi++) {
                   const mate = arenaState.organisms[pi];
                   if (mate !== org && mate.hp > 0 && mate.colonyId === org.colonyId) {
-                    if (mate.packCurrentTarget && mate.packCurrentTarget.hp > 0) {
+                    const candidate = mate.packCurrentTarget;
+                    if (candidate && candidate.hp > 0 && !(candidate.spawnShieldTimer > 0) && !(candidate.colonyId === 'player_colony' && isInsideGenesisShoal(candidate.x, candidate.y))) {
                       if (Math.hypot(mate.x - org.x, mate.y - org.y) < 380) {
-                        sharedPackTarget = mate.packCurrentTarget;
+                        sharedPackTarget = candidate;
                         break;
                       }
                     }
@@ -3096,12 +3228,25 @@
                 const dTarget = Math.hypot(sharedPackTarget.x - org.x, sharedPackTarget.y - org.y);
                 const directAng = Math.atan2(sharedPackTarget.y - org.y, sharedPackTarget.x - org.x);
 
+                // 动态计算本个体在围猎狼群中的包抄侧翼槽位序号，形成左右合围扇面
+                let packSlotIdx = 0;
+                for (let pi = 0; pi < arenaState.organisms.length; pi++) {
+                  const mate = arenaState.organisms[pi];
+                  if (mate === org) break;
+                  if (mate.hp > 0 && mate.colonyId === org.colonyId && mate.packCurrentTarget === sharedPackTarget) {
+                    packSlotIdx++;
+                  }
+                }
+                const flankSign = packSlotIdx % 2 === 1 ? 1 : -1;
+                const flankMag = packSlotIdx === 0 ? 0 : Math.min(1.15, Math.ceil(packSlotIdx / 2) * 0.52);
+                const dynamicFlank = flankSign * flankMag;
+
                 if (org.hitAndRunTimer > 0) {
-                  // 刚刚咬完一击：向侧后方微退游走，给同伴让出扑咬通道
-                  org.targetAngle = directAng + (org.packFlankAngle || 0.6) * 1.5;
+                  // 刚刚咬完一击：向侧后方切向游走脱离，给同伴让出正面扑咬通道
+                  org.targetAngle = directAng + (flankSign * 1.35);
                 } else {
-                  // 协同包抄合围：左翼/右翼扇形夹角包抄切入
-                  const flank = dTarget > 110 ? (org.packFlankAngle || 0) : 0;
+                  // 协同包抄合围：距离 > 95px 时按分配的左右翼夹角包抄，抵近后收拢直扑目标
+                  const flank = dTarget > 95 ? dynamicFlank : 0;
                   org.targetAngle = directAng + flank;
                   if (dTarget < 210 && org.skillCd <= 0) {
                     triggerEntityActiveSkill(org);
@@ -3116,22 +3261,38 @@
               }
             }
 
-            // 防扎堆与领主独来独往强排斥力
+            // 防扎堆、领主独来独往强排斥力 (360px) 以及【起源浅滩】对野生捕食者的信息素屏障排斥
             let sepX = 0;
             let sepY = 0;
-            const sepDist = role === 'apex' ? 120 : (role === 'herd' ? 38 : 46);
+            const sepDist = role === 'apex' ? 160 : (role === 'herd' ? 38 : 48);
             arenaState.organisms.forEach((otherOrg) => {
               if (otherOrg === org || otherOrg.hp <= 0) return;
               const kx = org.x - otherOrg.x;
               const ky = org.y - otherOrg.y;
               const kd = Math.hypot(kx, ky);
-              if (kd > 0.1 && kd < sepDist) {
-                const pushWeight = (role === 'apex' && otherOrg.nicheRole === 'apex') ? 2.5 : 0.9;
-                const push = ((sepDist - kd) / sepDist) * pushWeight;
+              const bothApex = (role === 'apex' && otherOrg.nicheRole === 'apex');
+              const effSepDist = bothApex ? 360 : sepDist;
+              if (kd > 0.1 && kd < effSepDist) {
+                const pushWeight = bothApex ? 3.2 : 0.9;
+                const push = ((effSepDist - kd) / effSepDist) * pushWeight;
                 sepX += (kx / kd) * push;
                 sepY += (ky / kd) * push;
               }
             });
+
+            // 【起源浅滩 (Genesis Shoal)】生态屏障：排斥一切非玩家阵营的肉食/杂食捕食者与 Boss
+            if (shoal && org.colonyId !== 'player_colony' && (org.isBoss || role === 'apex' || role === 'pack' || org.blueprint.dietType !== 'herbivore')) {
+              const sx = org.x - shoal.x;
+              const sy = org.y - shoal.y;
+              const sd = Math.hypot(sx, sy) || 1;
+              const warnR = shoal.radius + 95;
+              if (sd < warnR) {
+                const shoalPush = ((warnR - sd) / 95) * 4.5;
+                sepX += (sx / sd) * shoalPush;
+                sepY += (sy / sd) * shoalPush;
+              }
+            }
+
             if (sepX !== 0 || sepY !== 0) {
               const dirX = Math.cos(org.targetAngle) + sepX;
               const dirY = Math.sin(org.targetAngle) + sepY;
@@ -3194,6 +3355,25 @@
 
           org.x = Math.max(org.radius, Math.min(WORLD_W - org.radius, org.x + org.vx * dt));
           org.y = Math.max(org.radius, Math.min(WORLD_H - org.radius, org.y + org.vy * dt));
+
+          // 【起源浅滩 (Genesis Shoal)】硬物理势垒：严禁野生捕食者 (apex / pack / 肉食 / 杂食 / Boss) 闯入起源浅滩半径内
+          if (shoal && org.colonyId !== 'player_colony' && (org.isBoss || org.nicheRole === 'apex' || org.nicheRole === 'pack' || org.blueprint.dietType !== 'herbivore')) {
+            const dxS = org.x - shoal.x;
+            const dyS = org.y - shoal.y;
+            const distS = Math.hypot(dxS, dyS) || 1;
+            const minS = shoal.radius + org.radius + 6;
+            if (distS < minS) {
+              const nxS = dxS / distS;
+              const nyS = dyS / distS;
+              org.x = shoal.x + nxS * minS;
+              org.y = shoal.y + nyS * minS;
+              const dotS = org.vx * nxS + org.vy * nyS;
+              if (dotS < 0) {
+                org.vx -= 1.5 * dotS * nxS;
+                org.vy -= 1.5 * dotS * nyS;
+              }
+            }
+          }
 
           // 4. 进食微藻与有机肉块 (严格遵守食性转化率与同族禁食法则)
           for (let fi = arenaState.foods.length - 1; fi >= 0; fi--) {
@@ -3411,6 +3591,35 @@
         }
         for (let y = startY; y < camY + viewH * 0.5; y += 80) {
           ctx.beginPath(); ctx.moveTo(camX - viewW * 0.5, y); ctx.lineTo(camX + viewW * 0.5, y); ctx.stroke();
+        }
+
+        // 1.5 绘制中央【起源浅滩 (Genesis Shoal)】新物种摇篮生态庇护区边界环与暖流光晕
+        if (arenaState.genesisShoal) {
+          const gs = arenaState.genesisShoal;
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(gs.x, gs.y, gs.radius, 0, Math.PI * 2);
+          if (sonarWireframeMode) {
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.06)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(16, 185, 129, 0.55)';
+            ctx.lineWidth = 1.6;
+            ctx.setLineDash([8, 6]);
+            ctx.stroke();
+          } else {
+            const gradShoal = ctx.createRadialGradient(gs.x, gs.y, gs.radius * 0.15, gs.x, gs.y, gs.radius);
+            gradShoal.addColorStop(0, 'rgba(16, 185, 129, 0.12)');
+            gradShoal.addColorStop(0.75, 'rgba(45, 212, 191, 0.06)');
+            gradShoal.addColorStop(1, 'rgba(16, 185, 129, 0.01)');
+            ctx.fillStyle = gradShoal;
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(52, 211, 153, 0.42)';
+            ctx.lineWidth = 1.8;
+            ctx.setLineDash([10, 6]);
+            ctx.stroke();
+          }
+          ctx.setLineDash([]);
+          ctx.restore();
         }
 
         // 声呐雷达模式下绘制同心雷达距离刻度环、十字准星与扩散扫描波前
@@ -3799,7 +4008,7 @@
         }
       } catch (_e) {}
       // 调试探针导出
-      window.__debugGenesis = () => ({ arenaState, resolveOrganismCollisions, spawnOrganismEntity, classifySonarRelation, getSonarPalette });
+      window.__debugGenesis = () => ({ arenaState, resolveOrganismCollisions, spawnOrganismEntity, classifySonarRelation, getSonarPalette, isInsideGenesisShoal, clampOutsideGenesisShoal, applyDamage, stepArenaSimulation });
     })();
     }
 
