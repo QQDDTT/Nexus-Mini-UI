@@ -113,19 +113,19 @@
           }
         },
         'mouth-carn': {
-          id: 'mouth-carn', category: 'mouth', diet: 'carnivore', branchName: '撕裂几丁骨颚 (肉食强撕咬)',
+          id: 'mouth-carn', category: 'mouth', diet: 'carnivore', branchName: '撕裂几丁骨颚 (肉食强撕咬·击杀食肉)',
           levels: {
-            1: { name: '裂噬几丁单颚', sprite: 'mouth-carn-lv1.svg', gp: 0, bmr: 0.45, herbEff: 0, carnEff: 1.25, funnelR: 28, biteDmg: 26, biteCost: 2.5, lifesteal: 0.15 },
-            2: { name: '倒钩锯齿双巨颚', sprite: 'mouth-carn-lv2.svg', gp: 130, bmr: 0.85, herbEff: 0, carnEff: 1.45, funnelR: 32, biteDmg: 42, biteCost: 3.5, lifesteal: 0.22 },
-            3: { name: '深渊断骨碎甲利刃', sprite: 'mouth-carn-lv3.svg', gp: 340, bmr: 1.40, herbEff: 0, carnEff: 1.70, funnelR: 36, biteDmg: 64, biteCost: 4.5, lifesteal: 0.30 }
+            1: { name: '裂噬几丁单颚', sprite: 'mouth-carn-lv1.svg', gp: 0, bmr: 0.45, herbEff: 0, carnEff: 1.35, funnelR: 34, biteDmg: 26, biteCost: 2.2, lifesteal: 0 },
+            2: { name: '倒钩锯齿双巨颚', sprite: 'mouth-carn-lv2.svg', gp: 130, bmr: 0.85, herbEff: 0, carnEff: 1.60, funnelR: 40, biteDmg: 42, biteCost: 3.0, lifesteal: 0 },
+            3: { name: '深渊断骨碎甲利刃', sprite: 'mouth-carn-lv3.svg', gp: 340, bmr: 1.40, herbEff: 0, carnEff: 1.90, funnelR: 46, biteDmg: 64, biteCost: 4.0, lifesteal: 0 }
           }
         },
         'mouth-omni': {
           id: 'mouth-omni', category: 'mouth', diet: 'omnivore', branchName: '双用刺吸口吻 (杂食均衡)',
           levels: {
-            1: { name: '初级双用刺吸吻', sprite: 'mouth-omni-lv1.svg', gp: 0, bmr: 0.25, herbEff: 0.85, carnEff: 0.85, funnelR: 36, biteDmg: 14, biteCost: 1.8, lifesteal: 0.05 },
-            2: { name: '钳状分节咀嚼喙', sprite: 'mouth-omni-lv2.svg', gp: 100, bmr: 0.45, herbEff: 0.95, carnEff: 0.95, funnelR: 42, biteDmg: 22, biteCost: 2.4, lifesteal: 0.08 },
-            3: { name: '酸解高频融合口器', sprite: 'mouth-omni-lv3.svg', gp: 260, bmr: 0.75, herbEff: 1.10, carnEff: 1.10, funnelR: 48, biteDmg: 32, biteCost: 3.0, lifesteal: 0.12 }
+            1: { name: '初级双用刺吸吻', sprite: 'mouth-omni-lv1.svg', gp: 0, bmr: 0.25, herbEff: 0.85, carnEff: 0.90, funnelR: 36, biteDmg: 14, biteCost: 1.6, lifesteal: 0 },
+            2: { name: '钳状分节咀嚼喙', sprite: 'mouth-omni-lv2.svg', gp: 100, bmr: 0.45, herbEff: 0.95, carnEff: 1.05, funnelR: 42, biteDmg: 22, biteCost: 2.2, lifesteal: 0 },
+            3: { name: '酸解高频融合口器', sprite: 'mouth-omni-lv3.svg', gp: 260, bmr: 0.75, herbEff: 1.10, carnEff: 1.20, funnelR: 48, biteDmg: 32, biteCost: 2.8, lifesteal: 0 }
           }
         },
 
@@ -2990,6 +2990,31 @@
       /* =====================================================================
        * 11. 伤害结算、热力学肉块掉落、GP 差分掉落与感官驱动 AI 决策循环
        * ===================================================================== */
+      // 计算生物有效体型体积 (综合躯干基础体积、幼体发育比例与首领倍率)
+      function getEntityEffectiveVolume(ent) {
+        if (!ent || !ent.blueprint) return 1.0;
+        const torso = TORSOS[ent.blueprint.torsoId] || TORSOS['torso-t1-micro'];
+        const g = ent.growthScale !== undefined ? ent.growthScale : 1.0;
+        const bossMult = ent.isBoss ? 2.4 : 1.0;
+        return torso.volume * g * g * bossMult;
+      }
+
+      // 判定捕食者与猎物是否存在【极大体型悬殊】从而允许直接一口吞噬活体 (Swallow Whole)：
+      // - 相似/相近体型 (如 T01 vs T01、T02 vs T02、T02 vs T01、T03 vs T02、T04 vs T03)：返回 false，严禁直接吞噬活体，必须通过攻击杀死猎物，待猎物死后转化为【肉 (meat)】才能吞噬！
+      // - 极大体型悬殊 (有效体积比 >= 3.2 倍 且 半径比 >= 1.55 倍，如成年 T03/T04 捕食 T01、成年 T04 捕食 T02 或成年巨兽捕食刚分裂的极小幼体，且猎物非首领)：返回 true，允许直接活体吞噬！
+      function canSwallowWhole(predator, prey) {
+        if (!predator || !prey || predator.hp <= 0 || prey.hp <= 0) return false;
+        if (predator.colonyId === prey.colonyId || prey.isBoss) return false;
+        if (prey.spawnShieldTimer && prey.spawnShieldTimer > 0) return false;
+        const predSt = getEffectiveStats(predator);
+        if ((predSt.carnEff || 0) <= 0) return false;
+        const predVol = getEntityEffectiveVolume(predator);
+        const preyVol = getEntityEffectiveVolume(prey);
+        const volRatio = predVol / Math.max(0.1, preyVol);
+        const radRatio = predator.radius / Math.max(1, prey.radius);
+        return volRatio >= 3.2 && radRatio >= 1.55;
+      }
+
       function applyDamage(victim, rawDmg, attacker) {
         if (!victim || victim.hp <= 0) return;
         // 主动发起攻击时立即解除攻击者的 5 秒【破膜适应期】初生免疫
@@ -3000,6 +3025,11 @@
         if (victim.spawnShieldTimer && victim.spawnShieldTimer > 0) return;
         const vSt = getEffectiveStats(victim);
         let finalDmg = rawDmg * (1 - vSt.damageReduction);
+
+        // 在相似/相近体型下（未达到直接吞噬的极大悬殊阈值），单次攻击伤害上限不超过猎物最大生命的 42%，确保满血猎物必须经过多次真实撕咬战斗才会被杀死转化为肉
+        if (attacker && !canSwallowWhole(attacker, victim)) {
+          finalDmg = Math.min(finalDmg, victim.maxHp * 0.42);
+        }
 
         // 第二章首领【晶甲熔岩虱】正面硫化晶甲减免伤害
         if (victim.isBoss && selectedBiomeId === 1 && attacker) {
@@ -3043,27 +3073,53 @@
         }
 
         if (victim.hp <= 0) {
-          handleEntityDeath(victim, attacker);
+          handleEntityDeath(victim, attacker, { swallowedWhole: false });
         }
       }
 
-      function handleEntityDeath(victim, killer) {
+      function handleEntityDeath(victim, killer, opts = {}) {
         victim.hp = 0;
+        const swallowedWhole = Boolean(opts && opts.swallowedWhole);
         const torso = TORSOS[victim.blueprint.torsoId];
         const biomassScale = victim.growthScale !== undefined ? victim.growthScale : 1.0;
-        // 热力学守恒肉块能量公式: E_meat = round(8 * V^0.6 * growthScale + 0.22 * E_remaining); 跨躯干剥离旧种群 (formerKin) 肉块能量减半
-        const rawMeatEnergy = Math.max(2, Math.round(8 * Math.pow(torso.volume, 0.6) * biomassScale + 0.22 * Math.max(0, victim.energy)));
-        const meatEnergy = victim.formerKin ? Math.max(1, Math.round(rawMeatEnergy * 0.5)) : rawMeatEnergy;
-        arenaState.foods.push({
-          id: 'meat_' + Date.now() + '_' + Math.random(),
-          type: 'meat',
-          x: victim.x,
-          y: victim.y,
-          energy: meatEnergy,
-          radius: 10,
-          sourceColonyId: victim.colonyId, // 同族禁食校验标记
-          ttl: 85
-        });
+        // 热力学守恒肉块能量公式: E_meat = round(12 * V^0.65 * growthScale + 0.28 * E_remaining); 跨躯干剥离旧种群 (formerKin) 肉块能量减半
+        const rawMeatEnergy = Math.max(6, Math.round(12 * Math.pow(torso.volume, 0.65) * biomassScale + 0.28 * Math.max(0, victim.energy)));
+        const meatEnergy = victim.formerKin ? Math.max(3, Math.round(rawMeatEnergy * 0.5)) : rawMeatEnergy;
+
+        if (swallowedWhole && killer && killer.hp > 0) {
+          // 体型极大悬殊下的直接吞噬：猎物被一口整吞，生物质能量直接消化入腹，不掉落地面肉块
+          const kSt = getEffectiveStats(killer);
+          const gainE = meatEnergy * (kSt.carnEff || 1.0) * (kSt.digestEff || 1.0);
+          killer.energy = Math.min(killer.maxEnergy, killer.energy + gainE);
+          accelerateJuvenileGrowth(killer, gainE);
+          if (killer === arenaState.alpha) {
+            NexusSDK.audio.pickup();
+            showToast(`体型悬殊！直接吞噬了微型猎物【${victim.blueprint.speciesName}】(+${Math.round(gainE)} E)`);
+          }
+        } else {
+          // 相似/相近体型击杀：猎物死后转化为 1~3 块可见的【有机肉块 (meat)】，经历 0.45s 凝结散落期后方可被肉食者吞噬
+          const chunkCount = torso.volume >= 4.0 ? 3 : (torso.volume >= 2.0 ? 2 : 1);
+          const perChunkEnergy = +(meatEnergy / chunkCount).toFixed(1);
+          const baseAng = killer ? Math.atan2(victim.y - killer.y, victim.x - killer.x) : (Math.random() * Math.PI * 2);
+          for (let ci = 0; ci < chunkCount; ci++) {
+            const spread = chunkCount === 1 ? 0 : ((ci / (chunkCount - 1)) - 0.5) * 1.35;
+            const ang = baseAng + spread + (Math.random() - 0.5) * 0.25;
+            const burstSpd = chunkCount === 1 ? 26 : (34 + ci * 10);
+            arenaState.foods.push({
+              id: 'meat_' + Date.now() + '_' + ci + '_' + Math.random(),
+              type: 'meat',
+              x: Math.max(36, Math.min(WORLD_W - 36, victim.x + Math.cos(ang) * 6)),
+              y: Math.max(36, Math.min(WORLD_H - 36, victim.y + Math.sin(ang) * 6)),
+              vx: Math.cos(ang) * burstSpd,
+              vy: Math.sin(ang) * burstSpd,
+              energy: perChunkEnergy,
+              radius: chunkCount === 1 ? 10.5 : 9.5,
+              sourceColonyId: victim.colonyId, // 同族禁食校验标记
+              eatReadyAt: arenaState.timeSec + 0.45, // 猎物死亡转化为肉块的 0.45s 凝结显现期，杜绝死亡同帧瞬间消失
+              ttl: 85
+            });
+          }
+        }
 
         // 第四章首领【千目原质母体】双槽 FIFO 12.0s 器官同化
         arenaState.organisms.forEach((b) => {
@@ -3614,6 +3670,11 @@
                 if (nearestThreatDist < 175 && org.skillCd <= 0 && st.activeSkill) {
                   triggerEntityActiveSkill(org);
                 }
+              } else if (bestFood && bestFood.type === 'meat' && bestFoodDist < 195 && st.carnEff > 0) {
+                // 猎物被击杀转化为肉块后，优先趋近并吞噬肉块
+                org.isEvading = false;
+                org.hitAndRunTimer = 0;
+                org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
               } else if (sharedPackTarget && sharedPackTarget.hp > 0) {
                 org.isEvading = false;
                 const dTarget = Math.hypot(sharedPackTarget.x - org.x, sharedPackTarget.y - org.y);
@@ -3766,14 +3827,19 @@
             }
           }
 
-          // 4. 进食通用营养物质 (nutrient)、微藻 (algae) 与有机肉块 (meat)
+          // 4. 进食通用营养物质 (nutrient)、微藻 (algae) 与猎物死后转化的有机肉块 (meat)
           for (let fi = arenaState.foods.length - 1; fi >= 0; fi--) {
             const f = arenaState.foods[fi];
+            const meatReady = f.type !== 'meat' || !f.eatReadyAt || arenaState.timeSec >= f.eatReadyAt;
+            if (!meatReady) continue;
             const d = Math.hypot(f.x - org.x, f.y - org.y);
-            // 口器漏斗磁吸效应：起源浅滩通用营养物质适应所有食性，植食吸管额外磁吸微藻
-            if ((f.type === 'nutrient' || (f.type === 'algae' && st.herbEff > 0)) && d <= st.funnelR) {
-              f.x += ((org.x - f.x) / Math.max(1, d)) * 110 * dt;
-              f.y += ((org.y - f.y) / Math.max(1, d)) * 110 * dt;
+            // 口器漏斗磁吸效应：通用营养物质适应所有食性，植食吸管磁吸微藻，肉食/杂食口器在肉块凝结完成后磁吸肉块
+            const canFunnelPull = f.type === 'nutrient' ||
+              (f.type === 'algae' && st.herbEff > 0) ||
+              (f.type === 'meat' && st.carnEff > 0 && f.sourceColonyId !== org.colonyId);
+            if (canFunnelPull && d <= st.funnelR * (f.type === 'meat' ? 1.15 : 1.0)) {
+              f.x += ((org.x - f.x) / Math.max(1, d)) * 120 * dt;
+              f.y += ((org.y - f.y) / Math.max(1, d)) * 120 * dt;
             }
             if (d <= org.radius + f.radius) {
               if (f.type === 'nutrient') {
@@ -3800,21 +3866,34 @@
             }
           }
 
-          // 5. 口部接触撕咬攻击
+          // 5. 口部接触撕咬与悬殊体型直接吞噬：
+          //    - 仅当捕食者与猎物体型存在极大悬殊 (canSwallowWhole: 有效体积 >= 3.2 倍 且 半径 >= 1.55 倍) 时，才能直接一口吞噬活体猎物；
+          //    - 在相似/相近体型下，肉食动物严禁直接吞噬活体猎物（且撕咬活体不直接吸取能量），必须通过攻击杀死猎物，待猎物死后转化为【肉 (meat)】，才能吞噬肉块获取能量！
           if (org.biteCd <= 0) {
             for (let oi = 0; oi < arenaState.organisms.length; oi++) {
               const other = arenaState.organisms[oi];
               if (other.hp <= 0 || other.colonyId === org.colonyId) continue;
               const d = Math.hypot(other.x - org.x, other.y - org.y);
               if (d <= org.radius + other.radius + 6) {
-                org.biteCd = 0.65;
-                org.hitAndRunTimer = 0.85; // 协同撕咬后侧向游走，交由同伴切入
-                org.energy = Math.max(0, org.energy - st.biteCost);
-                applyDamage(other, st.biteDmg, org);
-                if (st.lifesteal > 0) {
-                  org.energy = Math.min(org.maxEnergy, org.energy + st.biteDmg * st.lifesteal);
+                if (canSwallowWhole(org, other)) {
+                  // 体型极大悬殊：直接一口吞噬活体猎物
+                  org.biteCd = 0.75;
+                  org.hitAndRunTimer = 0;
+                  org.energy = Math.max(0, org.energy - st.biteCost * 0.6);
+                  if (org.spawnShieldTimer > 0) org.spawnShieldTimer = 0;
+                  handleEntityDeath(other, org, { swallowedWhole: true });
+                } else {
+                  // 相似/相近体型：只能通过撕咬攻击扣减猎物生命，杀死猎物转化为肉块后方可吞噬肉块
+                  org.biteCd = 0.65;
+                  org.energy = Math.max(0, org.energy - st.biteCost);
+                  applyDamage(other, st.biteDmg, org);
+                  if (other.hp > 0) {
+                    org.hitAndRunTimer = 0.75; // 猎物尚存活时协同游走；若已杀死猎物则留在原地吞噬转化出的肉块
+                  } else {
+                    org.hitAndRunTimer = 0;
+                  }
+                  if (org === alpha || other === alpha) NexusSDK.audio.hit();
                 }
-                if (org === alpha || other === alpha) NexusSDK.audio.hit();
                 break;
               }
             }
@@ -3826,11 +3905,19 @@
         // =====================================================================
         resolveOrganismCollisions(dt);
 
-        // 清理死亡生物与过期食物
+        // 清理死亡生物与更新/清理食物（含猎物死亡转化肉块的微流体散落阻尼）
         arenaState.organisms = arenaState.organisms.filter((o) => o.hp > 0);
         for (let i = arenaState.foods.length - 1; i >= 0; i--) {
-          arenaState.foods[i].ttl -= dt;
-          if (arenaState.foods[i].ttl <= 0) arenaState.foods.splice(i, 1);
+          const f = arenaState.foods[i];
+          if (f.vx || f.vy) {
+            f.x = Math.max(36, Math.min(WORLD_W - 36, f.x + (f.vx || 0) * dt));
+            f.y = Math.max(36, Math.min(WORLD_H - 36, f.y + (f.vy || 0) * dt));
+            const damp = Math.exp(-5.5 * dt);
+            f.vx = (f.vx || 0) * damp;
+            f.vy = (f.vy || 0) * damp;
+          }
+          f.ttl -= dt;
+          if (f.ttl <= 0) arenaState.foods.splice(i, 1);
         }
 
         // 局域网 20Hz 状态同步广播 (Host 权威状态 / Guest 航向输入)
@@ -4483,9 +4570,21 @@
               ctx.arc(f.x, f.y, f.radius * 0.42, 0, Math.PI * 2);
               ctx.fillStyle = '#fde047';
               ctx.fill();
+            } else if (f.type === 'meat') {
+              // 猎物死亡转化出的有机肉块：珊瑚红果冻发光包络 + env-meat.svg 贴图（0.45s 凝结期内呈现转化脉冲环）
+              const converting = f.eatReadyAt && arenaState.timeSec < f.eatReadyAt;
+              ctx.beginPath();
+              ctx.arc(f.x, f.y, f.radius * (converting ? 1.65 : 1.35), 0, Math.PI * 2);
+              ctx.fillStyle = converting ? 'rgba(244, 63, 94, 0.28)' : 'rgba(244, 63, 94, 0.16)';
+              ctx.fill();
+              if (converting) {
+                ctx.strokeStyle = 'rgba(253, 224, 71, 0.85)';
+                ctx.lineWidth = 1.4;
+                ctx.stroke();
+              }
+              drawSpriteCentered(ctx, 'env-meat.svg', f.x, f.y, f.radius * 2.45, f.radius * 2.45, 0);
             } else {
-              const spKey = f.type === 'meat' ? 'env-meat.svg' : 'env-algae.svg';
-              drawSpriteCentered(ctx, spKey, f.x, f.y, f.radius * 2.3, f.radius * 2.3, 0);
+              drawSpriteCentered(ctx, 'env-algae.svg', f.x, f.y, f.radius * 2.3, f.radius * 2.3, 0);
             }
             ctx.restore();
           }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v23.4-chroma-muse-assets';
+const CACHE_NAME = 'nexus-mini-portal-v23.5-predation-size-rule';
 const CORE_ASSETS = [
   './',
   './index.html',
