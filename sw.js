@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v23.3-chroma-muse-r4';
+const CACHE_NAME = 'nexus-mini-portal-v23.4-chroma-muse-assets';
 const CORE_ASSETS = [
   './',
   './index.html',
