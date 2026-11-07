@@ -89,9 +89,9 @@
         'sensory-eye': {
           id: 'sensory-eye', category: 'sensory', senseType: 'eye', branchName: '光学视觉眼 (扇形长距 · 渐模糊)',
           levels: {
-            1: { name: '原始感光眼点', sprite: 'sensory-eye-lv1.svg', gp: 0, bmr: 0.15, dayAngle: 130, nightAngle: 90, dayRange: 380, nightRange: 215, sat: 0.55 },
-            2: { name: '晶状体折光单眼', sprite: 'sensory-eye-lv2.svg', gp: 100, bmr: 0.30, dayAngle: 165, nightAngle: 115, dayRange: 470, nightRange: 265, sat: 0.95 },
-            3: { name: '全光谱棱镜复眼', sprite: 'sensory-eye-lv3.svg', gp: 280, bmr: 0.55, dayAngle: 200, nightAngle: 140, dayRange: 560, nightRange: 320, sat: 1.25 }
+            1: { name: '原始感光眼点', sprite: 'sensory-eye-lv1.svg', gp: 0, bmr: 0.15, dayAngle: 76, nightAngle: 56, dayRange: 380, nightRange: 215, sat: 0.55 },
+            2: { name: '晶状体折光单眼', sprite: 'sensory-eye-lv2.svg', gp: 100, bmr: 0.30, dayAngle: 96, nightAngle: 72, dayRange: 470, nightRange: 265, sat: 0.95 },
+            3: { name: '全光谱棱镜复眼', sprite: 'sensory-eye-lv3.svg', gp: 280, bmr: 0.55, dayAngle: 116, nightAngle: 88, dayRange: 560, nightRange: 320, sat: 1.25 }
           }
         },
         'sensory-ear': {
@@ -473,11 +473,11 @@
           const mainEye = eyeOrgans[0];
           maxEyeLv = mainEye.level;
           const multRange = eyeOrgans.length > 1 ? 1.25 : 1.0;
-          const multAngle = eyeOrgans.length > 1 ? 1.20 : 1.0;
+          const multAngle = eyeOrgans.length > 1 ? 1.15 : 1.0;
           dayEyeRange = Math.round(mainEye.dayRange * multRange);
           nightEyeRange = Math.round(mainEye.nightRange * multRange);
-          dayEyeAngle = Math.min(270, Math.round(mainEye.dayAngle * multAngle));
-          nightEyeAngle = Math.min(270, Math.round(mainEye.nightAngle * multAngle));
+          dayEyeAngle = Math.min(136, Math.round(mainEye.dayAngle * multAngle));
+          nightEyeAngle = Math.min(108, Math.round(mainEye.nightAngle * multAngle));
           eyeSat = mainEye.sat;
         }
 
@@ -1626,23 +1626,42 @@
               ctx.lineWidth = Math.max(0.8, 1.8 * waveFalloff);
               ctx.stroke();
 
-              // 演示听觉远端目标信号衰减与渐变融合
+              // 演示听觉远端目标信号衰减与渐变融合 (置于侧后方声呐盲区，直观展现复合感知下“前视全彩 + 侧后声呐”协同效果)
               ctx.save();
               ctx.beginPath();
               ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
               ctx.clip();
               drawOrganism(ctx, {
-                x: cx + maxR * 0.78,
-                y: cy - 16,
-                angle: Math.PI * 0.82,
+                x: cx - maxR * 0.62,
+                y: cy - maxR * 0.36,
+                angle: Math.PI * 0.18,
                 faction: 'enemy',
                 isAlpha: false,
                 blueprint: officialFossils[1]
               }, {
                 freezePhase: snapTick * 6.5,
-                scale: 1.05,
+                scale: 1.02,
                 sonarWireframe: true,
-                sonarAlpha: Math.max(0.18, (1.0 - pulseFrac * 0.55) * 0.45)
+                sonarAlpha: Math.max(0.22, (1.0 - pulseFrac * 0.55) * 0.52)
+              });
+              ctx.restore();
+            }
+
+            // 若装备视觉器官，在前方视觉扇形内演示全彩清晰目标
+            if (st.maxEyeLv > 0) {
+              const eyePreviewR = (editorPreviewIsNight ? st.nightEyeRange : st.dayEyeRange) * 0.26;
+              ctx.save();
+              drawOrganism(ctx, {
+                x: cx + Math.cos(swimAng) * Math.min(w * 0.34, eyePreviewR * 0.62),
+                y: cy + Math.sin(swimAng) * Math.min(h * 0.34, eyePreviewR * 0.62),
+                angle: swimAng + Math.PI * 0.75,
+                faction: 'herbivore',
+                isAlpha: false,
+                blueprint: officialFossils[0]
+              }, {
+                timeSec: tSec,
+                scale: 0.92,
+                sonarWireframe: false
               });
               ctx.restore();
             }
@@ -4493,6 +4512,26 @@
         });
       }
 
+      // 离屏复合感官图层与平滑 Alpha 羽化遮罩缓存 (用于将【近体绝对感知彩色区 + 视觉长距扇形】以真实 Alpha 透明度平滑融合至下层【360° 听觉声呐层 / 深海原汤基底】，杜绝黑环断层与黑三角切痕)
+      let colorPassCanvas = null;
+      let senseMaskCanvas = null;
+      function getCompositeSenseCanvases(w, h) {
+        if (!colorPassCanvas) colorPassCanvas = document.createElement('canvas');
+        if (!senseMaskCanvas) senseMaskCanvas = document.createElement('canvas');
+        if (colorPassCanvas.width !== w || colorPassCanvas.height !== h) {
+          colorPassCanvas.width = w;
+          colorPassCanvas.height = h;
+        }
+        if (senseMaskCanvas.width !== w || senseMaskCanvas.height !== h) {
+          senseMaskCanvas.width = w;
+          senseMaskCanvas.height = h;
+        }
+        return {
+          colorCtx: colorPassCanvas.getContext('2d'),
+          maskCtx: senseMaskCanvas.getContext('2d')
+        };
+      }
+
       function renderArenaFrame() {
         const canvas = document.getElementById('petri-canvas');
         const alpha = arenaState.alpha;
@@ -4513,8 +4552,7 @@
         const hasEar = st.maxEarLv > 0;
         const effEyeRange = hasEye ? (alpha.blindTimer > 0 ? Math.max(absR * 1.15, 130) : (isNight ? st.nightEyeRange : st.dayEyeRange)) : 0;
         const halfEyeRad = hasEye ? (((isNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180)) : 0;
-        const eyeAngFeather = Math.min(0.32, halfEyeRad * 0.28);
-        const maxColorR = Math.max(absR * 1.22, effEyeRange);
+        const eyeAngFeather = Math.min(0.34, halfEyeRad * 0.30);
 
         ctx.shadowBlur = 0;
         ctx.clearRect(0, 0, w, h);
@@ -4538,77 +4576,118 @@
           ctx.clip();
           renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, true);
 
-          // 听觉区外缘径向渐变融合暗角：距离越远信号越弱，在边界处完全融入深海原汤背景，消除生硬圆环切边
-          const earFadeGrad = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.8, alpha.x, alpha.y, st.sonarRange);
+          // 仅在声呐最外圈 (70% ~ 100% 射程) 施加柔和边缘暗角融入深海原汤，保持中近距声呐清晰通透
+          const earFadeGrad = ctx.createRadialGradient(alpha.x, alpha.y, st.sonarRange * 0.68, alpha.x, alpha.y, st.sonarRange);
           earFadeGrad.addColorStop(0, `rgba(${outerRgb}, 0.0)`);
-          earFadeGrad.addColorStop(0.55, `rgba(${outerRgb}, 0.22)`);
-          earFadeGrad.addColorStop(0.82, `rgba(${outerRgb}, 0.62)`);
-          earFadeGrad.addColorStop(1, `rgba(${outerRgb}, 0.96)`);
+          earFadeGrad.addColorStop(0.55, `rgba(${outerRgb}, 0.32)`);
+          earFadeGrad.addColorStop(1, `rgba(${outerRgb}, 0.94)`);
           ctx.fillStyle = earFadeGrad;
           ctx.fillRect(alpha.x - st.sonarRange, alpha.y - st.sonarRange, st.sonarRange * 2, st.sonarRange * 2);
           ctx.restore();
         }
 
-        // 2. 绝对感知彩色区 + 视觉长距扇形层 (Layer 2 —— 个体附近始终显示彩色界面；若有视觉器官则叠加长距扇形，中心清晰、越靠外越模糊并与周围背景/声呐层渐变融合)
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(alpha.x, alpha.y, absR * 1.22, 0, Math.PI * 2);
-        if (hasEye) {
-          ctx.moveTo(alpha.x, alpha.y);
-          ctx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle - halfEyeRad - eyeAngFeather, alpha.angle + halfEyeRad + eyeAngFeather);
-          ctx.closePath();
+        // 2. 复合彩色感知层 (Layer 2 —— 离屏渲染【近体绝对感知彩色区 + 视觉长距扇形】，并通过 destination-in 联合 Alpha 遮罩与下层听觉声呐层/深海背景实现无断层丝滑融合)
+        const { colorCtx, maskCtx } = getCompositeSenseCanvases(w, h);
+        const absOuterR = absR * 1.28;
+
+        // 2.1 在 colorCtx 上绘制彩色世界通道
+        colorCtx.globalCompositeOperation = 'source-over';
+        colorCtx.shadowBlur = 0;
+        colorCtx.clearRect(0, 0, w, h);
+        colorCtx.save();
+        colorCtx.translate(w * 0.5, h * 0.5);
+        colorCtx.scale(VIEWPORT_ZOOM, VIEWPORT_ZOOM);
+        colorCtx.translate(-camX, -camY);
+        colorCtx.beginPath();
+        colorCtx.arc(alpha.x, alpha.y, Math.max(absOuterR, effEyeRange), 0, Math.PI * 2);
+        colorCtx.clip();
+        renderWorldPass(colorCtx, camX, camY, viewW, viewH, isNight, false);
+
+        // 若装备视觉器官，在彩色通道内叠加前向光学聚光束 (中心清晰透亮，向两侧与远端平滑衰减，凸显长距扇形视觉区)
+        if (hasEye && effEyeRange > absR) {
+          const beamRgb = activeBiome.accentRgba || '45, 212, 191';
+          const beamGrad = colorCtx.createRadialGradient(alpha.x, alpha.y, absR * 0.45, alpha.x, alpha.y, effEyeRange);
+          beamGrad.addColorStop(0, `rgba(${beamRgb}, 0.16)`);
+          beamGrad.addColorStop(0.48, `rgba(${beamRgb}, 0.11)`);
+          beamGrad.addColorStop(0.82, `rgba(${beamRgb}, 0.04)`);
+          beamGrad.addColorStop(1, `rgba(${beamRgb}, 0.0)`);
+          colorCtx.fillStyle = beamGrad;
+          colorCtx.beginPath();
+          colorCtx.moveTo(alpha.x, alpha.y);
+          colorCtx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle - halfEyeRad - eyeAngFeather * 0.5, alpha.angle + halfEyeRad + eyeAngFeather * 0.5);
+          colorCtx.closePath();
+          colorCtx.fill();
         }
-        ctx.clip();
+        colorCtx.restore();
 
-        renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, false);
+        // 2.2 在 maskCtx 上构建【视觉长距扇形 ∪ 360° 近体绝对感知圆】的平滑 Alpha 权重场 (纯白 Alpha 叠加，零黑边污染)
+        maskCtx.globalCompositeOperation = 'source-over';
+        maskCtx.shadowBlur = 0;
+        maskCtx.clearRect(0, 0, w, h);
+        maskCtx.save();
+        maskCtx.translate(w * 0.5, h * 0.5);
+        maskCtx.scale(VIEWPORT_ZOOM, VIEWPORT_ZOOM);
+        maskCtx.translate(-camX, -camY);
 
-        // 2.1 视觉扇形与绝对感知区的径向渐变融合遮罩 (越靠外越柔和融入周围深海原汤背景/听觉层)
-        const colorRadialFade = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.62, alpha.x, alpha.y, maxColorR);
-        colorRadialFade.addColorStop(0, `rgba(${outerRgb}, 0.0)`);
-        if (hasEye && effEyeRange > absR * 1.3) {
-          const absStop = Math.min(0.65, (absR * 0.95) / effEyeRange);
-          colorRadialFade.addColorStop(absStop, `rgba(${outerRgb}, 0.08)`);
-          colorRadialFade.addColorStop(0.72, `rgba(${outerRgb}, 0.42)`);
-          colorRadialFade.addColorStop(0.90, `rgba(${outerRgb}, 0.78)`);
-        } else {
-          colorRadialFade.addColorStop(0.65, `rgba(${outerRgb}, 0.35)`);
-          colorRadialFade.addColorStop(0.88, `rgba(${outerRgb}, 0.78)`);
-        }
-        colorRadialFade.addColorStop(1, `rgba(${outerRgb}, 0.97)`);
-        ctx.fillStyle = colorRadialFade;
-        ctx.fillRect(alpha.x - maxColorR, alpha.y - maxColorR, maxColorR * 2, maxColorR * 2);
-
-        // 2.2 若装备视觉器官，在扇形两侧边缘与绝对感知区交界处施加多阶柔化羽化弧，彻底消除扇形硬边
-        if (hasEye) {
-          const featherSteps = 6;
-          for (let s = 1; s <= featherSteps; s++) {
-            const frac = s / featherSteps;
-            const span = eyeAngFeather * frac;
-            ctx.beginPath();
-            ctx.moveTo(alpha.x, alpha.y);
-            ctx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle - halfEyeRad - eyeAngFeather, alpha.angle - halfEyeRad - eyeAngFeather + span);
-            ctx.closePath();
-            ctx.moveTo(alpha.x, alpha.y);
-            ctx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle + halfEyeRad + eyeAngFeather - span, alpha.angle + halfEyeRad + eyeAngFeather);
-            ctx.closePath();
-            ctx.fillStyle = `rgba(${outerRgb}, 0.22)`;
-            ctx.fill();
+        if (hasEye && effEyeRange > absR * 0.9) {
+          // 视觉扇形角度羽化层 (由宽到窄叠加 9 层柔化扇区，使两侧边缘与远端径向同时平滑过渡到 0 Alpha)
+          const featherSlices = 9;
+          const sliceGrad = maskCtx.createRadialGradient(alpha.x, alpha.y, absR * 0.45, alpha.x, alpha.y, effEyeRange);
+          sliceGrad.addColorStop(0, 'rgba(255, 255, 255, 0.24)');
+          sliceGrad.addColorStop(0.55, 'rgba(255, 255, 255, 0.18)');
+          sliceGrad.addColorStop(0.84, 'rgba(255, 255, 255, 0.07)');
+          sliceGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+          maskCtx.fillStyle = sliceGrad;
+          for (let s = 0; s < featherSlices; s++) {
+            const tFrac = s / (featherSlices - 1);
+            const spanHalf = halfEyeRad + eyeAngFeather * (1 - 2 * tFrac);
+            if (spanHalf <= 0.02) continue;
+            maskCtx.beginPath();
+            maskCtx.moveTo(alpha.x, alpha.y);
+            maskCtx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle - spanHalf, alpha.angle + spanHalf);
+            maskCtx.closePath();
+            maskCtx.fill();
           }
-          // 扇区外、绝对感知区外围环带 (absR * 0.72 ~ absR * 1.22) 的平滑过渡环
-          const absRingGrad = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.68, alpha.x, alpha.y, absR * 1.22);
-          absRingGrad.addColorStop(0, `rgba(${outerRgb}, 0.0)`);
-          absRingGrad.addColorStop(0.65, `rgba(${outerRgb}, 0.55)`);
-          absRingGrad.addColorStop(1, `rgba(${outerRgb}, 0.96)`);
-          ctx.beginPath();
-          ctx.arc(alpha.x, alpha.y, absR * 1.22, alpha.angle + halfEyeRad, alpha.angle - halfEyeRad + Math.PI * 2);
-          ctx.lineTo(alpha.x, alpha.y);
-          ctx.closePath();
-          ctx.fillStyle = absRingGrad;
-          ctx.fill();
+
+          // 视觉扇形中心清晰核心区 (中心对焦 100% 不透明，向外径向平滑渐隐)
+          const coreHalf = Math.max(0.05, halfEyeRad - eyeAngFeather * 0.75);
+          const coreGrad = maskCtx.createRadialGradient(alpha.x, alpha.y, absR * 0.5, alpha.x, alpha.y, effEyeRange);
+          coreGrad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+          coreGrad.addColorStop(0.50, 'rgba(255, 255, 255, 0.92)');
+          coreGrad.addColorStop(0.78, 'rgba(255, 255, 255, 0.45)');
+          coreGrad.addColorStop(0.93, 'rgba(255, 255, 255, 0.12)');
+          coreGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+          maskCtx.fillStyle = coreGrad;
+          maskCtx.beginPath();
+          maskCtx.moveTo(alpha.x, alpha.y);
+          maskCtx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle - coreHalf, alpha.angle + coreHalf);
+          maskCtx.closePath();
+          maskCtx.fill();
         }
+
+        // 叠加 360° 近体绝对感知彩色圆遮罩 (核心 100% Alpha 覆盖，确保个体周围全向清晰无任何扇形切痕，外缘 0.72x~1.28x 柔和羽化融入听觉层)
+        const absMaskGrad = maskCtx.createRadialGradient(alpha.x, alpha.y, absR * 0.72, alpha.x, alpha.y, absOuterR);
+        absMaskGrad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+        absMaskGrad.addColorStop(0.42, 'rgba(255, 255, 255, 0.82)');
+        absMaskGrad.addColorStop(0.75, 'rgba(255, 255, 255, 0.32)');
+        absMaskGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+        maskCtx.fillStyle = absMaskGrad;
+        maskCtx.beginPath();
+        maskCtx.arc(alpha.x, alpha.y, absOuterR, 0, Math.PI * 2);
+        maskCtx.fill();
+        maskCtx.restore();
+
+        // 2.3 用 destination-in 将联合感官 Alpha 遮罩裁切至彩色通道，并无损合成至主画布
+        colorCtx.globalCompositeOperation = 'destination-in';
+        colorCtx.drawImage(senseMaskCanvas, 0, 0);
+        colorCtx.globalCompositeOperation = 'source-over';
+
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(colorPassCanvas, 0, 0);
         ctx.restore();
 
-        // 3. 感官区域光晕与辅助引导层 (所有感官交界处采用柔和渐变光晕融合)
+        // 3. 感官区域光晕与辅助引导层 (所有感官交界处采用柔和渐变光晕融合，不穿过绝对感知核心区)
         if (arenaState.showSensoryOverlay) {
           // 3.1 绝对感知区域柔和呼吸内环 (彩色感知核心)
           const absGlow = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.55, alpha.x, alpha.y, absR * 1.15);
@@ -4620,17 +4699,21 @@
           ctx.fillStyle = absGlow;
           ctx.fill();
 
-          if (hasEye) {
-            const eyeGrad = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.8, alpha.x, alpha.y, effEyeRange);
-            eyeGrad.addColorStop(0, 'rgba(45, 212, 191, 0.22)');
-            eyeGrad.addColorStop(0.65, 'rgba(45, 212, 191, 0.08)');
+          if (hasEye && effEyeRange > absR * 1.05) {
+            const eyeGrad = ctx.createRadialGradient(alpha.x, alpha.y, absR, alpha.x, alpha.y, effEyeRange);
+            eyeGrad.addColorStop(0, 'rgba(45, 212, 191, 0.28)');
+            eyeGrad.addColorStop(0.65, 'rgba(45, 212, 191, 0.10)');
             eyeGrad.addColorStop(1, 'rgba(45, 212, 191, 0.0)');
+            const startAng = alpha.angle - halfEyeRad;
+            const endAng = alpha.angle + halfEyeRad;
+            // 从绝对感知区外缘 (absR) 起笔向外延伸扇形侧翼与弧线，绝不画直线横穿个体中心
             ctx.beginPath();
-            ctx.moveTo(alpha.x, alpha.y);
-            ctx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle - halfEyeRad, alpha.angle + halfEyeRad);
-            ctx.closePath();
+            ctx.moveTo(alpha.x + Math.cos(startAng) * absR, alpha.y + Math.sin(startAng) * absR);
+            ctx.lineTo(alpha.x + Math.cos(startAng) * effEyeRange, alpha.y + Math.sin(startAng) * effEyeRange);
+            ctx.arc(alpha.x, alpha.y, effEyeRange, startAng, endAng);
+            ctx.lineTo(alpha.x + Math.cos(endAng) * absR, alpha.y + Math.sin(endAng) * absR);
             ctx.strokeStyle = eyeGrad;
-            ctx.lineWidth = 1.2;
+            ctx.lineWidth = 1.3;
             ctx.stroke();
           }
           if (hasEar) {
