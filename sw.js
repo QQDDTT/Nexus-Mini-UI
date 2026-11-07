@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v23.5-predation-size-rule';
+const CACHE_NAME = 'nexus-mini-portal-v23.6-modular-sprites';
 const CORE_ASSETS = [
   './',
   './index.html',

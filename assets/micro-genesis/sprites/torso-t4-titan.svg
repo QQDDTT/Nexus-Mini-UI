@@ -1,144 +1,80 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" data-rig-id="torso-t4-titan-rig" data-root-anchor="64,64" data-has-aura="true">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%" data-rig-id="torso-t4-titan-rig">
   <defs>
-    <!-- 1. 材质物理与光学滤镜层：拓扑 B 中心镂空星环母体 Gooch 次表面散射 + 栉水母薄膜干涉虹彩 -->
-    <radialGradient id="t4-shadow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#021317" stop-opacity="0.82" />
-      <stop offset="68%" stop-color="#03181c" stop-opacity="0.38" />
-      <stop offset="100%" stop-color="#03181c" stop-opacity="0" />
+    <radialGradient id="t4-jelly" cx="42%" cy="36%" r="64%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.54"/>
+      <stop offset="28%" stop-color="#c084fc" stop-opacity="0.82"/>
+      <stop offset="68%" stop-color="#6b21a8" stop-opacity="0.68"/>
+      <stop offset="100%" stop-color="#1e0936" stop-opacity="0.88"/>
     </radialGradient>
-    <radialGradient id="t4-ring-sss" cx="38%" cy="32%" r="68%">
-      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.94" />
-      <stop offset="25%" stop-color="#5eead4" stop-opacity="0.84" />
-      <stop offset="55%" stop-color="#0d9488" stop-opacity="0.80" />
-      <stop offset="82%" stop-color="#115e59" stop-opacity="0.90" />
-      <stop offset="100%" stop-color="#042f2e" stop-opacity="0.96" />
+    <radialGradient id="t4-core" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96"/>
+      <stop offset="38%" stop-color="#fde047" stop-opacity="0.92"/>
+      <stop offset="78%" stop-color="#c084fc" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.0"/>
     </radialGradient>
-    <radialGradient id="t4-pod-sss" cx="40%" cy="35%" r="62%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-      <stop offset="32%" stop-color="#fde047" stop-opacity="0.86" />
-      <stop offset="68%" stop-color="#2dd4bf" stop-opacity="0.78" />
-      <stop offset="100%" stop-color="#0f766e" stop-opacity="0.92" />
-    </radialGradient>
-    <linearGradient id="t4-ctenophore-irid" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fde047" />
-      <stop offset="24%" stop-color="#2dd4bf" />
-      <stop offset="50%" stop-color="#38bdf8" />
-      <stop offset="76%" stop-color="#c084fc" />
-      <stop offset="100%" stop-color="#f472b6" />
+    <linearGradient id="t4-irid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="28%" stop-color="#38bdf8"/>
+      <stop offset="55%" stop-color="#c084fc"/>
+      <stop offset="78%" stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#fde047"/>
     </linearGradient>
-    <radialGradient id="t4-star-core" cx="45%" cy="42%" r="52%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="28%" stop-color="#fef08a" />
-      <stop offset="60%" stop-color="#fbbf24" />
-      <stop offset="85%" stop-color="#2dd4bf" stop-opacity="0.65" />
-      <stop offset="100%" stop-color="#042f2e" stop-opacity="0" />
-    </radialGradient>
+    <linearGradient id="t4-stem" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" stop-opacity="0.92"/>
+      <stop offset="55%" stop-color="#c084fc" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.42"/>
+    </linearGradient>
   </defs>
-
-  <!-- 2. 流派专属底座：泰坦共聚焦引力波纹与栉水母薄膜干涉环 -->
-  <g id="part-shadow-cast" data-pivot="64,68" data-parent="root" data-z-index="1" data-blend="multiply" style="mix-blend-mode: multiply">
-    <ellipse cx="64" cy="68" rx="60" ry="60" fill="url(#t4-shadow)" />
+  <g id="part-shadow-cast"></g>
+  <g id="part-aura-ring-outer"></g>
+  <g id="part-aura-ring-inner"></g>
+  <g id="part-torso-tail">
+    <path d="M 44 90 C 42 104, 50 114, 64 114 C 78 114, 86 104, 84 90 Z" fill="url(#t4-jelly)" stroke="url(#t4-irid)" stroke-width="2.2"/>
+    <ellipse cx="64" cy="113" rx="9" ry="4" fill="#1e0936" fill-opacity="0.5" stroke="#fde047" stroke-width="1.2"/>
   </g>
-  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" data-blend="screen" data-motion="spin-cw" style="mix-blend-mode: screen">
-    <circle cx="64" cy="64" r="60" stroke="url(#t4-ctenophore-irid)" stroke-width="1.4" stroke-opacity="0.62" />
-    <circle cx="64" cy="4" r="3.4" fill="#fde047" stroke="#ffffff" stroke-width="0.8" />
-    <circle cx="116" cy="34" r="3.0" fill="#2dd4bf" stroke="#ffffff" stroke-width="0.8" />
-    <circle cx="116" cy="94" r="3.4" fill="#38bdf8" stroke="#ffffff" stroke-width="0.8" />
-    <circle cx="64" cy="124" r="3.0" fill="#c084fc" stroke="#ffffff" stroke-width="0.8" />
-    <circle cx="12" cy="94" r="3.4" fill="#f472b6" stroke="#ffffff" stroke-width="0.8" />
-    <circle cx="12" cy="34" r="3.0" fill="#34d399" stroke="#ffffff" stroke-width="0.8" />
+  <g id="part-torso-thorax-4">
+    <ellipse cx="64" cy="88" rx="28" ry="14" fill="url(#t4-jelly)" stroke="url(#t4-irid)" stroke-width="2.1"/>
   </g>
-  <g id="part-aura-ring-inner" data-pivot="64,64" data-parent="root" data-z-index="5" data-blend="screen" data-motion="spin-ccw" style="mix-blend-mode: screen">
-    <!-- 镂空内腔能量谐振环 -->
-    <circle cx="64" cy="64" r="24" stroke="url(#t4-ctenophore-irid)" stroke-width="1.6" stroke-opacity="0.78" />
+  <g id="part-aux-stabilizer-1"></g>
+  <g id="part-aux-stabilizer-2"></g>
+  <g id="part-aux-stabilizer-3"></g>
+  <g id="part-torso-thorax-3">
+    <path d="M 22 60 C 22 36, 40 24, 64 24 C 88 24, 106 36, 106 60 C 106 84, 88 94, 64 94 C 40 94, 22 84, 22 60 Z"
+          fill="url(#t4-jelly)" stroke="url(#t4-irid)" stroke-width="2.6"/>
+    <circle cx="64" cy="60" r="19" fill="#090414" fill-opacity="0.55" stroke="url(#t4-irid)" stroke-width="1.8"/>
+    <circle cx="64" cy="60" r="14" fill="none" stroke="#fde047" stroke-width="1.1" stroke-dasharray="4 3" opacity="0.8"/>
   </g>
-
-  <!-- 3. 主体体积剪影：拓扑 B · 中心镂空星环悬浮母体构型 (Hollow Star-Ring Orbital Leviathan) -->
-  <!-- 外周环形果冻生物圈底弧与推进尾囊 (Posterior Star-Ring Arc & Pod) -->
-  <g id="part-torso-tail" data-pivot="64,104" data-parent="part-torso-thorax-4" data-z-index="10" data-blend="normal" data-motion="wave-tail">
-    <path d="M40 96 C44 114 54 122 64 122 C74 122 84 114 88 96 C78 102 50 102 40 96 Z" fill="url(#t4-pod-sss)" stroke="url(#t4-ctenophore-irid)" stroke-width="2.2" stroke-linejoin="round" />
-    <circle cx="64" cy="108" r="5.5" fill="url(#t4-star-core)" stroke="#ffffff" stroke-width="1.0" />
+  <g id="part-flank-R"></g>
+  <g id="part-flank-L"></g>
+  <g id="part-aux-stabilizer-4"></g>
+  <g id="part-aux-stabilizer-5"></g>
+  <g id="part-torso-thorax-2">
+    <ellipse cx="23" cy="48" rx="4" ry="7" fill="#1e0936" fill-opacity="0.5" stroke="#fde047" stroke-width="1.1"/>
+    <ellipse cx="105" cy="48" rx="4" ry="7" fill="#1e0936" fill-opacity="0.5" stroke="#fde047" stroke-width="1.1"/>
+    <ellipse cx="25" cy="72" rx="4" ry="7" fill="#1e0936" fill-opacity="0.5" stroke="#38bdf8" stroke-width="1.1"/>
+    <ellipse cx="103" cy="72" rx="4" ry="7" fill="#1e0936" fill-opacity="0.5" stroke="#38bdf8" stroke-width="1.1"/>
   </g>
-  <!-- 星环下半镂空腔弧段 (Lower Toroidal Bio-Ring Segment) -->
-  <g id="part-torso-thorax-4" data-pivot="64,88" data-parent="part-torso-thorax-3" data-z-index="14" data-blend="normal" data-motion="wave-spine-4">
-    <path d="M20 74 C26 98 44 110 64 110 C84 110 102 98 108 74 L86 72 C82 84 74 90 64 90 C54 90 46 84 42 72 Z" fill="url(#t4-ring-sss)" stroke="url(#t4-ctenophore-irid)" stroke-width="2.2" stroke-linejoin="round" />
-    <circle cx="48" cy="96" r="4.2" fill="#99f6e4" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.8" />
-    <circle cx="80" cy="96" r="4.2" fill="#fde047" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.8" />
+  <g id="part-torso-thorax-1">
+    <g fill="none" stroke="#fef08a" stroke-linecap="round" opacity="0.8">
+      <path d="M 64 16 L 64 40 M 64 80 L 64 110" stroke-width="2"/>
+      <path d="M 45 60 L 24 48 M 83 60 L 104 48" stroke-width="1.5"/>
+      <path d="M 45 64 L 26 72 M 83 64 L 102 72" stroke-width="1.5"/>
+    </g>
   </g>
-  <!-- 环绕子器官连接触须囊 (Orbital Stabilizer Pods) -->
-  <g id="part-aux-stabilizer-1" data-pivot="84,84" data-parent="root" data-z-index="17" data-blend="normal">
-    <circle cx="88" cy="88" r="5.0" fill="url(#t4-pod-sss)" stroke="#ffffff" stroke-width="1.1" />
+  <g id="part-torso-head">
+    <path d="M 32 38 C 30 20, 44 12, 64 12 C 84 12, 98 20, 96 38 C 86 44, 42 44, 32 38 Z"
+          fill="url(#t4-jelly)" stroke="url(#t4-irid)" stroke-width="2.4"/>
+    <ellipse cx="52" cy="14" rx="7" ry="3.5" fill="#1e0936" fill-opacity="0.5" stroke="#fde047" stroke-width="1.2"/>
+    <ellipse cx="76" cy="14" rx="7" ry="3.5" fill="#1e0936" fill-opacity="0.5" stroke="#fde047" stroke-width="1.2"/>
+    <circle cx="38" cy="24" r="4.5" fill="#1e0936" fill-opacity="0.45" stroke="#38bdf8" stroke-width="1.1"/>
+    <circle cx="90" cy="24" r="4.5" fill="#1e0936" fill-opacity="0.45" stroke="#38bdf8" stroke-width="1.1"/>
   </g>
-  <g id="part-aux-stabilizer-2" data-pivot="64,94" data-parent="root" data-z-index="18" data-blend="normal">
-    <circle cx="64" cy="98" r="4.5" fill="url(#t4-pod-sss)" stroke="#ffffff" stroke-width="1.0" />
+  <g id="part-neural-core"></g>
+  <g id="part-light-rim-torso">
+    <path d="M 42 24 C 50 16, 68 15, 78 20 C 66 21, 52 24, 42 31 Z" fill="#ffffff" opacity="0.65"/>
+    <ellipse cx="38" cy="48" rx="10" ry="4.5" transform="rotate(-32 38 48)" fill="#ffffff" opacity="0.48"/>
+    <ellipse cx="88" cy="76" rx="8" ry="3.5" transform="rotate(-25 88 76)" fill="#ffffff" opacity="0.38"/>
   </g>
-  <g id="part-aux-stabilizer-3" data-pivot="44,84" data-parent="root" data-z-index="19" data-blend="normal">
-    <circle cx="40" cy="88" r="5.0" fill="url(#t4-pod-sss)" stroke="#ffffff" stroke-width="1.1" />
-  </g>
-  <!-- 中环横向镂空桥接翼段 (Mid Toroidal Ring Frame) -->
-  <g id="part-torso-thorax-3" data-pivot="64,64" data-parent="part-torso-thorax-2" data-z-index="18" data-blend="normal" data-motion="wave-spine-3">
-    <path d="M16 52 C14 64 16 76 22 84 L42 74 C38 68 38 60 42 54 Z M112 52 C114 64 112 76 106 84 L86 74 C90 68 90 60 86 54 Z" fill="url(#t4-ring-sss)" stroke="url(#t4-ctenophore-irid)" stroke-width="2.2" stroke-linejoin="round" />
-  </g>
-  <!-- 左右悬浮子囊护翼 (Left & Right Orbital Satellite Pods) -->
-  <g id="part-flank-R" data-pivot="106,58" data-parent="part-torso-thorax-1" data-z-index="20" data-blend="normal" data-motion="rotate-sym-right">
-    <path d="M96 36 C116 42 124 58 118 78 C112 90 100 92 92 80 C98 68 98 50 96 36 Z" fill="url(#t4-pod-sss)" stroke="url(#t4-ctenophore-irid)" stroke-width="2.2" stroke-linejoin="round" />
-    <circle cx="108" cy="60" r="5.5" fill="url(#t4-star-core)" stroke="#ffffff" stroke-width="1.0" />
-    <ellipse cx="106" cy="48" rx="7.5" ry="2.8" transform="rotate(28 106 48)" fill="#ffffff" fill-opacity="0.65" />
-  </g>
-  <g id="part-flank-L" data-pivot="22,58" data-parent="part-torso-thorax-1" data-z-index="20" data-blend="normal" data-motion="rotate-sym-left">
-    <path d="M32 36 C12 42 4 58 10 78 C16 90 28 92 36 80 C30 68 30 50 32 36 Z" fill="url(#t4-pod-sss)" stroke="url(#t4-ctenophore-irid)" stroke-width="2.2" stroke-linejoin="round" />
-    <circle cx="20" cy="60" r="5.5" fill="url(#t4-star-core)" stroke="#ffffff" stroke-width="1.0" />
-    <ellipse cx="22" cy="48" rx="8.5" ry="3.2" transform="rotate(-28 22 48)" fill="#ffffff" fill-opacity="0.72" />
-  </g>
-  <g id="part-aux-stabilizer-4" data-pivot="36,64" data-parent="root" data-z-index="20" data-blend="normal">
-    <circle cx="30" cy="64" r="4.2" fill="url(#t4-pod-sss)" stroke="#ffffff" stroke-width="1.0" />
-  </g>
-  <g id="part-aux-stabilizer-5" data-pivot="44,44" data-parent="root" data-z-index="21" data-blend="normal">
-    <circle cx="40" cy="40" r="4.8" fill="url(#t4-pod-sss)" stroke="#ffffff" stroke-width="1.1" />
-  </g>
-  <!-- 星环上半镂空腔弧段 (Upper Toroidal Bio-Ring Segment) -->
-  <g id="part-torso-thorax-2" data-pivot="64,46" data-parent="part-torso-thorax-1" data-z-index="24" data-blend="normal" data-motion="wave-spine-2">
-    <path d="M20 54 C26 30 44 18 64 18 C84 18 102 30 108 54 L86 56 C82 44 74 38 64 38 C54 38 46 44 42 56 Z" fill="url(#t4-ring-sss)" stroke="url(#t4-ctenophore-irid)" stroke-width="2.4" stroke-linejoin="round" />
-    <ellipse cx="46" cy="30" rx="12" ry="4.5" transform="rotate(-24 46 30)" fill="#ffffff" fill-opacity="0.76" />
-    <circle cx="35" cy="38" r="2.6" fill="#ffffff" fill-opacity="0.68" />
-  </g>
-  <g id="part-torso-thorax-1" data-pivot="64,34" data-parent="root" data-z-index="28" data-blend="normal" data-motion="wave-spine-1">
-    <circle cx="52" cy="28" r="4.5" fill="#fde047" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.9" />
-    <circle cx="76" cy="28" r="4.5" fill="#c084fc" fill-opacity="0.45" stroke="#ffffff" stroke-width="0.9" />
-  </g>
-  <!-- 星环顶冠导流果冻穹顶 (Apex Crown Capsule) -->
-  <g id="part-torso-head" data-pivot="64,20" data-parent="part-torso-thorax-1" data-z-index="32" data-blend="normal" data-motion="nod-head">
-    <path d="M38 28 C42 12 52 6 64 6 C76 6 86 12 90 28 C78 22 50 22 38 28 Z" fill="url(#t4-pod-sss)" stroke="url(#t4-ctenophore-irid)" stroke-width="2.4" stroke-linejoin="round" />
-    <ellipse cx="56" cy="14" rx="9" ry="3.4" transform="rotate(-18 56 14)" fill="#ffffff" fill-opacity="0.78" />
-    <circle cx="64" cy="18" r="5.0" fill="url(#t4-star-core)" stroke="#ffffff" stroke-width="1.1" />
-  </g>
-
-  <!-- 4. 中观解剖：中心镂空水体悬浮核仁 + 6 条放射 L-System 发光突触能量弦 -->
-  <g id="part-neural-core" data-pivot="64,64" data-parent="part-torso-thorax-2" data-z-index="36" data-blend="normal" data-motion="pulse-core">
-    <!-- 跨越镂空内腔的 6 条 L-System 分叉突触光束弦 -->
-    <path d="M64 64 L64 20 M64 38 Q56 32 50 26 M64 38 Q72 32 78 26" stroke="#fde047" stroke-width="1.8" stroke-linecap="round" />
-    <path d="M64 64 L22 58 M42 61 Q34 52 28 46 M42 61 Q34 68 28 74" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round" />
-    <path d="M64 64 L106 58 M86 61 Q94 52 100 46 M86 61 Q94 68 100 74" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" />
-    <path d="M64 64 L40 94 M50 80 Q42 82 36 86 M64 64 L88 94 M78 80 Q86 82 92 86" stroke="#c084fc" stroke-width="1.7" stroke-linecap="round" />
-    <path d="M64 64 L64 108" stroke="#f472b6" stroke-width="1.8" stroke-linecap="round" />
-    <!-- 镂空腔中心悬浮聚变核仁 (Suspended Hollow-Cavity Nucleus) -->
-    <circle cx="64" cy="64" r="16" fill="url(#t4-star-core)" stroke="#ffffff" stroke-width="1.6" />
-    <circle cx="64" cy="64" r="7.5" fill="#fde047" stroke="#ffffff" stroke-width="1.2" />
-    <circle cx="61" cy="61" r="3.0" fill="#ffffff" />
-  </g>
-
-  <!-- 5. 栉水母薄膜虹彩边缘反光与顶层荧光孢子 -->
-  <g id="part-light-rim-torso" data-pivot="64,64" data-parent="part-torso-thorax-1" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
-    <path d="M26 42 C34 24 48 16 64 16 C80 16 94 24 102 42" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-opacity="0.68" />
-  </g>
-  <g id="part-light-rim-flank" data-pivot="64,58" data-parent="part-torso-thorax-1" data-z-index="45" data-blend="plus-lighter" style="mix-blend-mode: plus-lighter">
-    <path d="M28 38 C12 46 8 62 14 78 M100 38 C116 46 120 62 114 78" stroke="url(#t4-ctenophore-irid)" stroke-width="2.4" stroke-linecap="round" />
-  </g>
-  <g id="part-aura-corona-top" data-pivot="64,64" data-parent="root" data-z-index="65" data-blend="screen" data-motion="pulse-breathe" style="mix-blend-mode: screen">
-    <circle cx="38" cy="14" r="2.4" fill="#ffffff" />
-    <circle cx="90" cy="14" r="2.4" fill="#fde047" />
-    <circle cx="10" cy="58" r="2.4" fill="#2dd4bf" />
-    <circle cx="118" cy="58" r="2.4" fill="#38bdf8" />
-    <circle cx="64" cy="120" r="2.4" fill="#c084fc" />
-  </g>
+  <g id="part-light-rim-flank"></g>
+  <g id="part-aura-corona-top"></g>
 </svg>

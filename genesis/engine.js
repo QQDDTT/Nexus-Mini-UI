@@ -312,12 +312,17 @@
       ];
 
       /* =====================================================================
-       * 2. 全量 55 枚多层 SVG 贴图预加载器
+       * 2. 全量 60 枚模块化果冻软胶 SVG 贴图预加载器
        * ===================================================================== */
       const spriteMap = {
         'env-algae.svg': 'env-algae.svg',
         'env-meat.svg': 'env-meat.svg',
-        'env-vent.svg': 'env-vent.svg'
+        'env-vent.svg': 'env-vent.svg',
+        'boss-ch1-hydra.svg': 'boss-ch1-hydra.svg',
+        'boss-ch2-trilobite.svg': 'boss-ch2-trilobite.svg',
+        'boss-ch3-jellyfish.svg': 'boss-ch3-jellyfish.svg',
+        'boss-ch4-chimera.svg': 'boss-ch4-chimera.svg',
+        'boss-ch5-voidphage.svg': 'boss-ch5-voidphage.svg'
       };
       Object.values(TORSOS).forEach((t) => { spriteMap[t.sprite] = t.sprite; });
       Object.values(ORGAN_CATALOG).forEach((series) => {
@@ -901,30 +906,11 @@
           ctx.strokeStyle = pal.core;
           ctx.stroke();
 
-          // 叠加分类色彩声呐滤镜渲染全部定格器官 SVG 贴图 (确保听觉边缘裁剪时完整展现局部器官影像且红/黄/绿一目了然)
+          // 叠加分类色彩声呐滤镜渲染全部定格躯体与模块化器官 SVG 贴图
           ctx.save();
           ctx.filter = pal.filter;
           ctx.globalAlpha *= pulseAlpha * 0.88;
-          const locoListSonar = bp.slots.locomotion || [];
-          locoListSonar.forEach((loco, idx) => {
-            const spec = ORGAN_CATALOG[loco.id].levels[loco.level];
-            const wagRot = Math.sin(phase * 1.5 + idx) * 0.26;
-            if (idx === 0) {
-              drawSpriteCentered(ctx, spec.sprite, tail.x - tail.r * 0.95, tail.y, baseR * 1.55, baseR * 1.55, Math.PI + wagRot);
-            } else {
-              const side = idx % 2 === 1 ? 1 : -1;
-              const segAnchor = spine[Math.min(spine.length - 1, 1)];
-              drawSpriteCentered(ctx, spec.sprite, segAnchor.x, segAnchor.y + side * segAnchor.r * 0.95, baseR * 1.35, baseR * 1.35, side * 1.25 + wagRot * 0.5);
-            }
-          });
-          drawSpriteCentered(ctx, torso.sprite, 0, 0, torso.sizePx * 1.15 * scale, torso.sizePx * 1.38 * scale, Math.PI * 0.5);
-          const mouthListSonar = bp.slots.mouth || [];
-          mouthListSonar.forEach((m, idx) => {
-            const mLv = org.suppressedTimer > 0 ? 1 : m.level;
-            const spec = ORGAN_CATALOG[m.id].levels[mLv];
-            const offsetY = mouthListSonar.length === 1 ? 0 : (idx === 0 ? -head.r * 0.36 : head.r * 0.36);
-            drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 0.88, head.y + offsetY, baseR * 1.35, baseR * 1.35, 0);
-          });
+          renderModularTorsoAndOrgans(ctx, org, bp, torso, spine, head, tail, totalHalfLen, baseR, scale, phase);
           ctx.restore();
           if (org.spawnShieldTimer && org.spawnShieldTimer > 0) {
             ctx.beginPath();
@@ -953,7 +939,7 @@
           ctx.setLineDash([]);
         }
 
-        // 视觉彩色模式：Chroma-Muse [范式C: 高对比果冻软胶 STYLE-30×11] + [构型ABCD: 四大拓扑物种多样性] + [材质D: 生物荧光叶脉神经网与栉水母薄膜虹彩 STYLE-23×96]
+        // 视觉彩色模式：Chroma-Muse [范式C: 高对比果冻软胶 STYLE-30×11] + [纯粹躯体底盘与独立模块化器官插槽组装] + [材质D: 生物荧光叶脉神经网与栉水母薄膜虹彩 STYLE-23×96]
         let coreHex = '#2dd4bf';
         let subHex = '#0d9488';
         let veinHex = '#5eead4';
@@ -981,71 +967,12 @@
           ctx.globalAlpha *= 0.48;
         }
 
-        // 1.1 绘制 ABCD 四大差异化生物几何构型拓扑外延层 (保持物种多样性)
-        if (bp.torsoId === 'torso-t1-micro') {
-          // 拓扑 D (T01 原核)：放射六瓣水母伞盖展开拓扑 (Radial 6-Petal Medusoid Bell)
-          const petalCount = 6;
-          for (let p = 0; p < petalCount; p++) {
-            const pAng = (p / petalCount) * Math.PI * 2 + Math.sin(phase * 0.7) * 0.08;
-            const pLen = baseR * (1.28 + 0.10 * Math.sin(phase * 1.4 + p));
-            const px = Math.cos(pAng) * pLen;
-            const py = Math.sin(pAng) * pLen;
-            ctx.beginPath();
-            ctx.arc(px * 0.62, py * 0.62, baseR * 0.46, pAng - 0.85, pAng + 0.85);
-            ctx.fillStyle = 'rgba(45, 212, 191, 0.14)';
-            ctx.fill();
-            ctx.lineWidth = 1.1 * scale;
-            ctx.strokeStyle = p % 2 === 0 ? 'rgba(56, 189, 248, 0.62)' : 'rgba(192, 132, 252, 0.58)';
-            ctx.stroke();
-          }
-        } else if (bp.torsoId === 'torso-t3-predator') {
-          // 拓扑 C (T03 掠食)：非对称铰接蝠鲼宽翼拓扑 (Hinged Manta-Wing Hydrofoil)
-          const wingAnchor = spine[Math.min(spine.length - 1, 1)];
-          const wingFlap = Math.sin(phase * 1.25) * baseR * 0.18;
-          [-1, 1].forEach((side) => {
-            ctx.beginPath();
-            ctx.moveTo(head.x * 0.55, side * head.r * 0.65);
-            ctx.quadraticCurveTo(
-              wingAnchor.x + baseR * 0.15,
-              side * (baseR * 2.15 + wingFlap * side),
-              tail.x * 0.65,
-              side * tail.r * 0.85
-            );
-            ctx.closePath();
-            ctx.fillStyle = 'rgba(244, 63, 94, 0.16)';
-            ctx.fill();
-            ctx.lineWidth = 1.4 * scale;
-            ctx.strokeStyle = side > 0 ? 'rgba(56, 189, 248, 0.72)' : 'rgba(244, 114, 182, 0.72)';
-            ctx.stroke();
-          });
-        } else if (bp.torsoId === 'torso-t4-titan') {
-          // 拓扑 B (T04 泰坦)：中心镂空星环悬浮母体拓扑 (Hollow Star-Ring Orbital Torus)
-          const ringR = baseR * 1.48;
-          ctx.beginPath();
-          ctx.arc(0, 0, ringR, 0, Math.PI * 2);
-          ctx.lineWidth = baseR * 0.24;
-          ctx.strokeStyle = 'rgba(45, 212, 191, 0.16)';
-          ctx.stroke();
-          ctx.lineWidth = 1.5 * scale;
-          ctx.strokeStyle = 'rgba(251, 191, 36, 0.78)';
-          ctx.stroke();
-          for (let k = 0; k < 6; k++) {
-            const oAng = (k / 6) * Math.PI * 2 + phase * 0.18;
-            const ox = Math.cos(oAng) * ringR;
-            const oy = Math.sin(oAng) * ringR;
-            ctx.beginPath();
-            ctx.arc(ox, oy, baseR * 0.14, 0, Math.PI * 2);
-            ctx.fillStyle = k % 2 === 0 ? '#fde047' : '#38bdf8';
-            ctx.fill();
-          }
-        }
-
-        // 1.2 绘制果冻软胶次表面散射包络体 (STYLE-11 Hydro-Jelly SSS) + 栉水母薄膜虹彩边缘 (STYLE-96 Comb-Jelly Iridescence)
+        // 1.1 绘制果冻软胶次表面散射躯体包络胶膜 (STYLE-11 Hydro-Jelly SSS) + 栉水母薄膜虹彩边缘 (STYLE-96 Comb-Jelly Iridescence)
         const jellyGrad = ctx.createRadialGradient(head.x * 0.25, -baseR * 0.25, baseR * 0.1, 0, 0, totalHalfLen + baseR * 1.2);
-        jellyGrad.addColorStop(0, 'rgba(255, 255, 255, 0.34)');
-        jellyGrad.addColorStop(0.38, coreHex + '44');
-        jellyGrad.addColorStop(0.82, subHex + '55');
-        jellyGrad.addColorStop(1, 'rgba(4, 31, 36, 0.72)');
+        jellyGrad.addColorStop(0, 'rgba(255, 255, 255, 0.30)');
+        jellyGrad.addColorStop(0.38, coreHex + '3d');
+        jellyGrad.addColorStop(0.82, subHex + '4d');
+        jellyGrad.addColorStop(1, 'rgba(4, 31, 36, 0.65)');
         ctx.fillStyle = jellyGrad;
         ctx.fill();
 
@@ -1055,92 +982,26 @@
         iridGrad.addColorStop(0.55, '#c084fc');
         iridGrad.addColorStop(0.78, '#f472b6');
         iridGrad.addColorStop(1, '#34d399');
-        ctx.lineWidth = (org.isAlpha ? 2.4 : 1.75) * scale;
+        ctx.lineWidth = (org.isAlpha ? 2.2 : 1.55) * scale;
         ctx.strokeStyle = iridGrad;
         ctx.stroke();
 
-        // 1.3 绘制 L-System 生物荧光分叉叶脉神经网 (STYLE-23 Bioluminescent Neural Venation) & 腰果形果冻水滴高光斑 (STYLE-11 Cashew Specular)
+        // 1.2 绘制纯粹躯体底盘与 5 大类自由搭配模块化器官 SVG 插槽合成
+        renderModularTorsoAndOrgans(ctx, org, bp, torso, spine, head, tail, totalHalfLen, baseR, scale, phase);
+
+        // 1.3 绘制脊椎动态 L-System 生物荧光神经脉冲与水润腰果高光斑
         ctx.save();
         ctx.strokeStyle = veinHex;
-        ctx.lineWidth = 1.05 * scale;
-        ctx.globalAlpha *= 0.78 + 0.20 * Math.sin(phase * 1.6);
+        ctx.lineWidth = 0.95 * scale;
+        ctx.globalAlpha *= 0.68 + 0.20 * Math.sin(phase * 1.6);
         ctx.beginPath();
         for (let i = 0; i < spine.length; i++) {
           const pt = spine[i];
           if (i === 0) ctx.moveTo(pt.x, pt.y);
           else ctx.lineTo(pt.x, pt.y);
-          // 左右分叉神经叶脉
-          const branchLen = pt.r * 0.72;
-          ctx.moveTo(pt.x, pt.y);
-          ctx.quadraticCurveTo(pt.x + branchLen * 0.25, pt.y - branchLen * 0.45, pt.x - branchLen * 0.2, pt.y - branchLen * 0.82);
-          ctx.moveTo(pt.x, pt.y);
-          ctx.quadraticCurveTo(pt.x + branchLen * 0.25, pt.y + branchLen * 0.45, pt.x - branchLen * 0.2, pt.y + branchLen * 0.82);
         }
         ctx.stroke();
-
-        // 每个体节顶部绘制水润腰果形果冻高光斑 (Cashew Water-Drop Highlight)
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.46)';
-        spine.forEach((pt) => {
-          ctx.beginPath();
-          ctx.ellipse(pt.x + pt.r * 0.18, pt.y - pt.r * 0.36, pt.r * 0.32, pt.r * 0.13, -0.35, 0, Math.PI * 2);
-          ctx.fill();
-        });
         ctx.restore();
-
-        // ② 绘制尾部/侧翼运动器官 SVG (Locomotion)
-        const locoList = bp.slots.locomotion || [];
-        locoList.forEach((loco, idx) => {
-          const spec = ORGAN_CATALOG[loco.id].levels[loco.level];
-          const wagRot = Math.sin(phase * 1.5 + idx) * 0.26;
-          if (idx === 0) {
-            drawSpriteCentered(ctx, spec.sprite, tail.x - tail.r * 0.95, tail.y, baseR * 1.55, baseR * 1.55, Math.PI + wagRot);
-          } else {
-            const side = idx % 2 === 1 ? 1 : -1;
-            const segAnchor = spine[Math.min(spine.length - 1, 1)];
-            drawSpriteCentered(ctx, spec.sprite, segAnchor.x, segAnchor.y + side * segAnchor.r * 0.95, baseR * 1.35, baseR * 1.35, side * 1.25 + wagRot * 0.5);
-          }
-        });
-
-        // ③ 绘制躯干底盘多层 SVG (Torso)
-        const torsoDrawW = torso.sizePx * 1.15 * scale;
-        const torsoDrawH = torso.sizePx * 1.38 * scale;
-        drawSpriteCentered(ctx, torso.sprite, 0, 0, torsoDrawW, torsoDrawH, Math.PI * 0.5);
-
-        // ④ 绘制体内核心器官多层 SVG (Core - 随能量呼吸脉动)
-        const coreLv = org.suppressedTimer > 0 ? 1 : bp.slots.core.level;
-        const coreSpec = ORGAN_CATALOG[bp.slots.core.id].levels[coreLv];
-        const pulseScale = 0.92 + 0.12 * Math.sin(phase * 0.8);
-        const coreNode = spine[Math.min(spine.length - 1, Math.floor(spine.length * 0.4))];
-        drawSpriteCentered(ctx, coreSpec.sprite, coreNode.x, coreNode.y, baseR * 1.35 * pulseScale, baseR * 1.35 * pulseScale, 0);
-
-        // ⑤ 绘制腹部与背侧功能器官多层 SVG (Utility + 第四章首领双槽 FIFO 12.0s 同化器官)
-        const utilList = [...(bp.slots.utility || []), ...((org.assimilatedOrgans || []).map((a) => ({ id: a.id, level: a.level })))];
-        utilList.forEach((u, idx) => {
-          const uLv = org.suppressedTimer > 0 ? 1 : u.level;
-          const spec = ORGAN_CATALOG[u.id].levels[uLv];
-          const side = idx % 2 === 0 ? -1 : 1;
-          const segIdx = Math.min(spine.length - 1, Math.max(0, Math.floor((idx + 1) / 2)));
-          const seg = spine[segIdx];
-          drawSpriteCentered(ctx, spec.sprite, seg.x - baseR * 0.1, seg.y + side * seg.r * 0.82, baseR * 1.25, baseR * 1.25, side * 0.55);
-        });
-
-        // ⑥ 绘制头节前端吃食口器多层 SVG (Mouth)
-        const mouthList = bp.slots.mouth || [];
-        mouthList.forEach((m, idx) => {
-          const mLv = org.suppressedTimer > 0 ? 1 : m.level;
-          const spec = ORGAN_CATALOG[m.id].levels[mLv];
-          const offsetY = mouthList.length === 1 ? 0 : (idx === 0 ? -head.r * 0.36 : head.r * 0.36);
-          drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 0.88, head.y + offsetY, baseR * 1.35, baseR * 1.35, 0);
-        });
-
-        // ⑦ 绘制头节前端感官器官多层 SVG (Sensory: 眼/耳)
-        const senseList = bp.slots.sensory || [];
-        senseList.forEach((s, idx) => {
-          const sLv = org.suppressedTimer > 0 ? 1 : s.level;
-          const spec = ORGAN_CATALOG[s.id].levels[sLv];
-          const offsetY = senseList.length === 1 ? -head.r * 0.32 : (idx === 0 ? -head.r * 0.52 : head.r * 0.52);
-          drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 0.38, head.y + offsetY, baseR * 1.15, baseR * 1.15, 0);
-        });
 
         // 同族电脑 NPC 细微光环标记与幼体发育进度环 (Juvenile Ontogeny Ring)
         if (org.maturity !== undefined && org.maturity < 1.0) {
@@ -1164,6 +1025,116 @@
           }
         }
         ctx.restore();
+      }
+
+      /* 模块化躯体底盘与独立器官插槽自由拼装渲染器 (Torso Chassis + Separated Organ Sockets) */
+      function renderModularTorsoAndOrgans(ctx, org, bp, torso, spine, head, tail, totalHalfLen, baseR, scale, phase) {
+        // ① 运动器官插槽 (Locomotion —— 底层接驳：侧鳍对称挂载于胸侧翼插槽，鞭毛/喷水囊挂载于尾端推进插槽)
+        const locoList = bp.slots.locomotion || [];
+        let finSlotIdx = 0;
+        const axialLocos = [];
+        locoList.forEach((loco, idx) => {
+          const lLv = org.suppressedTimer > 0 ? 1 : loco.level;
+          const spec = ORGAN_CATALOG[loco.id].levels[lLv];
+          if (loco.id === 'loco-fin') {
+            // 矢量转向侧鳍：成对挂载于躯体左右胸侧插槽，随游动对称拍水
+            const segIdx = Math.min(spine.length - 1, Math.max(0, 1 + finSlotIdx));
+            const seg = spine[segIdx] || head;
+            const flap = Math.sin(phase * 1.6 + finSlotIdx * 1.1) * 0.24;
+            const finSize = baseR * (1.62 - finSlotIdx * 0.16);
+            // 左侧鳍 (side = -1, 指向左后外侧) & 右侧鳍 (side = +1, 指向右后外侧)
+            drawSpriteCentered(ctx, spec.sprite, seg.x - baseR * 0.06, seg.y - seg.r * 1.18, finSize, finSize, Math.PI - 0.52 + flap);
+            drawSpriteCentered(ctx, spec.sprite, seg.x - baseR * 0.06, seg.y + seg.r * 1.18, finSize, finSize, 0.52 - flap);
+            finSlotIdx++;
+          } else {
+            axialLocos.push({ loco, spec, idx });
+          }
+        });
+        axialLocos.forEach((item, aIdx) => {
+          const wagRot = Math.sin(phase * 1.65 + aIdx * 0.9) * 0.22;
+          const thrusterSize = baseR * 1.68;
+          if (axialLocos.length === 1) {
+            // 单推进器：接驳于尾节正后方尾椎插槽 (SVG 顶部基座朝向 +X 躯体，鞭毛/喷流朝向 -X 后方)
+            drawSpriteCentered(ctx, item.spec.sprite, tail.x - tail.r * 1.28, tail.y, thrusterSize, thrusterSize, Math.PI * 0.5 + wagRot);
+          } else if (axialLocos.length === 2) {
+            const side = aIdx === 0 ? -1 : 1;
+            drawSpriteCentered(ctx, item.spec.sprite, tail.x - tail.r * 1.12, tail.y + side * tail.r * 0.68, thrusterSize * 0.92, thrusterSize * 0.92, Math.PI * 0.5 - side * 0.28 + wagRot);
+          } else {
+            const offsetMode = aIdx === 0 ? 0 : (aIdx === 1 ? -1 : 1);
+            const tx = tail.x - tail.r * (offsetMode === 0 ? 1.32 : 1.02);
+            const ty = tail.y + offsetMode * tail.r * 0.76;
+            drawSpriteCentered(ctx, item.spec.sprite, tx, ty, thrusterSize * 0.88, thrusterSize * 0.88, Math.PI * 0.5 - offsetMode * 0.34 + wagRot);
+          }
+        });
+
+        // ② 纯粹果冻软胶躯体底盘 (Pure Torso Chassis —— 不含预烘焙眼/鳍/核，全长自适应覆盖头尾脊椎)
+        const bodyLenX = (totalHalfLen * 2 + head.r + tail.r) * 1.16;
+        const bodyWidY = baseR * 2.32;
+        drawSpriteCentered(ctx, torso.sprite, 0, 0, bodyWidY, bodyLenX, Math.PI * 0.5);
+        if (org.isBoss) {
+          const bossSprites = ['boss-ch1-hydra.svg', 'boss-ch2-trilobite.svg', 'boss-ch3-jellyfish.svg', 'boss-ch4-chimera.svg', 'boss-ch5-voidphage.svg'];
+          const bSprite = bossSprites[Math.min(4, Math.max(0, selectedBiomeId || 0))];
+          drawSpriteCentered(ctx, bSprite, 0, 0, bodyWidY * 1.12, bodyLenX * 1.08, Math.PI * 0.5, 0.72);
+        }
+
+        // ③ 体内核心器官插槽 (Core —— 精准嵌入躯体中央透明内脏腔凹槽，随代谢呼吸脉动)
+        const coreLv = org.suppressedTimer > 0 ? 1 : bp.slots.core.level;
+        const coreSpec = ORGAN_CATALOG[bp.slots.core.id].levels[coreLv];
+        const pulseScale = 0.94 + 0.10 * Math.sin(phase * 0.9);
+        const coreNode = spine[Math.min(spine.length - 1, Math.floor(spine.length * 0.42))];
+        drawSpriteCentered(ctx, coreSpec.sprite, coreNode.x, coreNode.y, baseR * 1.24 * pulseScale, baseR * 1.24 * pulseScale, Math.PI * 0.5);
+
+        // ④ 躯体中后段背侧/侧翼功能器官插槽 (Utility + 第四章首领双槽 FIFO 同化器官 —— 避开头节感官区，沿胸腹体节插槽专属分布)
+        const utilList = [...(bp.slots.utility || []), ...((org.assimilatedOrgans || []).map((a) => ({ id: a.id, level: a.level })))];
+        utilList.forEach((u, idx) => {
+          const uLv = org.suppressedTimer > 0 ? 1 : u.level;
+          const spec = ORGAN_CATALOG[u.id].levels[uLv];
+          const uSize = baseR * 1.18;
+          if (utilList.length === 1) {
+            const midSeg = spine[Math.min(spine.length - 1, Math.floor(spine.length * 0.5))];
+            drawSpriteCentered(ctx, spec.sprite, midSeg.x - baseR * 0.12, midSeg.y - midSeg.r * 1.04, uSize, uSize, -0.22);
+            drawSpriteCentered(ctx, spec.sprite, midSeg.x - baseR * 0.12, midSeg.y + midSeg.r * 1.04, uSize, uSize, Math.PI + 0.22);
+          } else {
+            const side = idx % 2 === 0 ? -1 : 1;
+            const pairRow = Math.floor(idx / 2);
+            const totalRows = Math.max(1, Math.ceil(utilList.length / 2));
+            // 严格锚定于头节后方的胸腹体节 (segIdx >= 1)，绝不与头部眼/耳重叠
+            const minSeg = spine.length > 1 ? 1 : 0;
+            const segIdx = Math.min(spine.length - 1, minSeg + Math.floor((pairRow * (spine.length - minSeg)) / totalRows));
+            const seg = spine[segIdx];
+            const xShift = spine.length === 1 ? (-baseR * 0.22 * (pairRow + 1)) : (-baseR * 0.08);
+            const rotOut = side < 0 ? (-0.22 - pairRow * 0.12) : (Math.PI + 0.22 + pairRow * 0.12);
+            drawSpriteCentered(ctx, spec.sprite, seg.x + xShift, seg.y + side * seg.r * 1.06, uSize, uSize, rotOut);
+          }
+        });
+
+        // ⑤ 头节前端吃食口器插槽 (Mouth —— 接驳于头端吻部凹槽，尖端朝向正前方 +X)
+        const mouthList = bp.slots.mouth || [];
+        const bitePulse = 1.0 + 0.06 * Math.sin(phase * 2.2);
+        mouthList.forEach((m, idx) => {
+          const mLv = org.suppressedTimer > 0 ? 1 : m.level;
+          const spec = ORGAN_CATALOG[m.id].levels[mLv];
+          const mSize = baseR * 1.56 * bitePulse;
+          if (mouthList.length === 1) {
+            drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 1.08, head.y, mSize, mSize, Math.PI * 0.5);
+          } else {
+            const side = idx === 0 ? -1 : 1;
+            drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 0.98, head.y + side * head.r * 0.52, mSize * 0.92, mSize * 0.92, Math.PI * 0.5 + side * 0.24);
+          }
+        });
+
+        // ⑥ 头节前侧感官器官插槽 (Sensory: 视觉眼/听觉耳 —— 镶嵌于头节眼眶/听囊凹槽，朝向正前外侧)
+        const senseList = bp.slots.sensory || [];
+        senseList.forEach((s, idx) => {
+          const sLv = org.suppressedTimer > 0 ? 1 : s.level;
+          const spec = ORGAN_CATALOG[s.id].levels[sLv];
+          const sSize = baseR * (idx === 0 ? 1.05 : 0.94);
+          const fwdOffset = idx === 0 ? head.r * 0.46 : -head.r * 0.04;
+          const latOffset = idx === 0 ? head.r * 0.68 : head.r * 0.92;
+          const splayAng = idx === 0 ? 0.28 : 0.56;
+          drawSpriteCentered(ctx, spec.sprite, head.x + fwdOffset, head.y - latOffset, sSize, sSize, Math.PI * 0.5 - splayAng);
+          drawSpriteCentered(ctx, spec.sprite, head.x + fwdOffset, head.y + latOffset, sSize, sSize, Math.PI * 0.5 + splayAng);
+        });
       }
 
       /* =====================================================================
