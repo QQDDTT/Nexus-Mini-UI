@@ -454,6 +454,34 @@
         let bmr = torso.bmr + coreSpec.bmr;
         let totalGpCost = torso.transitionGp + coreSpec.gp;
 
+        // 口部插槽合成 (双同系口器 +35% 伤害/吸附半径，能耗 +50%) —— 先确定食性生态位以驱动视觉光学分化
+        const firstMouthSeries = ORGAN_CATALOG[bp.slots.mouth[0].id];
+        const firstMouthSpec = firstMouthSeries.levels[effLv(bp.slots.mouth[0].level)];
+        const dietType = firstMouthSeries.diet;
+        const dualMouthMult = bp.slots.mouth.length > 1 ? 1.35 : 1.0;
+        const dualMouthCostMult = bp.slots.mouth.length > 1 ? 1.50 : 1.0;
+        bp.slots.mouth.forEach((m) => {
+          const spec = ORGAN_CATALOG[m.id].levels[effLv(m.level)];
+          bmr += spec.bmr;
+          totalGpCost += spec.gp;
+        });
+
+        // 视觉系统生态位分化法则：
+        // 1. 掠食者 (carnivore)：长距离 (1.30x) · 高精度 (coreFocus=0.80, maxBlur=1.5px) · 窄视野 (0.62x 聚焦扇角)
+        // 2. 生产者 (herbivore)：中距离 (0.76x) · 低精度 (coreFocus=0.24, maxBlur=6.8px) · 宽视野 (1.68x 广角全景)
+        // 3. 杂食者 (omnivore)：中长距离 (1.00x) · 标准精度 (coreFocus=0.50, maxBlur=4.2px) · 标准视野 (1.08x)
+        const visionProfile = dietType === 'carnivore' ? 'predator' : (dietType === 'herbivore' ? 'producer' : 'omnivore');
+        const dietRangeMult = visionProfile === 'predator' ? 1.30 : (visionProfile === 'producer' ? 0.76 : 1.00);
+        const dietAngleMult = visionProfile === 'predator' ? 0.62 : (visionProfile === 'producer' ? 1.68 : 1.08);
+        const dietAngleDayCap = visionProfile === 'predator' ? 86 : (visionProfile === 'producer' ? 220 : 148);
+        const dietAngleNightCap = visionProfile === 'predator' ? 65 : (visionProfile === 'producer' ? 168 : 112);
+        const visionCoreFocus = visionProfile === 'predator' ? 0.80 : (visionProfile === 'producer' ? 0.24 : 0.50);
+        const visionBlurMax = visionProfile === 'predator' ? 1.50 : (visionProfile === 'producer' ? 6.80 : 4.20);
+        const visionSatMult = visionProfile === 'predator' ? 1.15 : (visionProfile === 'producer' ? 0.85 : 1.00);
+        const visionModeLabel = visionProfile === 'predator'
+          ? '掠食聚焦 (长距·高精·窄视野)'
+          : (visionProfile === 'producer' ? '广角警戒 (中距·低精·宽视野)' : '均衡视觉 (中长距·标精·中视野)');
+
         // 感官插槽合成
         let eyeOrgans = [];
         let earOrgans = [];
@@ -472,13 +500,13 @@
         if (eyeOrgans.length > 0) {
           const mainEye = eyeOrgans[0];
           maxEyeLv = mainEye.level;
-          const multRange = eyeOrgans.length > 1 ? 1.25 : 1.0;
-          const multAngle = eyeOrgans.length > 1 ? 1.15 : 1.0;
+          const multRange = (eyeOrgans.length > 1 ? 1.25 : 1.0) * dietRangeMult;
+          const multAngle = (eyeOrgans.length > 1 ? 1.15 : 1.0) * dietAngleMult;
           dayEyeRange = Math.round(mainEye.dayRange * multRange);
           nightEyeRange = Math.round(mainEye.nightRange * multRange);
-          dayEyeAngle = Math.min(136, Math.round(mainEye.dayAngle * multAngle));
-          nightEyeAngle = Math.min(108, Math.round(mainEye.nightAngle * multAngle));
-          eyeSat = mainEye.sat;
+          dayEyeAngle = Math.min(dietAngleDayCap, Math.round(mainEye.dayAngle * multAngle));
+          nightEyeAngle = Math.min(dietAngleNightCap, Math.round(mainEye.nightAngle * multAngle));
+          eyeSat = +(mainEye.sat * visionSatMult).toFixed(2);
         }
 
         let sonarRange = 0, sonarPulseSec = 1.40, staticSenseRange = 0, maxEarLv = 0;
@@ -491,17 +519,6 @@
           sonarPulseSec = +(mainEar.pulseSec * multPulse).toFixed(2);
           staticSenseRange = mainEar.staticRange;
         }
-
-        // 口部插槽合成 (双同系口器 +35% 伤害/吸附半径，能耗 +50%)
-        const firstMouthSeries = ORGAN_CATALOG[bp.slots.mouth[0].id];
-        const firstMouthSpec = firstMouthSeries.levels[effLv(bp.slots.mouth[0].level)];
-        const dualMouthMult = bp.slots.mouth.length > 1 ? 1.35 : 1.0;
-        const dualMouthCostMult = bp.slots.mouth.length > 1 ? 1.50 : 1.0;
-        bp.slots.mouth.forEach((m) => {
-          const spec = ORGAN_CATALOG[m.id].levels[effLv(m.level)];
-          bmr += spec.bmr;
-          totalGpCost += spec.gp;
-        });
 
         // 运动插槽合成
         let sumThrust = 0;
@@ -547,7 +564,6 @@
         const maxTurnRate = +((1.6 + 0.040 * sumTorque) * torso.kw).toFixed(2);
         bmr = +bmr.toFixed(2);
 
-        const dietType = firstMouthSeries.diet;
         const dietGrowMult = dietType === 'carnivore' ? 1.35 : (dietType === 'omnivore' ? 1.15 : 1.00);
         const dietFragileMult = dietType === 'carnivore' ? 0.85 : (dietType === 'omnivore' ? 0.92 : 1.00);
 
@@ -586,6 +602,7 @@
             biteCost: +(firstMouthSpec.biteCost * dualMouthCostMult).toFixed(1),
             lifesteal: firstMouthSpec.lifesteal,
             absSenseRange: Math.round(92 + torso.sizePx * 0.65),
+            visionProfile, visionCoreFocus, visionBlurMax, visionModeLabel,
             dayEyeRange, nightEyeRange, dayEyeAngle, nightEyeAngle, eyeSat, maxEyeLv,
             sonarRange, sonarPulseSec, staticSenseRange, maxEarLv,
             activeSkill
@@ -1437,7 +1454,8 @@
         const titleEl = document.getElementById('editor-preview-title');
         if (titleEl) titleEl.textContent = '当前物种：' + editorDraft.speciesName;
         const subEl = document.getElementById('editor-preview-sub');
-        if (subEl) subEl.textContent = `${torso.name} (${torso.code}) · ${dietLabel}`;
+        const visionTag = st.maxEyeLv > 0 ? ` · ${st.visionModeLabel || ''}` : (st.maxEarLv > 0 ? ' · 纯声呐广域监听' : ' · 近体绝对感知');
+        if (subEl) subEl.textContent = `${torso.name} (${torso.code}) · ${dietLabel}${visionTag}`;
         const nameInp = document.getElementById('editor-species-name');
         if (nameInp && document.activeElement !== nameInp) nameInp.value = editorDraft.speciesName;
 
@@ -1577,17 +1595,29 @@
             ctx.fillStyle = absPreviewGrad;
             ctx.fill();
 
-            // 绘制视觉长距扇形锥预览 (中心清晰，向外渐变融合)
+            // 绘制视觉扇形锥预览 (生态位分化：掠食者=长距离·高精度·窄视野，生产者=中距离·低精度·宽视野)
             if (st.maxEyeLv > 0) {
-              const r = (editorPreviewIsNight ? st.nightEyeRange : st.dayEyeRange) * 0.26;
+              const r = (editorPreviewIsNight ? st.nightEyeRange : st.dayEyeRange) * 0.24;
               const halfRad = ((editorPreviewIsNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
+              const isPred = st.visionProfile === 'predator';
+              const isProd = st.visionProfile === 'producer';
               ctx.save();
               ctx.translate(cx, cy);
               ctx.rotate(swimAng);
-              const coneGrad = ctx.createRadialGradient(0, 0, absPreviewR * 0.4, 0, 0, r);
-              coneGrad.addColorStop(0, 'rgba(45, 212, 191, 0.22)');
-              coneGrad.addColorStop(0.55, 'rgba(45, 212, 191, 0.10)');
-              coneGrad.addColorStop(1, 'rgba(45, 212, 191, 0.0)');
+              const coneGrad = ctx.createRadialGradient(0, 0, absPreviewR * 0.35, 0, 0, r);
+              if (isPred) {
+                coneGrad.addColorStop(0, 'rgba(45, 212, 191, 0.28)');
+                coneGrad.addColorStop(0.75, 'rgba(45, 212, 191, 0.16)');
+                coneGrad.addColorStop(1, 'rgba(45, 212, 191, 0.0)');
+              } else if (isProd) {
+                coneGrad.addColorStop(0, 'rgba(52, 211, 153, 0.20)');
+                coneGrad.addColorStop(0.42, 'rgba(52, 211, 153, 0.09)');
+                coneGrad.addColorStop(1, 'rgba(52, 211, 153, 0.0)');
+              } else {
+                coneGrad.addColorStop(0, 'rgba(45, 212, 191, 0.22)');
+                coneGrad.addColorStop(0.55, 'rgba(45, 212, 191, 0.10)');
+                coneGrad.addColorStop(1, 'rgba(45, 212, 191, 0.0)');
+              }
               ctx.beginPath();
               ctx.moveTo(0, 0);
               ctx.arc(0, 0, r, -halfRad, halfRad);
@@ -1632,35 +1662,38 @@
               ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
               ctx.clip();
               drawOrganism(ctx, {
-                x: cx - maxR * 0.62,
-                y: cy - maxR * 0.36,
+                x: cx - maxR * 0.65,
+                y: cy - maxR * 0.38,
                 angle: Math.PI * 0.18,
                 faction: 'enemy',
                 isAlpha: false,
                 blueprint: officialFossils[1]
               }, {
                 freezePhase: snapTick * 6.5,
-                scale: 1.02,
+                scale: 0.95,
                 sonarWireframe: true,
                 sonarAlpha: Math.max(0.22, (1.0 - pulseFrac * 0.55) * 0.52)
               });
               ctx.restore();
             }
 
-            // 若装备视觉器官，在前方视觉扇形内演示全彩清晰目标
+            // 若装备视觉器官，在前方视觉扇形远端演示光学精度差异 (掠食者=远距高精度锐利对焦，生产者=中距低精度散焦模糊)
             if (st.maxEyeLv > 0) {
-              const eyePreviewR = (editorPreviewIsNight ? st.nightEyeRange : st.dayEyeRange) * 0.26;
+              const eyePreviewR = (editorPreviewIsNight ? st.nightEyeRange : st.dayEyeRange) * 0.24;
+              const targetDist = Math.max(absPreviewR + 38, Math.min(w * 0.44, eyePreviewR * 0.76));
+              const demoBlur = st.visionProfile === 'producer' ? 3.4 : (st.visionProfile === 'predator' ? 0 : 1.5);
               ctx.save();
+              if (demoBlur > 0.3) ctx.filter = `blur(${demoBlur}px)`;
               drawOrganism(ctx, {
-                x: cx + Math.cos(swimAng) * Math.min(w * 0.34, eyePreviewR * 0.62),
-                y: cy + Math.sin(swimAng) * Math.min(h * 0.34, eyePreviewR * 0.62),
+                x: cx + Math.cos(swimAng) * targetDist,
+                y: cy + Math.sin(swimAng) * targetDist,
                 angle: swimAng + Math.PI * 0.75,
                 faction: 'herbivore',
                 isAlpha: false,
                 blueprint: officialFossils[0]
               }, {
                 timeSec: tSec,
-                scale: 0.92,
+                scale: 0.86,
                 sonarWireframe: false
               });
               ctx.restore();
@@ -3837,15 +3870,18 @@
         return Math.max(0.06, Math.pow(smooth, 1.35));
       }
 
-      // 计算个体周围【绝对感知彩色区】与【视觉长距扇形区】的联合感知清晰度与边缘模糊度
-      // - 在绝对感知区内 (dist <= absR)：无论是否装备视觉/听觉，始终呈现 100% 彩色高清画面，并在外缘 [0.72*absR, 1.18*absR] 平滑渐变融合
-      // - 在视觉扇形区内：扇形中心轴线与近处清晰 (clarity=1, blur=0)，越靠外缘/远端越模糊 (blur 最高 5px) 且透明度平滑衰减，与周围背景或听觉底图自然融合
+      // 计算个体周围【绝对感知彩色区】与【视觉扇形区】的联合感知清晰度与边缘模糊度
+      // - 在绝对感知区内 (dist <= absR)：无论是否装备视觉/听觉，始终呈现 100% 彩色高清画面，并在外缘 [0.72*absR, 1.28*absR] 平滑渐变融合
+      // - 在视觉扇形区内，严格遵循生态位视觉分化：
+      //   1. 掠食者 (predator)：长距离 · 高精度 · 窄视野 (coreFocus=0.80, maxBlur=1.5px，远距猎物纤毫毕现)
+      //   2. 生产者 (producer)：中距离 · 低精度 · 宽视野 (coreFocus=0.24, maxBlur=6.8px，广角监控藻群与天敌色块动向)
+      //   3. 杂食者 (omnivore)：中长距离 · 标准精度 · 标准视野 (coreFocus=0.50, maxBlur=4.2px)
       function computeColorVisionEnvelope(px, py, alpha, st, isNight) {
         const dx = px - alpha.x;
         const dy = py - alpha.y;
         const dist = Math.hypot(dx, dy);
         const absR = st.absSenseRange || 110;
-        const absFeatherEnd = absR * 1.22;
+        const absFeatherEnd = absR * 1.28;
 
         // 1. 绝对感知区贡献 (360° 全向近体彩色感知)
         let absWeight = 0;
@@ -3856,34 +3892,36 @@
           absWeight = 1 - t * t * (3 - 2 * t);
         }
 
-        // 2. 扇形长距视觉区贡献 (中心清晰，向外/向两侧边缘渐变模糊并与背景融合)
+        // 2. 生态位分化视觉扇形贡献
         let eyeWeight = 0;
         let eyeBlurPx = 0;
+        const coreFocus = st.visionCoreFocus !== undefined ? st.visionCoreFocus : 0.50;
+        const maxBlur = st.visionBlurMax !== undefined ? st.visionBlurMax : 4.20;
         if (st.maxEyeLv > 0) {
           const effRange = alpha.blindTimer > 0 ? Math.max(absR * 1.15, 130) : (isNight ? st.nightEyeRange : st.dayEyeRange);
           const halfRad = ((isNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
-          const angFeather = Math.min(0.32, halfRad * 0.28);
+          const angFeather = Math.min(0.34, halfRad * 0.30);
           if (dist <= effRange && halfRad > 0) {
             const angToTarget = Math.atan2(dy, dx);
             const diff = Math.abs(Math.atan2(Math.sin(angToTarget - alpha.angle), Math.cos(angToTarget - alpha.angle)));
             if (diff <= halfRad + angFeather) {
-              // 径向平滑衰减：前 38% 距离保持高清晰，向外平滑衰减至 0
               const rNorm = Math.max(0, Math.min(1, (dist - absR * 0.45) / Math.max(40, effRange - absR * 0.45)));
-              const rSmooth = rNorm <= 0.30 ? 1.0 : (1 - Math.pow((rNorm - 0.30) / 0.70, 1.45));
-              // 角向平滑衰减：中心轴线 55% 扇角内清晰，向扇形两侧边界平滑过渡融合
+              const rSmooth = rNorm <= coreFocus ? 1.0 : (1 - Math.pow((rNorm - coreFocus) / Math.max(0.15, 1 - coreFocus), 1.45));
               const aNorm = Math.max(0, Math.min(1, diff / Math.max(0.05, halfRad + angFeather)));
-              const aSmooth = aNorm <= 0.52 ? 1.0 : (1 - Math.pow((aNorm - 0.52) / 0.48, 1.55));
+              const aSmooth = aNorm <= coreFocus ? 1.0 : (1 - Math.pow((aNorm - coreFocus) / Math.max(0.15, 1 - coreFocus), 1.55));
               eyeWeight = Math.max(0, Math.min(1, rSmooth * aSmooth));
-              // 越靠外、越偏离扇形中心，模糊度越高 (0px -> 4.8px)
-              const blurFactor = Math.max(0, Math.min(1, 0.65 * Math.pow(rNorm, 1.35) + 0.45 * Math.pow(aNorm, 1.6)));
-              eyeBlurPx = +(blurFactor * 4.8).toFixed(2);
+              // 按生态位光学精度计算散焦模糊度 (掠食者前 80% 保持 0px 锐利；生产者超过 24% 即呈广角低精度散焦模糊)
+              const rBlur = rNorm <= coreFocus * 0.85 ? 0 : Math.pow((rNorm - coreFocus * 0.85) / Math.max(0.15, 1 - coreFocus * 0.85), 1.15);
+              const aBlur = aNorm <= coreFocus * 0.85 ? 0 : Math.pow((aNorm - coreFocus * 0.85) / Math.max(0.15, 1 - coreFocus * 0.85), 1.35);
+              const blurFactor = Math.max(0, Math.min(1, 0.72 * rBlur + 0.42 * aBlur));
+              eyeBlurPx = +(blurFactor * maxBlur).toFixed(2);
             }
           }
         }
 
         const weight = Math.max(absWeight, eyeWeight);
         // 若处于近体绝对感知核心区，强制清晰无模糊；向外过渡时按权重平滑插值模糊度
-        const blurPx = absWeight >= 0.85 ? 0 : +(eyeBlurPx * (1 - absWeight * 0.85) + (1 - weight) * 2.2).toFixed(2);
+        const blurPx = absWeight >= 0.85 ? 0 : +(eyeBlurPx * (1 - absWeight * 0.85)).toFixed(2);
         return { weight, blurPx, absWeight, eyeWeight, dist, absR };
       }
 
@@ -4278,7 +4316,7 @@
             if (env.weight <= 0.02) return;
             ctx.save();
             if (env.blurPx >= 0.6) ctx.filter = `blur(${env.blurPx}px)`;
-            drawSpriteCentered(ctx, 'env-vent.svg', v.x, v.y, v.radius * 1.8, v.radius * 1.8, 0, 0.85 * env.weight);
+            drawSpriteCentered(ctx, 'env-vent.svg', v.x, v.y, v.radius * 1.8, v.radius * 1.8, 0, 0.85);
             ctx.restore();
           }
         });
@@ -4317,7 +4355,6 @@
             const env = computeColorVisionEnvelope(f.x, f.y, alpha, st, isNight);
             if (env.weight <= 0.02) return;
             ctx.save();
-            ctx.globalAlpha *= env.weight;
             if (env.blurPx >= 0.6) {
               ctx.filter = `blur(${env.blurPx}px) saturate(${Math.round(st.eyeSat * 100)}%)`;
             }
@@ -4363,7 +4400,6 @@
             const env = computeColorVisionEnvelope(h.x, h.y, alpha, st, isNight);
             if (env.weight <= 0.02) return;
             ctx.save();
-            ctx.globalAlpha *= env.weight;
             ctx.beginPath();
             ctx.arc(h.x, h.y, h.radius, 0, Math.PI * 2);
             ctx.fillStyle = h.type === 'ink' ? 'rgba(5, 8, 18, 0.82)' : (h.type === 'venom' ? 'rgba(16, 185, 129, 0.22)' : 'rgba(45, 212, 191, 0.35)');
@@ -4386,7 +4422,6 @@
             const env = computeColorVisionEnvelope(p.x, p.y, alpha, st, isNight);
             if (env.weight <= 0.02) return;
             ctx.save();
-            ctx.globalAlpha *= env.weight;
             ctx.beginPath();
             ctx.arc(p.x, p.y, 4.0, 0, Math.PI * 2);
             ctx.fillStyle = '#fbbf24';
@@ -4485,7 +4520,6 @@
               const env = computeColorVisionEnvelope(org.x, org.y, alpha, st, isNight);
               if (env.weight <= 0.02) return;
               ctx.save();
-              ctx.globalAlpha *= env.weight;
               const satPct = Math.round((env.absWeight >= 0.5 ? Math.max(1.0, st.eyeSat) : st.eyeSat) * 100);
               ctx.filter = env.blurPx >= 0.45
                 ? `blur(${env.blurPx}px) saturate(${satPct}%)`
@@ -4603,78 +4637,73 @@
         colorCtx.clip();
         renderWorldPass(colorCtx, camX, camY, viewW, viewH, isNight, false);
 
-        // 若装备视觉器官，在彩色通道内叠加前向光学聚光束 (中心清晰透亮，向两侧与远端平滑衰减，凸显长距扇形视觉区)
-        if (hasEye && effEyeRange > absR) {
-          const beamRgb = activeBiome.accentRgba || '45, 212, 191';
-          const beamGrad = colorCtx.createRadialGradient(alpha.x, alpha.y, absR * 0.45, alpha.x, alpha.y, effEyeRange);
-          beamGrad.addColorStop(0, `rgba(${beamRgb}, 0.16)`);
-          beamGrad.addColorStop(0.48, `rgba(${beamRgb}, 0.11)`);
-          beamGrad.addColorStop(0.82, `rgba(${beamRgb}, 0.04)`);
-          beamGrad.addColorStop(1, `rgba(${beamRgb}, 0.0)`);
-          colorCtx.fillStyle = beamGrad;
-          colorCtx.beginPath();
-          colorCtx.moveTo(alpha.x, alpha.y);
-          colorCtx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle - halfEyeRad - eyeAngFeather * 0.5, alpha.angle + halfEyeRad + eyeAngFeather * 0.5);
-          colorCtx.closePath();
-          colorCtx.fill();
-        }
+        // 在彩色通道内叠加 360° 中心向外单调递减的生物光学聚光场 (由下方 senseMaskCanvas 统一裁切为【近体圆 ∪ 视觉扇形】，彻底杜绝扇形内切线与亮环)
+        const beamRgb = activeBiome.accentRgba || '45, 212, 191';
+        const maxLightR = Math.max(absOuterR, hasEye ? effEyeRange : absOuterR);
+        const lightGrad = colorCtx.createRadialGradient(alpha.x, alpha.y, 0, alpha.x, alpha.y, maxLightR);
+        const centerAlpha = st.visionProfile === 'predator' ? 0.14 : (st.visionProfile === 'producer' ? 0.10 : 0.12);
+        lightGrad.addColorStop(0, `rgba(${beamRgb}, ${centerAlpha})`);
+        lightGrad.addColorStop(0.35, `rgba(${beamRgb}, ${(centerAlpha * 0.68).toFixed(3)})`);
+        lightGrad.addColorStop(0.72, `rgba(${beamRgb}, ${(centerAlpha * 0.28).toFixed(3)})`);
+        lightGrad.addColorStop(1, `rgba(${beamRgb}, 0.0)`);
+        colorCtx.fillStyle = lightGrad;
+        colorCtx.beginPath();
+        colorCtx.arc(alpha.x, alpha.y, maxLightR, 0, Math.PI * 2);
+        colorCtx.fill();
         colorCtx.restore();
 
-        // 2.2 在 maskCtx 上构建【视觉长距扇形 ∪ 360° 近体绝对感知圆】的平滑 Alpha 权重场 (纯白 Alpha 叠加，零黑边污染)
+        // 2.2 在 maskCtx 上构建【视觉扇形 ∪ 360° 近体绝对感知圆】的连续高斯羽化 Alpha 权重场 (零条纹、零分阶、零黑边)
         maskCtx.globalCompositeOperation = 'source-over';
         maskCtx.shadowBlur = 0;
+        maskCtx.filter = 'none';
         maskCtx.clearRect(0, 0, w, h);
         maskCtx.save();
         maskCtx.translate(w * 0.5, h * 0.5);
         maskCtx.scale(VIEWPORT_ZOOM, VIEWPORT_ZOOM);
         maskCtx.translate(-camX, -camY);
+        // 使用 GPU 高斯模糊滤镜直接对遮罩几何体做连续光学羽化，彻底消除多阶折线或扇叶条纹
+        maskCtx.filter = 'blur(20px)';
 
         if (hasEye && effEyeRange > absR * 0.9) {
-          // 视觉扇形角度羽化层 (由宽到窄叠加 9 层柔化扇区，使两侧边缘与远端径向同时平滑过渡到 0 Alpha)
-          const featherSlices = 9;
-          const sliceGrad = maskCtx.createRadialGradient(alpha.x, alpha.y, absR * 0.45, alpha.x, alpha.y, effEyeRange);
-          sliceGrad.addColorStop(0, 'rgba(255, 255, 255, 0.24)');
-          sliceGrad.addColorStop(0.55, 'rgba(255, 255, 255, 0.18)');
-          sliceGrad.addColorStop(0.84, 'rgba(255, 255, 255, 0.07)');
-          sliceGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
-          maskCtx.fillStyle = sliceGrad;
-          for (let s = 0; s < featherSlices; s++) {
-            const tFrac = s / (featherSlices - 1);
-            const spanHalf = halfEyeRad + eyeAngFeather * (1 - 2 * tFrac);
-            if (spanHalf <= 0.02) continue;
-            maskCtx.beginPath();
-            maskCtx.moveTo(alpha.x, alpha.y);
-            maskCtx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle - spanHalf, alpha.angle + spanHalf);
-            maskCtx.closePath();
-            maskCtx.fill();
+          const isPred = st.visionProfile === 'predator';
+          const isProd = st.visionProfile === 'producer';
+          const coreGrad = maskCtx.createRadialGradient(alpha.x, alpha.y, absR * 0.85, alpha.x, alpha.y, effEyeRange);
+          if (isPred) {
+            // 掠食者：长距离 · 高精度 · 窄视野 (前 75% 保持极高清晰透光度，末端平滑融入背景)
+            coreGrad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+            coreGrad.addColorStop(0.72, 'rgba(255, 255, 255, 0.96)');
+            coreGrad.addColorStop(0.88, 'rgba(255, 255, 255, 0.52)');
+            coreGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+          } else if (isProd) {
+            // 生产者：中距离 · 低精度 · 宽视野 (广角扇面自近向远柔和散焦衰减)
+            coreGrad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+            coreGrad.addColorStop(0.36, 'rgba(255, 255, 255, 0.88)');
+            coreGrad.addColorStop(0.70, 'rgba(255, 255, 255, 0.44)');
+            coreGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+          } else {
+            coreGrad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+            coreGrad.addColorStop(0.55, 'rgba(255, 255, 255, 0.92)');
+            coreGrad.addColorStop(0.82, 'rgba(255, 255, 255, 0.45)');
+            coreGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
           }
-
-          // 视觉扇形中心清晰核心区 (中心对焦 100% 不透明，向外径向平滑渐隐)
-          const coreHalf = Math.max(0.05, halfEyeRad - eyeAngFeather * 0.75);
-          const coreGrad = maskCtx.createRadialGradient(alpha.x, alpha.y, absR * 0.5, alpha.x, alpha.y, effEyeRange);
-          coreGrad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
-          coreGrad.addColorStop(0.50, 'rgba(255, 255, 255, 0.92)');
-          coreGrad.addColorStop(0.78, 'rgba(255, 255, 255, 0.45)');
-          coreGrad.addColorStop(0.93, 'rgba(255, 255, 255, 0.12)');
-          coreGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
           maskCtx.fillStyle = coreGrad;
           maskCtx.beginPath();
           maskCtx.moveTo(alpha.x, alpha.y);
-          maskCtx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle - coreHalf, alpha.angle + coreHalf);
+          maskCtx.arc(alpha.x, alpha.y, effEyeRange, alpha.angle - halfEyeRad, alpha.angle + halfEyeRad);
           maskCtx.closePath();
           maskCtx.fill();
         }
 
-        // 叠加 360° 近体绝对感知彩色圆遮罩 (核心 100% Alpha 覆盖，确保个体周围全向清晰无任何扇形切痕，外缘 0.72x~1.28x 柔和羽化融入听觉层)
-        const absMaskGrad = maskCtx.createRadialGradient(alpha.x, alpha.y, absR * 0.72, alpha.x, alpha.y, absOuterR);
+        // 叠加 360° 近体绝对感知彩色圆遮罩 (0 ~ 0.90*absR 保持 100% 满 Alpha 覆盖，彻底抹平扇形在圆内的交界，外缘连续高斯羽化)
+        const absMaskGrad = maskCtx.createRadialGradient(alpha.x, alpha.y, absR * 0.88, alpha.x, alpha.y, absOuterR);
         absMaskGrad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
-        absMaskGrad.addColorStop(0.42, 'rgba(255, 255, 255, 0.82)');
-        absMaskGrad.addColorStop(0.75, 'rgba(255, 255, 255, 0.32)');
+        absMaskGrad.addColorStop(0.45, 'rgba(255, 255, 255, 0.92)');
         absMaskGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
         maskCtx.fillStyle = absMaskGrad;
         maskCtx.beginPath();
         maskCtx.arc(alpha.x, alpha.y, absOuterR, 0, Math.PI * 2);
         maskCtx.fill();
+        maskCtx.filter = 'none';
         maskCtx.restore();
 
         // 2.3 用 destination-in 将联合感官 Alpha 遮罩裁切至彩色通道，并无损合成至主画布
@@ -4687,35 +4716,8 @@
         ctx.drawImage(colorPassCanvas, 0, 0);
         ctx.restore();
 
-        // 3. 感官区域光晕与辅助引导层 (所有感官交界处采用柔和渐变光晕融合，不穿过绝对感知核心区)
+        // 3. 感官区域声波脉冲层 (全感官区域靠光学渐变自然融合，不绘制生硬扇形切割边框线或冗余亮环)
         if (arenaState.showSensoryOverlay) {
-          // 3.1 绝对感知区域柔和呼吸内环 (彩色感知核心)
-          const absGlow = ctx.createRadialGradient(alpha.x, alpha.y, absR * 0.55, alpha.x, alpha.y, absR * 1.15);
-          absGlow.addColorStop(0, 'rgba(45, 212, 191, 0.0)');
-          absGlow.addColorStop(0.75, 'rgba(45, 212, 191, 0.07)');
-          absGlow.addColorStop(1, 'rgba(45, 212, 191, 0.0)');
-          ctx.beginPath();
-          ctx.arc(alpha.x, alpha.y, absR * 1.15, 0, Math.PI * 2);
-          ctx.fillStyle = absGlow;
-          ctx.fill();
-
-          if (hasEye && effEyeRange > absR * 1.05) {
-            const eyeGrad = ctx.createRadialGradient(alpha.x, alpha.y, absR, alpha.x, alpha.y, effEyeRange);
-            eyeGrad.addColorStop(0, 'rgba(45, 212, 191, 0.28)');
-            eyeGrad.addColorStop(0.65, 'rgba(45, 212, 191, 0.10)');
-            eyeGrad.addColorStop(1, 'rgba(45, 212, 191, 0.0)');
-            const startAng = alpha.angle - halfEyeRad;
-            const endAng = alpha.angle + halfEyeRad;
-            // 从绝对感知区外缘 (absR) 起笔向外延伸扇形侧翼与弧线，绝不画直线横穿个体中心
-            ctx.beginPath();
-            ctx.moveTo(alpha.x + Math.cos(startAng) * absR, alpha.y + Math.sin(startAng) * absR);
-            ctx.lineTo(alpha.x + Math.cos(startAng) * effEyeRange, alpha.y + Math.sin(startAng) * effEyeRange);
-            ctx.arc(alpha.x, alpha.y, effEyeRange, startAng, endAng);
-            ctx.lineTo(alpha.x + Math.cos(endAng) * absR, alpha.y + Math.sin(endAng) * absR);
-            ctx.strokeStyle = eyeGrad;
-            ctx.lineWidth = 1.3;
-            ctx.stroke();
-          }
           if (hasEar) {
             const pulseFrac = (arenaState.timeSec % st.sonarPulseSec) / st.sonarPulseSec;
             const waveAlpha = Math.pow(1 - pulseFrac, 1.35) * 0.58;

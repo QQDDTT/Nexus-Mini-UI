@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v23.1-composite-sensory-fix';
+const CACHE_NAME = 'nexus-mini-portal-v23.2-ecological-vision';
 const CORE_ASSETS = [
   './',
   './index.html',
