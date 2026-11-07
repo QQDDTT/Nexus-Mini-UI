@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Nexus-Mini · 标准微游壳层与房间受控启动模板 (Template Demo)</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100vw; height: 100dvh; overflow: hidden;
+      background: #0b111e; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif;
+      overscroll-behavior: none; user-select: none;
+    }
+    #tier3-gameplay-root {
+      position: fixed; inset: 0; width: 100vw; height: 100dvh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 50% 40%, #13233f 0%, #070d19 100%);
+    }
+    canvas#game-canvas {
+      width: 100%; height: 100%; display: block;
+    }
+    .demo-hud-bar {
+      position: fixed; top: max(10px, env(safe-area-inset-top)); left: 68px; right: 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px; border-radius: 10px;
+      background: rgba(15, 23, 42, 0.86); border: 1px solid rgba(56, 189, 248, 0.35);
+      font-size: 12px; z-index: 50; pointer-events: none;
+    }
+  </style>
+</head>
+<body class="guard-locked" data-tier-mode="tier2-menu">
+
+  <!-- =========================================================================
+       1. 第三层 · 游玩界面 DOM 骨架 (Tier 3 Gameplay Scene Skeleton)
+       注意：页面初次加载时仅存在静态 DOM，严禁在此处自动启动 Canvas 循环或后台服务！
+       ========================================================================= -->
+  <main id="tier3-gameplay-root" aria-label="Tier 3 Gameplay">
+    <div class="demo-hud-bar">
+      <span id="demo-hud-room">房间: 未连接</span>
+      <span id="demo-hud-status">引擎状态: 待命 (未启动)</span>
+      <span id="demo-hud-fps">帧数: 0</span>
+    </div>
+    <canvas id="game-canvas" width="960" height="540"></canvas>
+  </main>
+
+  <!-- =========================================================================
+       2. 引入平台统一 SDK (提供三层路由、房间大厅广播、启动加载画面与引擎生命周期管理)
+       ========================================================================= -->
+  <script src="./nexus-sdk.js"></script>
+
+  <!-- =========================================================================
+       3. 标准微游入口初始化 (Step 1 & Step 3 标准模板结构)
+       - 入口 HTML 仅保留菜单清单配置 (initShellUI)，零游戏运行逻辑、零后台循环。
+       - 仅当用户在【⑥ 房间大厅】点击【+ 创建新房间】（或加入房间）并点击【🚀 启动游戏】后，
+         SDK 才会弹出加载画面并按需加载/启动注册的 GameEngine。
+       ========================================================================= -->
+  <script>
+    /**
+     * 【标准接口契约 A】注册受控游戏引擎 (生产环境中独立存放在 ./engine.js 并由 SDK 按需动态加载)
+     * @param {string} gameId - 游戏唯一标识
+     * @param {function(ctx): {start: function, stop: function, getDebug: function}} factoryFn
+     */
+    NexusSDK.registerGameEngine('tank-battle', function (initCtx) {
+      let running = false;
+      let rafId = 0;
+      let frameCount = 0;
+      let entities = [];
+      const canvas = document.getElementById('game-canvas');
+      const g = canvas ? canvas.getContext('2d') : null;
+
+      function renderLoop() {
+        if (!running || !NexusSDK.isGameplayActive()) return;
+        frameCount++;
+        if (g && canvas) {
+          g.clearRect(0, 0, canvas.width, canvas.height);
+          g.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+          g.lineWidth = 1;
+          for (let x = 0; x < canvas.width; x += 48) {
+            g.beginPath(); g.moveTo(x, 0); g.lineTo(x, canvas.height); g.stroke();
+          }
+          for (let y = 0; y < canvas.height; y += 48) {
+            g.beginPath(); g.moveTo(0, y); g.lineTo(canvas.width, y); g.stroke();
+          }
+          g.fillStyle = '#38bdf8';
+          g.font = 'bold 20px monospace';
+          g.fillText('NEXUS-MINI STANDARD ROOM-GATED ENGINE DEMO', 48, 120);
+          g.fillStyle = '#a3e635';
+          g.font = '15px monospace';
+          const session = NexusSDK.getActiveLanSession();
+          const st = session ? session.getStatus() : {};
+          g.fillText('Active Room: ' + (st.roomCode || 'NONE') + ' | Role: ' + (st.role || 'idle'), 48, 155);
+          g.fillText('Frame Counter: ' + frameCount, 48, 185);
+        }
+        const fpsEl = document.getElementById('demo-hud-fps');
+        if (fpsEl) fpsEl.textContent = '帧计数: ' + frameCount;
+        rafId = requestAnimationFrame(renderLoop);
+      }
+
+      return {
+        /**
+         * 仅在房间内点击【🚀 启动游戏 · 进入战场】完成加载画面后由 SDK 调用
+         * @param {{gameId: string, roomSession: object, roomStatus: object}} ctx
+         */
+        start: function (ctx) {
+          const st = ctx && ctx.roomStatus ? ctx.roomStatus : {};
+          const roomEl = document.getElementById('demo-hud-room');
+          const statusEl = document.getElementById('demo-hud-status');
+          if (roomEl) roomEl.textContent = '房间: ' + (st.roomCode || 'LOCAL') + ' (' + (st.role || 'host') + ')';
+          if (statusEl) statusEl.textContent = '引擎状态: 运行中 (Room Verified)';
+          if (!running) {
+            running = true;
+            rafId = requestAnimationFrame(renderLoop);
+          }
+        },
+        /**
+         * 当用户点击左上角返回按钮退回第二层游戏菜单时自动调用，彻底停止后台循环
+         */
+        stop: function () {
+          running = false;
+          if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+          const statusEl = document.getElementById('demo-hud-status');
+          if (statusEl) statusEl.textContent = '引擎状态: 已暂停回收 (Tier 2 Menu)';
+        },
+        /**
+         * 供自动化审计与诊断接口读取当前引擎状态
+         */
+        getDebug: function () {
+          return {
+            running: running,
+            frameCount: frameCount,
+            entityCount: entities.length
+          };
+        }
+      };
+    });
+
+    /**
+     * 【标准接口契约 B】初始化第二层游戏菜单壳层 (仅渲染清单与菜单，不启动任何游戏引擎或广播)
+     */
+    NexusSDK.initShellUI({
+      gameId: 'tank-battle',
+      gameTitle: '模板演示 · 房间受控启动规范',
+      storagePrefix: 'NEXUS_DEMO_SAVE',
+      defaultSave: { coins: 1000, level: 1 }
+    });
+  </script>
+</body>
+</html>

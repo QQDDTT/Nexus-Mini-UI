@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v14.0-collision-niche-ecosystem';
+const CACHE_NAME = 'nexus-mini-portal-v15.0-room-gated-engine-template';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -13,11 +13,17 @@ const CORE_ASSETS = [
   './sprites/badge-fullscreen.svg',
   './sprites/badge-launch.svg',
   './shared/nexus-sdk.js',
+  './shared/game-template-demo.html',
   './tank/index.html',
+  './tank/engine.js',
   './star/index.html',
+  './star/engine.js',
   './miner/index.html',
+  './miner/engine.js',
   './pudding/index.html',
+  './pudding/engine.js',
   './genesis/index.html',
+  './genesis/engine.js',
   './assets/tank-battle/icon.svg',
   './assets/tank-battle/preview.png',
   './assets/tank-battle/style.css',

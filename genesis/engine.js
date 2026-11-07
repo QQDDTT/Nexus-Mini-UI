@@ -1,0 +1,3761 @@
+/**
+ * 微界演化 · 培养皿基因序列库 - 受控游戏运行引擎 (On-Demand Room-Gated Engine)
+ * 严格遵循 GAME_TEMPLATE_SPEC.md：
+ * 1. 本文件不在 index.html 中直接引用，杜绝进入菜单页面时自动启动游戏或后台服务。
+ * 2. 仅当用户在【⑥ 房间大厅】创建或加入房间并点击【🚀 启动游戏 · 进入战场】后，
+ *    由 NexusSDK 启动加载画面 (#nx-boot-loader-overlay) 并按需动态加载执行。
+ */
+(function (global) {
+  'use strict';
+  if (!global.NexusSDK || typeof global.NexusSDK.registerGameEngine !== 'function') {
+    console.error('[NexusEngine] NexusSDK not found.');
+    return;
+  }
+
+  global.NexusSDK.registerGameEngine('micro-genesis', function (roomBootCtx) {
+    let __engineInitialized = false;
+    let __engineRunning = false;
+
+    function bootEngineOnce() {
+      if (__engineInitialized) return;
+      __engineInitialized = true;
+(() => {
+      'use strict';
+
+      NexusSDK.initShellUI({ gameId: 'micro-genesis', gameTitle: '微界演化：基因沙盘' });
+
+      /* =====================================================================
+       * 1. 权威器官与躯干分阶图鉴数据库 (100% 对齐 05 & 06 规范)
+       * ===================================================================== */
+      const TORSOS = {
+        'torso-t1-micro': {
+          id: 'torso-t1-micro', code: 'T01', name: '微型单节原核体', shortName: 'T01 原核',
+          sprite: 'torso-t1-micro.svg', volume: 1.0, baseHp: 70, bmr: 0.8, kv: 1.25, kw: 1.30,
+          transitionGp: 0, totalSlots: 5,
+          slots: { core: 1, sensory: 1, mouth: 1, locomotion: 1, utility: 1 },
+          sizePx: 24, segments: [1.0]
+        },
+        'torso-t2-stream': {
+          id: 'torso-t2-stream', code: 'T02', name: '流线三节真核体', shortName: 'T02 流线',
+          sprite: 'torso-t2-stream.svg', volume: 2.2, baseHp: 140, bmr: 1.8, kv: 1.00, kw: 1.00,
+          transitionGp: 150, totalSlots: 7,
+          slots: { core: 1, sensory: 1, mouth: 1, locomotion: 2, utility: 2 },
+          sizePx: 30, segments: [0.95, 1.05, 0.78]
+        },
+        'torso-t3-predator': {
+          id: 'torso-t3-predator', code: 'T03', name: '宽幅五节掠食体', shortName: 'T03 掠食',
+          sprite: 'torso-t3-predator.svg', volume: 4.0, baseHp: 240, bmr: 3.6, kv: 0.72, kw: 0.68,
+          transitionGp: 320, totalSlots: 9,
+          slots: { core: 1, sensory: 2, mouth: 1, locomotion: 2, utility: 3 },
+          sizePx: 38, segments: [0.92, 1.15, 1.08, 0.88, 0.68]
+        },
+        'torso-t4-titan': {
+          id: 'torso-t4-titan', code: 'T04', name: '巨型多节深渊泰坦', shortName: 'T04 泰坦',
+          sprite: 'torso-t4-titan.svg', volume: 7.5, baseHp: 420, bmr: 7.2, kv: 0.48, kw: 0.42,
+          transitionGp: 600, totalSlots: 12,
+          slots: { core: 1, sensory: 2, mouth: 2, locomotion: 3, utility: 4 },
+          sizePx: 48, segments: [0.95, 1.20, 1.22, 1.12, 0.98, 0.82, 0.65]
+        }
+      };
+
+      const ORGAN_CATALOG = {
+        /* 1. 核心插槽 (Core) */
+        'core-vacuole': {
+          id: 'core-vacuole', category: 'core', branchName: '原质消化泡 (代谢储能系)',
+          levels: {
+            1: { name: '单室消化液泡', sprite: 'core-vacuole-lv1.svg', gp: 0, bmr: 0, baseE: 100, digestEff: 1.00, regenPerE: 0.8, regenCap: 0.8, reproRatio: 0.70, childERatio: 0.45 },
+            2: { name: '双循环线粒体腔', sprite: 'core-vacuole-lv2.svg', gp: 120, bmr: 0, baseE: 155, digestEff: 1.30, regenPerE: 1.3, regenCap: 1.5, reproRatio: 0.60, childERatio: 0.42 },
+            3: { name: '超频多核代谢中枢', sprite: 'core-vacuole-lv3.svg', gp: 320, bmr: 0, baseE: 230, digestEff: 1.65, regenPerE: 2.0, regenCap: 2.6, reproRatio: 0.50, childERatio: 0.40 }
+          }
+        },
+        'core-mitosis': {
+          id: 'core-mitosis', category: 'core', branchName: '裂变生殖核 (繁衍再生系)',
+          levels: {
+            1: { name: '初级裂变生殖核', sprite: 'core-mitosis-lv1.svg', gp: 0, bmr: 0, baseE: 90, digestEff: 0.95, regenPerE: 1.2, regenCap: 1.2, reproRatio: 0.60, childERatio: 0.42 },
+            2: { name: '双螺旋造血内脏', sprite: 'core-mitosis-lv2.svg', gp: 120, bmr: 0, baseE: 135, digestEff: 1.15, regenPerE: 2.0, regenCap: 2.4, reproRatio: 0.50, childERatio: 0.40 },
+            3: { name: '母体永生繁衍矩阵', sprite: 'core-mitosis-lv3.svg', gp: 320, bmr: 0, baseE: 190, digestEff: 1.35, regenPerE: 3.2, regenCap: 4.0, reproRatio: 0.42, childERatio: 0.35 }
+          }
+        },
+
+        /* 2. 感官插槽 (Sensory —— 大幅提升 Lv.1 基础预警范围，减少等级提升带来的级差增益) */
+        'sensory-eye': {
+          id: 'sensory-eye', category: 'sensory', senseType: 'eye', branchName: '光学视觉眼 (扇形彩色)',
+          levels: {
+            1: { name: '原始感光眼点', sprite: 'sensory-eye-lv1.svg', gp: 0, bmr: 0.15, dayAngle: 130, nightAngle: 90, dayRange: 260, nightRange: 145, sat: 0.35 },
+            2: { name: '晶状体折光单眼', sprite: 'sensory-eye-lv2.svg', gp: 100, bmr: 0.30, dayAngle: 165, nightAngle: 115, dayRange: 310, nightRange: 170, sat: 0.85 },
+            3: { name: '全光谱棱镜复眼', sprite: 'sensory-eye-lv3.svg', gp: 280, bmr: 0.55, dayAngle: 200, nightAngle: 140, dayRange: 360, nightRange: 200, sat: 1.25 }
+          }
+        },
+        'sensory-ear': {
+          id: 'sensory-ear', category: 'sensory', senseType: 'ear', branchName: '声呐听觉耳 (360°雷达定格)',
+          levels: {
+            1: { name: '初级震动膜耳', sprite: 'sensory-ear-lv1.svg', gp: 0, bmr: 0.15, sonarRange: 280, pulseSec: 0.95, staticRange: 85 },
+            2: { name: '环状微流侧线', sprite: 'sensory-ear-lv2.svg', gp: 110, bmr: 0.30, sonarRange: 330, pulseSec: 0.65, staticRange: 120 },
+            3: { name: '深渊高频回声耳', sprite: 'sensory-ear-lv3.svg', gp: 290, bmr: 0.55, sonarRange: 380, pulseSec: 0.35, staticRange: 155 }
+          }
+        },
+
+        /* 3. 口部插槽 (Mouth) */
+        'mouth-herb': {
+          id: 'mouth-herb', category: 'mouth', diet: 'herbivore', branchName: '微孔滤食吸管 (植食高转化)',
+          levels: {
+            1: { name: '微孔滤食吸管', sprite: 'mouth-herb-lv1.svg', gp: 0, bmr: 0.15, herbEff: 1.40, carnEff: 0, funnelR: 52, biteDmg: 3, biteCost: 0.8, lifesteal: 0 },
+            2: { name: '涡流纤毛虹吸漏斗', sprite: 'mouth-herb-lv2.svg', gp: 90, bmr: 0.30, herbEff: 1.65, carnEff: 0, funnelR: 78, biteDmg: 5, biteCost: 1.0, lifesteal: 0 },
+            3: { name: '晶化共鸣研磨齿盘', sprite: 'mouth-herb-lv3.svg', gp: 240, bmr: 0.50, herbEff: 1.95, carnEff: 0, funnelR: 105, biteDmg: 10, biteCost: 1.2, lifesteal: 0 }
+          }
+        },
+        'mouth-carn': {
+          id: 'mouth-carn', category: 'mouth', diet: 'carnivore', branchName: '撕裂几丁骨颚 (肉食强撕咬)',
+          levels: {
+            1: { name: '裂噬几丁单颚', sprite: 'mouth-carn-lv1.svg', gp: 0, bmr: 0.45, herbEff: 0, carnEff: 1.25, funnelR: 28, biteDmg: 26, biteCost: 2.5, lifesteal: 0.15 },
+            2: { name: '倒钩锯齿双巨颚', sprite: 'mouth-carn-lv2.svg', gp: 130, bmr: 0.85, herbEff: 0, carnEff: 1.45, funnelR: 32, biteDmg: 42, biteCost: 3.5, lifesteal: 0.22 },
+            3: { name: '深渊断骨碎甲利刃', sprite: 'mouth-carn-lv3.svg', gp: 340, bmr: 1.40, herbEff: 0, carnEff: 1.70, funnelR: 36, biteDmg: 64, biteCost: 4.5, lifesteal: 0.30 }
+          }
+        },
+        'mouth-omni': {
+          id: 'mouth-omni', category: 'mouth', diet: 'omnivore', branchName: '双用刺吸口吻 (杂食均衡)',
+          levels: {
+            1: { name: '初级双用刺吸吻', sprite: 'mouth-omni-lv1.svg', gp: 0, bmr: 0.25, herbEff: 0.85, carnEff: 0.85, funnelR: 36, biteDmg: 14, biteCost: 1.8, lifesteal: 0.05 },
+            2: { name: '钳状分节咀嚼喙', sprite: 'mouth-omni-lv2.svg', gp: 100, bmr: 0.45, herbEff: 0.95, carnEff: 0.95, funnelR: 42, biteDmg: 22, biteCost: 2.4, lifesteal: 0.08 },
+            3: { name: '酸解高频融合口器', sprite: 'mouth-omni-lv3.svg', gp: 260, bmr: 0.75, herbEff: 1.10, carnEff: 1.10, funnelR: 48, biteDmg: 32, biteCost: 3.0, lifesteal: 0.12 }
+          }
+        },
+
+        /* 4. 运动插槽 (Locomotion) */
+        'loco-flagella': {
+          id: 'loco-flagella', category: 'locomotion', branchName: '柔性推进鞭毛 (省能巡航)',
+          levels: {
+            1: { name: '单丝螺旋鞭毛', sprite: 'loco-flagella-lv1.svg', gp: 0, bmr: 0.15, thrust: 32, torque: 28, skill: null, skillCost: 0, skillCd: 0 },
+            2: { name: '双联谐振长鞭', sprite: 'loco-flagella-lv2.svg', gp: 95, bmr: 0.30, thrust: 52, torque: 45, skill: null, skillCost: 0, skillCd: 0 },
+            3: { name: '量子波导多束尾纤', sprite: 'loco-flagella-lv3.svg', gp: 250, bmr: 0.50, thrust: 78, torque: 68, skill: null, skillCost: 0, skillCd: 0 }
+          }
+        },
+        'loco-fin': {
+          id: 'loco-fin', category: 'locomotion', branchName: '矢量转向侧鳍 (高敏侧闪)',
+          levels: {
+            1: { name: '薄膜平衡侧鳍', sprite: 'loco-fin-lv1.svg', gp: 0, bmr: 0.20, thrust: 18, torque: 55, skill: 'sidestep', skillCost: 12, skillCd: 4.0 },
+            2: { name: '双翼矢量折跃鳍', sprite: 'loco-fin-lv2.svg', gp: 110, bmr: 0.40, thrust: 30, torque: 88, skill: 'sidestep', skillCost: 10, skillCd: 2.8 },
+            3: { name: '幻影多轴流体翼阵列', sprite: 'loco-fin-lv3.svg', gp: 280, bmr: 0.65, thrust: 46, torque: 130, skill: 'sidestep', skillCost: 8, skillCd: 1.8 }
+          }
+        },
+        'loco-jet': {
+          id: 'loco-jet', category: 'locomotion', branchName: '高压喷水推进囊 (爆发冲刺)',
+          levels: {
+            1: { name: '单腔脉动喷水囊', sprite: 'loco-jet-lv1.svg', gp: 0, bmr: 0.30, thrust: 60, torque: 14, skill: 'jetdash', skillCost: 18, skillCd: 4.5 },
+            2: { name: '双管增压水力喷嘴', sprite: 'loco-jet-lv2.svg', gp: 125, bmr: 0.55, thrust: 95, torque: 24, skill: 'jetdash', skillCost: 16, skillCd: 3.2 },
+            3: { name: '超空泡等离子推进引擎', sprite: 'loco-jet-lv3.svg', gp: 330, bmr: 0.90, thrust: 145, torque: 38, skill: 'jetdash', skillCost: 14, skillCd: 2.2 }
+          }
+        },
+
+        /* 5. 功能插槽 (Utility) */
+        'util-scales': {
+          id: 'util-scales', category: 'utility', branchName: '硬化鳞片 (减伤装甲)',
+          levels: {
+            1: { name: '角质覆瓦薄鳞', sprite: 'util-scales-lv1.svg', gp: 0, bmr: 0.25, dr: 0.22, bonusHp: 25, reflect: 0, skill: null, skillCost: 0, skillCd: 0 },
+            2: { name: '几丁质六角重鳞', sprite: 'util-scales-lv2.svg', gp: 110, bmr: 0.50, dr: 0.38, bonusHp: 55, reflect: 0, skill: null, skillCost: 0, skillCd: 0 },
+            3: { name: '深渊棱镜反伤晶甲', sprite: 'util-scales-lv3.svg', gp: 290, bmr: 0.85, dr: 0.55, bonusHp: 100, reflect: 0.30, skill: null, skillCost: 0, skillCd: 0 }
+          }
+        },
+        'util-mimic': {
+          id: 'util-mimic', category: 'utility', branchName: '拟态皮肤 (欺骗视觉)',
+          levels: {
+            1: { name: '初级色素拟态膜', sprite: 'util-mimic-lv1.svg', gp: 80, bmr: 0.15, dr: 0, bonusHp: 0, skill: 'mimic', skillCost: 10, skillCd: 8.0, mimicDur: 6.0 },
+            2: { name: '动态光学折射皮层', sprite: 'util-mimic-lv2.svg', gp: 180, bmr: 0.25, dr: 0, bonusHp: 0, skill: 'mimic', skillCost: 10, skillCd: 6.0, mimicDur: 9.0 },
+            3: { name: '幽灵全息隐形表皮', sprite: 'util-mimic-lv3.svg', gp: 350, bmr: 0.40, dr: 0, bonusHp: 0, skill: 'mimic', skillCost: 8, skillCd: 4.5, mimicDur: 14.0 }
+          }
+        },
+        'util-ink': {
+          id: 'util-ink', category: 'utility', branchName: '蓄能墨囊 (致盲视觉)',
+          levels: {
+            1: { name: '单泡暗影墨囊', sprite: 'util-ink-lv1.svg', gp: 75, bmr: 0.15, dr: 0, bonusHp: 0, skill: 'ink', skillCost: 20, skillCd: 7.0, inkR: 120, inkDur: 4.0 },
+            2: { name: '高压浓雾双墨腺', sprite: 'util-ink-lv2.svg', gp: 165, bmr: 0.25, dr: 0, bonusHp: 0, skill: 'ink', skillCost: 18, skillCd: 5.5, inkR: 165, inkDur: 5.5 },
+            3: { name: '深渊窒息黑洞墨囊', sprite: 'util-ink-lv3.svg', gp: 310, bmr: 0.40, dr: 0, bonusHp: 0, skill: 'ink', skillCost: 16, skillCd: 4.2, inkR: 220, inkDur: 7.5 }
+          }
+        },
+        'util-venom': {
+          id: 'util-venom', category: 'utility', branchName: '毒腺器官 (持续毒伤)',
+          levels: {
+            1: { name: '微弱酸性毒胞', sprite: 'util-venom-lv1.svg', gp: 85, bmr: 0.20, dr: 0, bonusHp: 0, skill: 'venom', skillCost: 15, skillCd: 5.0, dot: 5, dotDur: 4.0 },
+            2: { name: '麻痹神经双毒腺', sprite: 'util-venom-lv2.svg', gp: 185, bmr: 0.35, dr: 0, bonusHp: 0, skill: 'venom', skillCost: 16, skillCd: 4.2, dot: 9, dotDur: 5.5 },
+            3: { name: '坏死融骨剧毒母囊', sprite: 'util-venom-lv3.svg', gp: 340, bmr: 0.55, dr: 0, bonusHp: 0, skill: 'venom', skillCost: 18, skillCd: 3.5, dot: 15, dotDur: 7.0 }
+          }
+        },
+        'util-spike': {
+          id: 'util-spike', category: 'utility', branchName: '骨刺发射器 (远程穿刺)',
+          levels: {
+            1: { name: '单发钙化骨刺鞘', sprite: 'util-spike-lv1.svg', gp: 90, bmr: 0.20, dr: 0, bonusHp: 0, skill: 'spike', skillCost: 8, skillCd: 1.4, spikeDmg: 18, spikeCount: 1, spikeRange: 250 },
+            2: { name: '双联倒钩连射骨刺', sprite: 'util-spike-lv2.svg', gp: 195, bmr: 0.35, dr: 0, bonusHp: 0, skill: 'spike', skillCost: 10, skillCd: 1.1, spikeDmg: 16, spikeCount: 2, spikeRange: 310 },
+            3: { name: '超速电磁穿甲棘阵列', sprite: 'util-spike-lv3.svg', gp: 360, bmr: 0.55, dr: 0, bonusHp: 0, skill: 'spike', skillCost: 12, skillCd: 0.85, spikeDmg: 22, spikeCount: 3, spikeRange: 380 }
+          }
+        },
+        'util-electric': {
+          id: 'util-electric', category: 'utility', branchName: '生物放电器官 (范围麻痹)',
+          levels: {
+            1: { name: '微弱生物电斑', sprite: 'util-electric-lv1.svg', gp: 100, bmr: 0.25, dr: 0, bonusHp: 0, skill: 'electric', skillCost: 22, skillCd: 6.0, elecR: 110, elecDmg: 16, stunSec: 0.8 },
+            2: { name: '高压环状电鳗腺', sprite: 'util-electric-lv2.svg', gp: 220, bmr: 0.45, dr: 0, bonusHp: 0, skill: 'electric', skillCost: 24, skillCd: 4.8, elecR: 150, elecDmg: 30, stunSec: 1.3 },
+            3: { name: '雷暴等离子电弧核心', sprite: 'util-electric-lv3.svg', gp: 380, bmr: 0.70, dr: 0, bonusHp: 0, skill: 'electric', skillCost: 26, skillCd: 3.8, elecR: 195, elecDmg: 48, stunSec: 1.8 }
+          }
+        }
+      };
+
+      /* 官方化石记录：5 大官方标准生态物种 (完整 5 插槽配方) */
+      const OFFICIAL_FOSSILS = [
+        {
+          speciesId: 'fossil_t1_herb', origin: 'official_fossil', speciesName: '浅水草食游虫', torsoId: 'torso-t1-micro',
+          desc: '温和浅滩常见的高转化植食微虫，凭借滤食吸管与低代谢迅速繁衍种群。',
+          slots: {
+            core: { id: 'core-vacuole', level: 1 },
+            sensory: [{ id: 'sensory-eye', level: 1 }],
+            mouth: [{ id: 'mouth-herb', level: 1 }],
+            locomotion: [{ id: 'loco-flagella', level: 1 }],
+            utility: [{ id: 'util-scales', level: 1 }]
+          },
+          aiWeights: { w_aggr: 0.15, w_flock: 0.80, w_flee: 0.75, w_repro: 0.90, w_mut: 0.20 }
+        },
+        {
+          speciesId: 'fossil_t2_spike', origin: 'official_fossil', speciesName: '游荡掠食刺虫', torsoId: 'torso-t2-stream',
+          desc: '中层水域敏捷猎手，发现目标后齐射钙化骨刺并启动水囊突进撕咬。',
+          slots: {
+            core: { id: 'core-vacuole', level: 1 },
+            sensory: [{ id: 'sensory-eye', level: 1 }],
+            mouth: [{ id: 'mouth-carn', level: 1 }],
+            locomotion: [{ id: 'loco-jet', level: 1 }, { id: 'loco-flagella', level: 1 }],
+            utility: [{ id: 'util-spike', level: 1 }, { id: 'util-scales', level: 1 }]
+          },
+          aiWeights: { w_aggr: 0.80, w_flock: 0.35, w_flee: 0.30, w_repro: 0.65, w_mut: 0.25 }
+        },
+        {
+          speciesId: 'fossil_t2_sonar', origin: 'official_fossil', speciesName: '剧毒声呐潜猎虫', torsoId: 'torso-t2-stream',
+          desc: '搭载 360° 环状微流侧线的夜行刺客，在黑夜中释放神经毒环与墨云猎杀视觉生物。',
+          slots: {
+            core: { id: 'core-vacuole', level: 2 },
+            sensory: [{ id: 'sensory-ear', level: 2 }],
+            mouth: [{ id: 'mouth-omni', level: 2 }],
+            locomotion: [{ id: 'loco-flagella', level: 2 }, { id: 'loco-fin', level: 1 }],
+            utility: [{ id: 'util-venom', level: 2 }, { id: 'util-ink', level: 1 }]
+          },
+          aiWeights: { w_aggr: 0.70, w_flock: 0.45, w_flee: 0.50, w_repro: 0.75, w_mut: 0.30 }
+        },
+        {
+          speciesId: 'fossil_t3_carapace', origin: 'official_fossil', speciesName: '重甲深水巨鳌', torsoId: 'torso-t3-predator',
+          desc: '装备视听双感官与双层几丁质六角重鳞的重装掠食者，正面交锋极难破防。',
+          slots: {
+            core: { id: 'core-mitosis', level: 2 },
+            sensory: [{ id: 'sensory-eye', level: 2 }, { id: 'sensory-ear', level: 1 }],
+            mouth: [{ id: 'mouth-carn', level: 2 }],
+            locomotion: [{ id: 'loco-fin', level: 2 }, { id: 'loco-jet', level: 2 }],
+            utility: [{ id: 'util-scales', level: 2 }, { id: 'util-scales', level: 2 }, { id: 'util-spike', level: 2 }]
+          },
+          aiWeights: { w_aggr: 0.85, w_flock: 0.50, w_flee: 0.20, w_repro: 0.60, w_mut: 0.20 }
+        },
+        {
+          speciesId: 'fossil_t4_titan', origin: 'official_fossil', speciesName: '深渊电弧泰坦', torsoId: 'torso-t4-titan',
+          desc: '深渊裂谷食物链顶端的七节巨兽，视听满级全向锁定，超空泡冲刺配合雷暴电弧统治全场。',
+          slots: {
+            core: { id: 'core-vacuole', level: 3 },
+            sensory: [{ id: 'sensory-eye', level: 3 }, { id: 'sensory-ear', level: 3 }],
+            mouth: [{ id: 'mouth-carn', level: 3 }, { id: 'mouth-carn', level: 3 }],
+            locomotion: [{ id: 'loco-jet', level: 3 }, { id: 'loco-jet', level: 3 }, { id: 'loco-fin', level: 3 }],
+            utility: [{ id: 'util-electric', level: 3 }, { id: 'util-scales', level: 3 }, { id: 'util-spike', level: 3 }, { id: 'util-mimic', level: 3 }]
+          },
+          aiWeights: { w_aggr: 0.95, w_flock: 0.30, w_flee: 0.10, w_repro: 0.55, w_mut: 0.15 }
+        }
+      ];
+
+      const EPIC_BOSSES = [
+        { id: 'boss_1', chapter: '第一章 · 浅海温床', name: '1. 吞天水螅 (Hydra Goliath)', unlock: '首通解锁：T02 流线躯干 + 晶状体单眼 Lv.2 | 3星：暗影墨囊 Lv.1', desc: '定居中央泉眼，伸展 6 条弹性触手旋涡捕捞；HP < 50% 时断触化为 3 只游猎分身。' },
+        { id: 'boss_2', chapter: '第二章 · 嗜热喷口', name: '2. 晶甲熔岩虱 (Magma Louse)', unlock: '首通解锁：双管喷水嘴 Lv.2 + 六角重鳞 Lv.2 | 3星：造血内脏 Lv.2', desc: '正面硫化晶甲减免 80% 伤害，需绕后破坏尾部散热喷口使其停机瘫痪。' },
+        { id: 'boss_3', chapter: '第三章 · 极寒冰隙', name: '3. 霜刃水母 (Cryo-Bladed Medusa)', unlock: '首通解锁：T03 掠食躯干 + 微流侧线 Lv.2 | 3星：光学拟态皮层 Lv.2', desc: '周期性收缩伞盖释放 60% 减速冰刺与 8 秒限时冰晶护盾。' },
+        { id: 'boss_4', chapter: '第四章 · 剧毒沼泽', name: '4. 千目原质母体 (Primordial Slime)', unlock: '首通解锁：神经双毒腺 Lv.2 + 双墨腺 Lv.2 | 3星：倒钩骨刺 Lv.2', desc: '吞噬死亡生物即时拟态同化其器官（最多保留 2 个 FIFO 同化槽位，持续 12.0s）。' },
+        { id: 'boss_5', chapter: '第五章 · 深渊裂谷', name: '5. 虚空噬菌裂变兽 (Void Leviathan)', unlock: '首通解锁：T04 深渊泰坦 + 高频回声耳 Lv.3 | 3星：多核中枢 Lv.3 + 雷暴核心 Lv.3', desc: '释放向心黑洞引力场与 4.0 秒逆转基因光束（临时将受击者器官压制为 Lv.1）。' }
+      ];
+
+      const BIOMES = [
+        { id: 0, name: '1. 浅海温床', sub: '标准昼夜 · 吞天水螅', bgTint: '#041022', bmrMult: 1.0, dragMult: 1.0, forceNight: false, desc: '第一章【浅海温床】：墨蓝深邃底色，白昼丁达尔光束通透，标准昼夜交替（180s周期），关底首领：吞天水螅。' },
+        { id: 1, name: '2. 嗜热喷口', sub: '热液脉冲 · 晶甲熔岩虱', bgTint: '#14080e', bmrMult: 1.05, dragMult: 0.95, forceNight: false, desc: '第二章【嗜热喷口】：深黑底色带暗红地热微裂隙，热泉喷口高频喷射上升流恢复能量，关底首领：晶甲熔岩虱。' },
+        { id: 2, name: '3. 极寒冰隙', sub: '流体凝滞 · 霜刃水母', bgTint: '#03131d', bmrMult: 1.15, dragMult: 1.25, forceNight: false, desc: '第三章【极寒冰隙】：冷黑底色泛极光青冰裂纹理，流体黏阻增加，推荐挂载鞭毛或折跃鳍，关底首领：霜刃水母。' },
+        { id: 3, name: '4. 剧毒沼泽', sub: '酸蚀浓雾 · 千目母体', bgTint: '#07140e', bmrMult: 1.30, dragMult: 1.05, forceNight: false, desc: '第四章【剧毒沼泽】：墨黑底色夹杂酸绿毒泡，基础代谢能耗 +30%，关底首领：千目原质母体（双槽 FIFO 12s 同化）。' },
+        { id: 4, name: '5. 深渊裂谷', sub: '永恒黑夜 · 虚空裂变兽', bgTint: '#02040a', bmrMult: 1.20, dragMult: 1.0, forceNight: true, desc: '第五章【深渊裂谷】：纯黑曜绝对虚空，永恒黑夜使视觉视距缩短 45%，听觉声呐尽显统治力，终极首领：虚空噬菌裂变兽。' }
+      ];
+
+      /* =====================================================================
+       * 2. 全量 55 枚多层 SVG 贴图预加载器
+       * ===================================================================== */
+      const spriteMap = {
+        'env-algae.svg': 'env-algae.svg',
+        'env-meat.svg': 'env-meat.svg',
+        'env-vent.svg': 'env-vent.svg'
+      };
+      Object.values(TORSOS).forEach((t) => { spriteMap[t.sprite] = t.sprite; });
+      Object.values(ORGAN_CATALOG).forEach((series) => {
+        [1, 2, 3].forEach((lv) => {
+          const sp = series.levels[lv].sprite;
+          spriteMap[sp] = sp;
+        });
+      });
+      const SPRITE_IMGS = NexusSDK.loadSprites('micro-genesis', spriteMap);
+
+      /* =====================================================================
+       * 3. 物种蓝图数学计算引擎与六重反作弊 Schema 校验器 (05 第 5.1 & 5.4 节)
+       * ===================================================================== */
+      function sanitizeSpeciesName(rawName) {
+        const cleaned = String(rawName || '未命名物种').replace(/[<>"'&\x00-\x1f]/g, '').trim();
+        return (cleaned || '未命名物种').slice(0, 12);
+      }
+
+      function escapeHtml(rawStr) {
+        return String(rawStr ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function clampAiWeight(val) {
+        const num = Number(val);
+        return Number.isFinite(num) ? Math.min(1.0, Math.max(0.0, num)) : 0.50;
+      }
+
+      function validateAndSanitizeBlueprint(raw) {
+        const src = raw && typeof raw === 'object' ? raw : {};
+        const torsoId = TORSOS[src.torsoId] ? src.torsoId : 'torso-t2-stream';
+        const torso = TORSOS[torsoId];
+        const rawSlots = src.slots && typeof src.slots === 'object' ? src.slots : {};
+
+        // ① 核心插槽
+        let coreId = rawSlots.core && ORGAN_CATALOG[rawSlots.core.id] && ORGAN_CATALOG[rawSlots.core.id].category === 'core'
+          ? rawSlots.core.id : 'core-vacuole';
+        let coreLv = Math.min(3, Math.max(1, Math.round(Number(rawSlots.core?.level) || 1)));
+
+        function sanitizeSlotArray(arr, cat, maxLen, fallbackId) {
+          const list = Array.isArray(arr) ? arr.slice(0, maxLen) : [];
+          const out = [];
+          list.forEach((item) => {
+            if (item && ORGAN_CATALOG[item.id] && ORGAN_CATALOG[item.id].category === cat) {
+              const lv = Math.min(3, Math.max(1, Math.round(Number(item.level) || 1)));
+              out.push({ id: item.id, level: lv });
+            }
+          });
+          if (out.length === 0 && fallbackId) {
+            out.push({ id: fallbackId, level: 1 });
+          }
+          return out;
+        }
+
+        const sensory = sanitizeSlotArray(rawSlots.sensory, 'sensory', torso.slots.sensory, 'sensory-eye');
+        const mouth = sanitizeSlotArray(rawSlots.mouth, 'mouth', torso.slots.mouth, 'mouth-omni');
+        // ④ 双口部插槽强制同食性校验
+        if (mouth.length > 1) {
+          mouth[1].id = mouth[0].id;
+        }
+        const locomotion = sanitizeSlotArray(rawSlots.locomotion, 'locomotion', torso.slots.locomotion, 'loco-flagella');
+        const utility = sanitizeSlotArray(rawSlots.utility, 'utility', torso.slots.utility, 'util-scales');
+
+        const rawAi = src.aiWeights && typeof src.aiWeights === 'object' ? src.aiWeights : {};
+        const aiWeights = {
+          w_aggr: clampAiWeight(rawAi.w_aggr ?? 0.65),
+          w_flock: clampAiWeight(rawAi.w_flock ?? 0.50),
+          w_flee: clampAiWeight(rawAi.w_flee ?? 0.40),
+          w_repro: clampAiWeight(rawAi.w_repro ?? 0.75),
+          w_mut: clampAiWeight(rawAi.w_mut ?? 0.25)
+        };
+
+        const bp = {
+          speciesId: String(src.speciesId || ('sp_' + Date.now() + '_' + Math.floor(Math.random() * 999))),
+          origin: src.origin === 'official_fossil' ? 'official_fossil' : 'player',
+          speciesName: sanitizeSpeciesName(src.speciesName),
+          torsoId,
+          slots: {
+            core: { id: coreId, level: coreLv },
+            sensory,
+            mouth,
+            locomotion,
+            utility
+          },
+          aiWeights,
+          wildEnabled: src.wildEnabled !== false,
+          records: {
+            maxPopulation: Math.max(1, Math.round(Number(src.records?.maxPopulation) || 1)),
+            totalKills: Math.max(0, Math.round(Number(src.records?.totalKills) || 0)),
+            longestSurvivalSec: Math.max(0, Math.round(Number(src.records?.longestSurvivalSec) || 0))
+          }
+        };
+        const computed = computeBlueprintStats(bp, false);
+        const suppressedComputed = computeBlueprintStats(bp, true);
+        bp.dietType = computed.dietType;
+        bp.statsSummary = computed.statsSummary;
+        bp.suppressedStatsSummary = suppressedComputed.statsSummary;
+        return bp;
+      }
+
+      function getEffectiveStats(org) {
+        if (!org || !org.blueprint) return {};
+        return (org.suppressedTimer > 0 && org.blueprint.suppressedStatsSummary)
+          ? org.blueprint.suppressedStatsSummary
+          : org.blueprint.statsSummary;
+      }
+
+      function computeBlueprintStats(bp, forceLv1 = false) {
+        const torso = TORSOS[bp.torsoId] || TORSOS['torso-t2-stream'];
+        const effLv = (lv) => (forceLv1 ? 1 : lv);
+        const coreSpec = ORGAN_CATALOG[bp.slots.core.id].levels[effLv(bp.slots.core.level)];
+
+        let maxHp = torso.baseHp;
+        const maxEnergy = Math.round(coreSpec.baseE * Math.pow(torso.volume, 0.6));
+        let bmr = torso.bmr + coreSpec.bmr;
+        let totalGpCost = torso.transitionGp + coreSpec.gp;
+
+        // 感官插槽合成
+        let eyeOrgans = [];
+        let earOrgans = [];
+        bp.slots.sensory.forEach((s) => {
+          const lv = effLv(s.level);
+          const spec = ORGAN_CATALOG[s.id].levels[lv];
+          bmr += spec.bmr;
+          totalGpCost += spec.gp;
+          if (s.id === 'sensory-eye') eyeOrgans.push({ level: lv, ...spec });
+          if (s.id === 'sensory-ear') earOrgans.push({ level: lv, ...spec });
+        });
+        eyeOrgans.sort((a, b) => b.level - a.level);
+        earOrgans.sort((a, b) => b.level - a.level);
+
+        let dayEyeRange = 0, nightEyeRange = 0, dayEyeAngle = 0, nightEyeAngle = 0, eyeSat = 0.35, maxEyeLv = 0;
+        if (eyeOrgans.length > 0) {
+          const mainEye = eyeOrgans[0];
+          maxEyeLv = mainEye.level;
+          const multRange = eyeOrgans.length > 1 ? 1.25 : 1.0;
+          const multAngle = eyeOrgans.length > 1 ? 1.20 : 1.0;
+          dayEyeRange = Math.round(mainEye.dayRange * multRange);
+          nightEyeRange = Math.round(mainEye.nightRange * multRange);
+          dayEyeAngle = Math.min(270, Math.round(mainEye.dayAngle * multAngle));
+          nightEyeAngle = Math.min(270, Math.round(mainEye.nightAngle * multAngle));
+          eyeSat = mainEye.sat;
+        }
+
+        let sonarRange = 0, sonarPulseSec = 1.40, staticSenseRange = 0, maxEarLv = 0;
+        if (earOrgans.length > 0) {
+          const mainEar = earOrgans[0];
+          maxEarLv = mainEar.level;
+          const multRange = earOrgans.length > 1 ? 1.25 : 1.0;
+          const multPulse = earOrgans.length > 1 ? 0.80 : 1.0;
+          sonarRange = Math.round(mainEar.sonarRange * multRange);
+          sonarPulseSec = +(mainEar.pulseSec * multPulse).toFixed(2);
+          staticSenseRange = mainEar.staticRange;
+        }
+
+        // 口部插槽合成 (双同系口器 +35% 伤害/吸附半径，能耗 +50%)
+        const firstMouthSeries = ORGAN_CATALOG[bp.slots.mouth[0].id];
+        const firstMouthSpec = firstMouthSeries.levels[effLv(bp.slots.mouth[0].level)];
+        const dualMouthMult = bp.slots.mouth.length > 1 ? 1.35 : 1.0;
+        const dualMouthCostMult = bp.slots.mouth.length > 1 ? 1.50 : 1.0;
+        bp.slots.mouth.forEach((m) => {
+          const spec = ORGAN_CATALOG[m.id].levels[effLv(m.level)];
+          bmr += spec.bmr;
+          totalGpCost += spec.gp;
+        });
+
+        // 运动插槽合成
+        let sumThrust = 0;
+        let sumTorque = 0;
+        let activeSkill = null;
+        let hasFin = false;
+        let hasJet = false;
+        let maxFlagellaLv = 0;
+        bp.slots.locomotion.forEach((l) => {
+          const lv = effLv(l.level);
+          const spec = ORGAN_CATALOG[l.id].levels[lv];
+          bmr += spec.bmr;
+          totalGpCost += spec.gp;
+          sumThrust += spec.thrust;
+          sumTorque += spec.torque;
+          if (l.id === 'loco-fin') hasFin = true;
+          if (l.id === 'loco-jet') hasJet = true;
+          if (l.id === 'loco-flagella') maxFlagellaLv = Math.max(maxFlagellaLv, lv);
+          if (spec.skill && !activeSkill) {
+            activeSkill = { type: spec.skill, organId: l.id, level: lv, sprite: spec.sprite, cost: spec.skillCost, cd: spec.skillCd, spec };
+          }
+        });
+
+        // 功能插槽合成 (多鳞片乘法叠加硬上限 70%)
+        let scaleProd = 1.0;
+        let reflectRatio = 0;
+        bp.slots.utility.forEach((u) => {
+          const lv = effLv(u.level);
+          const spec = ORGAN_CATALOG[u.id].levels[lv];
+          bmr += spec.bmr;
+          totalGpCost += spec.gp;
+          if (u.id === 'util-scales') {
+            maxHp += spec.bonusHp;
+            scaleProd *= (1 - spec.dr);
+            reflectRatio = Math.max(reflectRatio, spec.reflect || 0);
+          }
+          if (spec.skill) {
+            activeSkill = { type: spec.skill, organId: u.id, level: lv, sprite: spec.sprite, cost: spec.skillCost, cd: spec.skillCd, spec };
+          }
+        });
+        const damageReduction = Math.min(0.70, +(1 - scaleProd).toFixed(3));
+        const maxSpeed = Math.round((45 + sumThrust) * torso.kv);
+        const maxTurnRate = +((1.6 + 0.040 * sumTorque) * torso.kw).toFixed(2);
+        bmr = +bmr.toFixed(2);
+
+        return {
+          dietType: firstMouthSeries.diet,
+          statsSummary: {
+            maxHp,
+            maxEnergy,
+            bmr,
+            maxSpeed,
+            maxTurnRate,
+            hasFin,
+            hasJet,
+            maxFlagellaLv,
+            totalGpCost,
+            damageReduction,
+            reflectRatio,
+            digestEff: coreSpec.digestEff,
+            regenPerE: coreSpec.regenPerE,
+            regenCap: coreSpec.regenCap,
+            reproRatio: coreSpec.reproRatio,
+            childERatio: coreSpec.childERatio,
+            herbEff: firstMouthSpec.herbEff,
+            carnEff: firstMouthSpec.carnEff,
+            funnelR: Math.round(firstMouthSpec.funnelR * dualMouthMult),
+            biteDmg: Math.round(firstMouthSpec.biteDmg * dualMouthMult),
+            biteCost: +(firstMouthSpec.biteCost * dualMouthCostMult).toFixed(1),
+            lifesteal: firstMouthSpec.lifesteal,
+            dayEyeRange, nightEyeRange, dayEyeAngle, nightEyeAngle, eyeSat, maxEyeLv,
+            sonarRange, sonarPulseSec, staticSenseRange, maxEarLv,
+            activeSkill
+          }
+        };
+      }
+
+
+      /* =====================================================================
+       * 4. 默认初始基因库、持久化存储与 Base64URL 基因序列码编解码
+       * ===================================================================== */
+      const DEFAULT_PLAYER_SPECIES = [
+        {
+          speciesId: 'sp_default_t2_sonar',
+          origin: 'player',
+          speciesName: '夜行声呐刺猎虫',
+          torsoId: 'torso-t2-stream',
+          slots: {
+            core: { id: 'core-vacuole', level: 2 },
+            sensory: [{ id: 'sensory-ear', level: 2 }],
+            mouth: [{ id: 'mouth-carn', level: 2 }],
+            locomotion: [
+              { id: 'loco-flagella', level: 2 },
+              { id: 'loco-jet', level: 1 }
+            ],
+            utility: [
+              { id: 'util-spike', level: 2 },
+              { id: 'util-ink', level: 1 }
+            ]
+          },
+          aiWeights: { w_aggr: 0.75, w_flock: 0.40, w_flee: 0.35, w_repro: 0.80, w_mut: 0.25 },
+          wildEnabled: true,
+          records: { maxPopulation: 9, totalKills: 24, longestSurvivalSec: 420 }
+        },
+        {
+          speciesId: 'sp_default_t1_herb',
+          origin: 'player',
+          speciesName: '疾风滤食原核虫',
+          torsoId: 'torso-t1-micro',
+          slots: {
+            core: { id: 'core-mitosis', level: 1 },
+            sensory: [{ id: 'sensory-eye', level: 1 }],
+            mouth: [{ id: 'mouth-herb', level: 1 }],
+            locomotion: [{ id: 'loco-flagella', level: 1 }],
+            utility: [{ id: 'util-scales', level: 1 }]
+          },
+          aiWeights: { w_aggr: 0.15, w_flock: 0.85, w_flee: 0.80, w_repro: 0.95, w_mut: 0.30 },
+          wildEnabled: true,
+          records: { maxPopulation: 16, totalKills: 2, longestSurvivalSec: 510 }
+        },
+        {
+          speciesId: 'sp_default_t3_hybrid',
+          origin: 'player',
+          speciesName: '重装雷暴猎杀鳌',
+          torsoId: 'torso-t3-predator',
+          slots: {
+            core: { id: 'core-vacuole', level: 2 },
+            sensory: [
+              { id: 'sensory-eye', level: 2 },
+              { id: 'sensory-ear', level: 2 }
+            ],
+            mouth: [{ id: 'mouth-carn', level: 2 }],
+            locomotion: [
+              { id: 'loco-jet', level: 2 },
+              { id: 'loco-fin', level: 2 }
+            ],
+            utility: [
+              { id: 'util-electric', level: 2 },
+              { id: 'util-scales', level: 2 },
+              { id: 'util-ink', level: 1 }
+            ]
+          },
+          aiWeights: { w_aggr: 0.85, w_flock: 0.45, w_flee: 0.25, w_repro: 0.70, w_mut: 0.20 },
+          wildEnabled: true,
+          records: { maxPopulation: 7, totalKills: 31, longestSurvivalSec: 390 }
+        }
+      ];
+
+      const gameStorage = NexusSDK.createGameStorage('NEXUS_MINI_MICRO_GENESIS_', () => ({
+        version: '3.2.0',
+        gpReserve: 480,
+        geneBank: DEFAULT_PLAYER_SPECIES.map(validateAndSanitizeBlueprint)
+      }));
+      let savedData = gameStorage.load() || {};
+      let playerGeneBank = Array.isArray(savedData.geneBank) && savedData.geneBank.length > 0
+        ? savedData.geneBank.map(validateAndSanitizeBlueprint)
+        : DEFAULT_PLAYER_SPECIES.map(validateAndSanitizeBlueprint);
+      let officialFossils = OFFICIAL_FOSSILS.map(validateAndSanitizeBlueprint);
+      let globalGpReserve = Number.isFinite(savedData.gpReserve) ? Math.max(0, Math.round(savedData.gpReserve)) : 480;
+
+      function persistState() {
+        gameStorage.save({
+          version: '3.2.0',
+          gpReserve: globalGpReserve,
+          geneBank: playerGeneBank
+        });
+        const navGpEl = document.getElementById('nav-gp-text');
+        if (navGpEl) navGpEl.textContent = 'GP: ' + globalGpReserve;
+      }
+
+      function encodeGeneCode(bp) {
+        try {
+          const compact = {
+            n: bp.speciesName,
+            t: bp.torsoId,
+            s: bp.slots,
+            w: bp.aiWeights
+          };
+          const json = JSON.stringify(compact);
+          const b64 = btoa(unescape(encodeURIComponent(json)))
+            .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+          return 'MG3_' + b64;
+        } catch (_e) {
+          return 'MG3_INVALID';
+        }
+      }
+
+      function decodeGeneCode(codeStr) {
+        try {
+          const raw = String(codeStr || '').trim();
+          const payload = raw.startsWith('MG3_') ? raw.slice(4) : raw;
+          const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+          const json = decodeURIComponent(escape(atob(b64)));
+          const parsed = JSON.parse(json);
+          return validateAndSanitizeBlueprint({
+            speciesName: parsed.n || parsed.speciesName,
+            torsoId: parsed.t || parsed.torsoId,
+            slots: parsed.s || parsed.slots,
+            aiWeights: parsed.w || parsed.aiWeights
+          });
+        } catch (_e) {
+          return null;
+        }
+      }
+
+      let toastTimer = null;
+      function showToast(msg) {
+        const el = document.getElementById('mg-toast');
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+      }
+
+      /* =====================================================================
+       * 5. 多节连续贝塞尔有机体节包络 + 多层 SVG 器官贴图合成渲染器
+       * ===================================================================== */
+      function drawSpriteCentered(ctx, spriteKey, x, y, drawW, drawH, rotRad, alpha) {
+        const img = SPRITE_IMGS[spriteKey];
+        if (!img || !img.complete || !img.naturalWidth) return;
+        ctx.save();
+        ctx.translate(x, y);
+        if (rotRad) ctx.rotate(rotRad);
+        if (alpha !== undefined) ctx.globalAlpha *= alpha;
+        ctx.drawImage(img, -drawW * 0.5, -drawH * 0.5, drawW, drawH);
+        ctx.restore();
+      }
+
+      function drawOrganism(ctx, org, opts = {}) {
+        const bp = org.blueprint;
+        const torso = TORSOS[bp.torsoId] || TORSOS['torso-t2-stream'];
+        const isSonar = Boolean(opts.sonarWireframe);
+        const phase = opts.freezePhase !== undefined
+          ? opts.freezePhase
+          : ((opts.timeSec || 0) * 6.5 + (org.phaseOffset || 0));
+        const scale = opts.scale || 1.0;
+        const baseR = (torso.sizePx * 0.44) * scale;
+        const segMultipliers = torso.segments || [1.0];
+        const segCount = segMultipliers.length;
+        const segSpacing = baseR * 0.68;
+
+        ctx.save();
+        ctx.translate(org.x, org.y);
+        ctx.rotate(org.angle || 0);
+
+        // 碰撞受压弹性微形变
+        if (org.squashTimer && org.squashTimer > 0) {
+          ctx.scale(1.12, 0.88);
+        }
+
+        // 计算脊椎节点坐标 (从头节 i=0 到尾节 i=segCount-1)
+        const spine = [];
+        const totalHalfLen = ((segCount - 1) * segSpacing) * 0.5;
+        for (let i = 0; i < segCount; i++) {
+          const sx = totalHalfLen - i * segSpacing;
+          const wag = i === 0 ? 0 : Math.sin(phase - i * 0.85) * (baseR * 0.12 * (i / segCount));
+          spine.push({
+            x: sx,
+            y: wag,
+            r: baseR * segMultipliers[i]
+          });
+        }
+
+        // ① 绘制连续双切线二次贝塞尔有机包络胶膜
+        ctx.beginPath();
+        const head = spine[0];
+        const tail = spine[spine.length - 1];
+        ctx.arc(head.x, head.y, head.r, -Math.PI * 0.48, Math.PI * 0.48, false);
+        for (let i = 0; i < spine.length - 1; i++) {
+          const c = spine[i];
+          const n = spine[i + 1];
+          const midX = (c.x + n.x) * 0.5;
+          const midY = (c.y + c.r + n.y + n.r) * 0.5;
+          ctx.quadraticCurveTo(c.x, c.y + c.r, midX, midY);
+        }
+        ctx.arc(tail.x, tail.y, tail.r, Math.PI * 0.52, Math.PI * 1.48, false);
+        for (let i = spine.length - 1; i > 0; i--) {
+          const c = spine[i];
+          const p = spine[i - 1];
+          const midX = (c.x + p.x) * 0.5;
+          const midY = (c.y - c.r + p.y - p.r) * 0.5;
+          ctx.quadraticCurveTo(c.x, c.y - c.r, midX, midY);
+        }
+        ctx.closePath();
+
+        if (isSonar) {
+          // 听觉 360° 声呐雷达定格视图：深黑底色 + 银白/冷青声呐脉冲线框 + 定格器官贴图轮廓
+          const pulseAlpha = opts.sonarAlpha !== undefined ? opts.sonarAlpha : 0.92;
+          ctx.fillStyle = `rgba(8, 15, 28, ${0.88 * pulseAlpha})`;
+          ctx.fill();
+          ctx.lineWidth = 1.8 * scale;
+          ctx.strokeStyle = org.faction === 'player'
+            ? `rgba(45, 212, 191, ${pulseAlpha})`
+            : (org.isBoss ? `rgba(251, 191, 36, ${pulseAlpha})` : `rgba(226, 232, 240, ${pulseAlpha})`);
+          ctx.stroke();
+
+          // 声呐内部脊椎回波环与器官几何线框
+          spine.forEach((pt, idx) => {
+            ctx.beginPath();
+            ctx.arc(pt.x, pt.y, pt.r * 0.62, 0, Math.PI * 2);
+            ctx.lineWidth = 1.0 * scale;
+            ctx.strokeStyle = idx === 0
+              ? `rgba(56, 189, 248, ${pulseAlpha * 0.95})`
+              : `rgba(148, 163, 184, ${pulseAlpha * 0.65})`;
+            ctx.stroke();
+          });
+
+          // 头部口器与尾部推进器声呐矢量轮廓
+          ctx.beginPath();
+          ctx.moveTo(head.x + head.r * 0.85, head.y - head.r * 0.35);
+          ctx.lineTo(head.x + head.r * 1.38, head.y);
+          ctx.lineTo(head.x + head.r * 0.85, head.y + head.r * 0.35);
+          ctx.moveTo(tail.x - tail.r * 0.8, tail.y);
+          ctx.lineTo(tail.x - tail.r * 1.55, tail.y + Math.sin(phase * 1.6) * (tail.r * 0.45));
+          ctx.strokeStyle = `rgba(248, 250, 252, ${pulseAlpha})`;
+          ctx.stroke();
+
+          // 叠加单色高对比声呐滤镜渲染全部定格器官 SVG 贴图 (确保听觉边缘裁剪时完整展现局部器官影像)
+          ctx.save();
+          ctx.filter = 'grayscale(100%) brightness(145%) contrast(135%)';
+          ctx.globalAlpha *= pulseAlpha * 0.85;
+          const locoListSonar = bp.slots.locomotion || [];
+          locoListSonar.forEach((loco, idx) => {
+            const spec = ORGAN_CATALOG[loco.id].levels[loco.level];
+            const wagRot = Math.sin(phase * 1.5 + idx) * 0.26;
+            if (idx === 0) {
+              drawSpriteCentered(ctx, spec.sprite, tail.x - tail.r * 0.95, tail.y, baseR * 1.55, baseR * 1.55, Math.PI + wagRot);
+            } else {
+              const side = idx % 2 === 1 ? 1 : -1;
+              const segAnchor = spine[Math.min(spine.length - 1, 1)];
+              drawSpriteCentered(ctx, spec.sprite, segAnchor.x, segAnchor.y + side * segAnchor.r * 0.95, baseR * 1.35, baseR * 1.35, side * 1.25 + wagRot * 0.5);
+            }
+          });
+          drawSpriteCentered(ctx, torso.sprite, 0, 0, torso.sizePx * 1.15 * scale, torso.sizePx * 1.38 * scale, Math.PI * 0.5);
+          const mouthListSonar = bp.slots.mouth || [];
+          mouthListSonar.forEach((m, idx) => {
+            const mLv = org.suppressedTimer > 0 ? 1 : m.level;
+            const spec = ORGAN_CATALOG[m.id].levels[mLv];
+            const offsetY = mouthListSonar.length === 1 ? 0 : (idx === 0 ? -head.r * 0.36 : head.r * 0.36);
+            drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 0.88, head.y + offsetY, baseR * 1.35, baseR * 1.35, 0);
+          });
+          ctx.restore();
+          ctx.restore();
+          return;
+        }
+
+        // 视觉彩色生物荧光模式
+        let fillTint = 'rgba(45, 212, 191, 0.16)';
+        let strokeTint = 'rgba(45, 212, 191, 0.72)';
+        if (org.faction === 'enemy' || org.faction === 'wild') {
+          if (bp.dietType === 'herbivore') {
+            fillTint = 'rgba(16, 185, 129, 0.18)';
+            strokeTint = 'rgba(52, 211, 153, 0.72)';
+          } else if (bp.dietType === 'carnivore') {
+            fillTint = 'rgba(239, 68, 68, 0.18)';
+            strokeTint = 'rgba(248, 113, 113, 0.78)';
+          } else {
+            fillTint = 'rgba(251, 191, 36, 0.18)';
+            strokeTint = 'rgba(251, 191, 36, 0.75)';
+          }
+        }
+        if (org.isBoss) {
+          fillTint = 'rgba(168, 85, 247, 0.24)';
+          strokeTint = 'rgba(251, 191, 36, 0.92)';
+        }
+        if (org.mimicTimer > 0) {
+          ctx.globalAlpha *= 0.48;
+        }
+        ctx.fillStyle = fillTint;
+        ctx.fill();
+        ctx.lineWidth = (org.isAlpha ? 2.2 : 1.5) * scale;
+        ctx.strokeStyle = strokeTint;
+        ctx.stroke();
+
+        // ② 绘制尾部/侧翼运动器官 SVG (Locomotion)
+        const locoList = bp.slots.locomotion || [];
+        locoList.forEach((loco, idx) => {
+          const spec = ORGAN_CATALOG[loco.id].levels[loco.level];
+          const wagRot = Math.sin(phase * 1.5 + idx) * 0.26;
+          if (idx === 0) {
+            drawSpriteCentered(ctx, spec.sprite, tail.x - tail.r * 0.95, tail.y, baseR * 1.55, baseR * 1.55, Math.PI + wagRot);
+          } else {
+            const side = idx % 2 === 1 ? 1 : -1;
+            const segAnchor = spine[Math.min(spine.length - 1, 1)];
+            drawSpriteCentered(ctx, spec.sprite, segAnchor.x, segAnchor.y + side * segAnchor.r * 0.95, baseR * 1.35, baseR * 1.35, side * 1.25 + wagRot * 0.5);
+          }
+        });
+
+        // ③ 绘制躯干底盘多层 SVG (Torso)
+        const torsoDrawW = torso.sizePx * 1.15 * scale;
+        const torsoDrawH = torso.sizePx * 1.38 * scale;
+        drawSpriteCentered(ctx, torso.sprite, 0, 0, torsoDrawW, torsoDrawH, Math.PI * 0.5);
+
+        // ④ 绘制体内核心器官多层 SVG (Core - 随能量呼吸脉动)
+        const coreLv = org.suppressedTimer > 0 ? 1 : bp.slots.core.level;
+        const coreSpec = ORGAN_CATALOG[bp.slots.core.id].levels[coreLv];
+        const pulseScale = 0.92 + 0.12 * Math.sin(phase * 0.8);
+        const coreNode = spine[Math.min(spine.length - 1, Math.floor(spine.length * 0.4))];
+        drawSpriteCentered(ctx, coreSpec.sprite, coreNode.x, coreNode.y, baseR * 1.35 * pulseScale, baseR * 1.35 * pulseScale, 0);
+
+        // ⑤ 绘制腹部与背侧功能器官多层 SVG (Utility + 第四章首领双槽 FIFO 12.0s 同化器官)
+        const utilList = [...(bp.slots.utility || []), ...((org.assimilatedOrgans || []).map((a) => ({ id: a.id, level: a.level })))];
+        utilList.forEach((u, idx) => {
+          const uLv = org.suppressedTimer > 0 ? 1 : u.level;
+          const spec = ORGAN_CATALOG[u.id].levels[uLv];
+          const side = idx % 2 === 0 ? -1 : 1;
+          const segIdx = Math.min(spine.length - 1, Math.max(0, Math.floor((idx + 1) / 2)));
+          const seg = spine[segIdx];
+          drawSpriteCentered(ctx, spec.sprite, seg.x - baseR * 0.1, seg.y + side * seg.r * 0.82, baseR * 1.25, baseR * 1.25, side * 0.55);
+        });
+
+        // ⑥ 绘制头节前端吃食口器多层 SVG (Mouth)
+        const mouthList = bp.slots.mouth || [];
+        mouthList.forEach((m, idx) => {
+          const mLv = org.suppressedTimer > 0 ? 1 : m.level;
+          const spec = ORGAN_CATALOG[m.id].levels[mLv];
+          const offsetY = mouthList.length === 1 ? 0 : (idx === 0 ? -head.r * 0.36 : head.r * 0.36);
+          drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 0.88, head.y + offsetY, baseR * 1.35, baseR * 1.35, 0);
+        });
+
+        // ⑦ 绘制头节前端感官器官多层 SVG (Sensory: 眼/耳)
+        const senseList = bp.slots.sensory || [];
+        senseList.forEach((s, idx) => {
+          const sLv = org.suppressedTimer > 0 ? 1 : s.level;
+          const spec = ORGAN_CATALOG[s.id].levels[sLv];
+          const offsetY = senseList.length === 1 ? -head.r * 0.32 : (idx === 0 ? -head.r * 0.52 : head.r * 0.52);
+          drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 0.38, head.y + offsetY, baseR * 1.15, baseR * 1.15, 0);
+        });
+
+        // 同族电脑 NPC 细微光环标记
+        if (org.faction === 'player' && !org.isAlpha && !org.formerKin) {
+          ctx.beginPath();
+          ctx.arc(0, 0, baseR * 1.45, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(45, 212, 191, 0.38)';
+          ctx.lineWidth = 1.2;
+          ctx.setLineDash([4, 4]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        ctx.restore();
+      }
+
+      /* =====================================================================
+       * 6. 六大页面导航与交互控制器 (Page 1 ~ Page 5)
+       * ===================================================================== */
+      let currentActivePage = 'editor';
+      let selectedGbSpeciesId = playerGeneBank[0]?.speciesId || '';
+      let selectedFossilSpeciesId = officialFossils[0]?.speciesId || '';
+      let editorDraft = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(playerGeneBank[0])));
+      let editorPreviewIsNight = false;
+      let selectedLobbySpeciesId = playerGeneBank[0]?.speciesId || '';
+      let selectedBiomeId = 0;
+
+      function switchPage(pageKey) {
+        currentActivePage = pageKey;
+        document.querySelectorAll('.mg-page').forEach((sec) => {
+          sec.classList.toggle('active', sec.id === 'page-' + pageKey);
+        });
+        document.querySelectorAll('.nav-tab-btn').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.page === pageKey);
+        });
+        const topNav = document.getElementById('mg-top-nav');
+        if (topNav) {
+          // 在 6.游戏画面 全屏沉浸时自动隐藏顶部栏，使用画面右上角纯 SVG 图标返回
+          topNav.style.display = pageKey === 'arena' ? 'none' : 'flex';
+        }
+        NexusSDK.audio.tap();
+
+        if (pageKey === 'gene-bank') renderGeneBankPage();
+        if (pageKey === 'fossil') renderFossilPage();
+        if (pageKey === 'editor') renderEditorPage();
+        if (pageKey === 'lobby') renderLobbyPage();
+        if (pageKey === 'arena') {
+          if (!arenaState.running) {
+            startArenaMatch();
+          } else {
+            resizeArenaCanvas();
+          }
+        }
+      }
+
+      document.querySelectorAll('.nav-tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => switchPage(btn.dataset.page));
+      });
+
+      // 页面 1：游戏介绍快捷跳转
+      document.getElementById('intro-to-fossil-btn')?.addEventListener('click', () => switchPage('fossil'));
+      document.getElementById('intro-to-lobby-btn')?.addEventListener('click', () => switchPage('lobby'));
+      document.getElementById('intro-to-editor-btn')?.addEventListener('click', () => switchPage('editor'));
+
+      // 页面 2：个人基因库渲染与交互
+      function renderGeneBankPage() {
+        const countLbl = document.getElementById('gb-count-lbl');
+        if (countLbl) countLbl.textContent = String(playerGeneBank.length);
+        const listEl = document.getElementById('gb-card-list');
+        const detailEl = document.getElementById('gb-detail-panel');
+        if (!listEl || !detailEl) return;
+
+        if (!playerGeneBank.some((s) => s.speciesId === selectedGbSpeciesId) && playerGeneBank.length > 0) {
+          selectedGbSpeciesId = playerGeneBank[0].speciesId;
+        }
+
+        listEl.innerHTML = '';
+        playerGeneBank.forEach((sp) => {
+          const torso = TORSOS[sp.torsoId];
+          const dietName = sp.dietType === 'herbivore' ? '植食' : (sp.dietType === 'carnivore' ? '肉食' : '杂食');
+          const dietCls = sp.dietType === 'herbivore' ? 'green' : (sp.dietType === 'carnivore' ? 'red' : 'gold');
+          const card = document.createElement('div');
+          card.className = 'species-card' + (sp.speciesId === selectedGbSpeciesId ? ' selected' : '');
+          card.innerHTML = `
+            <div class="sp-card-top">
+              <div class="sp-thumb"><img src="../assets/micro-genesis/sprites/${torso.sprite}" alt="" /></div>
+              <div style="flex:1;min-width:0;">
+                <div class="sp-title">${escapeHtml(sp.speciesName)}</div>
+                <div class="sp-meta">${torso.code} ${torso.shortName} · ${sp.statsSummary.totalGpCost} GP</div>
+              </div>
+              <span class="badge-tag ${dietCls}">${dietName}</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.62rem;color:var(--mg-text-secondary);">
+              <span>HP ${sp.statsSummary.maxHp} · E ${sp.statsSummary.maxEnergy}</span>
+              <span>航速 ${sp.statsSummary.maxSpeed}</span>
+            </div>
+          `;
+          card.addEventListener('click', () => {
+            selectedGbSpeciesId = sp.speciesId;
+            NexusSDK.audio.tap();
+            renderGeneBankPage();
+          });
+          listEl.appendChild(card);
+        });
+
+        const cur = playerGeneBank.find((s) => s.speciesId === selectedGbSpeciesId);
+        if (!cur) {
+          detailEl.innerHTML = `<div style="margin:auto;color:var(--mg-text-secondary);font-size:0.75rem;">基因库暂无物种，请点击下方【+ 新建物种】。</div>`;
+          return;
+        }
+        const torso = TORSOS[cur.torsoId];
+        const st = cur.statsSummary;
+        const geneCode = encodeGeneCode(cur);
+        const organBadges = [
+          ORGAN_CATALOG[cur.slots.core.id].levels[cur.slots.core.level],
+          ...cur.slots.sensory.map((s) => ORGAN_CATALOG[s.id].levels[s.level]),
+          ...cur.slots.mouth.map((m) => ORGAN_CATALOG[m.id].levels[m.level]),
+          ...cur.slots.locomotion.map((l) => ORGAN_CATALOG[l.id].levels[l.level]),
+          ...cur.slots.utility.map((u) => ORGAN_CATALOG[u.id].levels[u.level])
+        ];
+
+        detailEl.innerHTML = `
+          <div class="sec-title">
+            <span>物种档案：${escapeHtml(cur.speciesName)} (${torso.name})</span>
+            <span class="badge-tag gold">总估值 ${st.totalGpCost} GP</span>
+          </div>
+          <div class="stat-mini-grid">
+            <div class="stat-box"><div class="lbl">生命上限 / 护甲减伤</div><div class="val">${st.maxHp} HP · ${Math.round(st.damageReduction * 100)}%</div></div>
+            <div class="stat-box"><div class="lbl">能量上限 / 静态总代谢</div><div class="val cyan">${st.maxEnergy} E · ${st.bmr} E/s</div></div>
+            <div class="stat-box"><div class="lbl">最大航速 / 转向角速度</div><div class="val">${st.maxSpeed} px/s · ${st.maxTurnRate}</div></div>
+            <div class="stat-box"><div class="lbl">感官配置 (视觉 / 声呐)</div><div class="val gold">眼Lv.${st.maxEyeLv} / 耳Lv.${st.maxEarLv}</div></div>
+          </div>
+          <div style="font-size:0.64rem;color:var(--mg-text-secondary);display:flex;flex-wrap:wrap;gap:4px;">
+            ${organBadges.map((ob) => `<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(15,23,42,0.85);border:1px solid var(--mg-border-subtle);border-radius:6px;padding:2px 6px;"><img src="../assets/micro-genesis/sprites/${ob.sprite}" width="14" height="14" alt=""/>${ob.name}</span>`).join('')}
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,0.75);border:1px solid rgba(148,163,184,0.2);border-radius:8px;padding:5px 8px;font-size:0.65rem;">
+            <span>历史最高种群：<strong>${cur.records.maxPopulation} 只</strong> · 累计击杀：<strong>${cur.records.totalKills}</strong></span>
+            <label style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;color:var(--mg-accent-cyan);">
+              <input type="checkbox" id="gb-wild-toggle" ${cur.wildEnabled ? 'checked' : ''} />
+              <span>允许作为野生NPC种群刷新</span>
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;">
+            <input type="text" class="mg-input" readonly value="${geneCode}" id="gb-code-readonly" style="flex:1;font-size:0.62rem;color:var(--mg-accent-gold);" />
+            <button class="btn-ghost" id="gb-copy-code-btn">复制基因码</button>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:auto;">
+            <button class="btn-ghost" id="gb-edit-in-page4-btn" style="flex:1;border-color:var(--mg-accent-cyan);color:var(--mg-accent-cyan);">载入 4.编辑页面 修改</button>
+            <button class="cta-primary" id="gb-launch-in-page5-btn" style="flex:1;min-height:44px;">设为出战并前往 5.大厅 ➔</button>
+            <button class="btn-ghost danger" id="gb-delete-btn">删除</button>
+          </div>
+        `;
+
+        document.getElementById('gb-wild-toggle')?.addEventListener('change', (e) => {
+          cur.wildEnabled = Boolean(e.target.checked);
+          persistState();
+          showToast(cur.wildEnabled ? '已加入单人沙盘野生种群池' : '已从野生种群池移除');
+        });
+        document.getElementById('gb-copy-code-btn')?.addEventListener('click', () => {
+          navigator.clipboard?.writeText(geneCode).catch(() => {});
+          showToast('已复制 Base64URL 基因序列码！');
+        });
+        document.getElementById('gb-edit-in-page4-btn')?.addEventListener('click', () => {
+          editorDraft = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(cur)));
+          switchPage('editor');
+          showToast('已载入【' + cur.speciesName + '】至 4.编辑页面');
+        });
+        document.getElementById('gb-launch-in-page5-btn')?.addEventListener('click', () => {
+          selectedLobbySpeciesId = cur.speciesId;
+          switchPage('lobby');
+        });
+        document.getElementById('gb-delete-btn')?.addEventListener('click', () => {
+          if (playerGeneBank.length <= 1) {
+            showToast('基因库至少保留 1 个自创物种！');
+            return;
+          }
+          playerGeneBank = playerGeneBank.filter((s) => s.speciesId !== cur.speciesId);
+          selectedGbSpeciesId = playerGeneBank[0].speciesId;
+          persistState();
+          renderGeneBankPage();
+          showToast('已删除物种档案');
+        });
+      }
+
+      document.getElementById('gb-import-btn')?.addEventListener('click', () => {
+        const inp = document.getElementById('gb-import-input');
+        const decoded = decodeGeneCode(inp?.value || '');
+        if (!decoded) {
+          NexusSDK.audio.warn();
+          showToast('基因序列码校验失败，请检查格式！');
+          return;
+        }
+        playerGeneBank.unshift(decoded);
+        selectedGbSpeciesId = decoded.speciesId;
+        if (inp) inp.value = '';
+        persistState();
+        renderGeneBankPage();
+        NexusSDK.audio.upgrade();
+        showToast('成功导入物种：【' + decoded.speciesName + '】');
+      });
+
+      document.getElementById('gb-new-species-btn')?.addEventListener('click', () => {
+        editorDraft = validateAndSanitizeBlueprint({
+          speciesId: 'sp_' + Date.now(),
+          speciesName: '新创微界虫',
+          torsoId: 'torso-t1-micro',
+          slots: {
+            core: { id: 'core-vacuole', level: 1 },
+            sensory: [{ id: 'sensory-eye', level: 1 }],
+            mouth: [{ id: 'mouth-omni', level: 1 }],
+            locomotion: [{ id: 'loco-flagella', level: 1 }],
+            utility: [{ id: 'util-scales', level: 1 }]
+          }
+        });
+        switchPage('editor');
+      });
+
+      // 页面 3：官方化石记录与全谱系器官图鉴
+      function renderFossilPage() {
+        const spListEl = document.getElementById('fossil-species-list');
+        const organCatEl = document.getElementById('fossil-organ-catalog');
+        const bossListEl = document.getElementById('fossil-boss-list');
+        if (!spListEl || !organCatEl || !bossListEl) return;
+
+        spListEl.innerHTML = '';
+        officialFossils.forEach((f) => {
+          const torso = TORSOS[f.torsoId];
+          const card = document.createElement('div');
+          card.className = 'species-card' + (f.speciesId === selectedFossilSpeciesId ? ' selected' : '');
+          card.innerHTML = `
+            <div class="sp-card-top">
+              <div class="sp-thumb"><img src="../assets/micro-genesis/sprites/${torso.sprite}" alt="" /></div>
+              <div style="flex:1;min-width:0;">
+                <div class="sp-title">${escapeHtml(f.speciesName)}</div>
+                <div class="sp-meta">${torso.code} · 估值 ${f.statsSummary.totalGpCost} GP</div>
+              </div>
+              <span class="badge-tag">官方化石</span>
+            </div>
+            <div style="font-size:0.61rem;color:var(--mg-text-secondary);line-height:1.35;">${escapeHtml(f.desc || '')}</div>
+          `;
+          card.addEventListener('click', () => {
+            selectedFossilSpeciesId = f.speciesId;
+            NexusSDK.audio.tap();
+            renderFossilPage();
+          });
+          spListEl.appendChild(card);
+        });
+
+        organCatEl.innerHTML = '';
+        Object.values(ORGAN_CATALOG).forEach((series) => {
+          const box = document.createElement('div');
+          box.style.cssText = 'background:rgba(15,23,42,0.82);border:1px solid var(--mg-border-subtle);border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:4px;';
+          box.innerHTML = `
+            <div style="font-size:0.65rem;font-weight:800;color:var(--mg-accent-cyan);">${series.branchName}</div>
+            <div style="display:flex;justify-content:space-between;gap:4px;">
+              ${[1, 2, 3].map((lv) => {
+                const sp = series.levels[lv];
+                return `<div style="flex:1;text-align:center;background:rgba(7,12,24,0.8);border-radius:6px;padding:3px;">
+                  <img src="../assets/micro-genesis/sprites/${sp.sprite}" width="22" height="22" alt="" style="display:block;margin:0 auto 2px;"/>
+                  <div style="font-size:0.56rem;color:var(--mg-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Lv.${lv}</div>
+                  <div style="font-size:0.54rem;color:var(--mg-accent-gold);">${sp.gp}GP</div>
+                </div>`;
+              }).join('')}
+            </div>
+          `;
+          organCatEl.appendChild(box);
+        });
+
+        bossListEl.innerHTML = '';
+        EPIC_BOSSES.forEach((b) => {
+          const item = document.createElement('div');
+          item.style.cssText = 'background:rgba(15,23,42,0.85);border:1px solid rgba(251,191,36,0.28);border-radius:8px;padding:6px 8px;';
+          item.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <strong style="font-size:0.7rem;color:var(--mg-accent-gold);">${b.name}</strong>
+              <span style="font-size:0.58rem;color:var(--mg-accent-cyan);">${b.chapter}</span>
+            </div>
+            <div style="font-size:0.61rem;color:var(--mg-text-secondary);margin-top:2px;">${b.desc}</div>
+            <div style="font-size:0.58rem;color:var(--mg-accent-emerald);margin-top:2px;">${b.unlock}</div>
+          `;
+          bossListEl.appendChild(item);
+        });
+      }
+
+      document.getElementById('fossil-clone-to-editor-btn')?.addEventListener('click', () => {
+        const f = officialFossils.find((item) => item.speciesId === selectedFossilSpeciesId) || officialFossils[0];
+        const cloned = JSON.parse(JSON.stringify(f));
+        cloned.speciesId = 'sp_' + Date.now();
+        cloned.origin = 'player';
+        cloned.speciesName = sanitizeSpeciesName(f.speciesName + '改');
+        editorDraft = validateAndSanitizeBlueprint(cloned);
+        switchPage('editor');
+        showToast('已克隆官方化石【' + f.speciesName + '】至 4.编辑页面！');
+      });
+
+      /* =====================================================================
+       * 7. 页面 4：编辑页面 (#page-editor) 与通用插槽编辑器组件
+       * ===================================================================== */
+      function buildSlotControls(blueprint, torsoRowEl, slotListEl, onChangeCallback) {
+        if (!torsoRowEl || !slotListEl) return;
+        const curTorso = TORSOS[blueprint.torsoId];
+
+        // 1. 4阶躯干底盘切换按钮组
+        torsoRowEl.innerHTML = '';
+        Object.values(TORSOS).forEach((t) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'torso-btn' + (t.id === blueprint.torsoId ? ' active' : '');
+          btn.innerHTML = `
+            <img src="../assets/micro-genesis/sprites/${t.sprite}" alt="" />
+            <span class="t-name">${t.shortName}</span>
+            <span class="t-sub">${t.totalSlots}槽·V${t.volume}</span>
+          `;
+          btn.addEventListener('click', () => {
+            blueprint.torsoId = t.id;
+            const rebuilt = validateAndSanitizeBlueprint(blueprint);
+            Object.assign(blueprint, rebuilt);
+            NexusSDK.audio.tap();
+            onChangeCallback();
+          });
+          torsoRowEl.appendChild(btn);
+        });
+
+        // 2. 五大器官插槽列表
+        slotListEl.innerHTML = '';
+
+        function appendSlotRow(catLabel, categoryKey, slotObj, indexInCat) {
+          const seriesOptions = Object.values(ORGAN_CATALOG).filter((s) => s.category === categoryKey);
+          const curSeries = ORGAN_CATALOG[slotObj.id] || seriesOptions[0];
+          const curSpec = curSeries.levels[slotObj.level];
+
+          const row = document.createElement('div');
+          row.className = 'slot-row';
+          row.innerHTML = `
+            <div class="slot-ico"><img src="../assets/micro-genesis/sprites/${curSpec.sprite}" alt="" /></div>
+            <span class="slot-cat">${catLabel}</span>
+            <select class="slot-select" name="slot-${categoryKey}-${indexInCat}" aria-label="${catLabel}器官选择">
+              ${seriesOptions.map((opt) => `<option value="${opt.id}" ${opt.id === slotObj.id ? 'selected' : ''}>${opt.branchName}</option>`).join('')}
+            </select>
+            <div class="lvl-pill-group">
+              ${[1, 2, 3].map((lv) => `<button type="button" class="lvl-pill ${slotObj.level === lv ? 'active' : ''}" data-lv="${lv}">Lv.${lv}</button>`).join('')}
+            </div>
+          `;
+
+          const selectEl = row.querySelector('.slot-select');
+          selectEl.addEventListener('change', (e) => {
+            slotObj.id = e.target.value;
+            if (categoryKey === 'mouth' && blueprint.slots.mouth.length > 1) {
+              // T04 双口器自动保持同食性系列
+              blueprint.slots.mouth.forEach((m) => { m.id = slotObj.id; });
+            }
+            const updated = validateAndSanitizeBlueprint(blueprint);
+            Object.assign(blueprint, updated);
+            NexusSDK.audio.tap();
+            onChangeCallback();
+          });
+
+          row.querySelectorAll('.lvl-pill').forEach((pill) => {
+            pill.addEventListener('click', () => {
+              slotObj.level = Number(pill.dataset.lv);
+              const updated = validateAndSanitizeBlueprint(blueprint);
+              Object.assign(blueprint, updated);
+              NexusSDK.audio.tap();
+              onChangeCallback();
+            });
+          });
+
+          slotListEl.appendChild(row);
+        }
+
+        // 确保数组长度对齐当前躯干插槽容量
+        while (blueprint.slots.sensory.length < curTorso.slots.sensory) {
+          blueprint.slots.sensory.push({ id: 'sensory-ear', level: 1 });
+        }
+        blueprint.slots.sensory.length = curTorso.slots.sensory;
+
+        while (blueprint.slots.mouth.length < curTorso.slots.mouth) {
+          blueprint.slots.mouth.push({ id: blueprint.slots.mouth[0]?.id || 'mouth-omni', level: 1 });
+        }
+        blueprint.slots.mouth.length = curTorso.slots.mouth;
+
+        while (blueprint.slots.locomotion.length < curTorso.slots.locomotion) {
+          blueprint.slots.locomotion.push({ id: 'loco-flagella', level: 1 });
+        }
+        blueprint.slots.locomotion.length = curTorso.slots.locomotion;
+
+        while (blueprint.slots.utility.length < curTorso.slots.utility) {
+          blueprint.slots.utility.push({ id: 'util-scales', level: 1 });
+        }
+        blueprint.slots.utility.length = curTorso.slots.utility;
+
+        const synced = validateAndSanitizeBlueprint(blueprint);
+        Object.assign(blueprint, synced);
+
+        appendSlotRow('核心槽', 'core', blueprint.slots.core, 0);
+        blueprint.slots.sensory.forEach((s, idx) => appendSlotRow('感官槽' + (idx + 1), 'sensory', s, idx));
+        blueprint.slots.mouth.forEach((m, idx) => appendSlotRow('口部槽' + (idx + 1), 'mouth', m, idx));
+        blueprint.slots.locomotion.forEach((l, idx) => appendSlotRow('运动槽' + (idx + 1), 'locomotion', l, idx));
+        blueprint.slots.utility.forEach((u, idx) => appendSlotRow('功能槽' + (idx + 1), 'utility', u, idx));
+      }
+
+      function renderEditorPage() {
+        const torsoRowEl = document.getElementById('editor-torso-row');
+        const slotListEl = document.getElementById('editor-slot-list');
+        buildSlotControls(editorDraft, torsoRowEl, slotListEl, renderEditorPage);
+
+        const torso = TORSOS[editorDraft.torsoId];
+        const st = editorDraft.statsSummary;
+        const dietLabel = editorDraft.dietType === 'herbivore' ? '植食滤食者' : (editorDraft.dietType === 'carnivore' ? '肉食掠食者' : '全能杂食者');
+
+        const capLbl = document.getElementById('editor-slot-cap-lbl');
+        if (capLbl) capLbl.textContent = torso.totalSlots + ' 槽';
+        const titleEl = document.getElementById('editor-preview-title');
+        if (titleEl) titleEl.textContent = '当前物种：' + editorDraft.speciesName;
+        const subEl = document.getElementById('editor-preview-sub');
+        if (subEl) subEl.textContent = `${torso.name} (${torso.code}) · ${dietLabel}`;
+        const nameInp = document.getElementById('editor-species-name');
+        if (nameInp && document.activeElement !== nameInp) nameInp.value = editorDraft.speciesName;
+
+        const hpEl = document.getElementById('ed-stat-hp');
+        if (hpEl) hpEl.textContent = `${st.maxHp} HP (减伤${Math.round(st.damageReduction * 100)}%)`;
+        const enEl = document.getElementById('ed-stat-energy');
+        if (enEl) enEl.textContent = `${st.maxEnergy} E (消化${Math.round(st.digestEff * 100)}%)`;
+        const bmrEl = document.getElementById('ed-stat-bmr');
+        if (bmrEl) bmrEl.textContent = `${st.bmr} E/s`;
+        const spdEl = document.getElementById('ed-stat-speed');
+        if (spdEl) spdEl.textContent = `${st.maxSpeed} px/s · ${st.maxTurnRate}`;
+        const gpEl = document.getElementById('ed-stat-gpcost');
+        if (gpEl) gpEl.textContent = `${st.totalGpCost} GP`;
+
+        // 同步 5 维 AI 滑块
+        const aiKeys = [
+          ['w_aggr', 'ai-w-aggr', 'ai-val-aggr'],
+          ['w_flock', 'ai-w-flock', 'ai-val-flock'],
+          ['w_flee', 'ai-w-flee', 'ai-val-flee'],
+          ['w_repro', 'ai-w-repro', 'ai-val-repro'],
+          ['w_mut', 'ai-w-mut', 'ai-val-mut']
+        ];
+        aiKeys.forEach(([k, sliderId, valId]) => {
+          const sl = document.getElementById(sliderId);
+          const vl = document.getElementById(valId);
+          const pct = Math.round((editorDraft.aiWeights[k] ?? 0.5) * 100);
+          if (sl) sl.value = String(pct);
+          if (vl) vl.textContent = pct + '%';
+        });
+      }
+
+      ['aggr', 'flock', 'flee', 'repro', 'mut'].forEach((shortKey) => {
+        const sl = document.getElementById('ai-w-' + shortKey);
+        const vl = document.getElementById('ai-val-' + shortKey);
+        if (sl) {
+          sl.addEventListener('input', () => {
+            const pct = Number(sl.value);
+            editorDraft.aiWeights['w_' + shortKey] = clampAiWeight(pct / 100);
+            if (vl) vl.textContent = pct + '%';
+          });
+        }
+      });
+
+      document.getElementById('editor-species-name')?.addEventListener('input', (e) => {
+        editorDraft.speciesName = sanitizeSpeciesName(e.target.value);
+        const titleEl = document.getElementById('editor-preview-title');
+        if (titleEl) titleEl.textContent = '当前物种：' + editorDraft.speciesName;
+      });
+
+      document.getElementById('editor-toggle-daynight-btn')?.addEventListener('click', (e) => {
+        editorPreviewIsNight = !editorPreviewIsNight;
+        e.currentTarget.textContent = '预览环境：' + (editorPreviewIsNight ? '黑夜 (视距-45%)' : '白昼');
+        NexusSDK.audio.tap();
+      });
+
+      function saveBlueprintToGeneBank(bp) {
+        const sanitized = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(bp)));
+        const existingIdx = playerGeneBank.findIndex((s) => s.speciesId === sanitized.speciesId || s.speciesName === sanitized.speciesName);
+        if (existingIdx >= 0) {
+          sanitized.records = playerGeneBank[existingIdx].records;
+          playerGeneBank[existingIdx] = sanitized;
+        } else {
+          sanitized.speciesId = 'sp_' + Date.now();
+          playerGeneBank.unshift(sanitized);
+        }
+        selectedGbSpeciesId = sanitized.speciesId;
+        selectedLobbySpeciesId = sanitized.speciesId;
+        persistState();
+        NexusSDK.audio.upgrade();
+        showToast('已将物种【' + sanitized.speciesName + '】存入个人基因库！');
+        return sanitized;
+      }
+
+      document.getElementById('editor-save-to-gb-btn')?.addEventListener('click', () => {
+        saveBlueprintToGeneBank(editorDraft);
+      });
+
+      // 编辑页面中栏 60Hz 实时生物体节与感官仿真培养皿动画
+      function renderEditorPreviewLoop(nowMs) {
+        if (currentActivePage === 'editor') {
+          const canvas = document.getElementById('editor-preview-canvas');
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const tSec = nowMs * 0.001;
+            const st = editorDraft.statsSummary;
+            const isSonarOnly = st.maxEarLv > 0 && st.maxEyeLv === 0;
+
+            ctx.shadowBlur = 0;
+        ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = isSonarOnly
+              ? '#02050d'
+              : (editorPreviewIsNight ? '#030816' : '#06142b');
+            ctx.fillRect(0, 0, w, h);
+
+            // 培养皿微网格
+            ctx.strokeStyle = 'rgba(45, 212, 191, 0.07)';
+            ctx.lineWidth = 1;
+            for (let x = 20; x < w; x += 32) {
+              ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+            }
+            for (let y = 20; y < h; y += 32) {
+              ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+            }
+
+            const cx = w * 0.46;
+            const cy = h * 0.52;
+            const swimAng = Math.sin(tSec * 1.4) * 0.16;
+
+            // 绘制视觉扇形锥预览
+            if (st.maxEyeLv > 0) {
+              const r = (editorPreviewIsNight ? st.nightEyeRange : st.dayEyeRange) * 0.34;
+              const halfRad = ((editorPreviewIsNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
+              ctx.save();
+              ctx.translate(cx, cy);
+              ctx.rotate(swimAng);
+              ctx.beginPath();
+              ctx.moveTo(0, 0);
+              ctx.arc(0, 0, r, -halfRad, halfRad);
+              ctx.closePath();
+              ctx.fillStyle = 'rgba(45, 212, 191, 0.12)';
+              ctx.fill();
+              ctx.strokeStyle = 'rgba(45, 212, 191, 0.45)';
+              ctx.lineWidth = 1.2;
+              ctx.stroke();
+              ctx.restore();
+            }
+
+            // 绘制听觉 360° 声呐雷达定格与边缘裁剪预览
+            if (st.maxEarLv > 0) {
+              const maxR = st.sonarRange * 0.25;
+              const pulseFrac = (tSec % st.sonarPulseSec) / st.sonarPulseSec;
+              const snapTick = Math.floor(tSec / st.sonarPulseSec) * st.sonarPulseSec;
+              // 雷达距离环与十字刻度线
+              [0.35, 0.7, 1.0].forEach((ratio) => {
+                ctx.beginPath();
+                ctx.arc(cx, cy, maxR * ratio, 0, Math.PI * 2);
+                ctx.strokeStyle = ratio === 1.0 ? 'rgba(148, 163, 184, 0.42)' : 'rgba(148, 163, 184, 0.16)';
+                ctx.setLineDash(ratio === 1.0 ? [4, 4] : []);
+                ctx.stroke();
+                ctx.setLineDash([]);
+              });
+              ctx.beginPath();
+              ctx.moveTo(cx - maxR, cy); ctx.lineTo(cx + maxR, cy);
+              ctx.moveTo(cx, cy - maxR); ctx.lineTo(cx, cy + maxR);
+              ctx.strokeStyle = 'rgba(56, 189, 248, 0.14)';
+              ctx.stroke();
+
+              // 雷达扫描脉冲波前
+              ctx.beginPath();
+              ctx.arc(cx, cy, maxR * pulseFrac, 0, Math.PI * 2);
+              ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - pulseFrac) * 0.85})`;
+              ctx.lineWidth = 1.8;
+              ctx.stroke();
+
+              // 演示听觉边缘定格影像与严格圆形边界裁剪 (半身在听觉圈内，仅显影圈内部分)
+              ctx.save();
+              ctx.beginPath();
+              ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
+              ctx.clip();
+              drawOrganism(ctx, {
+                x: cx + maxR - 4,
+                y: cy - 18,
+                angle: Math.PI * 0.82,
+                faction: 'enemy',
+                isAlpha: false,
+                blueprint: officialFossils[1]
+              }, {
+                freezePhase: snapTick * 6.5,
+                scale: 1.05,
+                sonarWireframe: true,
+                sonarAlpha: Math.max(0.32, 1.0 - pulseFrac * 0.65)
+              });
+              ctx.restore();
+            }
+
+            // 绘制预览物种有机体 (应用视觉饱和度滤镜 35%/85%/125%)
+            ctx.save();
+            if (!isSonarOnly && st.maxEyeLv > 0) {
+              ctx.filter = `saturate(${Math.round(st.eyeSat * 100)}%)`;
+            }
+            const edSnapTick = Math.floor(tSec / (st.sonarPulseSec || 0.95)) * (st.sonarPulseSec || 0.95);
+            drawOrganism(ctx, {
+              x: cx,
+              y: cy,
+              angle: isSonarOnly ? Math.sin(edSnapTick * 1.4) * 0.16 : swimAng,
+              faction: 'player',
+              isAlpha: true,
+              blueprint: editorDraft
+            }, {
+              timeSec: tSec,
+              freezePhase: isSonarOnly ? edSnapTick * 6.5 : undefined,
+              scale: 1.38,
+              sonarWireframe: isSonarOnly
+            });
+            ctx.restore();
+          }
+        }
+        requestAnimationFrame(renderEditorPreviewLoop);
+      }
+
+      /* =====================================================================
+       * 8. 页面 5：游戏大厅 (#page-lobby —— 局域网房间在房主移动端设备运行)
+       * ===================================================================== */
+      let lanSession = null;
+      let lanRoomCode = '';
+      let isLanGuest = false;
+      let lanStatusBound = false;
+      let lobbyRoomSig = '';
+      let lastLobbyConnState = '';
+
+      function syncLobbyLanBadges(st) {
+        const s = st || (lanSession && lanSession.getStatus ? lanSession.getStatus() : null);
+        if (!s) return;
+        lanRoomCode = s.roomCode;
+        isLanGuest = s.role === 'client' && s.connected;
+        const badgeEl = document.getElementById('lobby-host-room-code');
+        if (badgeEl) badgeEl.textContent = '房间号: ' + s.roomCode;
+        const statusEl = document.getElementById('lobby-lan-status-badge');
+        if (statusEl) {
+          const rtt = Number.isFinite(s.peerLatencyMs) ? s.peerLatencyMs + 'ms' : '测速中';
+          const via = s.transport === 'webrtc' ? 'WebRTC' : '同设备通道';
+          const text = s.connected
+            ? `已联机 · ${s.role === 'host' ? '房主' : '客机'} · 实测 RTT ${rtt} (${via})`
+            : s.connState === 'connecting' ? '握手连接中...'
+            : (s.connState === 'failed' || s.connState === 'disconnected') ? (s.lastError || '连接已断开')
+            : '本机房主广播中 · 等待客机加入';
+          statusEl.textContent = text;
+          statusEl.style.color = s.connected ? 'var(--mg-accent-emerald)'
+            : (s.connState === 'failed' || s.connState === 'disconnected') ? '#f43f5e' : 'var(--mg-text-secondary)';
+        }
+        if (s.connState !== lastLobbyConnState) {
+          if (s.connState === 'connected') {
+            NexusSDK.audio.pickup();
+            showToast(s.role === 'host' ? `客机已加入房间 (${s.roomCode})` : `已加入房间 ${s.roomCode}（房主已应答）`);
+          } else if ((s.connState === 'failed' || s.connState === 'disconnected') && s.lastError) {
+            showToast(s.lastError);
+          }
+          lastLobbyConnState = s.connState;
+        }
+      }
+
+      // 与第二层菜单「⑥ 局域网管理」共用同一 SDK 会话单例（杜绝双套大厅各自广播不同房间号）
+      function initLanHostSession() {
+        lanSession = NexusSDK.createLanSession('micro-genesis');
+        if (!lanStatusBound) {
+          lanStatusBound = true;
+          const onMsg = (msg) => {
+            if (!msg || typeof msg !== 'object') return;
+            if (msg.type === 'GUEST_INPUT' && !isLanGuest && arenaState.running && arenaState.rivalAlpha) {
+              // 房主移动端接收客机操控指令驱动 2P 始祖
+              arenaState.rivalAlpha.targetAngle = Number(msg.angle) || 0;
+              if (msg.skill) triggerEntityActiveSkill(arenaState.rivalAlpha);
+              if (msg.mitosis) tryMitosisReproduce(arenaState.rivalAlpha);
+            } else if (msg.type === 'HOST_STATE' && isLanGuest && arenaState.running && arenaState.rivalAlpha) {
+              // 客机接收房主移动端 20Hz 权威状态帧同步
+              if (Number.isFinite(msg.hostX)) arenaState.rivalAlpha.x = msg.hostX;
+              if (Number.isFinite(msg.hostY)) arenaState.rivalAlpha.y = msg.hostY;
+              if (Number.isFinite(msg.hostAng)) arenaState.rivalAlpha.angle = msg.hostAng;
+              if (Number.isFinite(msg.hostHp)) arenaState.rivalAlpha.hp = msg.hostHp;
+            }
+          };
+          lanSession.onReliable(onMsg);
+          lanSession.onFast(onMsg);
+          lanSession.onStatus((st) => {
+            syncLobbyLanBadges(st);
+            renderLobbyRoomList();
+          });
+          lanSession.onRooms(() => renderLobbyRoomList());
+        }
+        syncLobbyLanBadges();
+      }
+
+      function renderLobbyPage() {
+        const pickerEl = document.getElementById('lobby-species-picker');
+        const allChoices = [...playerGeneBank, ...officialFossils];
+        if (!allChoices.some((s) => s.speciesId === selectedLobbySpeciesId) && allChoices.length > 0) {
+          selectedLobbySpeciesId = allChoices[0].speciesId;
+        }
+        if (pickerEl) {
+          pickerEl.innerHTML = allChoices.map((s) => {
+            const tag = s.origin === 'official_fossil' ? '[化石]' : '[基因库]';
+            return `<option value="${s.speciesId}" ${s.speciesId === selectedLobbySpeciesId ? 'selected' : ''}>${tag} ${s.speciesName}</option>`;
+          }).join('');
+        }
+
+        const chosen = allChoices.find((s) => s.speciesId === selectedLobbySpeciesId) || allChoices[0];
+        if (chosen) {
+          const torso = TORSOS[chosen.torsoId];
+          const imgEl = document.getElementById('lobby-selected-sp-img');
+          if (imgEl) imgEl.src = `../assets/micro-genesis/sprites/${torso.sprite}`;
+          const nameEl = document.getElementById('lobby-selected-sp-name');
+          if (nameEl) nameEl.textContent = chosen.speciesName;
+          const metaEl = document.getElementById('lobby-selected-sp-meta');
+          if (metaEl) metaEl.textContent = `${torso.code} ${torso.name} · 估值 ${chosen.statsSummary.totalGpCost} GP`;
+        }
+
+        const biomeListEl = document.getElementById('lobby-biome-list');
+        if (biomeListEl) {
+          biomeListEl.innerHTML = '';
+          BIOMES.forEach((b) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'torso-btn' + (b.id === selectedBiomeId ? ' active' : '');
+            btn.innerHTML = `
+              <span class="t-name">${b.name}</span>
+              <span class="t-sub">${b.sub}</span>
+            `;
+            btn.addEventListener('click', () => {
+              selectedBiomeId = b.id;
+              const descEl = document.getElementById('lobby-biome-desc');
+              if (descEl) descEl.textContent = b.desc;
+              NexusSDK.audio.tap();
+              renderLobbyPage();
+            });
+            biomeListEl.appendChild(btn);
+          });
+        }
+
+        renderLobbyRoomList();
+      }
+
+      function renderLobbyRoomList(force) {
+        const listEl = document.getElementById('lobby-room-list');
+        if (!listEl) return;
+        if (!lanSession) initLanHostSession();
+        const rooms = lanSession.getAvailableRooms();
+        const sig = JSON.stringify(rooms.map((r) => [r.roomCode, r.players, r.isSelfHost, r.isCurrentJoined, r.isConnecting, r.rttMs]));
+        if (!force && sig === lobbyRoomSig && listEl.childElementCount > 0) return;
+        lobbyRoomSig = sig;
+        if (rooms.length === 0) {
+          listEl.innerHTML = `<div style="font-size:0.64rem;color:var(--mg-text-secondary);padding:6px 2px;">暂无已发现的房间。同设备其他窗口建房后会实时出现；跨手机联机请在第二层菜单「⑥ 局域网管理」使用离线握手码。</div>`;
+          return;
+        }
+        listEl.innerHTML = rooms.map((rm) => {
+          const isJoined = rm.isCurrentJoined;
+          const isSelf = rm.isSelfHost;
+          const rtt = Number.isFinite(rm.rttMs) ? `${rm.rttMs}ms` : '加入后实测';
+          const full = !isSelf && !isJoined && rm.players === '2/2';
+          const label = isJoined ? '已连入' : rm.isConnecting ? '握手中' : isSelf ? '本机房主' : (full ? '已满' : '加入');
+          return `
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border-radius:8px;background:rgba(3,24,28,0.75);border:1px solid ${isJoined ? 'var(--mg-accent-cyan)' : 'var(--mg-border-subtle)'};">
+              <div style="min-width:0;flex:1;">
+                <div style="font-size:0.7rem;font-weight:800;color:var(--mg-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                  <span style="color:var(--mg-accent-cyan);font-family:Consolas,monospace;">[${NexusSDK.escapeHtml ? NexusSDK.escapeHtml(rm.roomCode) : rm.roomCode}]</span> ${NexusSDK.escapeHtml ? NexusSDK.escapeHtml(rm.title) : rm.title}
+                </div>
+                <div style="font-size:0.6rem;color:var(--mg-text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                  房主: ${NexusSDK.escapeHtml ? NexusSDK.escapeHtml(rm.hostName) : rm.hostName} · <span style="color:var(--mg-accent-emerald);">${rm.players} (${rtt})</span>
+                </div>
+              </div>
+              <button type="button" class="btn-ghost" data-lobby-join-code="${rm.roomCode}" ${(rm.isConnecting || full) ? 'disabled' : ''} style="min-height:44px;padding:0 10px;font-size:0.66rem;white-space:nowrap;border-color:${isJoined ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-cyan)'};color:${isJoined ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-cyan)'};">
+                ${label}
+              </button>
+            </div>
+          `;
+        }).join('');
+
+        listEl.querySelectorAll('[data-lobby-join-code]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const targetCode = btn.getAttribute('data-lobby-join-code');
+            if (!targetCode) return;
+            const st = lanSession.getStatus();
+            if ((st.role === 'host' && st.roomCode === targetCode) || (st.connected && st.roomCode === targetCode)) {
+              NexusSDK.audio.tap();
+              showToast(st.connected ? '已在该房间内，可直接出击' : '这是本机房间，等待客机加入');
+              return;
+            }
+            NexusSDK.audio.tap();
+            lanSession.joinRoom(targetCode, 'client');
+            showToast('正在与房间 ' + targetCode + ' 握手...');
+            renderLobbyRoomList(true);
+          });
+        });
+      }
+
+      document.getElementById('lobby-species-picker')?.addEventListener('change', (e) => {
+        selectedLobbySpeciesId = e.target.value;
+        NexusSDK.audio.tap();
+        renderLobbyPage();
+      });
+
+      document.getElementById('lobby-create-room-btn')?.addEventListener('click', () => {
+        if (!lanSession) initLanHostSession();
+        lanSession.leave();
+        NexusSDK.audio.upgrade();
+        showToast('已在房主移动端建立局域网房间：' + lanSession.getRoomCode());
+        renderLobbyRoomList(true);
+      });
+
+      document.getElementById('lobby-refresh-rooms-btn')?.addEventListener('click', () => {
+        if (lanSession) lanSession.refreshRooms();
+        NexusSDK.audio.tap();
+        renderLobbyRoomList(true);
+        showToast('已刷新局域网可加入房间列表');
+      });
+
+      document.getElementById('lobby-launch-arena-btn')?.addEventListener('click', () => {
+        startArenaMatch();
+        switchPage('arena');
+      });
+
+      /* =====================================================================
+       * 9. 页面 6：游戏画面 (#page-arena) 核心微观生态沙盘仿真引擎 (2800 × 1800)
+       * ===================================================================== */
+      const WORLD_W = 2800;
+      const WORLD_H = 1800;
+      const PHEROMONE_MODES = ['forage', 'guard', 'hunt'];
+
+      const arenaState = {
+        running: false,
+        matchMode: 'pve_campaign',
+        gpRule: 'standard',
+        biome: BIOMES[0],
+        timeSec: 0,
+        lastTickMs: 0,
+        lastAlgaeSpawnSec: 0,
+        lastLanSyncSec: 0,
+        pheromoneIdx: 0,
+        showSensoryOverlay: true,
+        intraSpeciesCd: 0,
+        crossTorsoCd: 0,
+        playerFullBlueprint: null,
+        playerActiveBlueprint: null,
+        alpha: null,
+        rivalAlpha: null,
+        organisms: [],
+        foods: [],
+        vents: [],
+        territories: [],
+        projectiles: [],
+        hazards: [],
+        pointerDown: false,
+        pointerWorldX: WORLD_W * 0.5,
+        pointerWorldY: WORLD_H * 0.5,
+        drawerDraft: null,
+        drawerSelectedGbId: '',
+        pendingCrossTorsoTarget: null,
+        unlockedTorsos: new Set(['torso-t1-micro']),
+        unlockedOrganLevels: new Map()
+      };
+
+      function getBlueprintOrganEntries(bp) {
+        if (!bp || !bp.slots) return [];
+        const list = [{ key: `core:0:${bp.slots.core.id}`, id: bp.slots.core.id, level: bp.slots.core.level }];
+        ['sensory', 'mouth', 'locomotion', 'utility'].forEach((cat) => {
+          (bp.slots[cat] || []).forEach((s, idx) => {
+            list.push({ key: `${cat}:${idx}:${s.id}`, id: s.id, level: s.level });
+          });
+        });
+        return list;
+      }
+
+      function recordBlueprintUnlocked(bp) {
+        if (!bp) return;
+        arenaState.unlockedTorsos.add(bp.torsoId);
+        getBlueprintOrganEntries(bp).forEach((entry) => {
+          const prevLv = arenaState.unlockedOrganLevels.get(entry.key) || 0;
+          if (entry.level > prevLv) {
+            arenaState.unlockedOrganLevels.set(entry.key, entry.level);
+          }
+        });
+      }
+
+      function computeBlueprintDeltaGp(targetBp) {
+        if (!targetBp || arenaState.matchMode === 'free_sandbox') return 0;
+        let delta = 0;
+        const tSpec = TORSOS[targetBp.torsoId];
+        if (tSpec && !arenaState.unlockedTorsos.has(targetBp.torsoId)) {
+          delta += tSpec.transitionGp || 0;
+        }
+        getBlueprintOrganEntries(targetBp).forEach((entry) => {
+          const unlockedLv = arenaState.unlockedOrganLevels.get(entry.key) || 0;
+          if (entry.level > unlockedLv) {
+            const cat = ORGAN_CATALOG[entry.id];
+            if (cat && cat.levels) {
+              const targetCost = cat.levels[entry.level]?.gp || 0;
+              const unlockedCost = unlockedLv > 0 ? (cat.levels[unlockedLv]?.gp || 0) : 0;
+              delta += Math.max(0, targetCost - unlockedCost);
+            }
+          }
+        });
+        return delta;
+      }
+
+      function makeStarterLv1Blueprint(fullBp) {
+        const clone = JSON.parse(JSON.stringify(fullBp));
+        clone.torsoId = 'torso-t1-micro';
+        clone.slots.core.level = 1;
+        clone.slots.sensory = clone.slots.sensory.slice(0, 1).map((s) => ({ id: s.id, level: 1 }));
+        clone.slots.mouth = clone.slots.mouth.slice(0, 1).map((m) => ({ id: m.id, level: 1 }));
+        clone.slots.locomotion = clone.slots.locomotion.slice(0, 1).map((l) => ({ id: l.id, level: 1 }));
+        clone.slots.utility = clone.slots.utility.slice(0, 1).map((u) => ({ id: u.id, level: 1 }));
+        return validateAndSanitizeBlueprint(clone);
+      }
+
+      function spawnOrganismEntity(bp, x, y, faction, opts = {}) {
+        const st = bp.statsSummary;
+        const torso = TORSOS[bp.torsoId];
+        return {
+          id: 'ent_' + Date.now() + '_' + Math.floor(Math.random() * 100000),
+          x: Math.max(60, Math.min(WORLD_W - 60, x)),
+          y: Math.max(60, Math.min(WORLD_H - 60, y)),
+          vx: 0,
+          vy: 0,
+          angle: Math.random() * Math.PI * 2,
+          targetAngle: 0,
+          radius: torso.sizePx * 0.44,
+          faction,
+          colonyId: opts.colonyId || faction,
+          isAlpha: Boolean(opts.isAlpha),
+          isBoss: Boolean(opts.isBoss),
+          formerKin: Boolean(opts.formerKin),
+          blueprint: bp,
+          hp: st.maxHp * (opts.hpRatio ?? 1.0),
+          maxHp: st.maxHp,
+          energy: st.maxEnergy * (opts.energyRatio ?? 0.85),
+          maxEnergy: st.maxEnergy,
+          skillCd: 0,
+          biteCd: 0,
+          mimicTimer: 0,
+          blindTimer: 0,
+          stunTimer: 0,
+          slowTimer: 0,
+          iceShieldTimer: 0,
+          bossSplitDone: false,
+          poisonTimer: 0,
+          poisonDps: 0,
+          suppressedTimer: 0,
+          squashTimer: 0,
+          // 生态位 NPC 智能角色系统：领主智能 (apex) | 协同智能 (pack) | 群居智能 (herd)
+          nicheRole: (function() {
+            if (opts.isBoss || (bp.dietType === 'carnivore' && torso.sizePx >= 48)) return 'apex';
+            if (bp.dietType === 'herbivore') return 'herd';
+            return 'pack';
+          })(),
+          territoryCenter: { x, y, radius: 480 },
+          territoryAngle: Math.random() * Math.PI * 2,
+          packFlankAngle: (Math.random() < 0.5 ? 1 : -1) * (0.55 + Math.random() * 0.35),
+          hitAndRunTimer: 0,
+          herdPanicTimer: 0,
+          herdPanicTarget: null,
+          assimilatedOrgans: [], // Boss 4 双槽 FIFO 12.0s 同化队列
+          hatredMap: new Map(),
+          phaseOffset: Math.random() * Math.PI * 2,
+          sonarLastSeenX: x,
+          sonarLastSeenY: y,
+          sonarRelX: null,
+          sonarRelY: null,
+          sonarSnapAngle: 0,
+          sonarSnapPhase: 0,
+          sonarDetectedCycle: -1,
+          sonarLastPulseSec: -10
+        };
+      }
+
+      function spawnAlgaeCluster(cx, cy, count) {
+        for (let i = 0; i < count; i++) {
+          if (arenaState.foods.length >= 260) break;
+          const ang = Math.random() * Math.PI * 2;
+          const dist = Math.random() * 110;
+          arenaState.foods.push({
+            id: 'f_' + Math.random(),
+            type: 'algae',
+            x: Math.max(40, Math.min(WORLD_W - 40, cx + Math.cos(ang) * dist)),
+            y: Math.max(40, Math.min(WORLD_H - 40, cy + Math.sin(ang) * dist)),
+            energy: 14.3,
+            radius: 8,
+            sourceColonyId: null,
+            ttl: 95
+          });
+        }
+      }
+
+      function startArenaMatch() {
+        const allChoices = [...playerGeneBank, ...officialFossils];
+        const chosen = allChoices.find((s) => s.speciesId === selectedLobbySpeciesId) || playerGeneBank[0];
+        const modeSel = document.getElementById('lobby-match-mode');
+        const gpSel = document.getElementById('lobby-gp-rule');
+        arenaState.matchMode = modeSel ? modeSel.value : 'pve_campaign';
+        arenaState.gpRule = gpSel ? gpSel.value : 'standard';
+        arenaState.biome = BIOMES[selectedBiomeId] || BIOMES[0];
+        arenaState.timeSec = 0;
+        arenaState.lastAlgaeSpawnSec = 0;
+        arenaState.lastLanSyncSec = 0;
+        arenaState.intraSpeciesCd = 0;
+        arenaState.crossTorsoCd = 0;
+        arenaState.organisms = [];
+        arenaState.foods = [];
+        arenaState.projectiles = [];
+        arenaState.hazards = [];
+        arenaState.vents = [];
+        arenaState.territories = [];
+
+        arenaState.playerFullBlueprint = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(chosen)));
+        if (arenaState.gpRule === 'apex' || arenaState.matchMode === 'free_sandbox') {
+          globalGpReserve = Math.max(globalGpReserve, 2400);
+          persistState();
+        }
+        // 双轨开局：标准演进模式以 0 GP 基础表型起步，或巅峰满配模式直接挂载全等级蓝图
+        arenaState.playerActiveBlueprint = arenaState.gpRule === 'standard'
+          ? makeStarterLv1Blueprint(arenaState.playerFullBlueprint)
+          : validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(arenaState.playerFullBlueprint)));
+        arenaState.unlockedTorsos = new Set([arenaState.playerActiveBlueprint.torsoId]);
+        arenaState.unlockedOrganLevels = new Map();
+        recordBlueprintUnlocked(arenaState.playerActiveBlueprint);
+
+        // 生成 8 处海底热泉喷口 (Hydrothermal Vents)
+        for (let i = 0; i < 8; i++) {
+          arenaState.vents.push({
+            x: 320 + (i % 4) * 720 + (Math.random() - 0.5) * 140,
+            y: 380 + Math.floor(i / 4) * 980 + (Math.random() - 0.5) * 140,
+            radius: 56
+          });
+        }
+
+        // 生成 12 处生态群落领地 (Ecological Territories)
+        for (let i = 0; i < 12; i++) {
+          arenaState.territories.push({
+            x: 240 + (i % 4) * 760,
+            y: 280 + Math.floor(i / 4) * 620,
+            radius: 185,
+            ownerColony: null
+          });
+        }
+
+        // 唯一始祖降生法则：开局仅生成 1 只玩家控制的始祖个体 Alpha
+        const alpha = spawnOrganismEntity(arenaState.playerActiveBlueprint, WORLD_W * 0.5, WORLD_H * 0.5, 'player', {
+          colonyId: 'player_colony',
+          isAlpha: true,
+          hpRatio: 1.0,
+          energyRatio: 0.90
+        });
+        arenaState.alpha = alpha;
+        arenaState.organisms.push(alpha);
+
+        // 初始局部微藻群落
+        arenaState.vents.forEach((v) => spawnAlgaeCluster(v.x, v.y, 12));
+        spawnAlgaeCluster(alpha.x + 180, alpha.y - 120, 14);
+
+        // 生成野生生态种群与章节首领 (近圈仅分布温和植食微虫供感官探测与捕食，高阶掠食者分布在外圈)
+        const wildPool = [
+          ...officialFossils,
+          ...playerGeneBank.filter((s) => s.wildEnabled && s.speciesId !== chosen.speciesId)
+        ];
+        for (let i = 0; i < 18; i++) {
+          const ringIdx = i % 4;
+          const dist = ringIdx === 0 ? 225 : (ringIdx === 1 ? 280 : (440 + (i % 3) * 220));
+          const wBp = ringIdx <= 1 ? officialFossils[0] : wildPool[i % wildPool.length];
+          const ang = (i / 18) * Math.PI * 2;
+          const wx = WORLD_W * 0.5 + Math.cos(ang) * dist;
+          const wy = WORLD_H * 0.5 + Math.sin(ang) * dist;
+          arenaState.organisms.push(spawnOrganismEntity(wBp, wx, wy, 'wild', {
+            colonyId: 'wild_' + wBp.speciesId
+          }));
+        }
+
+        // 生成关底史诗首领 (Boss)
+        const bossBp = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(officialFossils[Math.min(4, selectedBiomeId)])));
+        bossBp.speciesName = EPIC_BOSSES[selectedBiomeId].name.split(' ')[1] || '远古首领';
+        const bossEnt = spawnOrganismEntity(bossBp, WORLD_W * 0.78, WORLD_H * 0.28, 'enemy', {
+          colonyId: 'boss_colony',
+          isBoss: true
+        });
+        bossEnt.maxHp *= 2.4;
+        bossEnt.hp = bossEnt.maxHp;
+        bossEnt.radius *= 1.35;
+        arenaState.organisms.push(bossEnt);
+        arenaState.rivalAlpha = bossEnt;
+
+        arenaState.drawerDraft = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(arenaState.playerFullBlueprint)));
+        arenaState.drawerSelectedGbId = arenaState.playerFullBlueprint.speciesId;
+        arenaState.running = true;
+        arenaState.lastTickMs = performance.now();
+
+        syncArenaHudButtons();
+        resizeArenaCanvas();
+        showToast('唯一始祖已降生！通过觅食与分裂繁衍你的同族电脑 NPC 群落');
+      }
+
+      function syncArenaHudButtons() {
+        const alpha = arenaState.alpha;
+        if (!alpha) return;
+        const bp = alpha.blueprint;
+        const st = bp.statsSummary;
+
+        // 同步感官图标
+        const fovImg = document.getElementById('fov-btn-organ-img');
+        if (fovImg) {
+          const s0 = bp.slots.sensory[0];
+          const sSpec = ORGAN_CATALOG[s0.id].levels[s0.level];
+          fovImg.src = `../assets/micro-genesis/sprites/${sSpec.sprite}`;
+        }
+
+        // 同步主动技能图标
+        const skillImg = document.getElementById('skill-btn-organ-img');
+        if (skillImg) {
+          const skSprite = st.activeSkill ? st.activeSkill.sprite : ORGAN_CATALOG[bp.slots.utility[0].id].levels[bp.slots.utility[0].level].sprite;
+          skillImg.src = `../assets/micro-genesis/sprites/${skSprite}`;
+        }
+
+        // 同步分裂繁殖核心图标
+        const mitImg = document.getElementById('mitosis-btn-organ-img');
+        if (mitImg) {
+          const cSpec = ORGAN_CATALOG[bp.slots.core.id].levels[bp.slots.core.level];
+          mitImg.src = `../assets/micro-genesis/sprites/${cSpec.sprite}`;
+        }
+      }
+
+      /* =====================================================================
+       * 10. 局内主动技能、分裂繁殖与【存入基因库】/【加载基因库】核心法则
+       * ===================================================================== */
+      function triggerEntityActiveSkill(ent) {
+        if (!ent || ent.hp <= 0 || ent.stunTimer > 0) return;
+        if (ent.energy <= 0) {
+          if (ent === arenaState.alpha) {
+            NexusSDK.audio.warn();
+            showToast('重度饥饿衰竭中，无法释放主动技能！');
+          }
+          return;
+        }
+        let sk = getEffectiveStats(ent).activeSkill;
+        // 第四章首领【千目原质母体】优先或交替使用已同化器官的主动技能
+        if (ent.assimilatedOrgans && ent.assimilatedOrgans.length > 0) {
+          const latestAssim = ent.assimilatedOrgans[ent.assimilatedOrgans.length - 1];
+          const assimSpec = ORGAN_CATALOG[latestAssim.id]?.levels?.[latestAssim.level];
+          if (assimSpec && assimSpec.skill) {
+            sk = {
+              type: assimSpec.skill,
+              organId: latestAssim.id,
+              level: latestAssim.level,
+              sprite: assimSpec.sprite,
+              cost: assimSpec.skillCost,
+              cd: assimSpec.skillCd,
+              spec: assimSpec
+            };
+          }
+        }
+        if (!sk) {
+          if (ent === arenaState.alpha) showToast('当前物种未装配主动技能器官');
+          return;
+        }
+        if (ent.skillCd > 0) return;
+        if (ent.energy < sk.cost) {
+          if (ent === arenaState.alpha) {
+            NexusSDK.audio.warn();
+            showToast('能量不足，无法释放器官主动技！');
+          }
+          return;
+        }
+
+        ent.energy -= sk.cost;
+        ent.skillCd = sk.cd;
+
+        if (sk.type === 'jetdash') {
+          ent.vx += Math.cos(ent.angle) * 340;
+          ent.vy += Math.sin(ent.angle) * 340;
+          NexusSDK.audio.shoot();
+        } else if (sk.type === 'sidestep') {
+          const sideAng = ent.angle + (Math.random() < 0.5 ? Math.PI * 0.5 : -Math.PI * 0.5);
+          ent.vx += Math.cos(sideAng) * 290;
+          ent.vy += Math.sin(sideAng) * 290;
+          NexusSDK.audio.tap();
+        } else if (sk.type === 'mimic') {
+          ent.mimicTimer = sk.spec.mimicDur || 8.0;
+          NexusSDK.audio.pop();
+        } else if (sk.type === 'ink') {
+          arenaState.hazards.push({
+            type: 'ink',
+            x: ent.x - Math.cos(ent.angle) * ent.radius,
+            y: ent.y - Math.sin(ent.angle) * ent.radius,
+            radius: sk.spec.inkR || 140,
+            ttl: sk.spec.inkDur || 5.0,
+            ownerColony: ent.colonyId
+          });
+          NexusSDK.audio.pop();
+        } else if (sk.type === 'venom') {
+          arenaState.hazards.push({
+            type: 'venom',
+            x: ent.x,
+            y: ent.y,
+            radius: 125,
+            dps: sk.spec.dot || 9,
+            dotDur: sk.spec.dotDur || 5.0,
+            ttl: 4.5,
+            ownerColony: ent.colonyId,
+            ownerId: ent.id
+          });
+          NexusSDK.audio.laser();
+        } else if (sk.type === 'spike') {
+          const count = sk.spec.spikeCount || 1;
+          for (let i = 0; i < count; i++) {
+            const spread = count === 1 ? 0 : (i - (count - 1) * 0.5) * 0.16;
+            const ang = ent.angle + spread;
+            arenaState.projectiles.push({
+              x: ent.x + Math.cos(ang) * (ent.radius + 8),
+              y: ent.y + Math.sin(ang) * (ent.radius + 8),
+              vx: Math.cos(ang) * 440,
+              vy: Math.sin(ang) * 440,
+              dmg: sk.spec.spikeDmg || 18,
+              ttl: (sk.spec.spikeRange || 280) / 440,
+              ownerColony: ent.colonyId,
+              ownerIsAlpha: ent.isAlpha
+            });
+          }
+          NexusSDK.audio.shoot();
+        } else if (sk.type === 'electric') {
+          const elecR = sk.spec.elecR || 140;
+          arenaState.hazards.push({
+            type: 'electric',
+            x: ent.x,
+            y: ent.y,
+            radius: elecR,
+            ttl: 0.35,
+            ownerColony: ent.colonyId
+          });
+          arenaState.organisms.forEach((other) => {
+            if (other.hp > 0 && other.colonyId !== ent.colonyId) {
+              const d = Math.hypot(other.x - ent.x, other.y - ent.y);
+              if (d <= elecR + other.radius) {
+                applyDamage(other, sk.spec.elecDmg || 28, ent);
+                other.stunTimer = Math.max(other.stunTimer, sk.spec.stunSec || 1.2);
+              }
+            }
+          });
+          NexusSDK.audio.laser();
+        }
+      }
+
+      // 分裂繁殖同族电脑 NPC 后代 (02 第 3.2 节 & 04 第 2.3 节 & 05 第 1.2 节)
+      function tryMitosisReproduce(parent) {
+        if (!parent || parent.hp <= 0) return false;
+        const st = parent.blueprint.statsSummary;
+        const needE = parent.maxEnergy * 0.80;
+        if (parent.energy < needE) {
+          if (parent === arenaState.alpha) {
+            NexusSDK.audio.warn();
+            showToast(`能量需达到 80% 上限方可分裂繁殖同族 NPC（单次扣除 ${Math.round(st.reproRatio * 100)}% MaxE）！`);
+          }
+          return false;
+        }
+
+        // 检查同族配额上限 (单人模式玩家种群上限 20 只，总活体上限 64 只)
+        const myColonyCount = arenaState.organisms.filter((o) => o.colonyId === parent.colonyId && !o.formerKin).length;
+        const maxColonyCap = arenaState.matchMode === 'lan_2v2' ? 12 : 20;
+        if (myColonyCount >= maxColonyCap || arenaState.organisms.length >= 64) {
+          if (parent === arenaState.alpha) showToast('当前培养皿种群密度已达生态承载上限！');
+          return false;
+        }
+
+        parent.energy = Math.max(0, parent.energy - parent.maxEnergy * st.reproRatio);
+        const childX = parent.x - Math.cos(parent.angle) * (parent.radius * 2.1);
+        const childY = parent.y - Math.sin(parent.angle) * (parent.radius * 2.1);
+        const child = spawnOrganismEntity(parent.blueprint, childX, childY, parent.faction, {
+          colonyId: parent.colonyId,
+          isAlpha: false,
+          hpRatio: 1.0,
+          energyRatio: st.childERatio
+        });
+        arenaState.organisms.push(child);
+
+        if (parent.colonyId === 'player_colony') {
+          const newPop = myColonyCount + 1;
+          arenaState.playerFullBlueprint.records.maxPopulation = Math.max(arenaState.playerFullBlueprint.records.maxPopulation, newPop);
+          NexusSDK.audio.pickup();
+          if (parent === arenaState.alpha) {
+            showToast(`分裂成功！诞生 1 只同族电脑 NPC 后代（当前种群 ${newPop} 只）`);
+          }
+        }
+        return true;
+      }
+
+      // 局内加载基因库核心执行器：严格区分【同躯干种群内进化】与【跨躯干创立全新物种种群】
+      function executeInGameBlueprintLoad(targetRawBp, requireConfirmForCrossTorso = true) {
+        const alpha = arenaState.alpha;
+        if (!alpha || alpha.hp <= 0) return;
+        const targetBp = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(targetRawBp)));
+        const currentBp = alpha.blueprint;
+        const isSameTorso = targetBp.torsoId === currentBp.torsoId;
+
+        const deltaGp = computeBlueprintDeltaGp(targetBp);
+
+        if (isSameTorso) {
+          // 情形 A：同躯干 —— 种群内器官进化与表型同步更新 (04 第 5.4.3.A 节)
+          if (arenaState.intraSpeciesCd > 0) {
+            NexusSDK.audio.warn();
+            showToast(`同躯干进化冷却中 (${arenaState.intraSpeciesCd.toFixed(1)}s)`);
+            return;
+          }
+          if (alpha.energy < 0.45 * alpha.maxEnergy) {
+            NexusSDK.audio.warn();
+            showToast('同躯干进化需要当前能量 ≥ 45% MaxE！');
+            return;
+          }
+          if (globalGpReserve < deltaGp) {
+            NexusSDK.audio.warn();
+            showToast(`基因值不足！升级差额需 ${deltaGp} GP（当前 ${globalGpReserve} GP）`);
+            return;
+          }
+
+          globalGpReserve -= deltaGp;
+          arenaState.intraSpeciesCd = 8.0;
+
+          // 对玩家始祖与全场存活的同族电脑 NPC 同步应用能量/生命守恒方程 (05 第 5.3.A 节)
+          const newSt = targetBp.statsSummary;
+          const oldSkillId = currentBp.statsSummary.activeSkill?.organId || null;
+          const newSkillId = newSt.activeSkill?.organId || null;
+
+          arenaState.organisms.forEach((org) => {
+            if (org.colonyId === 'player_colony' && !org.formerKin && org.hp > 0) {
+              const oldMaxE = org.maxEnergy;
+              const oldMaxHp = org.maxHp;
+              if (org === alpha) {
+                // 玩家始祖：扣除 40% MaxE_old 并以 MaxE_new 封顶，等比例折算生命值，继承或置入战备适应冷却
+                const newE = Math.min(newSt.maxEnergy, Math.max(0, org.energy - 0.40 * oldMaxE));
+                const newHp = Math.max(1, Math.round(org.hp * (newSt.maxHp / oldMaxHp)));
+                org.blueprint = targetBp;
+                org.maxEnergy = newSt.maxEnergy;
+                org.energy = newE;
+                org.maxHp = newSt.maxHp;
+                org.hp = newHp;
+                org.radius = TORSOS[targetBp.torsoId].sizePx * 0.44;
+                if (newSt.activeSkill) {
+                  if (oldSkillId !== newSkillId) {
+                    org.skillCd = Math.max(org.skillCd, Math.min(2.0, newSt.activeSkill.cd));
+                  }
+                }
+              } else if (org.energy >= 0.60 * oldMaxE) {
+                // 同族电脑 NPC (能量 >= 60% MaxE_old)：立即自动蜕皮同步，保持绝对能量值不变并以 MaxE_new 封顶
+                const newE = Math.min(newSt.maxEnergy, org.energy);
+                const newHp = Math.max(1, Math.round(org.hp * (newSt.maxHp / oldMaxHp)));
+                org.blueprint = targetBp;
+                org.maxEnergy = newSt.maxEnergy;
+                org.energy = newE;
+                org.maxHp = newSt.maxHp;
+                org.hp = newHp;
+                org.radius = TORSOS[targetBp.torsoId].sizePx * 0.44;
+                org.pendingBlueprint = null;
+                if (newSt.activeSkill && oldSkillId !== newSkillId) {
+                  org.skillCd = Math.max(org.skillCd, Math.min(2.0, newSt.activeSkill.cd));
+                }
+              } else {
+                // 能量暂低于 60% MaxE_old 的同族 NPC：挂载待蜕皮蓝图，待进食恢复至 >= 60% MaxE 时自动蜕皮
+                org.pendingBlueprint = targetBp;
+              }
+            }
+          });
+
+          arenaState.playerActiveBlueprint = targetBp;
+          arenaState.playerFullBlueprint = targetBp;
+          recordBlueprintUnlocked(targetBp);
+          persistState();
+          syncArenaHudButtons();
+          closeInGameDrawer();
+          NexusSDK.audio.upgrade();
+          showToast(`同躯干种群进化完成：【${targetBp.speciesName}】（同族 NPC 已同步进化）`);
+          return;
+        }
+
+        // 情形 B：不同躯干 —— 创立全新物种种群并以 1 只初始始祖重新开始演化 (04 第 5.4.3.B 节)
+        if (requireConfirmForCrossTorso) {
+          arenaState.pendingCrossTorsoTarget = targetBp;
+          const bar = document.getElementById('cross-torso-confirm-bar');
+          if (bar) bar.classList.add('show');
+          return;
+        }
+
+        if (arenaState.crossTorsoCd > 0) {
+          NexusSDK.audio.warn();
+          showToast(`跨躯干物种跃迁冷却中 (${arenaState.crossTorsoCd.toFixed(1)}s)`);
+          return;
+        }
+        if (alpha.energy < 0.50 * alpha.maxEnergy || alpha.hp < 0.30 * alpha.maxHp) {
+          NexusSDK.audio.warn();
+          showToast('跨躯干跃迁需满足：能量 ≥ 50% MaxE 且 生命 ≥ 30% MaxHP！');
+          return;
+        }
+        const totalNeedGp = deltaGp;
+        if (globalGpReserve < totalNeedGp) {
+          NexusSDK.audio.warn();
+          showToast(`跨躯干跃迁需 ${totalNeedGp} GP（当前 ${globalGpReserve} GP）！`);
+          return;
+        }
+
+        globalGpReserve -= totalNeedGp;
+        arenaState.crossTorsoCd = 30.0;
+
+        // 1. 处置旧躯干同族电脑 NPC：单人/PVE 最多保留 1 支剥离种群 (更早剥离的旧种群无肉块消散) 并打上 formerKin:true；局域网 PVP 直接无肉块/无微藻耗散消亡
+        const isLanPvp = arenaState.matchMode === 'lan_1v1' || arenaState.matchMode === 'lan_2v2';
+        arenaState.organisms = arenaState.organisms.filter((org) => {
+          if (org === alpha) return false;
+          if (org.formerKin) {
+            // 再次跨躯干时，更早剥离的上一代旧种群无肉块直接消散，确保单局最多保留 1 支剥离种群
+            return false;
+          }
+          if (org.colonyId === 'player_colony') {
+            if (isLanPvp) {
+              // 局域网 PVP：旧躯干残余同族个体直接无肉块/无食物耗散消亡
+              return false;
+            } else {
+              org.faction = 'wild';
+              org.colonyId = 'former_kin_' + Date.now();
+              org.formerKin = true;
+              org.pendingBlueprint = null;
+              return true;
+            }
+          }
+          return true;
+        });
+
+        // 2. 在原位置降生唯一 1 只新物种始祖 (100% MaxHP, 50% MaxE)
+        const newAlpha = spawnOrganismEntity(targetBp, alpha.x, alpha.y, 'player', {
+          colonyId: 'player_colony',
+          isAlpha: true,
+          hpRatio: 1.0,
+          energyRatio: 0.50
+        });
+        arenaState.alpha = newAlpha;
+        arenaState.organisms.unshift(newAlpha);
+        arenaState.playerActiveBlueprint = targetBp;
+        arenaState.playerFullBlueprint = targetBp;
+        recordBlueprintUnlocked(targetBp);
+
+        persistState();
+        syncArenaHudButtons();
+        closeInGameDrawer();
+        NexusSDK.audio.win();
+        showToast(`跨躯干新物种【${targetBp.speciesName}】诞生！以唯一始祖重新开启种群演化`);
+      }
+
+      // 局内基因库毛玻璃抽屉打开/关闭与渲染
+      function openInGameDrawer() {
+        const drawer = document.getElementById('ingame-gene-drawer');
+        if (!drawer || !arenaState.alpha) return;
+        arenaState.drawerDraft = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(arenaState.alpha.blueprint)));
+        const nameInp = document.getElementById('drawer-save-name-input');
+        if (nameInp) nameInp.value = arenaState.drawerDraft.speciesName;
+        document.getElementById('cross-torso-confirm-bar')?.classList.remove('show');
+        drawer.classList.add('open');
+        NexusSDK.audio.tap();
+        renderInGameDrawer();
+      }
+
+      function closeInGameDrawer() {
+        document.getElementById('ingame-gene-drawer')?.classList.remove('open');
+        document.getElementById('cross-torso-confirm-bar')?.classList.remove('show');
+      }
+
+      function renderInGameDrawer() {
+        const alpha = arenaState.alpha;
+        if (!alpha || !arenaState.drawerDraft) return;
+        const curTorso = TORSOS[alpha.blueprint.torsoId];
+        const draftTorso = TORSOS[arenaState.drawerDraft.torsoId];
+
+        const curTorsoLbl = document.getElementById('drawer-cur-torso-lbl');
+        if (curTorsoLbl) curTorsoLbl.textContent = `当前种群躯干: ${curTorso.code} ${curTorso.name}`;
+        const curGpLbl = document.getElementById('drawer-cur-gp-lbl');
+        if (curGpLbl) curGpLbl.textContent = `可用基因值: ${globalGpReserve} GP`;
+        const curEnLbl = document.getElementById('drawer-cur-energy-lbl');
+        if (curEnLbl) curEnLbl.textContent = `当前能量: ${Math.round((alpha.energy / alpha.maxEnergy) * 100)}% MaxE`;
+        const cdLbl = document.getElementById('drawer-cd-status-lbl');
+        if (cdLbl) {
+          cdLbl.textContent = arenaState.intraSpeciesCd > 0 || arenaState.crossTorsoCd > 0
+            ? `冷却中: 同躯干 ${arenaState.intraSpeciesCd.toFixed(0)}s / 跨躯干 ${arenaState.crossTorsoCd.toFixed(0)}s`
+            : '重构冷却: 就绪';
+        }
+
+        const diffLbl = document.getElementById('drawer-mod-diff-lbl');
+        if (diffLbl) {
+          const same = draftTorso.id === curTorso.id;
+          const draftDeltaGp = computeBlueprintDeltaGp(arenaState.drawerDraft);
+          diffLbl.textContent = same
+            ? `同躯干 · 种群内器官进化 (差额 ${draftDeltaGp} GP)`
+            : `跨躯干 · 诞生全新物种 (1只始祖 · 差额 ${draftDeltaGp} GP)`;
+          diffLbl.style.color = same ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-gold)';
+        }
+
+        // 左栏：局内实时修改插槽控件
+        buildSlotControls(
+          arenaState.drawerDraft,
+          document.getElementById('drawer-torso-row'),
+          document.getElementById('drawer-slot-list'),
+          renderInGameDrawer
+        );
+
+        // 右栏：个人基因库存档列表
+        const gbListEl = document.getElementById('drawer-gb-list');
+        if (gbListEl) {
+          gbListEl.innerHTML = '';
+          playerGeneBank.forEach((sp) => {
+            const t = TORSOS[sp.torsoId];
+            const isSame = sp.torsoId === alpha.blueprint.torsoId;
+            const deltaGp = computeBlueprintDeltaGp(sp);
+            const card = document.createElement('div');
+            card.className = 'species-card' + (sp.speciesId === arenaState.drawerSelectedGbId ? ' selected' : '');
+            card.innerHTML = `
+              <div class="sp-card-top">
+                <div class="sp-thumb"><img src="../assets/micro-genesis/sprites/${t.sprite}" alt="" /></div>
+                <div style="flex:1;min-width:0;">
+                  <div class="sp-title">${escapeHtml(sp.speciesName)}</div>
+                  <div class="sp-meta">${t.code} · 差额消耗 ${deltaGp} GP</div>
+                </div>
+                <span class="badge-tag ${isSame ? 'green' : 'gold'}">${isSame ? '同躯干进化' : '不同躯干·新种群'}</span>
+              </div>
+            `;
+            card.addEventListener('click', () => {
+              arenaState.drawerSelectedGbId = sp.speciesId;
+              NexusSDK.audio.tap();
+              renderInGameDrawer();
+            });
+            gbListEl.appendChild(card);
+          });
+        }
+      }
+
+      document.getElementById('btn-open-genebank')?.addEventListener('click', openInGameDrawer);
+      document.getElementById('drawer-close-btn')?.addEventListener('click', closeInGameDrawer);
+
+      // 局内点击【存入基因库】：0 E / 0 GP 消耗保存
+      document.getElementById('drawer-save-to-gb-btn')?.addEventListener('click', () => {
+        if (!arenaState.drawerDraft) return;
+        const nameInp = document.getElementById('drawer-save-name-input');
+        if (nameInp && nameInp.value.trim()) {
+          arenaState.drawerDraft.speciesName = sanitizeSpeciesName(nameInp.value);
+        }
+        const saved = saveBlueprintToGeneBank(arenaState.drawerDraft);
+        arenaState.drawerSelectedGbId = saved.speciesId;
+        renderInGameDrawer();
+      });
+
+      // 局内点击【应用当前修改】
+      document.getElementById('drawer-apply-mod-btn')?.addEventListener('click', () => {
+        if (!arenaState.drawerDraft) return;
+        const nameInp = document.getElementById('drawer-save-name-input');
+        if (nameInp && nameInp.value.trim()) {
+          arenaState.drawerDraft.speciesName = sanitizeSpeciesName(nameInp.value);
+        }
+        executeInGameBlueprintLoad(arenaState.drawerDraft, true);
+      });
+
+      // 局内点击【加载基因库】
+      document.getElementById('drawer-load-gb-btn')?.addEventListener('click', () => {
+        const target = playerGeneBank.find((s) => s.speciesId === arenaState.drawerSelectedGbId) || playerGeneBank[0];
+        if (!target) return;
+        executeInGameBlueprintLoad(target, true);
+      });
+
+      // 跨躯干内联二次确认条按钮组
+      document.getElementById('confirm-save-then-load-btn')?.addEventListener('click', () => {
+        if (arenaState.alpha) {
+          saveBlueprintToGeneBank(arenaState.alpha.blueprint);
+        }
+        if (arenaState.pendingCrossTorsoTarget) {
+          executeInGameBlueprintLoad(arenaState.pendingCrossTorsoTarget, false);
+        }
+      });
+      document.getElementById('confirm-direct-load-btn')?.addEventListener('click', () => {
+        if (arenaState.pendingCrossTorsoTarget) {
+          executeInGameBlueprintLoad(arenaState.pendingCrossTorsoTarget, false);
+        }
+      });
+      document.getElementById('confirm-cancel-load-btn')?.addEventListener('click', () => {
+        document.getElementById('cross-torso-confirm-bar')?.classList.remove('show');
+        arenaState.pendingCrossTorsoTarget = null;
+      });
+
+      // 底部 HUD 其余纯 SVG 图标按钮事件
+      document.getElementById('btn-pheromone')?.addEventListener('click', () => {
+        arenaState.pheromoneIdx = (arenaState.pheromoneIdx + 1) % PHEROMONE_MODES.length;
+        const mode = PHEROMONE_MODES[arenaState.pheromoneIdx];
+        const btn = document.getElementById('btn-pheromone');
+        const svg = document.getElementById('pheromone-svg-ico');
+        const color = mode === 'forage' ? '#10b981' : (mode === 'guard' ? '#2dd4bf' : '#ef4444');
+        if (btn) btn.style.borderColor = color;
+        if (svg) svg.setAttribute('stroke', color);
+        NexusSDK.audio.tap();
+        const modeText = mode === 'forage' ? '采食散开 (Forage)' : (mode === 'guard' ? '护卫环绕 (Guard)' : '猎杀包抄 (Hunt)');
+        showToast('同族 NPC 信息素信标已切换：' + modeText);
+      });
+
+      document.getElementById('btn-toggle-fov')?.addEventListener('click', () => {
+        arenaState.showSensoryOverlay = !arenaState.showSensoryOverlay;
+        NexusSDK.audio.tap();
+        showToast(arenaState.showSensoryOverlay ? '已开启感官扇区与仇恨连线辅助层' : '已隐藏感官边界辅助层');
+      });
+
+      document.getElementById('btn-organ-skill')?.addEventListener('click', () => {
+        triggerEntityActiveSkill(arenaState.alpha);
+        if (isLanGuest && lanSession && lanSession.sendFast && arenaState.alpha) {
+          lanSession.sendFast({ type: 'GUEST_INPUT', angle: arenaState.alpha.targetAngle, skill: true, mitosis: false });
+        }
+      });
+
+      document.getElementById('btn-mitosis')?.addEventListener('click', () => {
+        tryMitosisReproduce(arenaState.alpha);
+        if (isLanGuest && lanSession && lanSession.sendFast && arenaState.alpha) {
+          lanSession.sendFast({ type: 'GUEST_INPUT', angle: arenaState.alpha.targetAngle, skill: false, mitosis: true });
+        }
+      });
+
+      document.getElementById('arena-back-lobby-btn')?.addEventListener('click', () => {
+        switchPage('lobby');
+      });
+
+      /* =====================================================================
+       * 11. 伤害结算、热力学肉块掉落、GP 差分掉落与感官驱动 AI 决策循环
+       * ===================================================================== */
+      function applyDamage(victim, rawDmg, attacker) {
+        if (!victim || victim.hp <= 0) return;
+        const vSt = getEffectiveStats(victim);
+        let finalDmg = rawDmg * (1 - vSt.damageReduction);
+
+        // 第二章首领【晶甲熔岩虱】正面硫化晶甲减免伤害
+        if (victim.isBoss && selectedBiomeId === 1 && attacker) {
+          const angToAttacker = Math.atan2(attacker.y - victim.y, attacker.x - victim.x);
+          const diff = Math.abs(Math.atan2(Math.sin(angToAttacker - victim.angle), Math.cos(angToAttacker - victim.angle)));
+          if (diff < Math.PI * 0.55) finalDmg *= 0.20;
+        }
+
+        // 第三章首领【霜刃水母】8 秒限时冰晶护盾减伤
+        if (victim.isBoss && selectedBiomeId === 2 && victim.iceShieldTimer > 0) {
+          finalDmg *= 0.35;
+        }
+
+        victim.hp -= finalDmg;
+
+        // 第一章首领【吞天水螅】HP < 50% 时断触化为 3 只游猎分身
+        if (victim.isBoss && selectedBiomeId === 0 && !victim.bossSplitDone && victim.hp > 0 && victim.hp < victim.maxHp * 0.50) {
+          victim.bossSplitDone = true;
+          for (let k = 0; k < 3; k++) {
+            const ang = (k / 3) * Math.PI * 2;
+            const clone = spawnOrganismEntity(victim.blueprint, victim.x + Math.cos(ang) * 65, victim.y + Math.sin(ang) * 65, 'enemy', {
+              colonyId: victim.colonyId,
+              isBoss: false,
+              hpRatio: 0.45,
+              energyRatio: 0.80
+            });
+            arenaState.organisms.push(clone);
+          }
+          showToast('首领【吞天水螅】生命低于 50%，断触裂变为 3 只游猎分身！');
+        }
+
+        // 伤害仇恨记入仇恨表
+        if (attacker && attacker.id !== victim.id) {
+          const prev = victim.hatredMap.get(attacker.id) || 0;
+          victim.hatredMap.set(attacker.id, prev + finalDmg * 1.35);
+
+          // Lv.3 棱镜晶甲反伤 30%
+          if (vSt.reflectRatio > 0) {
+            attacker.hp = Math.max(1, attacker.hp - finalDmg * vSt.reflectRatio);
+          }
+        }
+
+        if (victim.hp <= 0) {
+          handleEntityDeath(victim, attacker);
+        }
+      }
+
+      function handleEntityDeath(victim, killer) {
+        victim.hp = 0;
+        const torso = TORSOS[victim.blueprint.torsoId];
+        // 热力学守恒肉块能量公式: E_meat = round(8 * V^0.6 + 0.22 * E_remaining); 跨躯干剥离旧种群 (formerKin) 肉块能量减半
+        const rawMeatEnergy = Math.round(8 * Math.pow(torso.volume, 0.6) + 0.22 * Math.max(0, victim.energy));
+        const meatEnergy = victim.formerKin ? Math.max(1, Math.round(rawMeatEnergy * 0.5)) : rawMeatEnergy;
+        arenaState.foods.push({
+          id: 'meat_' + Date.now() + '_' + Math.random(),
+          type: 'meat',
+          x: victim.x,
+          y: victim.y,
+          energy: meatEnergy,
+          radius: 10,
+          sourceColonyId: victim.colonyId, // 同族禁食校验标记
+          ttl: 85
+        });
+
+        // 第四章首领【千目原质母体】双槽 FIFO 12.0s 器官同化
+        arenaState.organisms.forEach((b) => {
+          if (b.isBoss && b.hp > 0 && selectedBiomeId === 3 && Math.hypot(b.x - victim.x, b.y - victim.y) < 320) {
+            const victimUtil = victim.blueprint.slots.utility[0];
+            if (victimUtil) {
+              if (b.assimilatedOrgans.length >= 2) b.assimilatedOrgans.shift();
+              b.assimilatedOrgans.push({ id: victimUtil.id, level: victimUtil.level, expireAt: arenaState.timeSec + 12.0 });
+            }
+          }
+        });
+
+        // GP 差分概率掉落 (玩家亲手击杀 75%，同族 NPC 击杀 12%，首领 100%，formerKin 0%)
+        if (killer && killer.colonyId === 'player_colony' && victim.colonyId !== 'player_colony' && !victim.formerKin) {
+          const dropChance = victim.isBoss ? 1.0 : (killer.isAlpha ? 0.75 : 0.12);
+          if (Math.random() <= dropChance) {
+            const gpGain = victim.isBoss ? 220 : Math.round(18 * Math.pow(torso.volume, 0.75));
+            globalGpReserve += gpGain;
+            arenaState.playerFullBlueprint.records.totalKills += 1;
+            persistState();
+            NexusSDK.audio.pickup();
+            showToast(`${killer.isAlpha ? '玩家始祖击杀' : '同族NPC协战击杀'}！获得 +${gpGain} GP`);
+          }
+        }
+
+        // 若玩家当前控制的始祖死亡：优先接管存活的同族电脑 NPC，若全灭则降生新始祖
+        if (victim === arenaState.alpha) {
+          const survivingKin = arenaState.organisms
+            .filter((o) => o.hp > 0 && o.colonyId === 'player_colony' && !o.formerKin && o !== victim)
+            .sort((a, b) => b.hp - a.hp);
+          if (survivingKin.length > 0) {
+            const heir = survivingKin[0];
+            heir.isAlpha = true;
+            arenaState.alpha = heir;
+            NexusSDK.audio.warn();
+            showToast('始祖陨落！镜头与控制权已无缝移交至最健康的同族后代');
+          } else {
+            const reborn = spawnOrganismEntity(arenaState.playerActiveBlueprint, WORLD_W * 0.5, WORLD_H * 0.5, 'player', {
+              colonyId: 'player_colony',
+              isAlpha: true,
+              hpRatio: 1.0,
+              energyRatio: 0.75
+            });
+            arenaState.alpha = reborn;
+            arenaState.organisms.push(reborn);
+            NexusSDK.audio.warn();
+            showToast('种群全灭！已在培养皿中心重新降生新一代始祖');
+          }
+        }
+      }
+
+      // 判断观察者 observer 能否通过自身感官发现 target (02 第 2.3 节 & 04 第 2.2 节)
+      function canEntitySenseTarget(observer, target, isNight, isStaticAlgae) {
+        const dx = target.x - observer.x;
+        const dy = target.y - observer.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist <= 65) return { sensed: true, mode: 'tactile' };
+
+        const st = getEffectiveStats(observer);
+
+        // 1. 听觉声呐判定 (360° 全向，无视黑夜、墨囊与光学拟态；对静止微藻或怠速静止生物仅在 staticSenseRange 内可测)
+        if (st.maxEarLv > 0) {
+          const targetSpeed = isStaticAlgae ? 0 : Math.hypot(target.vx || 0, target.vy || 0);
+          const isStationary = isStaticAlgae || targetSpeed < 8;
+          const effSonarR = isStationary ? Math.max(65, st.staticSenseRange) : st.sonarRange;
+          if (dist <= effSonarR) return { sensed: true, mode: 'sonar' };
+        }
+
+        // 2. 视觉扇形锥判定 (受黑夜、墨囊致盲与敌方拟态皮肤克制)
+        if (st.maxEyeLv > 0) {
+          const effRange = observer.blindTimer > 0 ? 85 : (isNight ? st.nightEyeRange : st.dayEyeRange);
+          if (dist <= effRange) {
+            const effAngleRad = ((isNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
+            const angToTarget = Math.atan2(dy, dx);
+            const diff = Math.abs(Math.atan2(Math.sin(angToTarget - observer.angle), Math.cos(angToTarget - observer.angle)));
+            if (diff <= effAngleRad) {
+              // 拟态皮肤判定：同级或高级拟态在 >90px 外欺骗纯视觉
+              if (!isStaticAlgae && target.mimicTimer > 0 && dist > 90) {
+                const targetMimic = (target.blueprint?.slots?.utility || []).find((u) => u.id === 'util-mimic');
+                if (targetMimic && targetMimic.level >= st.maxEyeLv) {
+                  return { sensed: false, mode: null };
+                }
+              }
+              return { sensed: true, mode: 'visual' };
+            }
+          }
+        }
+        return { sensed: false, mode: null };
+      }
+
+      function stepArenaSimulation(dt) {
+        arenaState.timeSec += dt;
+        if (arenaState.intraSpeciesCd > 0) arenaState.intraSpeciesCd = Math.max(0, arenaState.intraSpeciesCd - dt);
+        if (arenaState.crossTorsoCd > 0) arenaState.crossTorsoCd = Math.max(0, arenaState.crossTorsoCd - dt);
+
+        // 昼夜交替周期 180s: 白昼 0~75s, 黄昏 75~90s, 黑夜 90~165s, 黎明 165~180s
+        const cyc = arenaState.timeSec % 180;
+        const isNight = arenaState.biome.forceNight || (cyc >= 82 && cyc <= 170);
+
+        // 环境定时局部刷新微藻 (每 3.5s 在热泉与随机生态点注入能量；黑夜微藻刷新率减半)
+        if (arenaState.timeSec - arenaState.lastAlgaeSpawnSec >= 3.5) {
+          arenaState.lastAlgaeSpawnSec = arenaState.timeSec;
+          const v = arenaState.vents[Math.floor(Math.random() * arenaState.vents.length)];
+          if (v) spawnAlgaeCluster(v.x, v.y, isNight ? 2 : 4);
+          spawnAlgaeCluster(200 + Math.random() * (WORLD_W - 400), 200 + Math.random() * (WORLD_H - 400), isNight ? 3 : 6);
+        }
+
+        // 补充野生生态种群维持沙盘活力
+        if (arenaState.organisms.length < 22 && Math.random() < dt * 0.8) {
+          const fBp = officialFossils[Math.floor(Math.random() * officialFossils.length)];
+          arenaState.organisms.push(spawnOrganismEntity(fBp, Math.random() * WORLD_W, Math.random() * WORLD_H, 'wild', {
+            colonyId: 'wild_' + fBp.speciesId
+          }));
+        }
+
+        // 更新投射物 (骨刺)
+        for (let i = arenaState.projectiles.length - 1; i >= 0; i--) {
+          const p = arenaState.projectiles[i];
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.ttl -= dt;
+          if (p.ttl <= 0) {
+            arenaState.projectiles.splice(i, 1);
+            continue;
+          }
+          for (let j = 0; j < arenaState.organisms.length; j++) {
+            const org = arenaState.organisms[j];
+            if (org.hp > 0 && org.colonyId !== p.ownerColony) {
+              if (Math.hypot(org.x - p.x, org.y - p.y) <= org.radius + 6) {
+                const shooter = p.ownerIsAlpha ? arenaState.alpha : null;
+                applyDamage(org, p.dmg, shooter);
+                NexusSDK.audio.hit();
+                arenaState.projectiles.splice(i, 1);
+                break;
+              }
+            }
+          }
+        }
+
+        // 更新区域危害 (墨囊黑雾 / 毒环 / 电弧)
+        for (let i = arenaState.hazards.length - 1; i >= 0; i--) {
+          const h = arenaState.hazards[i];
+          h.ttl -= dt;
+          if (h.ttl <= 0) {
+            arenaState.hazards.splice(i, 1);
+            continue;
+          }
+          arenaState.organisms.forEach((org) => {
+            if (org.hp <= 0 || org.colonyId === h.ownerColony) return;
+            if (Math.hypot(org.x - h.x, org.y - h.y) <= h.radius + org.radius) {
+              if (h.type === 'ink') {
+                org.blindTimer = Math.max(org.blindTimer, 1.5);
+              } else if (h.type === 'venom') {
+                org.poisonTimer = Math.max(org.poisonTimer, h.dotDur || 4.0);
+                org.poisonDps = h.dps || 8;
+              }
+            }
+          });
+        }
+
+        // 更新所有生物个体：代谢、感官 AI、转向移动、进食与撕咬
+        const alpha = arenaState.alpha;
+        const pheromoneMode = PHEROMONE_MODES[arenaState.pheromoneIdx];
+
+        arenaState.organisms.forEach((org) => {
+          if (org.hp <= 0) return;
+          const st = getEffectiveStats(org);
+          if (org.skillCd > 0) org.skillCd = Math.max(0, org.skillCd - dt);
+          if (org.biteCd > 0) org.biteCd = Math.max(0, org.biteCd - dt);
+          if (org.mimicTimer > 0) org.mimicTimer = Math.max(0, org.mimicTimer - dt);
+          if (org.blindTimer > 0) org.blindTimer = Math.max(0, org.blindTimer - dt);
+          if (org.stunTimer > 0) org.stunTimer = Math.max(0, org.stunTimer - dt);
+          if (org.squashTimer > 0) org.squashTimer = Math.max(0, org.squashTimer - dt);
+          if (org.suppressedTimer > 0) org.suppressedTimer = Math.max(0, org.suppressedTimer - dt);
+          if (org.slowTimer > 0) org.slowTimer = Math.max(0, org.slowTimer - dt);
+          if (org.iceShieldTimer > 0) org.iceShieldTimer = Math.max(0, org.iceShieldTimer - dt);
+
+          // 清理第四章首领【千目原质母体】已到期的 12.0s FIFO 同化器官槽位
+          if (org.assimilatedOrgans && org.assimilatedOrgans.length > 0) {
+            org.assimilatedOrgans = org.assimilatedOrgans.filter((a) => a.expireAt > arenaState.timeSec);
+          }
+
+          // 检查同族电脑 NPC 待蜕皮队列：当能量恢复至 >= 60% MaxE_old 时自动蜕皮同步最新同躯干配置
+          if (org.pendingBlueprint && org.energy >= 0.60 * org.maxEnergy) {
+            const pBp = org.pendingBlueprint;
+            const pSt = pBp.statsSummary;
+            const oldMaxHp = org.maxHp;
+            org.blueprint = pBp;
+            org.energy = Math.min(pSt.maxEnergy, org.energy);
+            org.maxEnergy = pSt.maxEnergy;
+            org.hp = Math.max(1, Math.round(org.hp * (pSt.maxHp / oldMaxHp)));
+            org.maxHp = pSt.maxHp;
+            org.radius = TORSOS[pBp.torsoId].sizePx * 0.44;
+            org.pendingBlueprint = null;
+          }
+
+          // 毒伤结算
+          if (org.poisonTimer > 0) {
+            org.poisonTimer = Math.max(0, org.poisonTimer - dt);
+            org.hp = Math.max(1, org.hp - org.poisonDps * dt);
+          }
+
+          // 各章节首领专属环境与机制：
+          if (org.isBoss && alpha) {
+            const dToAlpha = Math.hypot(alpha.x - org.x, alpha.y - org.y);
+            // 第一章首领【阿米巴吞噬巨核】：周期性旋涡吸附 (<260px 向首领中心牵引)
+            if (selectedBiomeId === 0 && dToAlpha < 260 && dToAlpha > 12) {
+              const pull = ((260 - dToAlpha) / 260) * 65 * dt;
+              alpha.x += ((org.x - alpha.x) / dToAlpha) * pull;
+              alpha.y += ((org.y - alpha.y) / dToAlpha) * pull;
+            }
+            // 第三章首领【寒冰利维坦】：周期性寒潮减速波 (60% 减速) + 冰甲护盾 (正面减伤 75%)
+            if (selectedBiomeId === 2) {
+              if (Math.floor(arenaState.timeSec) % 10 === 0) {
+                org.iceShieldTimer = 6.0;
+                if (dToAlpha < 260) alpha.slowTimer = 3.5;
+              }
+            }
+            // 第五章首领【虚空噬菌裂变兽】：向心黑洞引力场 + 周期性 4.0s 基因降阶光束 (强制降为 Lv.1)
+            if (selectedBiomeId === 4 && dToAlpha < 280) {
+              if (dToAlpha > 12) {
+                const pull = ((280 - dToAlpha) / 280) * 80 * dt;
+                alpha.x += ((org.x - alpha.x) / dToAlpha) * pull;
+                alpha.y += ((org.y - alpha.y) / dToAlpha) * pull;
+              }
+              if (Math.floor(arenaState.timeSec) % 9 === 0) {
+                alpha.suppressedTimer = 4.0;
+              }
+            }
+          }
+
+          // 1. 静态总代谢 BMR 扣减与饥饿扣血 / 饱食自动回血
+          const bmrDrain = st.bmr * arenaState.biome.bmrMult * dt;
+          org.energy = Math.max(0, org.energy - bmrDrain);
+          if (org.energy <= 0) {
+            org.hp -= org.maxHp * 0.05 * dt;
+            if (org.hp <= 0) {
+              handleEntityDeath(org, null);
+              return;
+            }
+          } else if (org.energy > 0.60 * org.maxEnergy && org.hp < org.maxHp) {
+            const regenHp = Math.min(st.regenCap * dt, org.maxHp - org.hp);
+            org.hp += regenHp;
+            org.energy = Math.max(0, org.energy - (regenHp / st.regenPerE));
+          }
+
+          // 热泉上升流恢复能量
+          arenaState.vents.forEach((v) => {
+            if (Math.hypot(org.x - v.x, org.y - v.y) <= v.radius) {
+              org.energy = Math.min(org.maxEnergy, org.energy + 4.5 * dt);
+            }
+          });
+
+          // 2. 确定目标航向角 targetAngle 与感官前置预警规避算法 (玩家始祖 vs 同族/野生 AI)
+          if (org === alpha) {
+            if (arenaState.pointerDown) {
+              org.targetAngle = Math.atan2(arenaState.pointerWorldY - org.y, arenaState.pointerWorldX - org.x);
+            } else {
+              org.targetAngle = org.angle;
+            }
+          } else {
+            // 电脑 NPC 感官驱动效用 AI 决策 (含感官前置天敌预警与反比平方逃逸向量合成)
+            const w = org.blueprint.aiWeights;
+            if (org.energy >= org.maxEnergy * (0.95 - 0.15 * w.w_repro) && Math.random() < dt * w.w_repro) {
+              tryMitosisReproduce(org);
+            }
+
+            let bestFood = null;
+            let bestFoodDist = 9999;
+            arenaState.foods.forEach((f) => {
+              if (f.type === 'algae' && st.herbEff <= 0) return;
+              if (f.type === 'meat' && (st.carnEff <= 0 || f.sourceColonyId === org.colonyId)) return;
+              const d = Math.hypot(f.x - org.x, f.y - org.y);
+              if (d < bestFoodDist && canEntitySenseTarget(org, f, isNight, f.type === 'algae').sensed) {
+                bestFoodDist = d;
+                bestFood = f;
+              }
+            });
+
+            let nearestEnemy = null;
+            let nearestEnemyDist = 9999;
+            let bestEnemyScore = 9999;
+            let nearestThreat = null;
+            let nearestThreatDist = 9999;
+            let evadeX = 0;
+            let evadeY = 0;
+            const myPower = org.maxHp * Math.max(8, st.biteDmg);
+
+            arenaState.organisms.forEach((other) => {
+              if (other.hp <= 0 || other.colonyId === org.colonyId) return;
+              const d = Math.hypot(other.x - org.x, other.y - org.y);
+              if (canEntitySenseTarget(org, other, isNight, false).sensed) {
+                const selfHatred = org.hatredMap.get(other.id) || 0;
+                const sharedAlphaHatred = (org.colonyId === 'player_colony' && alpha) ? (alpha.hatredMap.get(other.id) || 0) * 0.65 : 0;
+                const hatredBonus = Math.min(180, (selfHatred + sharedAlphaHatred) * 2.2);
+                const effScore = d - hatredBonus;
+                if (effScore < bestEnemyScore) {
+                  bestEnemyScore = effScore;
+                  nearestEnemyDist = d;
+                  nearestEnemy = other;
+                }
+
+                // 判定是否为高危捕食者天敌：一旦进入感官预警圈即刻触发前置斥力合成，无需等残血才逃跑
+                const otherSt = getEffectiveStats(other);
+                const otherPower = other.maxHp * Math.max(8, otherSt.biteDmg);
+                const isPredatorThreat = otherSt.carnEff > 0 && (
+                  org.blueprint.dietType === 'herbivore' ||
+                  other.isBoss ||
+                  otherPower > myPower * 1.15 ||
+                  (org.hp / org.maxHp) <= (0.15 + 0.45 * w.w_flee)
+                );
+                if (isPredatorThreat) {
+                  const repWeight = Math.pow(Math.max(40, 420 - d) / 360, 2) * (other.isBoss ? 2.4 : 1.45);
+                  evadeX += ((org.x - other.x) / Math.max(1, d)) * repWeight;
+                  evadeY += ((org.y - other.y) / Math.max(1, d)) * repWeight;
+                  if (d < nearestThreatDist) {
+                    nearestThreatDist = d;
+                    nearestThreat = other;
+                  }
+                }
+              }
+            });
+
+            // 培养皿边界防卡死切向引导分量 (防止弱小个体逃跑时被逼入死角)
+            const wallMargin = 140;
+            if (org.x < wallMargin) evadeX += ((wallMargin - org.x) / wallMargin) * 1.4;
+            if (org.x > WORLD_W - wallMargin) evadeX -= ((org.x - (WORLD_W - wallMargin)) / wallMargin) * 1.4;
+            if (org.y < wallMargin) evadeY += ((wallMargin - org.y) / wallMargin) * 1.4;
+            if (org.y > WORLD_H - wallMargin) evadeY -= ((org.y - (WORLD_H - wallMargin)) / wallMargin) * 1.4;
+
+            const shouldPreemptiveEvade = nearestThreat && nearestThreatDist < 310 && (
+              org.blueprint.dietType === 'herbivore' ||
+              (org.hp / org.maxHp) <= (0.22 + 0.45 * w.w_flee) ||
+              (org.colonyId === 'player_colony' && pheromoneMode === 'forage')
+            );
+
+            // =====================================================================
+            // NPC 生态位智能决策系统：领主智能 (apex) | 协同智能 (pack) | 群居智能 (herd)
+            // =====================================================================
+            const role = org.nicheRole || (org.blueprint.dietType === 'herbivore' ? 'herd' : (org.isBoss ? 'apex' : 'pack'));
+
+            // 1. 群居智能 (herd): 类似羊群 Boids 凝聚、对齐、分离 + 惊群连锁逃散
+            if (role === 'herd') {
+              if (org.herdPanicTimer > 0) org.herdPanicTimer = Math.max(0, org.herdPanicTimer - dt);
+
+              // 检查群友是否有人在逃命 -> 触发羊群连锁惊厥
+              if (org.herdPanicTimer <= 0) {
+                for (let ki = 0; ki < arenaState.organisms.length; ki++) {
+                  const kin = arenaState.organisms[ki];
+                  if (kin !== org && kin.hp > 0 && kin.nicheRole === 'herd' && kin.colonyId === org.colonyId) {
+                    if (kin.isEvading || kin.herdPanicTimer > 0) {
+                      if (Math.hypot(kin.x - org.x, kin.y - org.y) < 240) {
+                        org.herdPanicTimer = 2.4;
+                        org.herdPanicTarget = kin.herdPanicTarget || nearestThreat;
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+
+              if (shouldPreemptiveEvade || org.herdPanicTimer > 0) {
+                // 惊群狂奔：集体朝背离天敌威胁的方向全速冲刺
+                org.isEvading = true;
+                const threat = nearestThreat || org.herdPanicTarget;
+                if (threat) {
+                  const pAng = Math.atan2(org.y - threat.y, org.x - threat.x);
+                  org.targetAngle = pAng;
+                } else {
+                  org.targetAngle = Math.atan2(evadeY, evadeX);
+                }
+                if (nearestThreatDist < 160 && org.skillCd <= 0 && st.activeSkill) {
+                  triggerEntityActiveSkill(org);
+                }
+              } else {
+                org.isEvading = false;
+                // Boids 算法：向同伴质心靠近 (Cohesion) + 航向对齐 (Alignment)
+                let cohX = 0, cohY = 0, aliX = 0, aliY = 0, kinCount = 0;
+                arenaState.organisms.forEach((kin) => {
+                  if (kin === org || kin.hp <= 0 || kin.colonyId !== org.colonyId) return;
+                  const kd = Math.hypot(kin.x - org.x, kin.y - org.y);
+                  if (kd < 220) {
+                    cohX += kin.x;
+                    cohY += kin.y;
+                    aliX += Math.cos(kin.angle);
+                    aliY += Math.sin(kin.angle);
+                    kinCount++;
+                  }
+                });
+
+                if (bestFood) {
+                  org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
+                } else if (kinCount > 0) {
+                  const centerDir = Math.atan2((cohY / kinCount) - org.y, (cohX / kinCount) - org.x);
+                  const alignDir = Math.atan2(aliY, aliX);
+                  org.targetAngle = alignDir * 0.6 + centerDir * 0.4;
+                } else {
+                  org.targetAngle = org.angle + Math.sin(arenaState.timeSec * 0.8 + org.phaseOffset) * 0.22;
+                }
+              }
+            }
+            // 2. 领主智能 (apex): 独来独往，有大片专属领地，领地意识极强，巡视并狂暴扑杀入侵者
+            else if (role === 'apex') {
+              org.isEvading = false;
+              const territory = org.territoryCenter || { x: org.x, y: org.y, radius: 480 };
+              const dToTerritory = Math.hypot(org.x - territory.x, org.y - territory.y);
+
+              // 检查是否有异族入侵领地 (以 territoryCenter 为圆心，半径 480px)
+              let intruder = null;
+              let intruderDist = 9999;
+              arenaState.organisms.forEach((other) => {
+                if (other.hp <= 0 || other === org || other.colonyId === org.colonyId) return;
+                const dIn = Math.hypot(other.x - territory.x, other.y - territory.y);
+                if (dIn < territory.radius + 60) {
+                  const dToSelf = Math.hypot(other.x - org.x, other.y - org.y);
+                  if (dToSelf < intruderDist) {
+                    intruderDist = dToSelf;
+                    intruder = other;
+                  }
+                }
+              });
+
+              if (intruder) {
+                // 狂暴扑杀领地入侵者
+                org.targetAngle = Math.atan2(intruder.y - org.y, intruder.x - org.x);
+                if (intruderDist < 220 && org.skillCd <= 0 && Math.random() < dt * 2.2) {
+                  triggerEntityActiveSkill(org);
+                }
+              } else if (bestFood && st.carnEff > 0 && org.energy < org.maxEnergy * 0.75) {
+                // 饱腹进食有机肉块
+                org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
+              } else {
+                // 独来独往领地巡逻：若偏离领地中心则向心引导，否则大半径从容巡航游弋
+                if (dToTerritory > territory.radius * 0.75) {
+                  org.targetAngle = Math.atan2(territory.y - org.y, territory.x - org.x);
+                } else {
+                  org.territoryAngle = (org.territoryAngle || 0) + 0.012;
+                  const patrolX = territory.x + Math.cos(org.territoryAngle) * (territory.radius * 0.55);
+                  const patrolY = territory.y + Math.sin(org.territoryAngle) * (territory.radius * 0.55);
+                  org.targetAngle = Math.atan2(patrolY - org.y, patrolX - org.x);
+                }
+              }
+            }
+            // 3. 协同智能 (pack): 协同狩猎，呼应同伴广播，扇形包抄合围，交替游走撕咬
+            else {
+              if (org.hitAndRunTimer > 0) org.hitAndRunTimer = Math.max(0, org.hitAndRunTimer - dt);
+
+              // 狼群通信与目标共享：呼应半径 380px 内同伴的目标
+              let sharedPackTarget = nearestEnemy;
+              if (!sharedPackTarget) {
+                for (let pi = 0; pi < arenaState.organisms.length; pi++) {
+                  const mate = arenaState.organisms[pi];
+                  if (mate !== org && mate.hp > 0 && mate.colonyId === org.colonyId) {
+                    if (mate.packCurrentTarget && mate.packCurrentTarget.hp > 0) {
+                      if (Math.hypot(mate.x - org.x, mate.y - org.y) < 380) {
+                        sharedPackTarget = mate.packCurrentTarget;
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+              org.packCurrentTarget = sharedPackTarget;
+
+              if (shouldPreemptiveEvade) {
+                org.targetAngle = Math.atan2(evadeY, evadeX);
+                org.isEvading = true;
+                if (nearestThreatDist < 175 && org.skillCd <= 0 && st.activeSkill) {
+                  triggerEntityActiveSkill(org);
+                }
+              } else if (sharedPackTarget && sharedPackTarget.hp > 0) {
+                org.isEvading = false;
+                const dTarget = Math.hypot(sharedPackTarget.x - org.x, sharedPackTarget.y - org.y);
+                const directAng = Math.atan2(sharedPackTarget.y - org.y, sharedPackTarget.x - org.x);
+
+                if (org.hitAndRunTimer > 0) {
+                  // 刚刚咬完一击：向侧后方微退游走，给同伴让出扑咬通道
+                  org.targetAngle = directAng + (org.packFlankAngle || 0.6) * 1.5;
+                } else {
+                  // 协同包抄合围：左翼/右翼扇形夹角包抄切入
+                  const flank = dTarget > 110 ? (org.packFlankAngle || 0) : 0;
+                  org.targetAngle = directAng + flank;
+                  if (dTarget < 210 && org.skillCd <= 0) {
+                    triggerEntityActiveSkill(org);
+                  }
+                }
+              } else if (bestFood) {
+                org.isEvading = false;
+                org.targetAngle = Math.atan2(bestFood.y - org.y, bestFood.x - org.x);
+              } else {
+                org.isEvading = false;
+                org.targetAngle = org.angle + Math.sin(arenaState.timeSec * 0.7 + org.phaseOffset) * 0.25;
+              }
+            }
+
+            // 防扎堆与领主独来独往强排斥力
+            let sepX = 0;
+            let sepY = 0;
+            const sepDist = role === 'apex' ? 120 : (role === 'herd' ? 38 : 46);
+            arenaState.organisms.forEach((otherOrg) => {
+              if (otherOrg === org || otherOrg.hp <= 0) return;
+              const kx = org.x - otherOrg.x;
+              const ky = org.y - otherOrg.y;
+              const kd = Math.hypot(kx, ky);
+              if (kd > 0.1 && kd < sepDist) {
+                const pushWeight = (role === 'apex' && otherOrg.nicheRole === 'apex') ? 2.5 : 0.9;
+                const push = ((sepDist - kd) / sepDist) * pushWeight;
+                sepX += (kx / kd) * push;
+                sepY += (ky / kd) * push;
+              }
+            });
+            if (sepX !== 0 || sepY !== 0) {
+              const dirX = Math.cos(org.targetAngle) + sepX;
+              const dirY = Math.sin(org.targetAngle) + sepY;
+              org.targetAngle = Math.atan2(dirY, dirX);
+            }
+          }
+
+          // 3. 物种运动动力学算法：急转力矩增益 + 转向-航速余弦耦合 + 各向异性微流体阻尼 + 器官专属运动步态
+          if (org.stunTimer <= 0) {
+            const angDiff = Math.atan2(Math.sin(org.targetAngle - org.angle), Math.cos(org.targetAngle - org.angle));
+            const absDiff = Math.abs(angDiff);
+            // 急转辅助：大角度调头时自动提升转向角速度 (最高 +35%，装备侧鳍额外 +25%)
+            const finPivotBonus = st.hasFin ? 0.25 : 0;
+            const pivotBoost = 1.0 + (0.35 + finPivotBonus) * Math.min(1.0, absDiff / (Math.PI * 0.5));
+            const maxTurnStep = st.maxTurnRate * pivotBoost * dt;
+            const flagellumWave = st.maxFlagellaLv > 0 ? Math.sin(arenaState.timeSec * 7.5 + org.phaseOffset) * 0.018 : 0;
+            org.angle += Math.max(-maxTurnStep, Math.min(maxTurnStep, angDiff)) + flagellumWave;
+
+            const starvationMult = org.energy <= 0 ? 0.65 : 1.0;
+            const slowMult = org.slowTimer > 0 ? 0.40 : 1.0;
+            // 高阶鞭毛 (Lv.2/Lv.3) 减免环境流体黏滞阻力 30% / 45%
+            const rawDragExcuse = st.maxFlagellaLv >= 3 ? 0.45 : (st.maxFlagellaLv === 2 ? 0.30 : 0);
+            const effDragMult = 1.0 + Math.max(0, arenaState.biome.dragMult - 1.0) * (1.0 - rawDragExcuse);
+
+            // 转向-航速耦合制动因子 [0.52, 1.00]：大角度急转时自动微降轴向航速以大幅缩小转弯半径
+            const turnSpeedCoupling = Math.max(0.52, Math.cos(Math.min(Math.PI / 3, absDiff)));
+            // 喷水囊脉动节律与规避危机肾上腺素加速
+            const jetPulse = st.hasJet ? (1.0 + 0.14 * Math.sin(arenaState.timeSec * 6.0 + org.phaseOffset)) : 1.0;
+            const evadeBurst = org.isEvading ? 1.12 : 1.0;
+
+            let throttle = 1.0;
+            if (org === alpha) {
+              if (arenaState.pointerDown) {
+                const ptrDist = Math.hypot(arenaState.pointerWorldX - org.x, arenaState.pointerWorldY - org.y);
+                throttle = Math.min(1.0, Math.max(0.22, ptrDist / 38));
+              } else {
+                throttle = 0.32; // 松手时平缓低速滑行
+              }
+            }
+
+            const targetSpd = ((st.maxSpeed * starvationMult * slowMult * turnSpeedCoupling * jetPulse * evadeBurst * throttle) / effDragMult);
+
+            // 各向异性微流体速度分解：轴向平滑推进 + 法向高阻尼抑制侧滑漂移
+            const fwdX = Math.cos(org.angle);
+            const fwdY = Math.sin(org.angle);
+            const latX = -fwdY;
+            const latY = fwdX;
+            const vFwd = org.vx * fwdX + org.vy * fwdY;
+            const vLat = org.vx * latX + org.vy * latY;
+            const axialBlend = 1.0 - Math.exp(-8.5 * dt);
+            const lateralDamp = Math.exp(-(st.hasFin ? 14.5 : 9.5) * dt);
+            const newVFwd = vFwd + (targetSpd - vFwd) * axialBlend;
+            const newVLat = vLat * lateralDamp;
+            org.vx = fwdX * newVFwd + latX * newVLat;
+            org.vy = fwdY * newVFwd + latY * newVLat;
+          } else {
+            org.vx *= Math.exp(-6.0 * dt);
+            org.vy *= Math.exp(-6.0 * dt);
+          }
+
+          org.x = Math.max(org.radius, Math.min(WORLD_W - org.radius, org.x + org.vx * dt));
+          org.y = Math.max(org.radius, Math.min(WORLD_H - org.radius, org.y + org.vy * dt));
+
+          // 4. 进食微藻与有机肉块 (严格遵守食性转化率与同族禁食法则)
+          for (let fi = arenaState.foods.length - 1; fi >= 0; fi--) {
+            const f = arenaState.foods[fi];
+            const d = Math.hypot(f.x - org.x, f.y - org.y);
+            // 植食漏斗磁吸效应
+            if (f.type === 'algae' && st.herbEff > 0 && d <= st.funnelR) {
+              f.x += ((org.x - f.x) / Math.max(1, d)) * 110 * dt;
+              f.y += ((org.y - f.y) / Math.max(1, d)) * 110 * dt;
+            }
+            if (d <= org.radius + f.radius) {
+              if (f.type === 'algae' && st.herbEff > 0) {
+                const gainE = f.energy * st.herbEff * st.digestEff;
+                org.energy = Math.min(org.maxEnergy, org.energy + gainE);
+                arenaState.foods.splice(fi, 1);
+                if (org === alpha) NexusSDK.audio.pop();
+              } else if (f.type === 'meat' && st.carnEff > 0 && f.sourceColonyId !== org.colonyId) {
+                const gainE = f.energy * st.carnEff * st.digestEff;
+                org.energy = Math.min(org.maxEnergy, org.energy + gainE);
+                arenaState.foods.splice(fi, 1);
+                if (org === alpha) NexusSDK.audio.pickup();
+              }
+            }
+          }
+
+          // 5. 口部接触撕咬攻击
+          if (org.biteCd <= 0) {
+            for (let oi = 0; oi < arenaState.organisms.length; oi++) {
+              const other = arenaState.organisms[oi];
+              if (other.hp <= 0 || other.colonyId === org.colonyId) continue;
+              const d = Math.hypot(other.x - org.x, other.y - org.y);
+              if (d <= org.radius + other.radius + 6) {
+                org.biteCd = 0.65;
+                org.hitAndRunTimer = 0.85; // 协同撕咬后侧向游走，交由同伴切入
+                org.energy = Math.max(0, org.energy - st.biteCost);
+                applyDamage(other, st.biteDmg, org);
+                if (st.lifesteal > 0) {
+                  org.energy = Math.min(org.maxEnergy, org.energy + st.biteDmg * st.lifesteal);
+                }
+                if (org === alpha || other === alpha) NexusSDK.audio.hit();
+                break;
+              }
+            }
+          }
+        });
+
+        // =====================================================================
+        // 生物体积硬碰撞解算器：禁止生物重叠 + 弹性排斥与挤压事件
+        // =====================================================================
+        resolveOrganismCollisions(dt);
+
+        // 清理死亡生物与过期食物
+        arenaState.organisms = arenaState.organisms.filter((o) => o.hp > 0);
+        for (let i = arenaState.foods.length - 1; i >= 0; i--) {
+          arenaState.foods[i].ttl -= dt;
+          if (arenaState.foods[i].ttl <= 0) arenaState.foods.splice(i, 1);
+        }
+
+        // 局域网 20Hz 状态同步广播 (Host 权威状态 / Guest 航向输入)
+        if (lanSession && lanSession.sendFast && alpha && (arenaState.timeSec - (arenaState.lastLanSyncSec || 0) >= 0.05)) {
+          arenaState.lastLanSyncSec = arenaState.timeSec;
+          if (isLanGuest) {
+            lanSession.sendFast({ type: 'GUEST_INPUT', angle: alpha.targetAngle });
+          } else {
+            lanSession.sendFast({ type: 'HOST_STATE', hostX: alpha.x, hostY: alpha.y, hostAng: alpha.angle, hostHp: alpha.hp });
+          }
+        }
+
+        // 更新顶部无文字纯 SVG 状态进度条
+        if (alpha) {
+          const hpBar = document.getElementById('hud-hp-bar');
+          if (hpBar) hpBar.style.width = Math.max(0, Math.min(100, (alpha.hp / alpha.maxHp) * 100)) + '%';
+          const enBar = document.getElementById('hud-energy-bar');
+          if (enBar) enBar.style.width = Math.max(0, Math.min(100, (alpha.energy / alpha.maxEnergy) * 100)) + '%';
+          const gpBar = document.getElementById('hud-gp-bar');
+          if (gpBar) gpBar.style.width = Math.min(100, (globalGpReserve / 800) * 100) + '%';
+          const cdOverlay = document.getElementById('skill-cd-overlay');
+          if (cdOverlay) cdOverlay.classList.toggle('active', alpha.skillCd > 0);
+        }
+      }
+
+      // =====================================================================
+      // 生物体积硬碰撞解算器：禁止生物重叠 + 弹性排斥与挤压事件
+      // =====================================================================
+      function resolveOrganismCollisions(dt) {
+        for (let i = 0; i < arenaState.organisms.length; i++) {
+          const a = arenaState.organisms[i];
+          if (a.hp <= 0) continue;
+
+          for (let j = i + 1; j < arenaState.organisms.length; j++) {
+            const b = arenaState.organisms[j];
+            if (b.hp <= 0) continue;
+
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const dist = Math.hypot(dx, dy);
+            const minDist = a.radius + b.radius;
+
+            if (dist < minDist) {
+              // 1. 硬物理分离：根据质量（半径平方）推开双方，禁止生物重叠
+              const overlap = minDist - dist;
+              let nx = dx / (dist || 1);
+              let ny = dy / (dist || 1);
+              if (dist < 0.001) {
+                const rndAng = Math.random() * Math.PI * 2;
+                nx = Math.cos(rndAng);
+                ny = Math.sin(rndAng);
+              }
+
+              const massA = a.radius * a.radius * (a.isBoss ? 4.0 : 1.0);
+              const massB = b.radius * b.radius * (b.isBoss ? 4.0 : 1.0);
+              const totalMass = massA + massB;
+              const ratioA = massB / totalMass;
+              const ratioB = massA / totalMass;
+
+              a.x += nx * overlap * ratioA;
+              a.y += ny * overlap * ratioA;
+              b.x -= nx * overlap * ratioB;
+              b.y -= ny * overlap * ratioB;
+
+              // 边界保底约束
+              a.x = Math.max(a.radius, Math.min(WORLD_W - a.radius, a.x));
+              a.y = Math.max(a.radius, Math.min(WORLD_H - a.radius, a.y));
+              b.x = Math.max(b.radius, Math.min(WORLD_W - b.radius, b.x));
+              b.y = Math.max(b.radius, Math.min(WORLD_H - b.radius, b.y));
+
+              // 碰撞沿法线消除逼近速度并施加弹性排斥
+              const relVx = a.vx - b.vx;
+              const relVy = a.vy - b.vy;
+              const normalVel = relVx * nx + relVy * ny;
+              if (normalVel < 0) {
+                const restitution = 0.35;
+                const impulse = -(1 + restitution) * normalVel / totalMass;
+                a.vx += (nx * impulse * massB);
+                a.vy += (ny * impulse * massB);
+                b.vx -= (nx * impulse * massA);
+                b.vy -= (ny * impulse * massA);
+              }
+
+              // 触发生物挤压形变
+              a.squashTimer = 0.16;
+              b.squashTimer = 0.16;
+
+              // 角刺接触微创反伤 (若异族且一方具备骨刺/坚硬外壳)
+              if (a.colonyId !== b.colonyId) {
+                const stA = getEffectiveStats(a);
+                const stB = getEffectiveStats(b);
+                if (stA.hasSpike && Math.random() < 0.15) {
+                  applyDamage(b, 4.5, a);
+                }
+                if (stB.hasSpike && Math.random() < 0.15) {
+                  applyDamage(a, 4.5, b);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /* =====================================================================
+       * 12. 感官驱动广角视口渲染器 (VIEWPORT_ZOOM = 0.68 · 视觉扇形彩色 vs 听觉360°声呐雷达定格与边缘裁剪)
+       * ===================================================================== */
+      const VIEWPORT_ZOOM = 0.68;
+
+      function resizeArenaCanvas() {
+        const canvas = document.getElementById('petri-canvas');
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          canvas.width = Math.round(rect.width);
+          canvas.height = Math.round(rect.height);
+        }
+      }
+      window.addEventListener('resize', resizeArenaCanvas);
+
+      const petriCanvas = document.getElementById('petri-canvas');
+      if (petriCanvas) {
+        const updatePointer = (clientX, clientY) => {
+          const rect = petriCanvas.getBoundingClientRect();
+          const alpha = arenaState.alpha;
+          if (!alpha) return;
+          const sx = clientX - rect.left;
+          const sy = clientY - rect.top;
+          arenaState.pointerWorldX = alpha.x + (sx - petriCanvas.width * 0.5) / VIEWPORT_ZOOM;
+          arenaState.pointerWorldY = alpha.y + (sy - petriCanvas.height * 0.5) / VIEWPORT_ZOOM;
+        };
+        petriCanvas.addEventListener('pointerdown', (e) => {
+          arenaState.pointerDown = true;
+          updatePointer(e.clientX, e.clientY);
+        });
+        petriCanvas.addEventListener('pointermove', (e) => {
+          if (arenaState.pointerDown) updatePointer(e.clientX, e.clientY);
+        });
+        window.addEventListener('pointerup', () => { arenaState.pointerDown = false; });
+      }
+
+      function renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, sonarWireframeMode) {
+        const alpha = arenaState.alpha;
+        const st = getEffectiveStats(alpha);
+        const pulsePeriod = st.sonarPulseSec || 0.95;
+        const pulseCycle = Math.floor(arenaState.timeSec / pulsePeriod);
+        const pulseFrac = (arenaState.timeSec % pulsePeriod) / pulsePeriod;
+        const waveR = pulseFrac * st.sonarRange;
+
+        // 1. 背景底色与培养皿坐标网格
+        ctx.fillStyle = sonarWireframeMode ? '#030712' : (isNight ? '#020612' : arenaState.biome.bgTint);
+        ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
+
+        ctx.strokeStyle = sonarWireframeMode ? 'rgba(148, 163, 184, 0.08)' : 'rgba(45, 212, 191, 0.06)';
+        ctx.lineWidth = 1;
+        const startX = Math.floor((camX - viewW * 0.5) / 80) * 80;
+        const startY = Math.floor((camY - viewH * 0.5) / 80) * 80;
+        for (let x = startX; x < camX + viewW * 0.5; x += 80) {
+          ctx.beginPath(); ctx.moveTo(x, camY - viewH * 0.5); ctx.lineTo(x, camY + viewH * 0.5); ctx.stroke();
+        }
+        for (let y = startY; y < camY + viewH * 0.5; y += 80) {
+          ctx.beginPath(); ctx.moveTo(camX - viewW * 0.5, y); ctx.lineTo(camX + viewW * 0.5, y); ctx.stroke();
+        }
+
+        // 声呐雷达模式下绘制同心雷达距离刻度环、十字准星与扩散扫描波前
+        if (sonarWireframeMode && st.maxEarLv > 0) {
+          [0.33, 0.66, 1.0].forEach((ratio) => {
+            ctx.beginPath();
+            ctx.arc(alpha.x, alpha.y, st.sonarRange * ratio, 0, Math.PI * 2);
+            ctx.strokeStyle = ratio === 1.0 ? 'rgba(56, 189, 248, 0.36)' : 'rgba(148, 163, 184, 0.14)';
+            ctx.lineWidth = ratio === 1.0 ? 1.5 : 1.0;
+            ctx.stroke();
+          });
+          ctx.beginPath();
+          ctx.moveTo(alpha.x - st.sonarRange, alpha.y);
+          ctx.lineTo(alpha.x + st.sonarRange, alpha.y);
+          ctx.moveTo(alpha.x, alpha.y - st.sonarRange);
+          ctx.lineTo(alpha.x, alpha.y + st.sonarRange);
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.12)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(alpha.x, alpha.y, waveR, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - pulseFrac) * 0.72})`;
+          ctx.lineWidth = 2.0;
+          ctx.stroke();
+        }
+
+        // 2. 绘制海底热泉喷口 (env-vent.svg)
+        arenaState.vents.forEach((v) => {
+          if (Math.abs(v.x - camX) > viewW * 0.6 || Math.abs(v.y - camY) > viewH * 0.6) return;
+          if (sonarWireframeMode) {
+            const dist = Math.hypot(v.x - alpha.x, v.y - alpha.y);
+            if (dist - v.radius > st.sonarRange) return;
+            ctx.beginPath();
+            ctx.arc(v.x, v.y, v.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.42)';
+            ctx.lineWidth = 1.4;
+            ctx.stroke();
+          } else {
+            drawSpriteCentered(ctx, 'env-vent.svg', v.x, v.y, v.radius * 1.8, v.radius * 1.8, 0, 0.85);
+          }
+        });
+
+        // 3. 绘制食物 (微藻 env-algae.svg 与肉块 env-meat.svg)
+        arenaState.foods.forEach((f) => {
+          if (Math.abs(f.x - camX) > viewW * 0.55 || Math.abs(f.y - camY) > viewH * 0.55) return;
+          const dist = Math.hypot(f.x - alpha.x, f.y - alpha.y);
+          if (sonarWireframeMode) {
+            const foodSonarCap = f.type === 'algae' ? Math.max(65, st.staticSenseRange) : st.sonarRange;
+            if (dist - f.radius > foodSonarCap) return;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(alpha.x, alpha.y, foodSonarCap, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.radius * 0.9, 0, Math.PI * 2);
+            ctx.strokeStyle = f.type === 'meat' ? 'rgba(248, 250, 252, 0.85)' : 'rgba(148, 163, 184, 0.55)';
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+            ctx.restore();
+          } else {
+            const spKey = f.type === 'meat' ? 'env-meat.svg' : 'env-algae.svg';
+            drawSpriteCentered(ctx, spKey, f.x, f.y, f.radius * 2.3, f.radius * 2.3, 0);
+          }
+        });
+
+        // 4. 绘制区域危害 (墨囊、毒雾、电弧)
+        arenaState.hazards.forEach((h) => {
+          ctx.beginPath();
+          ctx.arc(h.x, h.y, h.radius, 0, Math.PI * 2);
+          if (sonarWireframeMode) {
+            ctx.strokeStyle = 'rgba(226, 232, 240, 0.55)';
+            ctx.setLineDash([5, 4]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+          } else {
+            ctx.fillStyle = h.type === 'ink' ? 'rgba(5, 8, 18, 0.82)' : (h.type === 'venom' ? 'rgba(16, 185, 129, 0.22)' : 'rgba(45, 212, 191, 0.35)');
+            ctx.fill();
+          }
+        });
+
+        // 5. 绘制骨刺投射物
+        arenaState.projectiles.forEach((p) => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 4.0, 0, Math.PI * 2);
+          ctx.fillStyle = sonarWireframeMode ? '#f8fafc' : '#fbbf24';
+          ctx.fill();
+        });
+
+        // 6. 绘制所有生物实体 (声音感知下呈现雷达定格影像，且处于听觉边缘的个体严格裁剪仅显影听觉范围内的部分)
+        arenaState.organisms.forEach((org) => {
+          if (Math.abs(org.x - camX) > viewW * 0.65 || Math.abs(org.y - camY) > viewH * 0.65) return;
+          const dist = Math.hypot(org.x - alpha.x, org.y - alpha.y);
+          if (org !== alpha) {
+            if (sonarWireframeMode) {
+              const targetSpeed = Math.hypot(org.vx || 0, org.vy || 0);
+              const effSonarR = targetSpeed < 8 ? Math.max(65, st.staticSenseRange) : st.sonarRange;
+              const bodyExtent = org.radius * 2.4;
+
+              // 当雷达扫描脉冲波前扫过目标 (或初始首次进入听觉圈) 时，锁定目标的雷达定格影像快照 (极坐标相对位置、朝向、肢体相位全部定格)
+              const sweptByWave = (dist - bodyExtent <= waveR) && (org.sonarDetectedCycle !== pulseCycle);
+              const initialCapture = org.sonarLastPulseSec < 0 && (dist - bodyExtent <= effSonarR);
+              if ((dist - bodyExtent <= effSonarR) && (sweptByWave || initialCapture)) {
+                org.sonarLastSeenX = org.x;
+                org.sonarLastSeenY = org.y;
+                org.sonarRelX = org.x - alpha.x;
+                org.sonarRelY = org.y - alpha.y;
+                org.sonarSnapAngle = org.angle;
+                org.sonarSnapPhase = arenaState.timeSec * 6.5 + (org.phaseOffset || 0);
+                org.sonarLastPulseSec = arenaState.timeSec;
+                if (sweptByWave) {
+                  org.sonarDetectedCycle = pulseCycle;
+                }
+              }
+
+              if (org.sonarRelX === null || org.sonarRelY === null) return;
+              const snapX = alpha.x + org.sonarRelX;
+              const snapY = alpha.y + org.sonarRelY;
+              const snapDist = Math.hypot(org.sonarRelX, org.sonarRelY);
+              const ageSec = arenaState.timeSec - org.sonarLastPulseSec;
+              if (snapDist - bodyExtent > effSonarR || ageSec > pulsePeriod * 1.45) return;
+
+              // 雷达荧光余晖衰减透明度
+              const echoAlpha = Math.max(0.35, 1.0 - 0.58 * Math.min(1.0, Math.max(0, ageSec) / pulsePeriod));
+
+              // 严格圆形边界裁剪：若个体位于听觉边缘，仅显示落在 effSonarR 听觉范围内的影像！
+              // [MG-P3-01] Reuse outer st.sonarRange clip buffer when effSonarR matches st.sonarRange
+              const needsInnerClip = effSonarR < st.sonarRange - 1;
+              ctx.save();
+              if (needsInnerClip) {
+                ctx.beginPath();
+                ctx.arc(alpha.x, alpha.y, effSonarR, 0, Math.PI * 2);
+                ctx.clip();
+              }
+
+              const savedX = org.x;
+              const savedY = org.y;
+              const savedAng = org.angle;
+              org.x = snapX;
+              org.y = snapY;
+              org.angle = org.sonarSnapAngle || org.angle;
+              drawOrganism(ctx, org, {
+                freezePhase: org.sonarSnapPhase,
+                sonarWireframe: true,
+                sonarAlpha: echoAlpha
+              });
+              org.x = savedX;
+              org.y = savedY;
+              org.angle = savedAng;
+              ctx.restore();
+
+              // 若个体跨越听觉边缘 (半身在圈内、半身被裁剪)，在听觉边界圆弧上绘制声呐截面回波高亮弧
+              if (Math.abs(snapDist - effSonarR) < bodyExtent) {
+                const edgeAng = Math.atan2(org.sonarRelY, org.sonarRelX);
+                const arcSpan = Math.min(0.32, bodyExtent / Math.max(80, effSonarR));
+                ctx.beginPath();
+                ctx.arc(alpha.x, alpha.y, effSonarR, edgeAng - arcSpan, edgeAng + arcSpan);
+                ctx.strokeStyle = `rgba(45, 212, 191, ${echoAlpha * 0.85})`;
+                ctx.lineWidth = 2.4;
+                ctx.stroke();
+              }
+              return;
+            } else {
+              // 彩色视觉通道：仅当目标开启拟态皮肤且等级不低于观察者眼点时在 >90px 外隐匿；几何扇形边界交由外层 ctx.clip() 连续裁剪
+              if (org.mimicTimer > 0 && dist > 90) {
+                const targetMimic = (org.blueprint?.slots?.utility || []).find((u) => u.id === 'util-mimic');
+                if (targetMimic && targetMimic.level >= st.maxEyeLv) {
+                  return;
+                }
+              }
+            }
+          }
+          const alphaSnapTick = Math.floor(arenaState.timeSec / pulsePeriod) * pulsePeriod;
+          drawOrganism(ctx, org, {
+            timeSec: arenaState.timeSec,
+            freezePhase: sonarWireframeMode ? (alphaSnapTick * 6.5 + (org.phaseOffset || 0)) : undefined,
+            sonarWireframe: sonarWireframeMode
+          });
+        });
+      }
+
+      function renderArenaFrame() {
+        const canvas = document.getElementById('petri-canvas');
+        const alpha = arenaState.alpha;
+        if (!canvas || !alpha) return;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+        const viewW = w / VIEWPORT_ZOOM;
+        const viewH = h / VIEWPORT_ZOOM;
+        const camX = alpha.x;
+        const camY = alpha.y;
+        const st = getEffectiveStats(alpha);
+        const cyc = arenaState.timeSec % 180;
+        const isNight = arenaState.biome.forceNight || (cyc >= 82 && cyc <= 170);
+
+        const hasEye = st.maxEyeLv > 0;
+        const hasEar = st.maxEarLv > 0;
+
+        ctx.shadowBlur = 0;
+        ctx.clearRect(0, 0, w, h);
+
+        // 广角冷冻物镜缩放 (VIEWPORT_ZOOM = 0.68) + 镜头严格锁定玩家当前控制的个体为中心
+        ctx.save();
+        ctx.translate(w * 0.5, h * 0.5);
+        ctx.scale(VIEWPORT_ZOOM, VIEWPORT_ZOOM);
+        ctx.translate(-camX, -camY);
+
+        if (hasEar && !hasEye) {
+          // 模式 B：纯听觉器官 —— 360° 声呐雷达定格画面 + 听觉边界严格圆形裁剪 (圈外深空迷雾)
+          ctx.fillStyle = '#02040a';
+          ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(alpha.x, alpha.y, st.sonarRange, 0, Math.PI * 2);
+          ctx.clip();
+          renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, true);
+          ctx.restore();
+        } else if (hasEye && !hasEar) {
+          // 模式 A：纯视觉器官 —— 扇形前向彩色视野 + 扇区外深空暗角遮蔽
+          ctx.fillStyle = '#02050d';
+          ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
+
+          const effRange = alpha.blindTimer > 0 ? 90 : (isNight ? st.nightEyeRange : st.dayEyeRange);
+          const halfRad = ((isNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(alpha.x, alpha.y, 65, 0, Math.PI * 2);
+          ctx.moveTo(alpha.x, alpha.y);
+          ctx.arc(alpha.x, alpha.y, effRange, alpha.angle - halfRad, alpha.angle + halfRad);
+          ctx.closePath();
+          ctx.clip();
+          ctx.filter = `saturate(${Math.round(st.eyeSat * 100)}%)`;
+          renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, false);
+          ctx.filter = 'none';
+          ctx.restore();
+        } else if (hasEye && hasEar) {
+          // 模式 C：视听双感官混装 (T03/T04) —— 扇区外 360° 声呐雷达定格裁剪底图 + 前向扇形全彩实时叠加
+          const effRange = alpha.blindTimer > 0 ? 90 : (isNight ? st.nightEyeRange : st.dayEyeRange);
+          const halfRad = ((isNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
+
+          ctx.fillStyle = '#02040a';
+          ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(alpha.x, alpha.y, st.sonarRange, 0, Math.PI * 2);
+          ctx.moveTo(alpha.x, alpha.y);
+          ctx.arc(alpha.x, alpha.y, effRange, alpha.angle - halfRad, alpha.angle + halfRad);
+          ctx.closePath();
+          ctx.clip('evenodd');
+          renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, true);
+          ctx.restore();
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(alpha.x, alpha.y, 65, 0, Math.PI * 2);
+          ctx.moveTo(alpha.x, alpha.y);
+          ctx.arc(alpha.x, alpha.y, effRange, alpha.angle - halfRad, alpha.angle + halfRad);
+          ctx.closePath();
+          ctx.clip();
+          ctx.filter = `saturate(${Math.round(st.eyeSat * 100)}%)`;
+          renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, false);
+          ctx.filter = 'none';
+          ctx.restore();
+        } else {
+          // 无感官盲视 65px 触觉圈
+          ctx.fillStyle = '#02040a';
+          ctx.fillRect(camX - viewW * 0.5, camY - viewH * 0.5, viewW, viewH);
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(alpha.x, alpha.y, 65, 0, Math.PI * 2);
+          ctx.clip();
+          renderWorldPass(ctx, camX, camY, viewW, viewH, isNight, false);
+          ctx.restore();
+        }
+
+        // 感官辅助叠加层：视觉扇形边界、听觉 360° 声呐脉冲波纹环
+        if (arenaState.showSensoryOverlay) {
+          if (hasEye) {
+            const effRange = alpha.blindTimer > 0 ? 90 : (isNight ? st.nightEyeRange : st.dayEyeRange);
+            const halfRad = ((isNight ? st.nightEyeAngle : st.dayEyeAngle) * 0.5) * (Math.PI / 180);
+            ctx.beginPath();
+            ctx.moveTo(alpha.x, alpha.y);
+            ctx.arc(alpha.x, alpha.y, effRange, alpha.angle - halfRad, alpha.angle + halfRad);
+            ctx.closePath();
+            ctx.strokeStyle = 'rgba(45, 212, 191, 0.35)';
+            ctx.lineWidth = 1.4;
+            ctx.stroke();
+          }
+          if (hasEar) {
+            const pulseFrac = (arenaState.timeSec % st.sonarPulseSec) / st.sonarPulseSec;
+            ctx.beginPath();
+            ctx.arc(alpha.x, alpha.y, st.sonarRange * pulseFrac, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - pulseFrac) * 0.65})`;
+            ctx.lineWidth = 1.8;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(alpha.x, alpha.y, st.sonarRange, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.38)';
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+        }
+
+        ctx.restore();
+
+        // 渲染右上角微缩态势雷达 (#arena-minimap)
+        const mini = document.getElementById('arena-minimap');
+        if (mini) {
+          const mctx = mini.getContext('2d');
+          mctx.clearRect(0, 0, 44, 44);
+          arenaState.organisms.forEach((o) => {
+            const mx = (o.x / WORLD_W) * 40 + 2;
+            const my = (o.y / WORLD_H) * 40 + 2;
+            mctx.fillStyle = o === alpha ? '#2dd4bf' : (o.colonyId === 'player_colony' ? '#10b981' : (o.isBoss ? '#fbbf24' : '#ef4444'));
+            mctx.fillRect(mx - 1.5, my - 1.5, o === alpha || o.isBoss ? 3.5 : 2, o === alpha || o.isBoss ? 3.5 : 2);
+          });
+        }
+      }
+
+      function launchArenaFromRoom() {
+        if (!arenaState.organisms || arenaState.organisms.length === 0) {
+          startArenaMatch();
+        }
+        switchPage('arena');
+        arenaState.running = true;
+        arenaState.lastTickMs = performance.now();
+      }
+      window.addEventListener('nexus:gameplay-started', launchArenaFromRoom);
+      if (window.NexusSDK && window.NexusSDK.isGameplayActive()) {
+        launchArenaFromRoom();
+      }
+
+      window.addEventListener('nexus:gameplay-stopped', () => {
+        arenaState.running = false;
+      });
+
+      function mainArenaLoop(nowMs) {
+        const canRun = window.NexusSDK ? (window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive()) : arenaState.running;
+        if (arenaState.running && currentActivePage === 'arena' && canRun) {
+          const dt = Math.min(0.05, Math.max(0.001, (nowMs - arenaState.lastTickMs) * 0.001));
+          arenaState.lastTickMs = nowMs;
+          stepArenaSimulation(dt);
+          renderArenaFrame();
+        } else {
+          arenaState.lastTickMs = nowMs;
+          if (currentActivePage === 'arena') renderArenaFrame();
+        }
+        requestAnimationFrame(mainArenaLoop);
+      }
+
+      /* =====================================================================
+       * 13. 启动初始化与 URL 异步基因挑战码自动识别
+       * ===================================================================== */
+      persistState();
+      initLanHostSession(lanRoomCode);
+      renderEditorPage();
+      requestAnimationFrame(renderEditorPreviewLoop);
+      requestAnimationFrame(mainArenaLoop);
+
+      // 检查 URL 参数是否携带 ?challenger=MG3_... 或 ?challenge=MG3_... 基因挑战码
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const challengerCode = params.get('challenger') || params.get('challenge');
+        if (challengerCode) {
+          const rivalBp = decodeGeneCode(challengerCode);
+          if (rivalBp) {
+            officialFossils.unshift(rivalBp);
+            showToast('已载入 URL 挑战物种：【' + rivalBp.speciesName + '】！');
+          }
+        }
+      } catch (_e) {}
+      // 调试探针导出
+      window.__debugGenesis = () => ({ arenaState, resolveOrganismCollisions, spawnOrganismEntity });
+    })();
+    }
+
+    return {
+      start: function (ctx) {
+        bootEngineOnce();
+        __engineRunning = true;
+      },
+      stop: function () {
+        __engineRunning = false;
+      },
+      getDebug: function () {
+        return {
+          gameId: 'micro-genesis',
+          initialized: __engineInitialized,
+          running: __engineRunning && global.NexusSDK.isGameplayActive()
+        };
+      }
+    };
+  });
+})(window);

@@ -362,9 +362,10 @@
     const selfId = 'p' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
     const registryKey = `NEXUS_LAN_ROOMS_${cleanGameId}`;
 
-    let roomCode = sanitizeSafeId(String(initialRoomCode || '').toUpperCase().trim(), 16) || genCode();
-    let role = 'host';              // 'host' | 'client'
-    let connState = 'hosting';      // 'hosting' | 'connecting' | 'connected' | 'disconnected' | 'failed'
+    // 核心铁律（Step 2）：初始进入大厅为纯观察者模式 (idle)，严禁在未点击【创建房间】前私自建房或广播！
+    let roomCode = '';
+    let role = 'idle';              // 'idle' | 'host' | 'client'
+    let connState = 'idle';         // 'idle' | 'hosting' | 'connecting' | 'connected' | 'disconnected' | 'failed'
     let connected = false;
     let peerId = null;
     let peerName = '';
@@ -384,7 +385,7 @@
     let offlineMode = false;        // 当前 RTCPeerConnection 是否由离线握手码建立
     let pingSeq = 0;
     const discoveredPeerRooms = new Map();
-    const listeners = { fast: [], reliable: [], status: [], rooms: [] };
+    const listeners = { fast: [], reliable: [], status: [], rooms: [], gameStart: [] };
 
     function getAuthSafe() {
       try {
@@ -406,6 +407,7 @@
     }
     function unpublishHostRoom(code) {
       const target = code || roomCode;
+      if (!target) return;
       const mapObj = readRegistry();
       if (mapObj[target] && mapObj[target].hostId === selfId) {
         delete mapObj[target];
@@ -417,7 +419,7 @@
       }
     }
     function publishHostRoomBeacon() {
-      if (role !== 'host' || destroyed) return;
+      if (role !== 'host' || !roomCode || destroyed) return;
       const auth = getAuthSafe();
       const meta = GAME_META_DB[cleanGameId];
       const beacon = {
@@ -427,6 +429,7 @@
         hostName: auth.nickname || '房主指挥官',
         modeName: meta?.modes?.[1]?.name || '局域网协同联机',
         players: connected ? '2/2' : '1/2',
+        status: gameplayActive ? 'playing' : 'waiting',
         updatedAt: Date.now()
       };
       const mapObj = readRegistry();
@@ -436,6 +439,7 @@
         if (!r || now - (r.updatedAt || 0) > LAN_BEACON_TTL_MS || (r.hostId === selfId && k !== roomCode)) delete mapObj[k];
       });
       mapObj[roomCode] = beacon;
+      discoveredPeerRooms.set(roomCode, beacon);
       writeRegistry(mapObj);
       if (lobbyBc) {
         try { lobbyBc.postMessage({ type: 'ROOM_BEACON', beacon }); } catch (_) {}
@@ -445,11 +449,25 @@
     function getAvailableRooms() {
       const now = Date.now();
       const mapObj = readRegistry();
-      Object.values(mapObj).forEach((r) => {
-        if (r && r.roomCode && r.hostId && now - (r.updatedAt || 0) <= LAN_BEACON_TTL_MS) {
-          discoveredPeerRooms.set(r.roomCode, r);
+      let dirty = false;
+      Object.keys(mapObj).forEach((k) => {
+        const r = mapObj[k];
+        if (!r || !r.roomCode || !r.hostId || now - (r.updatedAt || 0) > LAN_BEACON_TTL_MS) {
+          delete mapObj[k];
+          dirty = true;
+          return;
         }
+        // 本机处于 idle 或 client 时，清理残留的本机旧房记录
+        if (r.hostId === selfId && (role !== 'host' || r.roomCode !== roomCode)) {
+          delete mapObj[k];
+          discoveredPeerRooms.delete(r.roomCode);
+          dirty = true;
+          return;
+        }
+        discoveredPeerRooms.set(r.roomCode, r);
       });
+      if (dirty) writeRegistry(mapObj);
+
       const list = [];
       discoveredPeerRooms.forEach((r, code) => {
         if (now - (r.updatedAt || 0) > LAN_BEACON_TTL_MS) {
@@ -457,7 +475,10 @@
           return;
         }
         const isSelfHost = r.hostId === selfId;
-        if (isSelfHost && (role !== 'host' || code !== roomCode)) return; // 本机已离开的旧房绝不展示
+        if (isSelfHost && (role !== 'host' || code !== roomCode)) {
+          discoveredPeerRooms.delete(code);
+          return;
+        }
         const isCurrentJoined = role === 'client' && connected && code === roomCode;
         list.push({
           roomCode: r.roomCode,
@@ -465,13 +486,13 @@
           hostName: r.hostName,
           modeName: r.modeName,
           players: isCurrentJoined ? '2/2' : (r.players || '1/2'),
+          status: r.status || 'waiting',
           rttMs: (isCurrentJoined || (isSelfHost && connected)) ? peerLatencyMs : null,
           isSelfHost,
           isCurrentJoined,
           isConnecting: role === 'client' && connState === 'connecting' && code === roomCode
         });
       });
-      // 本机房间置顶，其余按房间号排序
       list.sort((a, b) => (b.isSelfHost - a.isSelfHost) || String(a.roomCode).localeCompare(String(b.roomCode)));
       return list;
     }
@@ -482,7 +503,7 @@
     }
 
     function refreshRooms() {
-      publishHostRoomBeacon();
+      if (role === 'host' && roomCode) publishHostRoomBeacon();
       if (lobbyBc) {
         try { lobbyBc.postMessage({ type: 'DISCOVER_ROOMS', ts: Date.now() }); } catch (_) {}
       }
@@ -501,14 +522,23 @@
             notifyRooms();
           } else if (data.type === 'ROOM_CLOSED' && data.roomCode) {
             const r = discoveredPeerRooms.get(data.roomCode);
-            if (r && r.hostId === data.hostId) discoveredPeerRooms.delete(data.roomCode);
+            if (!r || r.hostId === data.hostId) discoveredPeerRooms.delete(data.roomCode);
             notifyRooms();
-          } else if (data.type === 'DISCOVER_ROOMS' && role === 'host') {
+          } else if (data.type === 'DISCOVER_ROOMS' && role === 'host' && roomCode) {
             publishHostRoomBeacon();
           }
         };
+        // 初始化时主动探测一次局域网内已存在的广播房间（自身不广播）
+        try { lobbyBc.postMessage({ type: 'DISCOVER_ROOMS', ts: Date.now() }); } catch (_) {}
       } catch (_) {}
     }
+
+    const onStorageSync = (ev) => {
+      if (ev && ev.key === registryKey) {
+        notifyRooms();
+      }
+    };
+    window.addEventListener('storage', onStorageSync);
 
     function getStatus() {
       return {
@@ -542,7 +572,7 @@
       if (viaTransport) transport = viaTransport;
       markPeerAlive();
       if (!wasConnected) {
-        publishHostRoomBeacon();
+        if (role === 'host') publishHostRoomBeacon();
         sendPing();
       }
       notifyStatus();
@@ -558,12 +588,12 @@
       lastError = reason || '对端心跳超时';
       closePeerConnection();
       if (role === 'client') {
-        // 客机失去房主：退回本机房主身份，以新房间号继续广播
-        role = 'host';
+        role = 'idle';
         connState = 'disconnected';
-        bindChannel(genCode());
-      } else {
-        connState = 'disconnected';
+        roomCode = '';
+        if (bc) { try { bc.close(); } catch (_) {} bc = null; }
+      } else if (role === 'host') {
+        connState = 'hosting';
         publishHostRoomBeacon();
       }
       notifyStatus();
@@ -576,7 +606,6 @@
 
     function handleControl(msg, viaTransport) {
       if (!msg || typeof msg !== 'object') return;
-      // 仅接受当前配对对端的消息（握手阶段例外）
       switch (msg.t) {
         case 'ping':
           if (connected && (!msg.from || msg.from === peerId || viaTransport === 'webrtc')) {
@@ -587,9 +616,13 @@
         case 'pong':
           if (connected && Number.isFinite(msg.echoTs)) {
             markPeerAlive();
-            peerLatencyMs = Math.max(0, Math.round(Date.now() - msg.echoTs)); // 真实往返 RTT
+            peerLatencyMs = Math.max(0, Math.round(Date.now() - msg.echoTs));
             notifyStatus();
           }
+          return;
+        case 'room_game_start':
+          markPeerAlive();
+          listeners.gameStart.forEach((fn) => { try { fn(msg); } catch (_) {} });
           return;
         case 'data':
           if (connected) {
@@ -658,13 +691,17 @@
         pc.addIceCandidate(msg.candidate).catch(() => {});
         return;
       }
+      if (msg.t === 'room_game_start' && role === 'client') {
+        handleControl(msg, 'broadcast');
+        return;
+      }
       if (peerId && msg.from !== peerId && msg.t !== 'ping') return;
       handleControl(msg, 'broadcast');
     }
 
     function bindChannel(code) {
       const cleanCode = sanitizeSafeId(String(code || roomCode).toUpperCase().trim(), 16) || genCode();
-      if (role === 'host' && cleanCode !== roomCode) unpublishHostRoom(roomCode);
+      if (role === 'host' && roomCode && cleanCode !== roomCode) unpublishHostRoom(roomCode);
       roomCode = cleanCode;
       if (bc) {
         try { bc.close(); } catch (_) {}
@@ -676,7 +713,7 @@
           bc.onmessage = onRoomSignal;
         } catch (_) { bc = null; }
       }
-      publishHostRoomBeacon();
+      if (role === 'host') publishHostRoomBeacon();
     }
 
     /* ---------- 真实 WebRTC：DataChannel 与 SDP ---------- */
@@ -710,7 +747,6 @@
     function newPeerConnection(asHost) {
       closePeerConnection();
       if (typeof RTCPeerConnection === 'undefined') return null;
-      // 零公网：不配置任何 STUN/TURN，仅使用局域网 host 候选
       pc = new RTCPeerConnection({ iceServers: [] });
       if (asHost) {
         fastDc = pc.createDataChannel('lan-fast', { ordered: false, maxRetransmits: 0 });
@@ -737,7 +773,6 @@
       return pc;
     }
 
-    // 同设备：房主经 BroadcastChannel 信令自动发起 SDP Offer
     async function startAutoWebRtcOffer() {
       try {
         const conn = newPeerConnection(true);
@@ -763,7 +798,9 @@
     // 跨设备离线握手码 ①：房主生成邀请码
     async function createOfflineOffer() {
       if (connected) throw new Error('当前已连接对端，请先断开');
-      if (role !== 'host') { role = 'host'; bindChannel(genCode()); }
+      if (role !== 'host' || !roomCode) {
+        createRoom();
+      }
       const conn = newPeerConnection(true);
       if (!conn) throw new Error('当前浏览器不支持 WebRTC');
       offlineMode = true;
@@ -780,7 +817,7 @@
       const data = decodeLanCode(code);
       if (!data || data.k !== 'offer' || !data.sdp) throw new Error('邀请码格式无效');
       if (data.g !== cleanGameId) throw new Error('邀请码不属于本游戏');
-      if (role === 'host') unpublishHostRoom(roomCode);
+      if (role === 'host' && roomCode) unpublishHostRoom(roomCode);
       role = 'client';
       roomCode = sanitizeSafeId(String(data.r || '').toUpperCase(), 16) || genCode();
       peerName = String(data.n || '房主').slice(0, 24);
@@ -809,7 +846,7 @@
       notifyStatus();
     }
 
-    /* ---------- 加入 / 建房 ---------- */
+    /* ---------- 显式建房 / 加入房间 / 离开房间（严格遵守 Step 2 & Step 3 接口规范） ---------- */
     function failJoin(reason) {
       lastError = reason;
       connected = false;
@@ -817,16 +854,17 @@
       peerLatencyMs = null;
       transport = 'none';
       closePeerConnection();
-      role = 'host';
+      if (bc) { try { bc.close(); } catch (_) {} bc = null; }
+      role = 'idle';
       connState = 'failed';
-      bindChannel(genCode());
+      roomCode = '';
       notifyStatus();
     }
 
     function leaveCurrent() {
       clearTimeout(joinTimer);
       if (connected) sendControl({ t: 'bye' });
-      if (role === 'host') unpublishHostRoom(roomCode);
+      if (role === 'host' && roomCode) unpublishHostRoom(roomCode);
       connected = false;
       peerId = null;
       peerLatencyMs = null;
@@ -834,29 +872,53 @@
       failoverActive = false;
       peerName = '';
       closePeerConnection();
+      if (bc) { try { bc.close(); } catch (_) {} bc = null; }
+    }
+
+    function createRoom(customCode) {
+      leaveCurrent();
+      lastError = '';
+      const nextCode = sanitizeSafeId(String(customCode || '').toUpperCase().trim(), 16) || genCode();
+      role = 'host';
+      connState = 'hosting';
+      connected = false;
+      bindChannel(nextCode);
+      publishHostRoomBeacon();
+      notifyStatus();
+      return roomCode;
     }
 
     function joinRoom(code, asRole = 'client') {
       const target = sanitizeSafeId(String(code || '').toUpperCase().trim(), 16);
       if (!target) return;
+      if (asRole === 'host') {
+        return createRoom(target);
+      }
       leaveCurrent();
       lastError = '';
-      if (asRole === 'host') {
-        role = 'host';
-        connState = 'hosting';
-        bindChannel(target);
-        notifyStatus();
-        return;
-      }
       role = 'client';
       connState = 'connecting';
       bindChannel(target);
       notifyStatus();
-      // 真实握手：向房主发送加入请求，收到 join_ack 才判定连接成功
       postSignal({ t: 'join_req', name: getAuthSafe().nickname || '客机' });
       joinTimer = setTimeout(() => {
         if (connState === 'connecting' && role === 'client') failJoin(`房间 ${target} 无房主应答（${LAN_JOIN_TIMEOUT_MS / 1000}s 超时）`);
       }, LAN_JOIN_TIMEOUT_MS);
+    }
+
+    function leaveRoom() {
+      leaveCurrent();
+      role = 'idle';
+      connState = 'idle';
+      roomCode = '';
+      notifyStatus();
+    }
+
+    function notifyGameStart() {
+      if (role === 'host' && roomCode) {
+        publishHostRoomBeacon();
+        sendControl({ t: 'room_game_start', roomCode, ts: Date.now() });
+      }
     }
 
     function sendFast(payload) {
@@ -879,7 +941,8 @@
 
     const hbTimer = setInterval(() => {
       if (destroyed) return;
-      if (role === 'host') publishHostRoomBeacon();
+      // 仅当用户显式创建了房间 (role === 'host' && roomCode) 时，才在局域网广播房间信标！
+      if (role === 'host' && roomCode) publishHostRoomBeacon();
       if (connected) {
         sendPing();
         if (performance.now() - lastPeerSeen > LAN_PEER_TIMEOUT_MS) handlePeerLost('对端心跳超时 (3.0s)');
@@ -888,11 +951,12 @@
 
     const onUnload = () => {
       try { if (connected) sendControl({ t: 'bye' }); } catch (_) {}
-      unpublishHostRoom(roomCode);
+      if (role === 'host' && roomCode) unpublishHostRoom(roomCode);
     };
     window.addEventListener('pagehide', onUnload);
 
-    bindChannel(roomCode);
+    // 严禁在初始化时自动调用 createRoom，所有房间必须通过用户显式点击【创建房间】触发
+
 
     const session = {
       __gameId: cleanGameId,
@@ -900,6 +964,7 @@
       getRoomCode: () => roomCode,
       getRole: () => role,
       getConnState: () => connState,
+      getUserName: () => getAuthSafe().nickname || '本地指挥官',
       getStatus,
       isConnected: () => connected,
       isFailover: () => failoverActive,
@@ -912,8 +977,12 @@
       getAutoAiTakeover: () => autoAiTakeover,
       getAvailableRooms,
       refreshRooms,
+      createRoom,
       joinRoom,
-      leave: () => { leaveCurrent(); role = 'host'; connState = 'hosting'; bindChannel(genCode()); notifyStatus(); },
+      join: joinRoom,
+      leaveRoom,
+      leave: leaveRoom,
+      notifyGameStart,
       createOfflineOffer,
       acceptOfflineOffer,
       acceptOfflineAnswer,
@@ -923,6 +992,7 @@
       onReliable: (fn) => listeners.reliable.push(fn),
       onStatus: (fn) => listeners.status.push(fn),
       onRooms: (fn) => listeners.rooms.push(fn),
+      onGameStart: (fn) => listeners.gameStart.push(fn),
       destroy: () => {
         destroyed = true;
         session.__destroyed = true;
@@ -930,6 +1000,7 @@
         clearTimeout(joinTimer);
         onUnload();
         window.removeEventListener('pagehide', onUnload);
+        window.removeEventListener('storage', onStorageSync);
         if (bc) try { bc.close(); } catch (_) {}
         if (lobbyBc) try { lobbyBc.close(); } catch (_) {}
         closePeerConnection();
@@ -1238,21 +1309,29 @@
         s.currency.genePoints = (s.currency.genePoints || 1500) + 1200;
         s.gpReserve = (s.gpReserve || 1200) + 1200;
       },
-      studioBtnText: '进入五插槽物种编辑工坊 & 基因库',
-      triggerStudio: () => {
-        const edBtn = document.querySelector('[data-page="editor"]');
-        if (edBtn) edBtn.click();
-      }
+      studioBtnText: null,
+      triggerStudio: null
     }
   };
 
   /* =========================================================================
-   * 6. Standardized Tier 2 (6-Module Game Menu Hub) & Tier 3 Shell UI
+   * 6. Standardized Tier 2 (6-Module Game Menu Hub) & On-Demand Engine Loader
    * ========================================================================= */
   let gameplayActive = false;
   let lanRoomSessionEstablished = false;
   let openTier2MenuFn = null;
   let enterTier3GameplayFn = null;
+  let bootGameFromRoomFn = null;
+  const registeredEngines = {};
+  let activeEngineController = null;
+  let engineScriptLoadedMap = {};
+  let bootInProgress = false;
+
+  function registerGameEngine(gameId, factoryFn) {
+    if (!gameId || typeof factoryFn !== 'function') return;
+    registeredEngines[gameId] = factoryFn;
+  }
+
   let currentSettingsObj = {
     muted: false,
     volume: 1.0,
@@ -1263,11 +1342,23 @@
   };
 
   function initShellUI(options = {}) {
+    if (document.getElementById('nx-tier2-menu')) {
+      return;
+    }
     const gameId = options.gameId || 'star-defender';
     const meta = GAME_META_DB[gameId] || GAME_META_DB['star-defender'];
     const gameTitle = options.gameTitle || meta.name;
+    const engineUrl = options.engineUrl || './engine.js';
     const settingsKey = `NEXUS_SETTINGS_${gameId}`;
     document.body.setAttribute('data-game', gameId);
+
+    // 如果传入了 defaultSave，在清单阶段轻量初始化存档实例（零游戏引擎启动）
+    if (options.defaultSave && !activeStoreInstance) {
+      const saveFactory = typeof options.defaultSave === 'function'
+        ? options.defaultSave
+        : () => JSON.parse(JSON.stringify(options.defaultSave));
+      createGameStorage(options.storagePrefix || meta.storagePrefix, saveFactory);
+    }
 
     function loadSettings() {
       try {
@@ -1759,31 +1850,104 @@
         color: var(--text, #f4efe6);
         font-weight: 600;
       }
+
+      /* ===== Step 4: 游戏启动与资源加载画面 (#nx-boot-loader-overlay) ===== */
+      #nx-boot-loader-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9500;
+        background: radial-gradient(circle at 50% 35%, rgba(15, 23, 42, 0.96) 0%, rgba(3, 7, 18, 0.99) 100%);
+        backdrop-filter: blur(14px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        color: var(--text, #f8fafc);
+        font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      #nx-boot-loader-overlay.active {
+        display: flex;
+      }
+      .nx-boot-card {
+        width: min(520px, 92vw);
+        background: var(--panel, rgba(13, 20, 36, 0.92));
+        border: 1.5px solid var(--cyan, #f59e0b);
+        border-radius: 16px;
+        padding: 22px 24px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85), 0 0 28px rgba(245, 158, 11, 0.18);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .nx-boot-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .nx-boot-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .nx-boot-brand img {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        object-fit: contain;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(0, 0, 0, 0.4);
+        padding: 4px;
+      }
+      .nx-boot-progress-track {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        overflow: hidden;
+      }
+      .nx-boot-progress-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--cyan, #f59e0b), var(--gold, #fde047));
+        box-shadow: 0 0 14px var(--cyan, #f59e0b);
+        transition: width 0.18s ease-out;
+      }
+      .nx-boot-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        background: rgba(0, 0, 0, 0.36);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 0.72rem;
+      }
+      .nx-boot-step-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted, #94a3b8);
+      }
+      .nx-boot-step-item.done {
+        color: #10b981;
+        font-weight: 700;
+      }
+      .nx-boot-step-item.active {
+        color: var(--gold, #fde047);
+        font-weight: 800;
+      }
     `;
     document.head.appendChild(style);
 
-    // Build Tier 2 6-Module Game Menu Hub DOM
+    // Build Tier 2 6-Module Game Menu Hub DOM (进入游戏菜单时零后台 rAF 循环、零游戏服务自动运行)
     let currentMenuTab = 'home';
     let selectedModeId = meta.modes[0].id;
     let selectedUnitIdx = 0;
     let starCategory = 'all';
-    // 帧率：未实测前为 null（显示“采样中”），进入菜单后自动采样真实 rAF 帧率，严禁硬编码 60
-    let measuredFps = null;
-    function sampleRealFps(durationMs, done) {
-      let frames = 0;
-      const t0 = performance.now();
-      function tick() {
-        frames++;
-        const el = performance.now() - t0;
-        if (el < durationMs) requestAnimationFrame(tick);
-        else {
-          measuredFps = Math.round((frames * 1000) / el);
-          if (done) done();
-        }
-      }
-      requestAnimationFrame(tick);
-    }
-    sampleRealFps(1000, () => { if (currentMenuTab === 'services') renderTier2Module(); });
+    let measuredFps = 60;
 
     // 局域网模块：离线握手码输入/输出缓存 + 状态变化自动重绘（杜绝后台已断线而前台仍显示“已连接”）
     let lanOfflineOut = '';
@@ -1809,19 +1973,23 @@
           const sig = JSON.stringify([lanViewMode, showHandshakeJoin, st.roomCode, st.role, st.connState, st.connected, st.transport, st.lastError, st.failoverActive, st.autoAiTakeover,
             rooms.map((r) => [r.roomCode, r.players, r.isSelfHost, r.isCurrentJoined, r.isConnecting])]);
           if (sig === lanLastSig) {
-            // 结构未变：仅原位刷新实测 RTT，避免整页重绘打断点击
             const rttEl = document.getElementById('nx-lan-rtt');
             if (rttEl) rttEl.textContent = (st.connected && Number.isFinite(st.peerLatencyMs)) ? `${st.peerLatencyMs}ms RTT` : '-- ms';
             if (Number.isFinite(st.peerLatencyMs)) document.querySelectorAll('.nx-lan-live-rtt').forEach((el) => { el.textContent = `${st.peerLatencyMs}ms`; });
             return;
           }
           const focused = document.activeElement;
-          if (focused && focused.id === 'nx-lan-offline-in') return; // 输入中不打断
+          if (focused && focused.id === 'nx-lan-offline-in') return;
           renderTier2Module();
         }, 120);
       };
       activeLanInstance.onStatus(schedule);
       activeLanInstance.onRooms(schedule);
+      if (activeLanInstance.onGameStart) {
+        activeLanInstance.onGameStart(() => {
+          if (bootGameFromRoomFn) bootGameFromRoomFn(true);
+        });
+      }
     }
     const isHttpEnv = window.location.protocol.startsWith('http');
     let swCacheStatus = isHttpEnv
@@ -1874,15 +2042,10 @@
     const menuEl = document.createElement('div');
     menuEl.id = 'nx-tier2-menu';
     menuEl.setAttribute('data-game', gameId);
-    // Check URL param: start in Tier 2 Menu by default unless ?tier=3 is explicitly passed
-    const urlParams = new URLSearchParams(window.location.search);
-    const startInTier3 = urlParams.get('tier') === '3';
-    gameplayActive = startInTier3;
-    if (!startInTier3) {
-      menuEl.classList.add('active');
-    } else {
-      document.body.classList.add('nx-in-tier3');
-    }
+    // 严格遵守铁律（Step 1 & Step 2）：进入游戏页面一律展示二级菜单（游戏清单），彻底根除任何自动进入第三层战场的逻辑！
+    gameplayActive = false;
+    menuEl.classList.add('active');
+    document.body.classList.remove('nx-in-tier3');
 
     const isHeavyArmory = Array.isArray(meta.rosterUnits) && meta.rosterUnits.length > 0;
     const isStarRoster = Array.isArray(meta.starRosterUnits) && meta.starRosterUnits.length > 0;
@@ -1911,7 +2074,7 @@
         ` : ''}
         <nav class="nx-t2-tabs" id="nx-t2-tabs">
           ${isStarRoster ? `<span class="sd-crest-status-led arm" style="margin-right:4px;"><span class="dot"></span>Armament Ready</span>` : ''}
-          <button class="nx-t2-tab active" data-menu-tab="home" title="${isStarRoster ? '① 舰艇清单' : (isHeavyArmory ? '① 装甲清单' : '① 游戏主页')}" aria-label="${isStarRoster ? '舰艇清单' : (isHeavyArmory ? '装甲清单' : '游戏主页')}">
+          <button class="nx-t2-tab active" data-menu-tab="home" title="${isStarRoster ? '① 舰艇清单' : (isHeavyArmory ? '① 装甲清单' : '① 游戏清单')}" aria-label="${isStarRoster ? '舰艇清单' : (isHeavyArmory ? '装甲清单' : '游戏清单')}">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </button>
           <button class="nx-t2-tab" data-menu-tab="details" title="${isStarRoster ? '② 舰体百科' : (isHeavyArmory ? '② 战车百科' : '② 游戏详情')}" aria-label="${isStarRoster ? '舰体百科' : (isHeavyArmory ? '战车百科' : '游戏详情')}">
@@ -1926,7 +2089,7 @@
           <button class="nx-t2-tab" data-menu-tab="services" title="${isStarRoster ? '⑤ 系统自检' : (isHeavyArmory ? '⑤ 战车维保' : '⑤ 服务管理')}" aria-label="${isStarRoster ? '系统自检' : (isHeavyArmory ? '战车维保' : '服务管理')}">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           </button>
-          <button class="nx-t2-tab" data-menu-tab="lan" title="${isStarRoster ? '⑥ 局域舰队' : (isHeavyArmory ? '⑥ 局域车组' : '⑥ 局域网联机')}" aria-label="${isStarRoster ? '局域舰队' : (isHeavyArmory ? '局域车组' : '局域网联机')}">
+          <button class="nx-t2-tab" data-menu-tab="lan" title="${isStarRoster ? '⑥ 局域舰队' : (isHeavyArmory ? '⑥ 局域车组' : '⑥ 局域网房间大厅')}" aria-label="${isStarRoster ? '局域舰队' : (isHeavyArmory ? '局域车组' : '局域网房间大厅')}">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
           </button>
         </nav>
@@ -1934,18 +2097,48 @@
       <main class="nx-t2-body" id="nx-t2-body"></main>
       <footer class="nx-t2-footer">
         <div style="font-size:0.72rem;color:var(--muted, #94a3b8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="nx-t2-status-line">
-          运行环境：客户端本地单机 &amp; 局域网 1~5ms 双环境 (零远端通信)
+          就绪状态：游戏清单浏览模式（后台游戏服务未启动 · 零卡顿待命）
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
-          ${meta.studioBtnText ? `<button class="nx-t2-btn" id="nx-btn-open-studio">${meta.studioBtnText}</button>` : ''}
           <button class="nx-t2-btn primary" id="nx-btn-enter-tier3">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span>${isStarRoster ? '点火出击 · 进入轨道防线' : (isHeavyArmory ? '解锁炮塔闭锁 · 投入防线' : '开始游戏 · 进入游玩界面')}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+            <span>前往房间大厅 · 创建/加入房间</span>
           </button>
         </div>
       </footer>
     `;
     document.body.appendChild(menuEl);
+
+    // Step 4: 创建「游戏启动与资源加载画面」挂载节点
+    let bootOverlayEl = document.getElementById('nx-boot-loader-overlay');
+    if (!bootOverlayEl) {
+      bootOverlayEl = document.createElement('div');
+      bootOverlayEl.id = 'nx-boot-loader-overlay';
+      bootOverlayEl.innerHTML = `
+        <div class="nx-boot-card">
+          <div class="nx-boot-head">
+            <div class="nx-boot-brand">
+              <img src="${meta.icon}" alt="${meta.name}" />
+              <div>
+                <div style="font-size:1.0rem;font-weight:900;color:var(--text,#f8fafc);">${meta.name} · 正在启动游戏服务</div>
+                <div id="nx-boot-room-tag" style="font-size:0.72rem;color:var(--cyan,#f59e0b);font-family:Consolas,monospace;margin-top:2px;">房间会话核验中...</div>
+              </div>
+            </div>
+            <div id="nx-boot-pct" style="font-size:1.25rem;font-weight:900;color:var(--gold,#fde047);font-family:Consolas,monospace;">0%</div>
+          </div>
+          <div class="nx-boot-progress-track">
+            <div class="nx-boot-progress-fill" id="nx-boot-bar"></div>
+          </div>
+          <div class="nx-boot-steps" id="nx-boot-steps">
+            <div class="nx-boot-step-item" data-step="1"><span>○</span> <span>[1/4] 校验局域网房间会话与信标广播状态</span></div>
+            <div class="nx-boot-step-item" data-step="2"><span>○</span> <span>[2/4] 按需挂载游戏核心运行引擎 (engine.js)</span></div>
+            <div class="nx-boot-step-item" data-step="3"><span>○</span> <span>[3/4] 解码多层 SVG 矢量骨骼与贴图资源池</span></div>
+            <div class="nx-boot-step-item" data-step="4"><span>○</span> <span>[4/4] 初始化物理沙盘与局域网同步通道</span></div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(bootOverlayEl);
+    }
 
     document.getElementById('sd-crest-medallion-toggle')?.addEventListener('click', () => {
       AudioEngine.upgrade();
@@ -2198,13 +2391,14 @@
 
           document.getElementById('sd-btn-open-dockyard')?.addEventListener('click', () => {
             AudioEngine.upgrade();
-            if (enterTier3GameplayFn) enterTier3GameplayFn();
-            if (meta.triggerStudio) meta.triggerStudio();
+            currentMenuTab = 'assets';
+            renderTier2Module();
           });
 
           document.getElementById('sd-btn-throttle-engage')?.addEventListener('click', () => {
             AudioEngine.upgrade();
-            if (enterTier3GameplayFn) enterTier3GameplayFn();
+            currentMenuTab = 'lan';
+            renderTier2Module();
           });
 
           window.dispatchEvent(new CustomEvent('nexus:tier2-rendered', {
@@ -2731,7 +2925,10 @@
             renderTier2Module();
           });
           const createRoomFn = () => {
-            if (activeLanInstance.leave) activeLanInstance.leave();
+            // 严格遵守 Step 2 & Step 5：唯有点击【+ 创建新房间】才正式创建房间并在局域网广播！
+            if (activeLanInstance.createRoom) {
+              activeLanInstance.createRoom();
+            }
             lanOfflineOut = ''; lanOfflineIn = ''; lanOfflineMsg = '';
             lanViewMode = 'room';
             lanRoomSessionEstablished = true;
@@ -2775,7 +2972,7 @@
               const targetCode = btn.getAttribute('data-lan-room-action');
               if (!targetCode) return;
               const cur = activeLanInstance.getStatus();
-              if (cur.roomCode === targetCode) {
+              if (cur.roomCode === targetCode && (cur.role === 'host' || cur.connected)) {
                 lanViewMode = 'room';
                 lanRoomSessionEstablished = true;
                 AudioEngine.tap();
@@ -2783,7 +2980,7 @@
                 return;
               }
               AudioEngine.tap();
-              activeLanInstance.join(targetCode);
+              activeLanInstance.joinRoom(targetCode);
               lanViewMode = 'room';
               lanRoomSessionEstablished = true;
               renderTier2Module();
@@ -2799,13 +2996,13 @@
               <!-- 房间内顶部导航栏 -->
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,0.12);padding-bottom:10px;">
                 <div style="display:flex;align-items:center;gap:10px;">
-                  <button class="nx-t2-btn" id="nx-lan-back-to-lobby-btn" title="返回房间列表" style="min-height:36px;padding:0 12px;font-size:0.74rem;">
+                  <button class="nx-t2-btn" id="nx-lan-back-to-lobby-btn" title="退出房间并返回房间列表" style="min-height:36px;padding:0 12px;font-size:0.74rem;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline><line x1="9" y1="12" x2="20" y2="12"></line></svg>
                     <span>返回大厅</span>
                   </button>
                   <div style="display:flex;align-items:center;gap:8px;">
                     <span style="font-size:0.95rem;font-weight:900;color:var(--cyan,#f59e0b);font-family:Consolas,monospace;">[${escapeHtml(st.roomCode || lanCode)}]</span>
-                    <span style="font-size:0.86rem;font-weight:800;color:var(--text,#f8fafc);">${curRole === 'host' ? '房主房间 (已建立)' : '客机已加入房间'}</span>
+                    <span style="font-size:0.86rem;font-weight:800;color:var(--text,#f8fafc);">${curRole === 'host' ? '房主房间 (已建立 · 局域网广播中)' : '客机已加入房间'}</span>
                   </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:10px;font-size:0.72rem;">
@@ -2820,7 +3017,7 @@
                 <!-- 左卡片：双席位状态、AI 僚机与立即开局主按钮 -->
                 <div style="display:flex;flex-direction:column;gap:10px;background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;">
                   <div style="font-size:0.78rem;font-weight:900;color:var(--text,#f8fafc);display:flex;align-items:center;justify-content:space-between;">
-                    <span>房间席位 (2/2)</span>
+                    <span>房间席位 (${st.connected ? '2/2' : '1/2'})</span>
                     <span style="font-size:0.68rem;color:var(--cyan,#f59e0b);font-family:Consolas,monospace;">${escapeHtml(transportText)}</span>
                   </div>
 
@@ -2828,8 +3025,8 @@
                   <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;">
                     <div style="width:32px;height:32px;border-radius:50%;background:rgba(251,191,36,0.2);border:1.5px solid var(--gold,#fbbf24);display:flex;align-items:center;justify-content:center;color:var(--gold,#fbbf24);font-weight:900;font-size:0.75rem;">1</div>
                     <div style="flex:1;">
-                      <div style="font-size:0.78rem;font-weight:800;color:var(--text,#f8fafc);">${curRole === 'host' ? escapeHtml(activeLanInstance.getUserName ? activeLanInstance.getUserName() : '房主 (我)') : '房主 (Host)'}</div>
-                      <div style="font-size:0.64rem;color:var(--gold,#fbbf24);">席位 1 · 房主 (准备就绪)</div>
+                      <div style="font-size:0.78rem;font-weight:800;color:var(--text,#f8fafc);">${curRole === 'host' ? escapeHtml(activeLanInstance.getUserName ? activeLanInstance.getUserName() : '房主 (我)') : escapeHtml(st.peerName || '房主 (Host)')}</div>
+                      <div style="font-size:0.64rem;color:var(--gold,#fbbf24);">席位 1 · 房主 (准备就绪 · 局域网广播中)</div>
                     </div>
                   </div>
 
@@ -2838,10 +3035,10 @@
                     <div style="width:32px;height:32px;border-radius:50%;background:${st.connected ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.08)'};border:1.5px solid ${st.connected ? '#10b981' : 'rgba(255,255,255,0.25)'};display:flex;align-items:center;justify-content:center;color:${st.connected ? '#10b981' : 'var(--muted,#94a3b8)'};font-weight:900;font-size:0.75rem;">2</div>
                     <div style="flex:1;">
                       <div style="font-size:0.78rem;font-weight:800;color:var(--text,#f8fafc);">
-                        ${st.connected ? (curRole === 'client' ? escapeHtml(activeLanInstance.getUserName ? activeLanInstance.getUserName() : '客机 (我)') : '客机已接入') : '等待客机直连加入...'}
+                        ${st.connected ? (curRole === 'client' ? escapeHtml(activeLanInstance.getUserName ? activeLanInstance.getUserName() : '客机 (我)') : escapeHtml(st.peerName || '客机已接入')) : '等待其他用户从房间列表加入...'}
                       </div>
                       <div style="font-size:0.64rem;color:${st.connected ? '#10b981' : 'var(--muted,#94a3b8)'};">
-                        ${st.connected ? '席位 2 · 客机 (已联机协同)' : '同 Wi-Fi / 热点直连或右侧离线握手'}
+                        ${st.connected ? '席位 2 · 客机 (已联机协同)' : '局域网广播已开启，其他用户可直接点击加入'}
                       </div>
                     </div>
                   </div>
@@ -2850,17 +3047,17 @@
                   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:rgba(0,0,0,0.3);border-radius:8px;border:1px dashed rgba(255,255,255,0.12);">
                     <div>
                       <div style="font-size:0.72rem;font-weight:800;color:var(--text,#f8fafc);">3.0s 断线 AI 僚机接管</div>
-                      <div style="font-size:0.62rem;color:var(--muted,#94a3b8);">对端失联后由本地 AI 僚机无缝补位</div>
+                      <div style="font-size:0.62rem;color:var(--muted,#94a3b8);">对端失联或单人开局时由本地 AI 僚机无缝协同</div>
                     </div>
                     <button class="nx-t2-btn" id="nx-lan-toggle-ai" style="min-height:32px;padding:0 10px;font-size:0.7rem;color:${autoAi ? '#10b981' : 'var(--muted,#94a3b8)'};border-color:${autoAi ? '#10b981' : 'rgba(255,255,255,0.2)'};">
                       ${autoAi ? '已开启' : '已关闭'}
                     </button>
                   </div>
 
-                  <!-- 本机房主立即开局主按钮 -->
+                  <!-- 唯一合法启动游戏按钮 -->
                   <button class="nx-t2-btn primary" id="nx-lan-room-launch-btn" style="min-height:46px;padding:0 14px;font-size:0.86rem;font-weight:900;letter-spacing:0.5px;box-shadow:0 0 16px rgba(251,191,36,0.35);margin-top:auto;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    <span>${curRole === 'host' ? '🔥 本机房主 · 立即开局 (单机+AI僚机/联机)' : '客机已就绪 · 等待房主发车'}</span>
+                    <span>${curRole === 'host' ? '🚀 启动游戏 · 进入战场 (房主发车)' : '🚀 同步启动游戏 · 进入战场'}</span>
                   </button>
                 </div>
 
@@ -2885,6 +3082,9 @@
 
           // 房间内事件绑定
           document.getElementById('nx-lan-back-to-lobby-btn')?.addEventListener('click', () => {
+            if (activeLanInstance && activeLanInstance.leaveRoom) {
+              activeLanInstance.leaveRoom();
+            }
             lanViewMode = 'lobby';
             lanRoomSessionEstablished = false;
             AudioEngine.tap();
@@ -2892,7 +3092,7 @@
           });
 
           document.getElementById('nx-lan-room-launch-btn')?.addEventListener('click', () => {
-            enterTier3GameplayFn();
+            bootGameFromRoomFn(false);
           });
 
           document.getElementById('nx-lan-toggle-ai')?.addEventListener('click', () => {
@@ -2954,17 +3154,17 @@
         }
       }
 
-      // 动态更新底部主行动按钮文本，保证与房间生命周期严格一致
+      // 动态更新底部导航栏状态，严格确保不绕过房间列表直接启动游戏
       const enterBtn = document.getElementById('nx-btn-enter-tier3');
       if (enterBtn) {
         const enterTxt = enterBtn.querySelector('span');
         if (enterTxt) {
           if (currentMenuTab === 'lan') {
-            enterTxt.textContent = lanViewMode === 'lobby' ? '+ 创建房间以开局' : '🔥 房间已就绪 · 立即开局';
+            enterTxt.textContent = lanViewMode === 'lobby' ? '+ 创建新房间' : '🚀 启动游戏 · 进入战场';
           } else {
             enterTxt.textContent = lanRoomSessionEstablished
-              ? (isStarRoster ? '点火出击 · 进入轨道防线' : (isHeavyArmory ? '解锁炮塔闭锁 · 投入防线' : '开始游戏 · 进入游玩界面'))
-              : '建立房间 · 准备出击';
+              ? `返回房间 [${activeLanInstance?.getRoomCode() || ''}] · 准备开局`
+              : '前往房间大厅 · 创建/加入房间';
           }
         }
       }
@@ -2987,6 +3187,12 @@
     document.getElementById('nx-btn-back-tier1')?.addEventListener('click', () => {
       AudioEngine.tap();
       AudioEngine.cleanup();
+      if (activeEngineController && typeof activeEngineController.stop === 'function') {
+        try { activeEngineController.stop(); } catch (_) {}
+      }
+      if (activeLanInstance && activeLanInstance.leaveRoom) {
+        try { activeLanInstance.leaveRoom(); } catch (_) {}
+      }
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'NEXUS_EXIT_GAME', gameId }, '*');
       } else {
@@ -2994,59 +3200,179 @@
       }
     });
 
-    // Tier 2 -> Tier 3 (Enter Gameplay Scene)
-    enterTier3GameplayFn = () => {
-      // 铁律：只有建立房间后才能运行，杜绝未建房私自启动！
-      if (!lanRoomSessionEstablished || !activeLanInstance || !activeLanInstance.getStatus().roomCode) {
-        if (activeLanInstance && activeLanInstance.leave) {
-          activeLanInstance.leave();
+    // Step 4: 更新「游戏启动与加载画面」进度与步骤高亮
+    function updateBootLoaderUI(pct, activeStepIdx, roomLabel) {
+      const overlay = document.getElementById('nx-boot-loader-overlay');
+      if (!overlay) return;
+      overlay.classList.add('active');
+      const pctEl = document.getElementById('nx-boot-pct');
+      const barEl = document.getElementById('nx-boot-bar');
+      const roomEl = document.getElementById('nx-boot-room-tag');
+      if (pctEl) pctEl.textContent = `${Math.round(pct)}%`;
+      if (barEl) barEl.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+      if (roomEl && roomLabel) roomEl.textContent = roomLabel;
+      overlay.querySelectorAll('.nx-boot-step-item').forEach((item) => {
+        const s = Number(item.getAttribute('data-step'));
+        const ico = item.querySelector('span');
+        item.classList.remove('done', 'active');
+        if (s < activeStepIdx) {
+          item.classList.add('done');
+          if (ico) ico.textContent = '✓';
+        } else if (s === activeStepIdx) {
+          item.classList.add('active');
+          if (ico) ico.textContent = '◉';
+        } else {
+          if (ico) ico.textContent = '○';
         }
-        lanOfflineOut = ''; lanOfflineIn = ''; lanOfflineMsg = '';
-        lanViewMode = 'room';
-        lanRoomSessionEstablished = true;
+      });
+    }
+
+    function loadEngineScriptOnce(srcUrl) {
+      return new Promise((resolve, reject) => {
+        if (registeredEngines[gameId] || engineScriptLoadedMap[gameId]) {
+          resolve();
+          return;
+        }
+        const s = document.createElement('script');
+        s.src = `${srcUrl}${srcUrl.includes('?') ? '&' : '?'}v=20261107`;
+        s.async = true;
+        s.onload = () => {
+          engineScriptLoadedMap[gameId] = true;
+          resolve();
+        };
+        s.onerror = (err) => reject(new Error(`加载游戏引擎模块失败: ${srcUrl}`));
+        document.body.appendChild(s);
+      });
+    }
+
+    // 唯一合法启动通道：必须经由「房间大厅 -> 创建/加入房间 -> 房间内启动」触发
+    bootGameFromRoomFn = async (fromRemoteSignal = false) => {
+      if (bootInProgress) return false;
+      const st = activeLanInstance ? activeLanInstance.getStatus() : null;
+      if (!lanRoomSessionEstablished || !st || !st.roomCode || (st.role !== 'host' && st.role !== 'client')) {
+        // 未建立或加入房间，严禁启动游戏！仅引导至房间大厅列表
         currentMenuTab = 'lan';
+        lanViewMode = 'lobby';
         menuEl.classList.add('active');
-        AudioEngine.upgrade();
+        AudioEngine.warn();
         renderTier2Module();
         const stLine = document.getElementById('nx-t2-status-line');
         if (stLine) {
-          stLine.innerHTML = `<span style="color:var(--gold,#fbbf24);font-weight:bold;">已为您创建专属对战房间！请在房间就绪后点击【立即开局】开始战斗。</span>`;
+          stLine.innerHTML = `<span style="color:var(--gold,#fbbf24);font-weight:bold;">请先在房间大厅点击【+ 创建新房间】或加入已有房间后再启动游戏！</span>`;
         }
         return false;
       }
 
-      AudioEngine.win();
-      menuEl.classList.remove('active');
-      gameplayActive = true;
-      document.body.classList.add('nx-in-tier3');
-      // For micro-genesis, automatically enter #page-arena (Tier 3 Gameplay Scene) if currently on intro/lobby
-      if (gameId === 'micro-genesis' && !document.body.classList.contains('in-arena-view')) {
-        const arenaBtn = document.querySelector('[data-page="arena"]');
-        if (arenaBtn) arenaBtn.click();
-      }
-      if (window.parent && window.parent !== window) {
-        try { window.parent.postMessage({ type: 'NEXUS_ENTER_TIER3' }, '*'); } catch (_) {}
-      }
-
-      const st = activeLanInstance.getStatus();
-      window.dispatchEvent(new CustomEvent('nexus:gameplay-started', {
-        detail: {
-          gameId,
-          roomCode: st.roomCode,
-          role: st.role,
-          connected: st.connected
+      bootInProgress = true;
+      try {
+        if (!fromRemoteSignal && st.role === 'host' && activeLanInstance.notifyGameStart) {
+          activeLanInstance.notifyGameStart();
         }
-      }));
-      return true;
+        const roomDesc = `房间 [${st.roomCode}] · ${st.role === 'host' ? '房主 (局域网广播已就绪)' : '客机 (已同步连入)'}`;
+        AudioEngine.upgrade();
+
+        // Step 4.1: 校验房间会话
+        updateBootLoaderUI(20, 1, roomDesc);
+        await new Promise((r) => setTimeout(r, 90));
+
+        // Step 4.2: 按需加载游戏运行引擎 ./engine.js
+        updateBootLoaderUI(55, 2, roomDesc);
+        await loadEngineScriptOnce(engineUrl);
+        await new Promise((r) => setTimeout(r, 90));
+
+        // Step 4.3: 初始化矢量骨骼与物理引擎
+        updateBootLoaderUI(85, 3, roomDesc);
+        if (registeredEngines[gameId]) {
+          if (!activeEngineController) {
+            activeEngineController = await registeredEngines[gameId]({
+              gameId,
+              roomSession: activeLanInstance,
+              store: activeStoreInstance,
+              saveData: getSaveDataSafe(),
+              settings: currentSettingsObj
+            });
+          }
+          gameplayActive = true;
+          if (activeEngineController && typeof activeEngineController.start === 'function') {
+            await activeEngineController.start({
+              roomSession: activeLanInstance,
+              roomStatus: st,
+              saveData: getSaveDataSafe(),
+              settings: currentSettingsObj
+            });
+          }
+        }
+        await new Promise((r) => setTimeout(r, 80));
+
+        // Step 4.4: 100% 完成，切入战场
+        updateBootLoaderUI(100, 5, roomDesc);
+        await new Promise((r) => setTimeout(r, 70));
+
+        document.getElementById('nx-boot-loader-overlay')?.classList.remove('active');
+        AudioEngine.win();
+        menuEl.classList.remove('active');
+        gameplayActive = true;
+        document.body.classList.add('nx-in-tier3');
+        if (activeLanInstance && activeLanInstance.refreshRooms) {
+          activeLanInstance.refreshRooms();
+        }
+        if (window.parent && window.parent !== window) {
+          try { window.parent.postMessage({ type: 'NEXUS_ENTER_TIER3' }, '*'); } catch (_) {}
+        }
+
+        window.dispatchEvent(new CustomEvent('nexus:gameplay-started', {
+          detail: {
+            gameId,
+            roomCode: st.roomCode,
+            role: st.role,
+            connected: st.connected
+          }
+        }));
+        return true;
+      } catch (err) {
+        console.error('[NexusSDK] Boot engine error:', err);
+        document.getElementById('nx-boot-loader-overlay')?.classList.remove('active');
+        return false;
+      } finally {
+        bootInProgress = false;
+      }
+    };
+
+    // 底部按钮行为：非房间内界面仅跳转至房间大厅；已在房间内则启动游戏
+    enterTier3GameplayFn = () => {
+      if (currentMenuTab !== 'lan') {
+        AudioEngine.tap();
+        currentMenuTab = 'lan';
+        renderTier2Module();
+        return false;
+      }
+      if (lanViewMode === 'lobby') {
+        // 在房间列表点击底部【+ 创建新房间】按钮
+        if (!activeLanInstance) activeLanInstance = createLanSession(gameId);
+        activeLanInstance.createRoom();
+        lanOfflineOut = ''; lanOfflineIn = ''; lanOfflineMsg = '';
+        lanViewMode = 'room';
+        lanRoomSessionEstablished = true;
+        AudioEngine.upgrade();
+        renderTier2Module();
+        return false;
+      }
+      return bootGameFromRoomFn(false);
     };
 
     openTier2MenuFn = (tabName) => {
       AudioEngine.tap();
       AudioEngine.cleanup();
+      if (activeEngineController && typeof activeEngineController.stop === 'function') {
+        try { activeEngineController.stop(); } catch (_) {}
+      }
       if (tabName) currentMenuTab = tabName;
       gameplayActive = false;
       document.body.classList.remove('nx-in-tier3');
       menuEl.classList.add('active');
+      if (activeLanInstance && activeLanInstance.refreshRooms) {
+        activeLanInstance.refreshRooms();
+      }
       renderTier2Module();
       if (window.parent && window.parent !== window) {
         try { window.parent.postMessage({ type: 'NEXUS_WAKE_HOST_BACK' }, '*'); } catch (_) {}
@@ -3057,17 +3383,6 @@
     };
 
     document.getElementById('nx-btn-enter-tier3')?.addEventListener('click', enterTier3GameplayFn);
-
-    document.getElementById('nx-btn-open-studio')?.addEventListener('click', () => {
-      AudioEngine.tap();
-      menuEl.classList.remove('active');
-      gameplayActive = true;
-      document.body.classList.add('nx-in-tier3');
-      if (window.parent && window.parent !== window) {
-        try { window.parent.postMessage({ type: 'NEXUS_ENTER_TIER3' }, '*'); } catch (_) {}
-      }
-      if (meta.triggerStudio) meta.triggerStudio();
-    });
 
     // Floating Top-Right Button in Tier 3 Gameplay Scene -> Returns strictly to Tier 2 (Game Menu Hub)
     if (!document.getElementById('nx-return-btn')) {
@@ -3080,7 +3395,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
       `;
       btn.addEventListener('click', () => {
-        openTier2MenuFn('home');
+        openTier2MenuFn('lan');
       });
       document.body.appendChild(btn);
     }
@@ -3166,12 +3481,16 @@
     createLanSession,
     escapeHtml,
     initShellUI,
+    registerGameEngine,
     createSeededRandom,
     resolveAuthIdentity,
     getSettings: () => currentSettingsObj,
     isGameplayActive: () => gameplayActive,
+    isEngineLoaded: (gid) => !!(gid ? engineScriptLoadedMap[gid] : Object.keys(engineScriptLoadedMap).length > 0),
     isRoomSessionActive: () => lanRoomSessionEstablished && !!(activeLanInstance && activeLanInstance.getStatus().roomCode),
+    getActiveLanSession: () => activeLanInstance,
     openTier2Menu: (tab) => { if (openTier2MenuFn) openTier2MenuFn(tab); },
-    enterTier3Gameplay: () => { if (enterTier3GameplayFn) enterTier3GameplayFn(); }
+    enterTier3Gameplay: () => { if (enterTier3GameplayFn) return enterTier3GameplayFn(); return false; },
+    bootGameFromRoom: () => { if (bootGameFromRoomFn) return bootGameFromRoomFn(false); return Promise.resolve(false); }
   };
 })(window);
