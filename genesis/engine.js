@@ -1127,7 +1127,7 @@
             <div class="stat-box"><div class="lbl">生命上限 / 护甲减伤</div><div class="val">${st.maxHp} HP · ${Math.round(st.damageReduction * 100)}%</div></div>
             <div class="stat-box"><div class="lbl">能量上限 / 静态总代谢</div><div class="val cyan">${st.maxEnergy} E · ${st.bmr} E/s</div></div>
             <div class="stat-box"><div class="lbl">最大航速 / 转向角速度</div><div class="val">${st.maxSpeed} px/s · ${st.maxTurnRate}</div></div>
-            <div class="stat-box"><div class="lbl">感官配置 (视觉 / 声呐)</div><div class="val gold">眼Lv.${st.maxEyeLv} / 耳Lv.${st.maxEarLv}</div></div>
+            <div class="stat-box"><div class="lbl">整合感官 (绝对 / 视觉 / 声呐)</div><div class="val gold">${st.absSenseRange}px / ${st.dayEyeRange || 0}px / ${st.sonarRange || 0}px</div></div>
           </div>
           <div style="font-size:0.64rem;color:var(--mg-text-secondary);display:flex;flex-wrap:wrap;gap:4px;">
             ${organBadges.map((ob) => `<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(15,23,42,0.85);border:1px solid var(--mg-border-subtle);border-radius:6px;padding:2px 6px;"><img src="../assets/micro-genesis/sprites/${ob.sprite}" width="14" height="14" alt=""/>${ob.name}</span>`).join('')}
