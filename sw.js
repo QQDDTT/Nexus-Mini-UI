@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v18.0-shoal-nutrient-tier-balance';
+const CACHE_NAME = 'nexus-mini-portal-v19.0-juvenile-ontogeny';
 const CORE_ASSETS = [
   './',
   './index.html',

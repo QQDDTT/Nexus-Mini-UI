@@ -32,6 +32,7 @@
           id: 'torso-t1-micro', code: 'T01', name: '微型单节原核体', shortName: 'T01 原核',
           sprite: 'torso-t1-micro.svg', volume: 1.0, baseHp: 70, bmr: 0.8, moveDrain: 0.25, kv: 1.25, kw: 1.30,
           reproThreshold: 0.75, reproCostAdd: 0.00, childERatioMult: 1.00, reproCooldown: 4.0, maxColonyPop: 20,
+          baseGrowSec: 3.5, juvenileStartScale: 0.78, juvenileMinHpMult: 0.72, juvenileMinDmgMult: 0.72, juvenileMinArmorMult: 0.75,
           transitionGp: 0, totalSlots: 5,
           slots: { core: 1, sensory: 1, mouth: 1, locomotion: 1, utility: 1 },
           sizePx: 24, segments: [1.0]
@@ -40,6 +41,7 @@
           id: 'torso-t2-stream', code: 'T02', name: '流线三节真核体', shortName: 'T02 流线',
           sprite: 'torso-t2-stream.svg', volume: 2.2, baseHp: 140, bmr: 2.2, moveDrain: 0.85, kv: 1.00, kw: 1.00,
           reproThreshold: 0.82, reproCostAdd: 0.08, childERatioMult: 0.92, reproCooldown: 7.5, maxColonyPop: 14,
+          baseGrowSec: 10.0, juvenileStartScale: 0.65, juvenileMinHpMult: 0.50, juvenileMinDmgMult: 0.50, juvenileMinArmorMult: 0.50,
           transitionGp: 150, totalSlots: 7,
           slots: { core: 1, sensory: 1, mouth: 1, locomotion: 2, utility: 2 },
           sizePx: 30, segments: [0.95, 1.05, 0.78]
@@ -48,6 +50,7 @@
           id: 'torso-t3-predator', code: 'T03', name: '宽幅五节掠食体', shortName: 'T03 掠食',
           sprite: 'torso-t3-predator.svg', volume: 4.0, baseHp: 240, bmr: 5.2, moveDrain: 2.40, kv: 0.72, kw: 0.68,
           reproThreshold: 0.90, reproCostAdd: 0.18, childERatioMult: 0.82, reproCooldown: 14.0, maxColonyPop: 8,
+          baseGrowSec: 22.0, juvenileStartScale: 0.54, juvenileMinHpMult: 0.34, juvenileMinDmgMult: 0.35, juvenileMinArmorMult: 0.30,
           transitionGp: 320, totalSlots: 9,
           slots: { core: 1, sensory: 2, mouth: 1, locomotion: 2, utility: 3 },
           sizePx: 38, segments: [0.92, 1.15, 1.08, 0.88, 0.68]
@@ -56,6 +59,7 @@
           id: 'torso-t4-titan', code: 'T04', name: '巨型多节深渊泰坦', shortName: 'T04 泰坦',
           sprite: 'torso-t4-titan.svg', volume: 7.5, baseHp: 420, bmr: 11.5, moveDrain: 5.50, kv: 0.48, kw: 0.42,
           reproThreshold: 0.96, reproCostAdd: 0.28, childERatioMult: 0.72, reproCooldown: 24.0, maxColonyPop: 4,
+          baseGrowSec: 38.0, juvenileStartScale: 0.45, juvenileMinHpMult: 0.22, juvenileMinDmgMult: 0.25, juvenileMinArmorMult: 0.15,
           transitionGp: 600, totalSlots: 12,
           slots: { core: 1, sensory: 2, mouth: 2, locomotion: 3, utility: 4 },
           sizePx: 48, segments: [0.95, 1.20, 1.22, 1.12, 0.98, 0.82, 0.65]
@@ -395,9 +399,24 @@
 
       function getEffectiveStats(org) {
         if (!org || !org.blueprint) return {};
-        return (org.suppressedTimer > 0 && org.blueprint.suppressedStatsSummary)
+        const base = (org.suppressedTimer > 0 && org.blueprint.suppressedStatsSummary)
           ? org.blueprint.suppressedStatsSummary
           : org.blueprint.statsSummary;
+        if (org.maturity !== undefined && org.maturity < 1.0) {
+          const m = Math.max(0, Math.min(1, org.maturity));
+          const dmgMult = (base.juvenileMinDmgMult || 0.5) + (1 - (base.juvenileMinDmgMult || 0.5)) * m;
+          const armMult = (base.juvenileMinArmorMult || 0.5) + (1 - (base.juvenileMinArmorMult || 0.5)) * m;
+          const spdMult = 1.0 + 0.14 * (1 - m);
+          const bmrMult = 0.65 + 0.35 * m;
+          return {
+            ...base,
+            biteDmg: Math.max(1, Math.round(base.biteDmg * dmgMult)),
+            damageReduction: +(base.damageReduction * armMult).toFixed(3),
+            maxSpeed: Math.round(base.maxSpeed * spdMult),
+            bmr: +(base.bmr * bmrMult).toFixed(2)
+          };
+        }
+        return base;
       }
 
       function computeBlueprintStats(bp, forceLv1 = false) {
@@ -503,8 +522,12 @@
         const maxTurnRate = +((1.6 + 0.040 * sumTorque) * torso.kw).toFixed(2);
         bmr = +bmr.toFixed(2);
 
+        const dietType = firstMouthSeries.diet;
+        const dietGrowMult = dietType === 'carnivore' ? 1.35 : (dietType === 'omnivore' ? 1.15 : 1.00);
+        const dietFragileMult = dietType === 'carnivore' ? 0.85 : (dietType === 'omnivore' ? 0.92 : 1.00);
+
         return {
-          dietType: firstMouthSeries.diet,
+          dietType,
           statsSummary: {
             maxHp,
             maxEnergy,
@@ -526,6 +549,11 @@
             childERatio: +(coreSpec.childERatio * (torso.childERatioMult || 1.0)).toFixed(2),
             reproCooldown: torso.reproCooldown || 4.0,
             maxColonyPop: torso.maxColonyPop || 20,
+            growDurationSec: +((torso.baseGrowSec || 8.0) * dietGrowMult).toFixed(1),
+            juvenileStartScale: +((torso.juvenileStartScale || 0.65) * (dietType === 'carnivore' ? 0.94 : 1.0)).toFixed(2),
+            juvenileMinHpMult: +((torso.juvenileMinHpMult || 0.50) * dietFragileMult).toFixed(2),
+            juvenileMinDmgMult: +((torso.juvenileMinDmgMult || 0.50) * dietFragileMult).toFixed(2),
+            juvenileMinArmorMult: +((torso.juvenileMinArmorMult || 0.50) * dietFragileMult).toFixed(2),
             herbEff: firstMouthSpec.herbEff,
             carnEff: firstMouthSpec.carnEff,
             funnelR: Math.round(firstMouthSpec.funnelR * dualMouthMult),
@@ -749,7 +777,8 @@
         const phase = opts.freezePhase !== undefined
           ? opts.freezePhase
           : ((opts.timeSec || 0) * 6.5 + (org.phaseOffset || 0));
-        const scale = opts.scale || 1.0;
+        const maturityScale = (org.growthScale && org.growthScale > 0) ? org.growthScale : 1.0;
+        const scale = (opts.scale || 1.0) * maturityScale;
         const baseR = (torso.sizePx * 0.44) * scale;
         const segMultipliers = torso.segments || [1.0];
         const segCount = segMultipliers.length;
@@ -964,8 +993,14 @@
           drawSpriteCentered(ctx, spec.sprite, head.x + head.r * 0.38, head.y + offsetY, baseR * 1.15, baseR * 1.15, 0);
         });
 
-        // 同族电脑 NPC 细微光环标记
-        if (org.faction === 'player' && !org.isAlpha && !org.formerKin) {
+        // 同族电脑 NPC 细微光环标记与幼体发育进度环 (Juvenile Ontogeny Ring)
+        if (org.maturity !== undefined && org.maturity < 1.0) {
+          ctx.beginPath();
+          ctx.arc(0, 0, baseR * 1.58, -Math.PI * 0.5, -Math.PI * 0.5 + Math.PI * 2 * Math.max(0.05, org.maturity));
+          ctx.strokeStyle = org.faction === 'player' ? 'rgba(56, 189, 248, 0.85)' : 'rgba(251, 191, 36, 0.72)';
+          ctx.lineWidth = 1.6;
+          ctx.stroke();
+        } else if (org.faction === 'player' && !org.isAlpha && !org.formerKin) {
           ctx.beginPath();
           ctx.arc(0, 0, baseR * 1.45, 0, Math.PI * 2);
           ctx.strokeStyle = 'rgba(45, 212, 191, 0.38)';
@@ -1873,10 +1908,62 @@
         return validateAndSanitizeBlueprint(clone);
       }
 
+      // 同步幼体发育进度 (maturity ∈ [0, 1]) 对体型半径、最大生命值与当前生命值的动态插值
+      function syncOrganismMaturity(org, isInitialSpawn = false) {
+        if (!org || !org.blueprint) return;
+        const st = org.blueprint.statsSummary;
+        const torso = TORSOS[org.blueprint.torsoId] || TORSOS['torso-t2-stream'];
+        const adultRadius = (torso.sizePx * 0.44) * (org.isBoss ? 1.35 : 1.0);
+        const adultMaxHp = st.maxHp * (org.isBoss ? 2.4 : 1.0);
+        const m = org.maturity !== undefined ? Math.max(0, Math.min(1, org.maturity)) : 1.0;
+
+        if (m >= 1.0) {
+          org.maturity = 1.0;
+          org.isJuvenile = false;
+          org.growthScale = 1.0;
+          if (org.maxHp < adultMaxHp) {
+            const diffHp = adultMaxHp - org.maxHp;
+            org.maxHp = adultMaxHp;
+            org.hp = Math.min(adultMaxHp, org.hp + diffHp);
+          }
+          org.radius = adultRadius;
+          return;
+        }
+
+        org.isJuvenile = true;
+        const startScale = st.juvenileStartScale || 0.65;
+        const minHpMult = st.juvenileMinHpMult || 0.50;
+        org.growthScale = +(startScale + (1.0 - startScale) * m).toFixed(3);
+        org.radius = +(adultRadius * org.growthScale).toFixed(2);
+        const targetMaxHp = Math.max(8, Math.round(adultMaxHp * (minHpMult + (1.0 - minHpMult) * m)));
+        if (isInitialSpawn) {
+          org.maxHp = targetMaxHp;
+          org.hp = targetMaxHp;
+        } else if (targetMaxHp > org.maxHp) {
+          const gainedMaxHp = targetMaxHp - org.maxHp;
+          org.maxHp = targetMaxHp;
+          org.hp = Math.min(targetMaxHp, org.hp + gainedMaxHp);
+        }
+      }
+
+      // 幼体进食加速发育：吞食通用营养质/微藻/肉块获得能量时，同步催化幼体成熟
+      function accelerateJuvenileGrowth(org, gainE) {
+        if (!org || org.maturity === undefined || org.maturity >= 1.0 || gainE <= 0) return;
+        const wasJuvenile = org.maturity < 1.0;
+        const feedBoost = (gainE / Math.max(40, org.maxEnergy)) * 0.55;
+        org.maturity = Math.min(1.0, org.maturity + feedBoost);
+        syncOrganismMaturity(org, false);
+        if (wasJuvenile && org.maturity >= 1.0 && org.colonyId === 'player_colony') {
+          NexusSDK.audio.upgrade();
+        }
+      }
+
       function spawnOrganismEntity(bp, x, y, faction, opts = {}) {
         const st = bp.statsSummary;
         const torso = TORSOS[bp.torsoId];
-        return {
+        const isJuv = Boolean(opts.isJuvenile);
+        const initMaturity = isJuv ? (opts.maturity !== undefined ? opts.maturity : 0.0) : 1.0;
+        const ent = {
           id: 'ent_' + Date.now() + '_' + Math.floor(Math.random() * 100000),
           x: Math.max(60, Math.min(WORLD_W - 60, x)),
           y: Math.max(60, Math.min(WORLD_H - 60, y)),
@@ -1890,6 +1977,9 @@
           isAlpha: Boolean(opts.isAlpha),
           isBoss: Boolean(opts.isBoss),
           formerKin: Boolean(opts.formerKin),
+          isJuvenile: isJuv,
+          maturity: initMaturity,
+          growthScale: 1.0,
           blueprint: bp,
           hp: st.maxHp * (opts.hpRatio ?? 1.0),
           maxHp: st.maxHp,
@@ -1935,6 +2025,10 @@
           sonarDetectedCycle: -1,
           sonarLastPulseSec: -10
         };
+        if (isJuv) {
+          syncOrganismMaturity(ent, true);
+        }
+        return ent;
       }
 
       // 辅助函数：将野生捕食者/领主坐标约束在【起源浅滩 (Genesis Shoal)】安全半径之外
@@ -2272,9 +2366,16 @@
         }
       }
 
-      // 分裂繁殖同族电脑 NPC 后代 (大型物种 T02~T04 拥有更高能量门槛、更高繁衍能耗、更长繁衍冷却与更严生态承载上限)
+      // 分裂繁殖同族电脑 NPC 后代 (大型物种 T02~T04 拥有更高能量门槛、更高繁衍能耗、更长繁衍冷却与更严生态承载上限；分裂出的后代需经历幼体发育期)
       function tryMitosisReproduce(parent) {
         if (!parent || parent.hp <= 0) return false;
+        if (parent.maturity !== undefined && parent.maturity < 1.0) {
+          if (parent === arenaState.alpha) {
+            NexusSDK.audio.warn();
+            showToast(`当前个体尚处于幼体发育期 (${Math.round(parent.maturity * 100)}%)，成年后方可分裂繁衍！`);
+          }
+          return false;
+        }
         const st = parent.blueprint.statsSummary;
         if (parent.reproCd && parent.reproCd > 0) {
           if (parent === arenaState.alpha) {
@@ -2309,6 +2410,7 @@
         const child = spawnOrganismEntity(parent.blueprint, childX, childY, parent.faction, {
           colonyId: parent.colonyId,
           isAlpha: false,
+          isJuvenile: true,
           hpRatio: 1.0,
           energyRatio: st.childERatio
         });
@@ -2319,7 +2421,7 @@
           arenaState.playerFullBlueprint.records.maxPopulation = Math.max(arenaState.playerFullBlueprint.records.maxPopulation, newPop);
           NexusSDK.audio.pickup();
           if (parent === arenaState.alpha) {
-            showToast(`分裂成功！诞生 1 只同族电脑 NPC 后代（当前种群 ${newPop} 只）`);
+            showToast(`分裂成功！诞生 1 只同族幼体（发育时长 ${st.growDurationSec}s，进食可加速成年 · 当前种群 ${newPop} 只）`);
           }
         }
         return true;
@@ -2763,7 +2865,7 @@
         if (victim === arenaState.alpha) {
           const survivingKin = arenaState.organisms
             .filter((o) => o.hp > 0 && o.colonyId === 'player_colony' && !o.formerKin && o !== victim)
-            .sort((a, b) => b.hp - a.hp);
+            .sort((a, b) => (((b.maturity ?? 1) >= 1 ? 1 : 0) - ((a.maturity ?? 1) >= 1 ? 1 : 0)) || (b.hp - a.hp));
           if (survivingKin.length > 0) {
             const heir = survivingKin[0];
             heir.isAlpha = true;
@@ -2935,6 +3037,14 @@
           if (org.slowTimer > 0) org.slowTimer = Math.max(0, org.slowTimer - dt);
           if (org.iceShieldTimer > 0) org.iceShieldTimer = Math.max(0, org.iceShieldTimer - dt);
           if (org.spawnShieldTimer > 0) org.spawnShieldTimer = Math.max(0, org.spawnShieldTimer - dt);
+
+          // 幼体发育机制 (Juvenile Ontogeny)：随时间自然成长 (饥饿时放缓至 25%)，营养层级越高发育时间越长
+          if (org.maturity !== undefined && org.maturity < 1.0) {
+            const growDur = org.blueprint?.statsSummary?.growDurationSec || 10.0;
+            const hungerFactor = org.energy > 0 ? 1.0 : 0.25;
+            org.maturity = Math.min(1.0, org.maturity + (dt / growDur) * hungerFactor);
+            syncOrganismMaturity(org, false);
+          }
 
           // 清理第四章首领【千目原质母体】已到期的 12.0s FIFO 同化器官槽位
           if (org.assimilatedOrgans && org.assimilatedOrgans.length > 0) {
@@ -3430,20 +3540,23 @@
             }
             if (d <= org.radius + f.radius) {
               if (f.type === 'nutrient') {
-                // 【起源浅滩】通用原生营养质：适应植食/肉食/杂食一切物种，取口器最高转化率计算能量增益
+                // 【起源浅滩】通用原生营养质：适应植食/肉食/杂食一切物种，取口器最高转化率计算能量增益并加速幼体发育
                 const universalEff = Math.max(st.herbEff || 0, st.carnEff || 0, 1.0);
                 const gainE = f.energy * universalEff * st.digestEff;
                 org.energy = Math.min(org.maxEnergy, org.energy + gainE);
+                accelerateJuvenileGrowth(org, gainE);
                 arenaState.foods.splice(fi, 1);
                 if (org === alpha) NexusSDK.audio.pop();
               } else if (f.type === 'algae' && st.herbEff > 0) {
                 const gainE = f.energy * st.herbEff * st.digestEff;
                 org.energy = Math.min(org.maxEnergy, org.energy + gainE);
+                accelerateJuvenileGrowth(org, gainE);
                 arenaState.foods.splice(fi, 1);
                 if (org === alpha) NexusSDK.audio.pop();
               } else if (f.type === 'meat' && st.carnEff > 0 && f.sourceColonyId !== org.colonyId) {
                 const gainE = f.energy * st.carnEff * st.digestEff;
                 org.energy = Math.min(org.maxEnergy, org.energy + gainE);
+                accelerateJuvenileGrowth(org, gainE);
                 arenaState.foods.splice(fi, 1);
                 if (org === alpha) NexusSDK.audio.pickup();
               }
@@ -4081,7 +4194,7 @@
         }
       } catch (_e) {}
       // 调试探针导出
-      window.__debugGenesis = () => ({ arenaState, TORSOS, validateAndSanitizeBlueprint, resolveOrganismCollisions, spawnOrganismEntity, spawnNutrientCluster, tryMitosisReproduce, classifySonarRelation, getSonarPalette, isInsideGenesisShoal, clampOutsideGenesisShoal, applyDamage, stepArenaSimulation });
+      window.__debugGenesis = () => ({ arenaState, TORSOS, validateAndSanitizeBlueprint, getEffectiveStats, syncOrganismMaturity, accelerateJuvenileGrowth, resolveOrganismCollisions, spawnOrganismEntity, spawnNutrientCluster, tryMitosisReproduce, classifySonarRelation, getSonarPalette, isInsideGenesisShoal, clampOutsideGenesisShoal, applyDamage, stepArenaSimulation });
     })();
     }
 
