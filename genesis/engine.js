@@ -1943,6 +1943,10 @@
           const gainedMaxHp = targetMaxHp - org.maxHp;
           org.maxHp = targetMaxHp;
           org.hp = Math.min(targetMaxHp, org.hp + gainedMaxHp);
+        } else if (targetMaxHp < org.maxHp) {
+          const hpRatio = org.maxHp > 0 ? Math.min(1, org.hp / org.maxHp) : 1;
+          org.maxHp = targetMaxHp;
+          org.hp = Math.max(1, Math.round(targetMaxHp * hpRatio));
         }
       }
 
@@ -2470,13 +2474,14 @@
               if (org === alpha) {
                 // 玩家始祖：扣除 40% MaxE_old 并以 MaxE_new 封顶，等比例折算生命值，继承或置入战备适应冷却
                 const newE = Math.min(newSt.maxEnergy, Math.max(0, org.energy - 0.40 * oldMaxE));
-                const newHp = Math.max(1, Math.round(org.hp * (newSt.maxHp / oldMaxHp)));
+                const hpRatio = oldMaxHp > 0 ? Math.min(1, org.hp / oldMaxHp) : 1;
                 org.blueprint = targetBp;
                 org.maxEnergy = newSt.maxEnergy;
                 org.energy = newE;
                 org.maxHp = newSt.maxHp;
-                org.hp = newHp;
+                org.hp = Math.max(1, Math.round(newSt.maxHp * hpRatio));
                 org.radius = TORSOS[targetBp.torsoId].sizePx * 0.44;
+                syncOrganismMaturity(org, false);
                 if (newSt.activeSkill) {
                   if (oldSkillId !== newSkillId) {
                     org.skillCd = Math.max(org.skillCd, Math.min(2.0, newSt.activeSkill.cd));
@@ -2485,14 +2490,15 @@
               } else if (org.energy >= 0.60 * oldMaxE) {
                 // 同族电脑 NPC (能量 >= 60% MaxE_old)：立即自动蜕皮同步，保持绝对能量值不变并以 MaxE_new 封顶
                 const newE = Math.min(newSt.maxEnergy, org.energy);
-                const newHp = Math.max(1, Math.round(org.hp * (newSt.maxHp / oldMaxHp)));
+                const hpRatio = oldMaxHp > 0 ? Math.min(1, org.hp / oldMaxHp) : 1;
                 org.blueprint = targetBp;
                 org.maxEnergy = newSt.maxEnergy;
                 org.energy = newE;
                 org.maxHp = newSt.maxHp;
-                org.hp = newHp;
+                org.hp = Math.max(1, Math.round(newSt.maxHp * hpRatio));
                 org.radius = TORSOS[targetBp.torsoId].sizePx * 0.44;
                 org.pendingBlueprint = null;
+                syncOrganismMaturity(org, false);
                 if (newSt.activeSkill && oldSkillId !== newSkillId) {
                   org.skillCd = Math.max(org.skillCd, Math.min(2.0, newSt.activeSkill.cd));
                 }
@@ -2823,8 +2829,9 @@
       function handleEntityDeath(victim, killer) {
         victim.hp = 0;
         const torso = TORSOS[victim.blueprint.torsoId];
-        // 热力学守恒肉块能量公式: E_meat = round(8 * V^0.6 + 0.22 * E_remaining); 跨躯干剥离旧种群 (formerKin) 肉块能量减半
-        const rawMeatEnergy = Math.round(8 * Math.pow(torso.volume, 0.6) + 0.22 * Math.max(0, victim.energy));
+        const biomassScale = victim.growthScale !== undefined ? victim.growthScale : 1.0;
+        // 热力学守恒肉块能量公式: E_meat = round(8 * V^0.6 * growthScale + 0.22 * E_remaining); 跨躯干剥离旧种群 (formerKin) 肉块能量减半
+        const rawMeatEnergy = Math.max(2, Math.round(8 * Math.pow(torso.volume, 0.6) * biomassScale + 0.22 * Math.max(0, victim.energy)));
         const meatEnergy = victim.formerKin ? Math.max(1, Math.round(rawMeatEnergy * 0.5)) : rawMeatEnergy;
         arenaState.foods.push({
           id: 'meat_' + Date.now() + '_' + Math.random(),
@@ -2848,11 +2855,11 @@
           }
         });
 
-        // GP 差分概率掉落 (玩家亲手击杀 75%，同族 NPC 击杀 12%，首领 100%，formerKin 0%)
+        // GP 差分概率掉落 (玩家亲手击杀 75%，同族 NPC 击杀 12%，首领 100%，formerKin 0%；幼体按发育体型 growthScale 折算)
         if (killer && killer.colonyId === 'player_colony' && victim.colonyId !== 'player_colony' && !victim.formerKin) {
           const dropChance = victim.isBoss ? 1.0 : (killer.isAlpha ? 0.75 : 0.12);
           if (Math.random() <= dropChance) {
-            const gpGain = victim.isBoss ? 220 : Math.round(18 * Math.pow(torso.volume, 0.75));
+            const gpGain = victim.isBoss ? 220 : Math.max(2, Math.round(18 * Math.pow(torso.volume, 0.75) * biomassScale));
             globalGpReserve += gpGain;
             arenaState.playerFullBlueprint.records.totalKills += 1;
             persistState();
@@ -3056,13 +3063,15 @@
             const pBp = org.pendingBlueprint;
             const pSt = pBp.statsSummary;
             const oldMaxHp = org.maxHp;
+            const hpRatio = oldMaxHp > 0 ? Math.min(1, org.hp / oldMaxHp) : 1;
             org.blueprint = pBp;
             org.energy = Math.min(pSt.maxEnergy, org.energy);
             org.maxEnergy = pSt.maxEnergy;
-            org.hp = Math.max(1, Math.round(org.hp * (pSt.maxHp / oldMaxHp)));
             org.maxHp = pSt.maxHp;
+            org.hp = Math.max(1, Math.round(pSt.maxHp * hpRatio));
             org.radius = TORSOS[pBp.torsoId].sizePx * 0.44;
             org.pendingBlueprint = null;
+            syncOrganismMaturity(org, false);
           }
 
           // 毒伤结算
@@ -4194,7 +4203,7 @@
         }
       } catch (_e) {}
       // 调试探针导出
-      window.__debugGenesis = () => ({ arenaState, TORSOS, validateAndSanitizeBlueprint, getEffectiveStats, syncOrganismMaturity, accelerateJuvenileGrowth, resolveOrganismCollisions, spawnOrganismEntity, spawnNutrientCluster, tryMitosisReproduce, classifySonarRelation, getSonarPalette, isInsideGenesisShoal, clampOutsideGenesisShoal, applyDamage, stepArenaSimulation });
+      window.__debugGenesis = () => ({ arenaState, TORSOS, validateAndSanitizeBlueprint, decodeGeneCode, sanitizeSpeciesName, executeInGameBlueprintLoad, getEffectiveStats, syncOrganismMaturity, accelerateJuvenileGrowth, resolveOrganismCollisions, spawnOrganismEntity, spawnNutrientCluster, tryMitosisReproduce, classifySonarRelation, getSonarPalette, isInsideGenesisShoal, clampOutsideGenesisShoal, applyDamage, stepArenaSimulation });
     })();
     }
 
