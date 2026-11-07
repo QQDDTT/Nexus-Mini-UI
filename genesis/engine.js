@@ -30,28 +30,32 @@
       const TORSOS = {
         'torso-t1-micro': {
           id: 'torso-t1-micro', code: 'T01', name: '微型单节原核体', shortName: 'T01 原核',
-          sprite: 'torso-t1-micro.svg', volume: 1.0, baseHp: 70, bmr: 0.8, kv: 1.25, kw: 1.30,
+          sprite: 'torso-t1-micro.svg', volume: 1.0, baseHp: 70, bmr: 0.8, moveDrain: 0.25, kv: 1.25, kw: 1.30,
+          reproThreshold: 0.75, reproCostAdd: 0.00, childERatioMult: 1.00, reproCooldown: 4.0, maxColonyPop: 20,
           transitionGp: 0, totalSlots: 5,
           slots: { core: 1, sensory: 1, mouth: 1, locomotion: 1, utility: 1 },
           sizePx: 24, segments: [1.0]
         },
         'torso-t2-stream': {
           id: 'torso-t2-stream', code: 'T02', name: '流线三节真核体', shortName: 'T02 流线',
-          sprite: 'torso-t2-stream.svg', volume: 2.2, baseHp: 140, bmr: 1.8, kv: 1.00, kw: 1.00,
+          sprite: 'torso-t2-stream.svg', volume: 2.2, baseHp: 140, bmr: 2.2, moveDrain: 0.85, kv: 1.00, kw: 1.00,
+          reproThreshold: 0.82, reproCostAdd: 0.08, childERatioMult: 0.92, reproCooldown: 7.5, maxColonyPop: 14,
           transitionGp: 150, totalSlots: 7,
           slots: { core: 1, sensory: 1, mouth: 1, locomotion: 2, utility: 2 },
           sizePx: 30, segments: [0.95, 1.05, 0.78]
         },
         'torso-t3-predator': {
           id: 'torso-t3-predator', code: 'T03', name: '宽幅五节掠食体', shortName: 'T03 掠食',
-          sprite: 'torso-t3-predator.svg', volume: 4.0, baseHp: 240, bmr: 3.6, kv: 0.72, kw: 0.68,
+          sprite: 'torso-t3-predator.svg', volume: 4.0, baseHp: 240, bmr: 5.2, moveDrain: 2.40, kv: 0.72, kw: 0.68,
+          reproThreshold: 0.90, reproCostAdd: 0.18, childERatioMult: 0.82, reproCooldown: 14.0, maxColonyPop: 8,
           transitionGp: 320, totalSlots: 9,
           slots: { core: 1, sensory: 2, mouth: 1, locomotion: 2, utility: 3 },
           sizePx: 38, segments: [0.92, 1.15, 1.08, 0.88, 0.68]
         },
         'torso-t4-titan': {
           id: 'torso-t4-titan', code: 'T04', name: '巨型多节深渊泰坦', shortName: 'T04 泰坦',
-          sprite: 'torso-t4-titan.svg', volume: 7.5, baseHp: 420, bmr: 7.2, kv: 0.48, kw: 0.42,
+          sprite: 'torso-t4-titan.svg', volume: 7.5, baseHp: 420, bmr: 11.5, moveDrain: 5.50, kv: 0.48, kw: 0.42,
+          reproThreshold: 0.96, reproCostAdd: 0.28, childERatioMult: 0.72, reproCooldown: 24.0, maxColonyPop: 4,
           transitionGp: 600, totalSlots: 12,
           slots: { core: 1, sensory: 2, mouth: 2, locomotion: 3, utility: 4 },
           sizePx: 48, segments: [0.95, 1.20, 1.22, 1.12, 0.98, 0.82, 0.65]
@@ -505,6 +509,7 @@
             maxHp,
             maxEnergy,
             bmr,
+            moveDrain: torso.moveDrain || 0.25,
             maxSpeed,
             maxTurnRate,
             hasFin,
@@ -516,8 +521,11 @@
             digestEff: coreSpec.digestEff,
             regenPerE: coreSpec.regenPerE,
             regenCap: coreSpec.regenCap,
-            reproRatio: coreSpec.reproRatio,
-            childERatio: coreSpec.childERatio,
+            reproThreshold: torso.reproThreshold || 0.80,
+            reproRatio: Math.min(0.92, +(coreSpec.reproRatio + (torso.reproCostAdd || 0)).toFixed(2)),
+            childERatio: +(coreSpec.childERatio * (torso.childERatioMult || 1.0)).toFixed(2),
+            reproCooldown: torso.reproCooldown || 4.0,
+            maxColonyPop: torso.maxColonyPop || 20,
             herbEff: firstMouthSpec.herbEff,
             carnEff: firstMouthSpec.carnEff,
             funnelR: Math.round(firstMouthSpec.funnelR * dualMouthMult),
@@ -1889,6 +1897,7 @@
           maxEnergy: st.maxEnergy,
           skillCd: 0,
           biteCd: 0,
+          reproCd: 0,
           mimicTimer: 0,
           blindTimer: 0,
           stunTimer: 0,
@@ -1957,6 +1966,25 @@
             radius: 8,
             sourceColonyId: null,
             ttl: 95
+          });
+        }
+      }
+
+      // 【起源浅滩 (Genesis Shoal)】专属：生成适应所有食性（植食/肉食/杂食均可高效吸收）的通用【原生营养质 (Universal Nutrient)】
+      function spawnNutrientCluster(cx, cy, count) {
+        for (let i = 0; i < count; i++) {
+          if (arenaState.foods.length >= 260) break;
+          const ang = Math.random() * Math.PI * 2;
+          const dist = Math.random() * 210;
+          arenaState.foods.push({
+            id: 'nut_' + Math.random(),
+            type: 'nutrient',
+            x: Math.max(40, Math.min(WORLD_W - 40, cx + Math.cos(ang) * dist)),
+            y: Math.max(40, Math.min(WORLD_H - 40, cy + Math.sin(ang) * dist)),
+            energy: 16.5,
+            radius: 8.5,
+            sourceColonyId: null,
+            ttl: 115
           });
         }
       }
@@ -2034,10 +2062,10 @@
         arenaState.alpha = alpha;
         arenaState.organisms.push(alpha);
 
-        // 初始局部微藻群落（起源浅滩内部富集微藻温床，供新物种安全觅食繁衍第一代群落）
+        // 初始局部食物群落（【起源浅滩】内部富集全食性通用【原生营养质】，适配植食/肉食/杂食一切新生始祖）
         arenaState.vents.forEach((v) => spawnAlgaeCluster(v.x, v.y, 12));
-        spawnAlgaeCluster(arenaState.genesisShoal.x, arenaState.genesisShoal.y, 18);
-        spawnAlgaeCluster(alpha.x + 150, alpha.y - 110, 12);
+        spawnNutrientCluster(arenaState.genesisShoal.x, arenaState.genesisShoal.y, 24);
+        spawnAlgaeCluster(alpha.x + 150, alpha.y - 110, 10);
 
         // 生成野生生态种群与章节首领：
         // - 起源浅滩边缘仅分布温和植食羊群 (herd) 供感官探测与早期捕食；
@@ -2244,28 +2272,38 @@
         }
       }
 
-      // 分裂繁殖同族电脑 NPC 后代 (02 第 3.2 节 & 04 第 2.3 节 & 05 第 1.2 节)
+      // 分裂繁殖同族电脑 NPC 后代 (大型物种 T02~T04 拥有更高能量门槛、更高繁衍能耗、更长繁衍冷却与更严生态承载上限)
       function tryMitosisReproduce(parent) {
         if (!parent || parent.hp <= 0) return false;
         const st = parent.blueprint.statsSummary;
-        const needE = parent.maxEnergy * 0.80;
+        if (parent.reproCd && parent.reproCd > 0) {
+          if (parent === arenaState.alpha) {
+            NexusSDK.audio.warn();
+            showToast(`大型躯干细胞分裂恢复中 (${parent.reproCd.toFixed(1)}s)！`);
+          }
+          return false;
+        }
+        const reqRatio = st.reproThreshold || 0.80;
+        const needE = parent.maxEnergy * reqRatio;
         if (parent.energy < needE) {
           if (parent === arenaState.alpha) {
             NexusSDK.audio.warn();
-            showToast(`能量需达到 80% 上限方可分裂繁殖同族 NPC（单次扣除 ${Math.round(st.reproRatio * 100)}% MaxE）！`);
+            showToast(`能量需达到 ${Math.round(reqRatio * 100)}% 上限方可分裂繁殖同族 NPC（单次扣除 ${Math.round(st.reproRatio * 100)}% MaxE）！`);
           }
           return false;
         }
 
-        // 检查同族配额上限 (单人模式玩家种群上限 20 只，总活体上限 64 只)
+        // 检查同族配额上限 (按躯干层级动态限制：T01=20, T02=14, T03=8, T04=4，防止巨型物种泛滥破坏生态)
         const myColonyCount = arenaState.organisms.filter((o) => o.colonyId === parent.colonyId && !o.formerKin).length;
-        const maxColonyCap = arenaState.matchMode === 'lan_2v2' ? 12 : 20;
+        const torsoPopCap = st.maxColonyPop || 20;
+        const maxColonyCap = Math.min(torsoPopCap, arenaState.matchMode === 'lan_2v2' ? 12 : 20);
         if (myColonyCount >= maxColonyCap || arenaState.organisms.length >= 64) {
-          if (parent === arenaState.alpha) showToast('当前培养皿种群密度已达生态承载上限！');
+          if (parent === arenaState.alpha) showToast(`当前体型物种已达生态承载上限（最多 ${maxColonyCap} 只）！`);
           return false;
         }
 
         parent.energy = Math.max(0, parent.energy - parent.maxEnergy * st.reproRatio);
+        parent.reproCd = st.reproCooldown || 4.0;
         const childX = parent.x - Math.cos(parent.angle) * (parent.radius * 2.1);
         const childY = parent.y - Math.sin(parent.angle) * (parent.radius * 2.1);
         const child = spawnOrganismEntity(parent.blueprint, childX, childY, parent.faction, {
@@ -2744,9 +2782,9 @@
             });
             arenaState.alpha = reborn;
             arenaState.organisms.push(reborn);
-            spawnAlgaeCluster(shoalX, shoalY, 8);
+            spawnNutrientCluster(shoalX, shoalY, 10);
             NexusSDK.audio.warn();
-            showToast('种群全灭！已在【起源浅滩】中心重新降生新一代始祖（5秒破膜适应期保护）');
+            showToast('种群全灭！已在【起源浅滩】中心重新降生新一代始祖（5秒破膜适应期保护 + 全食性通用营养质）');
           }
         }
       }
@@ -2806,11 +2844,11 @@
         const cyc = arenaState.timeSec % 180;
         const isNight = arenaState.biome.forceNight || (cyc >= 82 && cyc <= 170);
 
-        // 环境定时局部刷新微藻 (每 3.5s 在起源浅滩、热泉与随机生态点注入能量；黑夜微藻刷新率减半)
+        // 环境定时局部刷新营养质与微藻 (每 3.5s 在【起源浅滩】刷新全食性通用【原生营养质】，在热泉与随机生态点注入微藻；黑夜刷新率减半)
         if (arenaState.timeSec - arenaState.lastAlgaeSpawnSec >= 3.5) {
           arenaState.lastAlgaeSpawnSec = arenaState.timeSec;
           if (arenaState.genesisShoal) {
-            spawnAlgaeCluster(arenaState.genesisShoal.x, arenaState.genesisShoal.y, isNight ? 2 : 4);
+            spawnNutrientCluster(arenaState.genesisShoal.x, arenaState.genesisShoal.y, isNight ? 3 : 6);
           }
           const v = arenaState.vents[Math.floor(Math.random() * arenaState.vents.length)];
           if (v) spawnAlgaeCluster(v.x, v.y, isNight ? 2 : 4);
@@ -2888,6 +2926,7 @@
           const st = getEffectiveStats(org);
           if (org.skillCd > 0) org.skillCd = Math.max(0, org.skillCd - dt);
           if (org.biteCd > 0) org.biteCd = Math.max(0, org.biteCd - dt);
+          if (org.reproCd > 0) org.reproCd = Math.max(0, org.reproCd - dt);
           if (org.mimicTimer > 0) org.mimicTimer = Math.max(0, org.mimicTimer - dt);
           if (org.blindTimer > 0) org.blindTimer = Math.max(0, org.blindTimer - dt);
           if (org.stunTimer > 0) org.stunTimer = Math.max(0, org.stunTimer - dt);
@@ -2952,8 +2991,11 @@
             }
           }
 
-          // 1. 静态总代谢 BMR 扣减与饥饿扣血 / 饱食自动回血
-          const bmrDrain = st.bmr * arenaState.biome.bmrMult * dt;
+          // 1. 静态总代谢 BMR + 大型物种推进运动能耗 (moveDrain) 扣减与饥饿扣血 / 饱食自动回血
+          const curSpeed = Math.hypot(org.vx || 0, org.vy || 0);
+          const speedRatio = Math.min(1.2, curSpeed / Math.max(40, st.maxSpeed || 80));
+          const moveEnergyDrain = (st.moveDrain || 0.25) * speedRatio;
+          const bmrDrain = (st.bmr + moveEnergyDrain) * arenaState.biome.bmrMult * dt;
           org.energy = Math.max(0, org.energy - bmrDrain);
           if (org.energy <= 0) {
             org.hp -= org.maxHp * 0.05 * dt;
@@ -2985,14 +3027,16 @@
             // 电脑 NPC 感官驱动效用 AI 决策 (含感官前置天敌预警与反比平方逃逸向量合成)
             const role = org.nicheRole || (org.blueprint.dietType === 'herbivore' ? 'herd' : (org.isBoss ? 'apex' : 'pack'));
             const w = org.blueprint.aiWeights;
-            // 领主智能 (apex) 独来独往，野生领主不执行成群分裂繁殖；仅群居 (herd)、协同 (pack) 及玩家同族可执行分裂
-            if ((role !== 'apex' || org.colonyId === 'player_colony') && org.energy >= org.maxEnergy * (0.95 - 0.15 * w.w_repro) && Math.random() < dt * w.w_repro) {
+            // 领主智能 (apex) 独来独往，野生领主不执行成群分裂繁殖；大型物种需满足更高的躯干繁衍能量门槛 (reproThreshold)
+            const aiReproThreshold = Math.max(st.reproThreshold || 0.80, 0.95 - 0.15 * w.w_repro);
+            if ((role !== 'apex' || org.colonyId === 'player_colony') && org.energy >= org.maxEnergy * aiReproThreshold && Math.random() < dt * w.w_repro) {
               tryMitosisReproduce(org);
             }
 
             let bestFood = null;
             let bestFoodDist = 9999;
             arenaState.foods.forEach((f) => {
+              // 起源浅滩的通用营养物质 (type === 'nutrient') 适应所有食性，任何物种均可摄取；微藻仅限植食/杂食，肉块仅限肉食/杂食
               if (f.type === 'algae' && st.herbEff <= 0) return;
               if (f.type === 'meat' && (st.carnEff <= 0 || f.sourceColonyId === org.colonyId)) return;
               // 野生捕食者不觊觎【起源浅滩】内部的食物
@@ -3375,17 +3419,24 @@
             }
           }
 
-          // 4. 进食微藻与有机肉块 (严格遵守食性转化率与同族禁食法则)
+          // 4. 进食通用营养物质 (nutrient)、微藻 (algae) 与有机肉块 (meat)
           for (let fi = arenaState.foods.length - 1; fi >= 0; fi--) {
             const f = arenaState.foods[fi];
             const d = Math.hypot(f.x - org.x, f.y - org.y);
-            // 植食漏斗磁吸效应
-            if (f.type === 'algae' && st.herbEff > 0 && d <= st.funnelR) {
+            // 口器漏斗磁吸效应：起源浅滩通用营养物质适应所有食性，植食吸管额外磁吸微藻
+            if ((f.type === 'nutrient' || (f.type === 'algae' && st.herbEff > 0)) && d <= st.funnelR) {
               f.x += ((org.x - f.x) / Math.max(1, d)) * 110 * dt;
               f.y += ((org.y - f.y) / Math.max(1, d)) * 110 * dt;
             }
             if (d <= org.radius + f.radius) {
-              if (f.type === 'algae' && st.herbEff > 0) {
+              if (f.type === 'nutrient') {
+                // 【起源浅滩】通用原生营养质：适应植食/肉食/杂食一切物种，取口器最高转化率计算能量增益
+                const universalEff = Math.max(st.herbEff || 0, st.carnEff || 0, 1.0);
+                const gainE = f.energy * universalEff * st.digestEff;
+                org.energy = Math.min(org.maxEnergy, org.energy + gainE);
+                arenaState.foods.splice(fi, 1);
+                if (org === alpha) NexusSDK.audio.pop();
+              } else if (f.type === 'algae' && st.herbEff > 0) {
                 const gainE = f.energy * st.herbEff * st.digestEff;
                 org.energy = Math.min(org.maxEnergy, org.energy + gainE);
                 arenaState.foods.splice(fi, 1);
@@ -3663,7 +3714,7 @@
           }
         });
 
-        // 3. 绘制食物 (微藻 env-algae.svg 与肉块 env-meat.svg)
+        // 3. 绘制食物 (起源浅滩通用营养物质 nutrient、微藻 env-algae.svg 与肉块 env-meat.svg)
         arenaState.foods.forEach((f) => {
           if (Math.abs(f.x - camX) > viewW * 0.55 || Math.abs(f.y - camY) > viewH * 0.55) return;
           const dist = Math.hypot(f.x - alpha.x, f.y - alpha.y);
@@ -3677,11 +3728,33 @@
             ctx.beginPath();
             ctx.arc(f.x, f.y, f.radius * 0.9, 0, Math.PI * 2);
             // 听觉系统中：食物统一调整为黄色 (#fbbf24)
-            ctx.fillStyle = f.type === 'meat' ? 'rgba(251, 191, 36, 0.28)' : 'rgba(251, 191, 36, 0.18)';
+            ctx.fillStyle = f.type === 'meat' ? 'rgba(251, 191, 36, 0.28)' : (f.type === 'nutrient' ? 'rgba(251, 191, 36, 0.34)' : 'rgba(251, 191, 36, 0.18)');
             ctx.fill();
-            ctx.strokeStyle = f.type === 'meat' ? 'rgba(251, 191, 36, 0.95)' : 'rgba(251, 191, 36, 0.78)';
+            ctx.strokeStyle = f.type === 'meat' ? 'rgba(251, 191, 36, 0.95)' : (f.type === 'nutrient' ? '#fbbf24' : 'rgba(251, 191, 36, 0.78)');
             ctx.lineWidth = 1.4;
             ctx.stroke();
+            if (f.type === 'nutrient') {
+              ctx.beginPath();
+              ctx.arc(f.x, f.y, f.radius * 0.38, 0, Math.PI * 2);
+              ctx.fillStyle = '#fde047';
+              ctx.fill();
+            }
+            ctx.restore();
+          } else if (f.type === 'nutrient') {
+            // 【起源浅滩】通用原生营养质：青金双色发光营养液滴 + 微藻核心贴图
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.radius * 1.45, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(251, 191, 36, 0.22)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(45, 212, 191, 0.72)';
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+            drawSpriteCentered(ctx, 'env-algae.svg', f.x, f.y, f.radius * 2.1, f.radius * 2.1, 0);
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.radius * 0.42, 0, Math.PI * 2);
+            ctx.fillStyle = '#fde047';
+            ctx.fill();
             ctx.restore();
           } else {
             const spKey = f.type === 'meat' ? 'env-meat.svg' : 'env-algae.svg';
@@ -4008,7 +4081,7 @@
         }
       } catch (_e) {}
       // 调试探针导出
-      window.__debugGenesis = () => ({ arenaState, resolveOrganismCollisions, spawnOrganismEntity, classifySonarRelation, getSonarPalette, isInsideGenesisShoal, clampOutsideGenesisShoal, applyDamage, stepArenaSimulation });
+      window.__debugGenesis = () => ({ arenaState, TORSOS, validateAndSanitizeBlueprint, resolveOrganismCollisions, spawnOrganismEntity, spawnNutrientCluster, tryMitosisReproduce, classifySonarRelation, getSonarPalette, isInsideGenesisShoal, clampOutsideGenesisShoal, applyDamage, stepArenaSimulation });
     })();
     }
 
