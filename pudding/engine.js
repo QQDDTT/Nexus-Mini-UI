@@ -15,6 +15,10 @@
   global.NexusSDK.registerGameEngine('pudding-defense', function (roomBootCtx) {
     let __engineInitialized = false;
     let __engineRunning = false;
+    let __rafId = null;
+    let __releaseFn = null;
+    let __resumeFn = null;
+    let __entityCountFn = () => 0;
 
     function bootEngineOnce() {
       if (__engineInitialized) return;
@@ -477,7 +481,21 @@
         });
       }
 
+      function scheduleLoop() {
+        if (__rafId === null) {
+          __rafId = requestAnimationFrame(loop);
+        }
+      }
+
+      function cancelLoop() {
+        if (__rafId !== null) {
+          cancelAnimationFrame(__rafId);
+          __rafId = null;
+        }
+      }
+
       function startBattleFromRoom() {
+        __engineRunning = true;
         gold = 380;
         wave = 1;
         puddingHp = 10;
@@ -485,6 +503,8 @@
         bullets.length = 0;
         pulses.length = 0;
         towers.length = 0;
+        obstacles.length = 0;
+        focusTarget = null;
         spawnQueue = 10;
         spawnTick = 40;
         initObstacles();
@@ -493,13 +513,27 @@
           type: 'boba', level: 1, range: 165, cdMax: 24, cd: 0, dmg: 18, color: '#fb7185', slow: 0, aoe: false
         });
         updateHud();
+        scheduleLoop();
       }
 
       function stopBattleProcess() {
+        __engineRunning = false;
+        cancelLoop();
         monsters.length = 0;
         bullets.length = 0;
         pulses.length = 0;
+        towers.length = 0;
+        obstacles.length = 0;
+        focusTarget = null;
+        spawnQueue = 0;
+        if (ctx && canvas) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
       }
+
+      __releaseFn = stopBattleProcess;
+      __resumeFn = scheduleLoop;
+      __entityCountFn = () => monsters.length + bullets.length + pulses.length + towers.length + obstacles.length;
 
       window.addEventListener('nexus:gameplay-started', () => {
         startBattleFromRoom();
@@ -511,16 +545,19 @@
       window.addEventListener('nexus:gameplay-stopped', () => {
         stopBattleProcess();
       });
+      window.addEventListener('nexus:room-exited', () => {
+        stopBattleProcess();
+      });
 
       function loop() {
-        const canRun = window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
-        if (canRun) {
-          for (let s = 0; s < speedMult; s++) stepOnce();
-          render();
-        } else {
-          render();
+        __rafId = null;
+        const canRun = __engineRunning && window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
+        if (!canRun) {
+          return;
         }
-        requestAnimationFrame(loop);
+        for (let s = 0; s < speedMult; s++) stepOnce();
+        render();
+        scheduleLoop();
       }
 
       // UI Dock Bindings
@@ -550,8 +587,10 @@
       });
 
       updateHud();
-      requestAnimationFrame(loop);
-      window.__debugPudding = () => ({ gold, wave, puddingHp, towers, monsters, bullets, TOWER_DEFS });
+      if (window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive()) {
+        scheduleLoop();
+      }
+      window.__debugPudding = () => ({ gold, wave, puddingHp, towers, monsters, bullets, pulses, obstacles, TOWER_DEFS, rafActive: __rafId !== null });
     })();
     }
 
@@ -559,15 +598,19 @@
       start: function (ctx) {
         bootEngineOnce();
         __engineRunning = true;
+        if (__resumeFn) __resumeFn();
       },
       stop: function () {
         __engineRunning = false;
+        if (__releaseFn) __releaseFn();
       },
       getDebug: function () {
         return {
           gameId: 'pudding-defense',
           initialized: __engineInitialized,
-          running: __engineRunning && global.NexusSDK.isGameplayActive()
+          running: __engineRunning && global.NexusSDK.isGameplayActive(),
+          rafActive: __rafId !== null,
+          entityCount: __entityCountFn()
         };
       }
     };

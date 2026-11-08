@@ -3382,14 +3382,25 @@
             </div>
           `;
 
-          // 房间内事件绑定
+          // 房间内事件绑定：退出房间时同步释放网络会话、音频节点与游戏引擎战场内存/rAF循环
           document.getElementById('nx-lan-back-to-lobby-btn')?.addEventListener('click', () => {
+            AudioEngine.tap();
+            AudioEngine.cleanup();
+            if (activeEngineController && typeof activeEngineController.stop === 'function') {
+              try { activeEngineController.stop(); } catch (_) {}
+            }
             if (activeLanInstance && activeLanInstance.leaveRoom) {
               activeLanInstance.leaveRoom();
             }
+            gameplayActive = false;
             lanViewMode = 'lobby';
             lanRoomSessionEstablished = false;
-            AudioEngine.tap();
+            window.dispatchEvent(new CustomEvent('nexus:gameplay-stopped', {
+              detail: { gameId, reason: 'room-exited' }
+            }));
+            window.dispatchEvent(new CustomEvent('nexus:room-exited', {
+              detail: { gameId }
+            }));
             renderTier2Module();
           });
 
@@ -3495,6 +3506,14 @@
       if (activeLanInstance && activeLanInstance.leaveRoom) {
         try { activeLanInstance.leaveRoom(); } catch (_) {}
       }
+      gameplayActive = false;
+      lanRoomSessionEstablished = false;
+      window.dispatchEvent(new CustomEvent('nexus:gameplay-stopped', {
+        detail: { gameId, reason: 'exit-tier1' }
+      }));
+      window.dispatchEvent(new CustomEvent('nexus:room-exited', {
+        detail: { gameId }
+      }));
       if (window.parent && window.parent !== window) {
         const postOrigin = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : '*';
         window.parent.postMessage({ type: 'NEXUS_EXIT_GAME', gameId }, postOrigin);
@@ -3537,7 +3556,7 @@
           return;
         }
         const s = document.createElement('script');
-        s.src = `${srcUrl}${srcUrl.includes('?') ? '&' : '?'}v=20261108`;
+        s.src = `${srcUrl}${srcUrl.includes('?') ? '&' : '?'}v=20261109`;
         s.async = true;
         s.onload = () => {
           engineScriptLoadedMap[gameId] = true;
@@ -3794,6 +3813,7 @@
     isEngineLoaded: (gid) => !!(gid ? engineScriptLoadedMap[gid] : Object.keys(engineScriptLoadedMap).length > 0),
     isRoomSessionActive: () => lanRoomSessionEstablished && !!(activeLanInstance && activeLanInstance.getStatus().roomCode),
     getActiveLanSession: () => activeLanInstance,
+    getActiveEngineController: () => activeEngineController,
     openTier2Menu: (tab) => { if (openTier2MenuFn) openTier2MenuFn(tab); },
     enterTier3Gameplay: () => { if (enterTier3GameplayFn) return enterTier3GameplayFn(); return false; },
     bootGameFromRoom: () => { if (bootGameFromRoomFn) return bootGameFromRoomFn(false); return Promise.resolve(false); }

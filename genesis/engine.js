@@ -15,6 +15,11 @@
   global.NexusSDK.registerGameEngine('micro-genesis', function (roomBootCtx) {
     let __engineInitialized = false;
     let __engineRunning = false;
+    let __rafId = null;
+    let __previewRafId = null;
+    let __releaseFn = null;
+    let __resumeFn = null;
+    let __entityCountFn = () => 0;
 
     function bootEngineOnce() {
       if (__engineInitialized) return;
@@ -1495,7 +1500,15 @@
 
         if (pageKey === 'gene-bank') renderGeneBankPage();
         if (pageKey === 'fossil') renderFossilPage();
-        if (pageKey === 'editor') renderEditorPage();
+        if (pageKey === 'editor') {
+          renderEditorPage();
+          if (__previewRafId === null) {
+            __previewRafId = requestAnimationFrame(renderEditorPreviewLoop);
+          }
+        } else if (__previewRafId !== null) {
+          cancelAnimationFrame(__previewRafId);
+          __previewRafId = null;
+        }
         if (pageKey === 'lobby') renderLobbyPage();
         if (pageKey === 'arena') {
           if (!arenaState.running) {
@@ -2130,8 +2143,13 @@
         switchPage('arena', { allowDuringMatch: true });
       });
 
-      // 编辑页面中栏 60Hz 实时生物体节与感官仿真培养皿动画
+      // 编辑页面中栏 60Hz 实时生物体节与感官仿真培养皿动画（仅在 editor 页面激活时运行，离开或进Tier2时自动停止）
       function renderEditorPreviewLoop(nowMs) {
+        __previewRafId = null;
+        const tier2Active = document.getElementById('nx-tier2-menu')?.classList.contains('active');
+        if (currentActivePage !== 'editor' || tier2Active) {
+          return;
+        }
         if (currentActivePage === 'editor') {
           const canvas = document.getElementById('editor-preview-canvas');
           if (canvas) {
@@ -2315,7 +2333,7 @@
             ctx.restore();
           }
         }
-        requestAnimationFrame(renderEditorPreviewLoop);
+        __previewRafId = requestAnimationFrame(renderEditorPreviewLoop);
       }
 
       /* =====================================================================
@@ -5639,7 +5657,70 @@
         }
       }
 
+      function scheduleArenaLoop() {
+        if (__rafId === null) {
+          __rafId = requestAnimationFrame(mainArenaLoop);
+        }
+      }
+
+      function cancelArenaLoop() {
+        if (__rafId !== null) {
+          cancelAnimationFrame(__rafId);
+          __rafId = null;
+        }
+        if (__previewRafId !== null) {
+          cancelAnimationFrame(__previewRafId);
+          __previewRafId = null;
+        }
+      }
+
+      function stopArenaProcess() {
+        __engineRunning = false;
+        arenaState.running = false;
+        cancelArenaLoop();
+        arenaState.organisms.length = 0;
+        arenaState.foods.length = 0;
+        arenaState.vents.length = 0;
+        arenaState.territories.length = 0;
+        arenaState.projectiles.length = 0;
+        arenaState.hazards.length = 0;
+        arenaState.alpha = null;
+        arenaState.rivalAlpha = null;
+        arenaState.drawerDraft = null;
+        arenaState.pendingCrossTorsoTarget = null;
+        if (colorPassCanvas) {
+          colorPassCanvas.width = 0;
+          colorPassCanvas.height = 0;
+          colorPassCanvas = null;
+        }
+        if (senseMaskCanvas) {
+          senseMaskCanvas.width = 0;
+          senseMaskCanvas.height = 0;
+          senseMaskCanvas = null;
+        }
+        const canvas = document.getElementById('petri-canvas');
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        const mini = document.getElementById('arena-minimap');
+        if (mini) {
+          const mctx = mini.getContext('2d');
+          if (mctx) mctx.clearRect(0, 0, mini.width, mini.height);
+        }
+      }
+
+      __releaseFn = stopArenaProcess;
+      __resumeFn = scheduleArenaLoop;
+      __entityCountFn = () => (
+        arenaState.organisms.length +
+        arenaState.foods.length +
+        arenaState.projectiles.length +
+        arenaState.hazards.length
+      );
+
       function launchArenaFromRoom() {
+        __engineRunning = true;
         if (!arenaState.organisms || arenaState.organisms.length === 0 || arenaState.matchEnded) {
           startArenaMatch();
         }
@@ -5649,6 +5730,7 @@
         syncEvolutionPointsUI();
         renderArenaSampleSwitcher();
         updateMatchTimerAndScoreboard(0);
+        scheduleArenaLoop();
       }
       window.addEventListener('nexus:gameplay-started', launchArenaFromRoom);
       if (window.NexusSDK && window.NexusSDK.isGameplayActive()) {
@@ -5656,21 +5738,23 @@
       }
 
       window.addEventListener('nexus:gameplay-stopped', () => {
-        arenaState.running = false;
+        stopArenaProcess();
+      });
+      window.addEventListener('nexus:room-exited', () => {
+        stopArenaProcess();
       });
 
       function mainArenaLoop(nowMs) {
-        const canRun = window.NexusSDK ? (window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive()) : arenaState.running;
-        if (arenaState.running && currentActivePage === 'arena' && canRun) {
-          const dt = Math.min(0.05, Math.max(0.001, (nowMs - arenaState.lastTickMs) * 0.001));
-          arenaState.lastTickMs = nowMs;
-          stepArenaSimulation(dt);
-          renderArenaFrame();
-        } else {
-          arenaState.lastTickMs = nowMs;
-          if (currentActivePage === 'arena') renderArenaFrame();
+        __rafId = null;
+        const canRun = __engineRunning && (window.NexusSDK ? (window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive()) : arenaState.running);
+        if (!arenaState.running || currentActivePage !== 'arena' || !canRun) {
+          return;
         }
-        requestAnimationFrame(mainArenaLoop);
+        const dt = Math.min(0.05, Math.max(0.001, (nowMs - arenaState.lastTickMs) * 0.001));
+        arenaState.lastTickMs = nowMs;
+        stepArenaSimulation(dt);
+        renderArenaFrame();
+        scheduleArenaLoop();
       }
 
       /* =====================================================================
@@ -5679,8 +5763,9 @@
       persistState();
       initLanHostSession(lanRoomCode);
       renderEditorPage();
-      requestAnimationFrame(renderEditorPreviewLoop);
-      requestAnimationFrame(mainArenaLoop);
+      if (window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive()) {
+        scheduleArenaLoop();
+      }
 
       // 检查 URL 参数是否携带 ?challenger=MG3_... 或 ?challenge=MG3_... 基因挑战码
       try {
@@ -5740,7 +5825,9 @@
         isInsideGenesisShoal,
         clampOutsideGenesisShoal,
         applyDamage,
-        stepArenaSimulation
+        stepArenaSimulation,
+        stopArenaProcess,
+        isRafActive: () => __rafId !== null || __previewRafId !== null
       });
     })();
     }
@@ -5749,15 +5836,19 @@
       start: function (ctx) {
         bootEngineOnce();
         __engineRunning = true;
+        if (__resumeFn) __resumeFn();
       },
       stop: function () {
         __engineRunning = false;
+        if (__releaseFn) __releaseFn();
       },
       getDebug: function () {
         return {
           gameId: 'micro-genesis',
           initialized: __engineInitialized,
-          running: __engineRunning && global.NexusSDK.isGameplayActive()
+          running: __engineRunning && global.NexusSDK.isGameplayActive(),
+          rafActive: __rafId !== null || __previewRafId !== null,
+          entityCount: __entityCountFn()
         };
       }
     };

@@ -15,6 +15,10 @@
   global.NexusSDK.registerGameEngine('tank-battle', function (roomBootCtx) {
     let __engineInitialized = false;
     let __engineRunning = false;
+    let __rafId = null;
+    let __releaseFn = null;
+    let __resumeFn = null;
+    let __entityCountFn = () => 0;
 
     function bootEngineOnce() {
       if (__engineInitialized) return;
@@ -2578,7 +2582,21 @@
         if (box) mountInspectorRigAnimation(box.getAttribute('data-unit-file'));
       }, 60);
 
+      function scheduleLoop() {
+        if (__rafId === null) {
+          __rafId = requestAnimationFrame(loop);
+        }
+      }
+
+      function cancelLoop() {
+        if (__rafId !== null) {
+          cancelAnimationFrame(__rafId);
+          __rafId = null;
+        }
+      }
+
       function startBattleFromRoom() {
+        __engineRunning = true;
         stage = 1;
         score = 0;
         p1.lives = 2;
@@ -2589,13 +2607,26 @@
         particles.length = 0;
         buildStageMap(1);
         updateHud();
+        scheduleLoop();
       }
 
       function stopBattleProcess() {
+        __engineRunning = false;
+        cancelLoop();
         bullets.length = 0;
         enemies.length = 0;
         particles.length = 0;
+        if (Array.isArray(map)) map.length = 0;
+        remainingSpawns = 0;
+        fortifyTimer = 0;
+        if (ctx && canvas) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
       }
+
+      __releaseFn = stopBattleProcess;
+      __resumeFn = scheduleLoop;
+      __entityCountFn = () => bullets.length + enemies.length + particles.length;
 
       window.addEventListener('nexus:gameplay-started', () => {
         startBattleFromRoom();
@@ -2607,16 +2638,19 @@
       window.addEventListener('nexus:gameplay-stopped', () => {
         stopBattleProcess();
       });
+      window.addEventListener('nexus:room-exited', () => {
+        stopBattleProcess();
+      });
 
       function loop() {
-        const canRun = window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
-        if (canRun) {
-          step();
-          render();
-        } else {
-          render();
+        __rafId = null;
+        const canRun = __engineRunning && window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
+        if (!canRun) {
+          return;
         }
-        requestAnimationFrame(loop);
+        step();
+        render();
+        scheduleLoop();
       }
 
       document.getElementById('btn-fortify-base').addEventListener('click', () => {
@@ -2630,9 +2664,11 @@
         updateHud();
       });
 
-      requestAnimationFrame(loop);
+      if (window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive()) {
+        scheduleLoop();
+      }
       // 调试探针导出
-      window.__debugTank = () => ({ p1, p2, enemies, resolveTankCollisions });
+      window.__debugTank = () => ({ p1, p2, enemies, bullets, particles, resolveTankCollisions, rafActive: __rafId !== null });
     })();
     }
 
@@ -2640,15 +2676,19 @@
       start: function (ctx) {
         bootEngineOnce();
         __engineRunning = true;
+        if (__resumeFn) __resumeFn();
       },
       stop: function () {
         __engineRunning = false;
+        if (__releaseFn) __releaseFn();
       },
       getDebug: function () {
         return {
           gameId: 'tank-battle',
           initialized: __engineInitialized,
-          running: __engineRunning && global.NexusSDK.isGameplayActive()
+          running: __engineRunning && global.NexusSDK.isGameplayActive(),
+          rafActive: __rafId !== null,
+          entityCount: __entityCountFn()
         };
       }
     };

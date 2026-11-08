@@ -15,6 +15,10 @@
   global.NexusSDK.registerGameEngine('gold-miner', function (roomBootCtx) {
     let __engineInitialized = false;
     let __engineRunning = false;
+    let __rafId = null;
+    let __releaseFn = null;
+    let __resumeFn = null;
+    let __entityCountFn = () => 0;
 
     function bootEngineOnce() {
       if (__engineInitialized) return;
@@ -469,19 +473,50 @@
         });
       }
 
+      function scheduleLoop() {
+        if (__rafId === null) {
+          __rafId = requestAnimationFrame(loop);
+        }
+      }
+
+      function cancelLoop() {
+        if (__rafId !== null) {
+          cancelAnimationFrame(__rafId);
+          __rafId = null;
+        }
+      }
+
       function startBattleFromRoom() {
+        __engineRunning = true;
         stage = 1;
         cash = 0;
         floatingTexts.length = 0;
         explosions.length = 0;
         generateMineStage(1);
         updateHud();
+        scheduleLoop();
       }
 
       function stopBattleProcess() {
+        __engineRunning = false;
+        cancelLoop();
+        minerals.length = 0;
         floatingTexts.length = 0;
         explosions.length = 0;
+        p1Hook.state = 'swing';
+        p1Hook.len = 42;
+        p1Hook.grabbed = null;
+        p2Hook.state = 'swing';
+        p2Hook.len = 42;
+        p2Hook.grabbed = null;
+        if (ctx && canvas) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
       }
+
+      __releaseFn = stopBattleProcess;
+      __resumeFn = scheduleLoop;
+      __entityCountFn = () => minerals.length + floatingTexts.length + explosions.length;
 
       window.addEventListener('nexus:gameplay-started', () => {
         startBattleFromRoom();
@@ -493,16 +528,19 @@
       window.addEventListener('nexus:gameplay-stopped', () => {
         stopBattleProcess();
       });
+      window.addEventListener('nexus:room-exited', () => {
+        stopBattleProcess();
+      });
 
       function loop() {
-        const canRun = window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
-        if (canRun) {
-          step();
-          render();
-        } else {
-          render();
+        __rafId = null;
+        const canRun = __engineRunning && window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
+        if (!canRun) {
+          return;
         }
-        requestAnimationFrame(loop);
+        step();
+        render();
+        scheduleLoop();
       }
 
       // Controls
@@ -522,8 +560,10 @@
         if (e.code === 'KeyW' || e.code === 'ArrowUp') useDynamite();
       });
 
-      requestAnimationFrame(loop);
-      window.__debugMiner = () => ({ stage, cash, targetCash, timeLeft, p1Hook, p2Hook, minerals });
+      if (window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive()) {
+        scheduleLoop();
+      }
+      window.__debugMiner = () => ({ stage, cash, targetCash, timeLeft, p1Hook, p2Hook, minerals, floatingTexts, explosions, rafActive: __rafId !== null });
     })();
     }
 
@@ -531,15 +571,19 @@
       start: function (ctx) {
         bootEngineOnce();
         __engineRunning = true;
+        if (__resumeFn) __resumeFn();
       },
       stop: function () {
         __engineRunning = false;
+        if (__releaseFn) __releaseFn();
       },
       getDebug: function () {
         return {
           gameId: 'gold-miner',
           initialized: __engineInitialized,
-          running: __engineRunning && global.NexusSDK.isGameplayActive()
+          running: __engineRunning && global.NexusSDK.isGameplayActive(),
+          rafActive: __rafId !== null,
+          entityCount: __entityCountFn()
         };
       }
     };

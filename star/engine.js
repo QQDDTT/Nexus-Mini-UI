@@ -15,6 +15,10 @@
   global.NexusSDK.registerGameEngine('star-defender', function (roomBootCtx) {
     let __engineInitialized = false;
     let __engineRunning = false;
+    let __rafId = null;
+    let __releaseFn = null;
+    let __resumeFn = null;
+    let __entityCountFn = () => 0;
 
     function bootEngineOnce() {
       if (__engineInitialized) return;
@@ -3059,10 +3063,28 @@
         if (box) mountInspectorRigAnimation(box.getAttribute('data-unit-file'));
       }, 60);
 
+      function scheduleLoop() {
+        if (__rafId === null) {
+          __rafId = requestAnimationFrame(loop);
+        }
+      }
+
+      function cancelLoop() {
+        if (__rafId !== null) {
+          cancelAnimationFrame(__rafId);
+          __rafId = null;
+        }
+      }
+
       function startBattleFromRoom() {
+        __engineRunning = true;
         projectiles.length = 0;
         enemies.length = 0;
         sparks.length = 0;
+        laserBeams.length = 0;
+        pdBeams.length = 0;
+        floatTexts.length = 0;
+        lockedEnemy = null;
         wave = 1;
         stationHp = stationMaxHp;
         syncShipSpecs();
@@ -3078,13 +3100,34 @@
         });
         spawnWave(1);
         updateHud();
+        scheduleLoop();
       }
 
       function stopBattleProcess() {
+        __engineRunning = false;
+        cancelLoop();
+        if (activeInspectorRigAnim) {
+          cancelAnimationFrame(activeInspectorRigAnim);
+          activeInspectorRigAnim = null;
+        }
         projectiles.length = 0;
         enemies.length = 0;
         sparks.length = 0;
+        laserBeams.length = 0;
+        pdBeams.length = 0;
+        floatTexts.length = 0;
+        lockedEnemy = null;
+        fighterSquadron.forEach((f) => {
+          if (Array.isArray(f.trail)) f.trail.length = 0;
+        });
+        if (ctx && canvas) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
       }
+
+      __releaseFn = stopBattleProcess;
+      __resumeFn = scheduleLoop;
+      __entityCountFn = () => projectiles.length + enemies.length + sparks.length + laserBeams.length + pdBeams.length + floatTexts.length;
 
       window.addEventListener('nexus:gameplay-started', () => {
         startBattleFromRoom();
@@ -3096,17 +3139,19 @@
       window.addEventListener('nexus:gameplay-stopped', () => {
         stopBattleProcess();
       });
+      window.addEventListener('nexus:room-exited', () => {
+        stopBattleProcess();
+      });
 
       function loop() {
-        const canRun = window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
-        if (canRun) {
-          step();
-          render();
-        } else {
-          // 未通过房间建立启动时，仅绘制宁静背景，严禁私自推进物理步进与敌人刷新
-          render();
+        __rafId = null;
+        const canRun = __engineRunning && window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive();
+        if (!canRun) {
+          return;
         }
-        requestAnimationFrame(loop);
+        step();
+        render();
+        scheduleLoop();
       }
 
       window.__STAR_DEFENDER_AUDIT__ = () => {
@@ -3136,7 +3181,9 @@
       };
 
       syncShipSpecs();
-      requestAnimationFrame(loop);
+      if (window.NexusSDK && window.NexusSDK.isGameplayActive() && window.NexusSDK.isRoomSessionActive()) {
+        scheduleLoop();
+      }
 
       // 支持 URL 参数自动化截图验证 (?autostart=1&mod=plasma&dock=1)
       const urlParams = new URLSearchParams(window.location.search);
@@ -3163,7 +3210,7 @@
         }, 120);
       }
       // 调试探针导出
-      window.__debugStar = () => ({ ship, fighterSquadron, enemies, projectiles, spawnGuidedMissile, resolveShipShipCollisions });
+      window.__debugStar = () => ({ ship, fighterSquadron, enemies, projectiles, sparks, laserBeams, pdBeams, spawnGuidedMissile, resolveShipShipCollisions, rafActive: __rafId !== null });
     })();
     }
 
@@ -3171,15 +3218,19 @@
       start: function (ctx) {
         bootEngineOnce();
         __engineRunning = true;
+        if (__resumeFn) __resumeFn();
       },
       stop: function () {
         __engineRunning = false;
+        if (__releaseFn) __releaseFn();
       },
       getDebug: function () {
         return {
           gameId: 'star-defender',
           initialized: __engineInitialized,
-          running: __engineRunning && global.NexusSDK.isGameplayActive()
+          running: __engineRunning && global.NexusSDK.isGameplayActive(),
+          rafActive: __rafId !== null,
+          entityCount: __entityCountFn()
         };
       }
     };

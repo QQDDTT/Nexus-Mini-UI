@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v24.0-fleet-corvette-header-status';
+const CACHE_NAME = 'nexus-mini-portal-v25.0-room-memory-release';
 const CORE_ASSETS = [
   './',
   './index.html',
