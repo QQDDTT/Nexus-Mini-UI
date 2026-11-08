@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" data-rig-id="hull-corvette-rig" data-root-anchor="64,64" data-faction="helios" data-has-aura="true">
+  <defs>
+    <linearGradient id="hcv-titanium-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="35%" stop-color="#334155"/>
+      <stop offset="75%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <linearGradient id="hcv-black-tile" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#27303f"/>
+      <stop offset="50%" stop-color="#141a24"/>
+      <stop offset="100%" stop-color="#070a10"/>
+    </linearGradient>
+    <linearGradient id="hcv-white-tile" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#f1f5f9"/>
+      <stop offset="85%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="hcv-kapton-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="25%" stop-color="#facc15"/>
+      <stop offset="55%" stop-color="#ca8a04"/>
+      <stop offset="80%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#713f12"/>
+    </linearGradient>
+    <linearGradient id="hcv-plume-amber" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#fef08a"/>
+      <stop offset="70%" stop-color="#f97316" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#7c2d12" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="hcv-shadow-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.88"/>
+      <stop offset="70%" stop-color="#020617" stop-opacity="0.38"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <g id="part-shadow-cast" data-pivot="64,66" data-parent="root" data-z-index="1" style="mix-blend-mode: multiply">
+    <ellipse cx="64" cy="68" rx="34" ry="48" fill="url(#hcv-shadow-grad)"/>
+    <polygon points="56,14 72,14 82,36 84,88 76,102 52,102 44,88 46,36" fill="#020617" opacity="0.5"/>
+  </g>
+
+  <g id="part-aura-ring-outer" data-pivot="64,64" data-parent="root" data-z-index="4" style="mix-blend-mode: screen">
+    <circle cx="64" cy="64" r="52" fill="none" stroke="#f59e0b" stroke-width="0.7" opacity="0.3"/>
+    <circle cx="64" cy="64" r="40" fill="none" stroke="#38bdf8" stroke-width="0.55" opacity="0.22"/>
+  </g>
+
+  <g id="part-plume-boost" data-pivot="64,102" data-parent="part-hull-main-body" data-z-index="10">
+    <polygon points="50,90 62,90 60,103 52,103" fill="url(#hcv-kapton-gold)" stroke="#090d16" stroke-width="1.5"/>
+    <polygon points="66,90 78,90 76,103 68,103" fill="url(#hcv-kapton-gold)" stroke="#090d16" stroke-width="1.5"/>
+    <polygon points="52,103 60,103 58,118 56,121 54,118" fill="url(#hcv-plume-amber)"/>
+    <polygon points="68,103 76,103 74,118 72,121 70,118" fill="url(#hcv-plume-amber)"/>
+  </g>
+
+  <g id="part-hull-main-body" data-pivot="64,64" data-parent="root" data-z-index="25">
+    <polygon points="56,14 72,14 80,32 82,84 76,94 52,94 46,84 48,32" fill="url(#hcv-black-tile)" stroke="#090d16" stroke-width="2.0" stroke-linejoin="round"/>
+    <polygon points="48,44 41,49 41,69 47,74" fill="url(#hcv-titanium-dark)" stroke="#090d16" stroke-width="1.5"/>
+    <polygon points="80,44 87,49 87,69 81,74" fill="url(#hcv-titanium-dark)" stroke="#090d16" stroke-width="1.5"/>
+    <circle cx="44" cy="59" r="3.6" fill="#1e293b" stroke="#fbbf24" stroke-width="1.0"/>
+    <circle cx="84" cy="59" r="3.6" fill="#1e293b" stroke="#fbbf24" stroke-width="1.0"/>
+    <polygon points="57,17 71,17 76,34 76,54 52,54 52,34" fill="url(#hcv-white-tile)" stroke="#0f172a" stroke-width="1.1"/>
+    <line x1="64" y1="17" x2="64" y2="54" stroke="#334155" stroke-width="1.0"/>
+    <line x1="52" y1="36" x2="76" y2="36" stroke="#334155" stroke-width="0.9"/>
+    <rect x="54" y="56" width="20" height="22" rx="1.5" fill="url(#hcv-kapton-gold)" stroke="#090d16" stroke-width="1.2"/>
+    <line x1="54" y1="67" x2="74" y2="67" stroke="#713f12" stroke-width="0.9"/>
+    <rect x="52" y="79" width="24" height="12" fill="url(#hcv-titanium-dark)" stroke="#090d16" stroke-width="1.2"/>
+    <rect x="49" y="38" width="3" height="5" fill="#ef4444" stroke="#090d16" stroke-width="0.6"/>
+    <rect x="76" y="38" width="3" height="5" fill="#ef4444" stroke="#090d16" stroke-width="0.6"/>
+  </g>
+
+  <g id="part-main-turret" data-pivot="64,44" data-parent="part-hull-main-body" data-z-index="40">
+    <rect x="61.5" y="18" width="5" height="22" fill="url(#hcv-titanium-dark)" stroke="#090d16" stroke-width="0.9"/>
+    <circle cx="64" cy="44" r="6.5" fill="url(#hcv-titanium-dark)" stroke="#090d16" stroke-width="1.4"/>
+    <circle cx="64" cy="44" r="3.2" fill="#fde047"/>
+  </g>
+</svg>

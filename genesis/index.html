@@ -417,7 +417,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 4px;
-      min-height: 30px;
+      min-height: 44px;
     }
     .slot-ico {
       width: 22px;
@@ -446,7 +446,7 @@
       color: var(--mg-text-primary);
       font-size: 0.62rem;
       padding: 2px 4px;
-      min-height: 24px;
+      min-height: 44px;
       outline: none;
     }
     .slot-select {
@@ -654,53 +654,158 @@
       pointer-events: none;
     }
 
-    /* 局内基因库与实时修改物种抽屉 (#ingame-gene-drawer) */
-    #ingame-gene-drawer {
-      position: fixed;
-      inset: max(8px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-      z-index: 600;
-      background: rgba(7, 12, 24, 0.95);
-      backdrop-filter: blur(16px);
+    /* 限时赛顶部计分与倒计时胶囊 (#arena-match-hud) */
+    .arena-match-scoreboard {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(5, 22, 26, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(45, 212, 191, 0.45);
+      border-radius: 999px;
+      padding: 4px 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
+    }
+    .match-timer-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.86rem;
+      font-weight: 900;
+      color: var(--mg-accent-cyan);
+      padding-right: 8px;
+      border-right: 1px solid rgba(45, 212, 191, 0.25);
+    }
+    .match-timer-box.final-phase {
+      color: #f43f5e;
+      animation: finalPhasePulse 0.9s infinite alternate;
+    }
+    @keyframes finalPhasePulse {
+      from { text-shadow: 0 0 4px rgba(244, 63, 94, 0.4); transform: scale(1); }
+      to { text-shadow: 0 0 14px rgba(244, 63, 94, 0.95); transform: scale(1.04); }
+    }
+    .match-nutrient-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      font-size: 0.62rem;
+      line-height: 1.15;
+    }
+    .match-phase-tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.60rem;
+      font-weight: 800;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.55);
+      color: #6ee7b7;
+      white-space: nowrap;
+    }
+    .match-phase-tag.locked {
+      background: rgba(244, 63, 94, 0.22);
+      border-color: rgba(244, 63, 94, 0.75);
+      color: #fda4af;
+    }
+
+    /* 局内底部客户储存样本切换栏 (#arena-sample-switcher —— 游戏期间禁止生物编辑，仅可切换储存样本) */
+    .arena-sample-switcher {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(5, 20, 25, 0.92);
+      backdrop-filter: blur(12px);
       border: 1.5px solid rgba(45, 212, 191, 0.42);
       border-radius: 14px;
-      padding: 10px 12px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.92);
+      padding: 4px 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+      max-width: min(520px, 62vw);
+      overflow-x: auto;
     }
-    #ingame-gene-drawer.open {
-      display: flex;
-    }
-    .drawer-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(45, 212, 191, 0.2);
-      padding-bottom: 6px;
-    }
-    .drawer-body {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 10px;
-      flex: 1;
-      min-height: 0;
-    }
-    /* 跨躯干内联二次确认条 */
-    #cross-torso-confirm-bar {
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 7px 10px;
-      border-radius: 8px;
-      background: rgba(239, 68, 68, 0.16);
-      border: 1px solid rgba(251, 191, 36, 0.65);
-      font-size: 0.68rem;
+    .sample-slot-pill {
+      min-height: 44px;
+      min-width: 92px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(45, 212, 191, 0.26);
+      background: rgba(9, 32, 38, 0.86);
       color: var(--mg-text-primary);
-    }
-    #cross-torso-confirm-bar.show {
       display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .sample-slot-pill:hover {
+      border-color: var(--mg-accent-cyan);
+    }
+    .sample-slot-pill.active {
+      border-color: var(--mg-accent-cyan);
+      background: linear-gradient(135deg, rgba(45, 212, 191, 0.24), rgba(16, 185, 129, 0.16));
+      box-shadow: 0 0 14px rgba(45, 212, 191, 0.32);
+    }
+    .sample-slot-pill:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+    }
+    .sample-slot-pill img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .sample-slot-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 0;
+      line-height: 1.18;
+    }
+    .sample-slot-name {
+      font-size: 0.64rem;
+      font-weight: 800;
+      color: var(--mg-text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 78px;
+    }
+    .sample-slot-sub {
+      font-size: 0.55rem;
+      color: var(--mg-accent-cyan);
+      white-space: nowrap;
+    }
+
+    /* 中途死亡再次加入弹窗 (#arena-rejoin-modal) & 限时赛胜负结算弹窗 (#arena-settlement-modal) */
+    .arena-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 650;
+      background: rgba(2, 10, 14, 0.82);
+      backdrop-filter: blur(14px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    .arena-modal-backdrop.open {
+      display: flex;
+    }
+    .arena-modal-card {
+      width: min(680px, 94vw);
+      max-height: 88dvh;
+      background: linear-gradient(160deg, rgba(6, 28, 34, 0.96), rgba(3, 14, 18, 0.98));
+      border: 1.5px solid rgba(45, 212, 191, 0.52);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.92);
+      overflow-y: auto;
     }
 
     /* 轻提示胶囊 (Toast) */
@@ -727,35 +832,39 @@
   </style>
 </head>
 <body>
-  <!-- 顶部六大核心页面导航栏 (局外页面 1~5 共享) -->
-  <nav id="mg-top-nav" aria-label="微界演化六大页面导航">
-    <div class="nav-brand">
-      <img src="../assets/micro-genesis/icon.svg" alt="" width="22" height="22" />
-      <span>微界演化</span>
+  <!-- 顶部局外样本与进化点工坊导航栏 (仅在局外编辑样本/图鉴时显示，进入游戏房间战场时自动隐藏，严禁局内编辑生物) -->
+  <nav id="mg-top-nav" aria-label="微界演化局外样本工坊导航" style="display:none;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="btn-ghost" id="workshop-back-room-btn" style="min-height:44px;min-width:44px;padding:0 12px;border-color:var(--mg-accent-cyan);color:var(--mg-accent-cyan);font-weight:800;">
+        ◀ 保存并返回房间大厅
+      </button>
+      <div class="nav-brand">
+        <img src="../assets/micro-genesis/icon.svg" alt="" width="20" height="20" />
+        <span>局外样本与进化点工坊</span>
+      </div>
     </div>
     <div class="nav-tabs">
-      <button class="nav-tab-btn" data-page="intro" id="tab-btn-intro" title="1. 游戏介绍" aria-label="游戏介绍">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <button class="nav-tab-btn active" data-page="editor" id="tab-btn-editor" title="客户样本装配与进化点商店" aria-label="客户样本工坊">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
       </button>
-      <button class="nav-tab-btn" data-page="gene-bank" id="tab-btn-gene-bank" title="2. 基因库" aria-label="基因库">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      <button class="nav-tab-btn" data-page="gene-bank" id="tab-btn-gene-bank" title="客户样本库与基因码导入导出" aria-label="样本库">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
       </button>
-      <button class="nav-tab-btn" data-page="fossil" id="tab-btn-fossil" title="3. 化石记录" aria-label="化石记录">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      <button class="nav-tab-btn" data-page="fossil" id="tab-btn-fossil" title="官方器官与首领图鉴" aria-label="化石图鉴">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       </button>
-      <button class="nav-tab-btn active" data-page="editor" id="tab-btn-editor" title="4. 物种编辑" aria-label="物种编辑">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-      </button>
-      <button class="nav-tab-btn" data-page="lobby" id="tab-btn-lobby" title="5. 局域网大厅" aria-label="局域网大厅">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      </button>
-      <button class="nav-tab-btn" data-page="arena" id="tab-btn-arena" title="6. 演化战场" aria-label="演化战场" style="border-color:rgba(16,185,129,0.45);color:#6ee7b7;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <button class="nav-tab-btn" data-page="intro" id="tab-btn-intro" title="限时规则与营养胜负说明" aria-label="规则介绍">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       </button>
     </div>
-    <div class="nav-gp-badge" title="当前种群共享基因值储备">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="12 2 21 8.5 17.5 20 6.5 20 3 8.5"/></svg>
-      <span id="nav-gp-text">GP: 360</span>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="nav-gp-badge" title="胜利奖励进化点 (用于解锁器官、购买样本槽位、购买器官)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="12 2 21 8.5 17.5 20 6.5 20 3 8.5"/></svg>
+        <span id="nav-ep-text">进化点: 260 EP</span>
+      </div>
+      <button class="btn-ghost gold" id="workshop-buy-slot-btn" style="min-height:44px;min-width:44px;padding:0 9px;font-size:0.64rem;white-space:nowrap;">
+        + 购买样本槽位 (120 EP)
+      </button>
     </div>
   </nav>
 
@@ -810,11 +919,12 @@
         <div class="intro-card">
           <h3>
             <img src="../assets/micro-genesis/sprites/util-electric-lv3.svg" alt="" width="22" height="22" />
-            <span>④ 始祖操控与局内基因库</span>
+            <span>④ 限时营养争夺与局外进化点经济</span>
           </h3>
           <ul>
-            <li><strong>单控始祖 + 同族 NPC</strong>：新种群诞生时<strong>仅有 1 只玩家控制的始祖个体</strong>（镜头中心严格锁定），分裂繁衍的后代由电脑 AI 自主控制（支持信标三态切换）。</li>
-            <li><strong>局内基因库存取</strong>：【6.游戏画面】中可随时修改设计、点击<strong>【存入基因库】</strong>保存，或点击<strong>【加载基因库】</strong>加载（自动区分<strong>同躯干器官进化</strong>与<strong>跨躯干诞生新种群</strong>）。</li>
+            <li><strong>房间直达战场 &amp; 局内禁改生物</strong>：从房间启动游戏直接进入战场！对局期间<strong>严禁生物编辑</strong>，仅可使用并<strong>实时切换客户储存的样本</strong>。</li>
+            <li><strong>限时胜负 &amp; 中途重返</strong>：每局为 <strong>180 秒限时游戏</strong>，最终通过<strong>控制的种群营养物质总和</strong>判定胜负；<strong>常规阶段中途死亡可选择样本再次加入，最后 30 秒决胜阶段禁止复活</strong>。</li>
+            <li><strong>进化点 (EP) 经济</strong>：游戏胜利奖励<strong>进化点 (EP)</strong>，可在局外样本工坊中用于<strong>① 解锁器官、② 购买样本槽位、③ 购买器官库存</strong>。</li>
           </ul>
         </div>
       </div>
@@ -882,19 +992,25 @@
   </section>
 
   <!-- =====================================================================
-       页面 4：编辑页面 (#page-editor —— 修改和设计物种)
+       页面 4：局外样本与进化点工坊 (#page-editor —— 仅限房间对局外使用进化点解锁/购买器官、购买样本槽位、装配客户样本)
        ===================================================================== -->
-  <section class="mg-page active" id="page-editor">
+  <section class="mg-page" id="page-editor">
     <div class="editor-layout">
-      <!-- 左栏：4阶躯干底盘与五大器官插槽选择器 -->
+      <!-- 左栏：客户样本槽位选择 + 4阶躯干底盘 + 五大器官插槽装配 (支持进化点解锁器官与购买器官库存) -->
       <div class="glass-col">
         <div class="sec-title">
-          <span>1. 躯干核心底盘 (修改躯干 = 新种群诞生)</span>
+          <span>客户储存样本槽 (<span id="editor-slot-count-lbl">3 / 6 槽</span>)</span>
+          <button type="button" class="btn-ghost gold" id="editor-buy-slot-inline-btn" style="min-height:44px;min-width:44px;padding:0 8px;font-size:0.60rem;white-space:nowrap;">+ 购买样本槽位</button>
+        </div>
+        <div id="editor-sample-slots-bar" style="display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;flex-shrink:0;"></div>
+
+        <div class="sec-title" style="margin-top:2px;">
+          <span>1. 躯干核心底盘 (使用进化点解锁高阶躯干)</span>
           <span class="sec-sub">4 阶体积制衡</span>
         </div>
         <div class="torso-row" id="editor-torso-row"></div>
         <div class="sec-title">
-          <span>2. 五大器官插槽装配 (<span id="editor-slot-cap-lbl">7 槽</span>)</span>
+          <span>2. 五大器官插槽 (<span id="editor-slot-cap-lbl">7 槽</span> · 进化点解锁与购买器官)</span>
           <span class="sec-sub">Lv.1 ~ Lv.3</span>
         </div>
         <div class="slot-editor-list" id="editor-slot-list"></div>
@@ -904,39 +1020,47 @@
       <div class="glass-col" style="position:relative;padding:8px;justify-content:space-between;background:radial-gradient(circle at 50% 48%, rgba(8,22,48,0.92) 0%, rgba(3,7,18,0.96) 85%);">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;z-index:2;">
           <div style="background:rgba(15,23,42,0.85);border:1px solid var(--mg-border-subtle);border-radius:8px;padding:4px 8px;">
-            <div style="font-size:0.72rem;font-weight:800;color:var(--mg-text-primary);" id="editor-preview-title">当前物种：夜行声呐刺猎虫</div>
+            <div style="font-size:0.72rem;font-weight:800;color:var(--mg-text-primary);" id="editor-preview-title">当前样本：夜行声呐刺猎虫</div>
             <div style="font-size:0.6rem;color:var(--mg-accent-cyan);" id="editor-preview-sub">流线三节真核体 (T02) · 肉食掠食者</div>
           </div>
           <button class="btn-ghost" id="editor-toggle-daynight-btn" style="min-height:44px;padding:0 9px;font-size:0.66rem;">
             预览环境：白昼
           </button>
         </div>
-        <canvas id="editor-preview-canvas" width="320" height="210" style="width:100%;flex:1;min-height:140px;display:block;"></canvas>
+        <canvas id="editor-preview-canvas" width="320" height="210" style="width:100%;flex:1;min-height:130px;display:block;"></canvas>
         <div style="display:flex;align-items:center;gap:6px;z-index:2;">
           <div style="flex:1;display:flex;align-items:center;gap:5px;background:rgba(15,23,42,0.9);border:1px solid var(--mg-border-subtle);border-radius:9px;padding:4px 8px;">
-            <span style="font-size:0.66rem;color:var(--mg-text-secondary);white-space:nowrap;">物种命名:</span>
+            <span style="font-size:0.64rem;color:var(--mg-text-secondary);white-space:nowrap;">样本命名:</span>
             <input type="text" class="mg-input" id="editor-species-name" maxlength="12" value="夜行声呐刺猎虫" style="border:none;background:transparent;font-weight:800;width:100%;padding:2px;" />
           </div>
-          <button class="cta-primary" id="editor-save-to-gb-btn">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-            <span>存入基因库</span>
+          <button class="btn-ghost" id="editor-save-to-gb-btn" style="min-height:44px;min-width:44px;padding:0 10px;border-color:var(--mg-accent-cyan);color:var(--mg-accent-cyan);white-space:nowrap;">
+            <span>保存样本</span>
+          </button>
+          <button class="cta-primary" id="editor-quick-play-btn" style="min-height:44px;min-width:44px;padding:0 12px;white-space:nowrap;">
+            <span>进入限时战场 ➔</span>
           </button>
         </div>
       </div>
 
-      <!-- 右栏：三维核心数据、体积阻尼仪表与 5 维 AI 行为倾向滑块 -->
+      <!-- 右栏：进化点器官商城 (解锁器官/购买器官/购买样本槽) + 核心数据与 AI 倾向 -->
       <div class="glass-col">
         <div class="sec-title">
-          <span>3. 三维核心数据与体积阻尼评估</span>
+          <span>3. 进化点商城 · 解锁器官 / 购买器官库存</span>
+          <span class="sec-sub" id="editor-ep-balance-lbl" style="color:var(--mg-accent-gold);font-weight:900;">进化点: 260 EP</span>
+        </div>
+        <div id="editor-ep-organ-shop" style="display:flex;flex-direction:column;gap:4px;max-height:128px;overflow-y:auto;padding-right:2px;border:1px solid rgba(45,212,191,0.18);border-radius:8px;padding:5px;background:rgba(4,18,22,0.75);"></div>
+
+        <div class="sec-title" style="margin-top:2px;">
+          <span>4. 样本三维核心属性与单兵营养值</span>
           <span class="sec-sub" id="editor-diet-badge" style="color:var(--mg-accent-emerald);">平衡合规</span>
         </div>
         <div class="stat-mini-grid">
           <div class="stat-box">
-            <div class="lbl">生命值上限 (MaxHP)</div>
+            <div class="lbl">生命上限 / 护甲</div>
             <div class="val" id="ed-stat-hp">140 HP</div>
           </div>
           <div class="stat-box">
-            <div class="lbl">能量饱食上限 (MaxE)</div>
+            <div class="lbl">能量上限 / 消化</div>
             <div class="val cyan" id="ed-stat-energy">249 E</div>
           </div>
           <div class="stat-box">
@@ -944,45 +1068,38 @@
             <div class="val gold" id="ed-stat-bmr">4.05 E/s</div>
           </div>
           <div class="stat-box">
-            <div class="lbl">巡航航速 / 转向率</div>
+            <div class="lbl">航速 / 转向率</div>
             <div class="val" id="ed-stat-speed">152 px/s · 3.27</div>
           </div>
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.35);border-radius:8px;padding:4px 8px;font-size:0.66rem;">
-          <span style="color:var(--mg-text-secondary);">蓝图总基因算力估值 (totalGpCost):</span>
-          <strong style="color:var(--mg-accent-gold);" id="ed-stat-gpcost">875 GP</strong>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.35);border-radius:8px;padding:3px 8px;font-size:0.62rem;">
+          <span style="color:var(--mg-text-secondary);">初始个体营养物质基准:</span>
+          <strong style="color:var(--mg-accent-gold);" id="ed-stat-gpcost">88 营养质</strong>
         </div>
 
-        <div class="sec-title" style="margin-top:2px;">
-          <span>4. 同族电脑 NPC 5 维 AI 行为倾向</span>
-          <span class="sec-sub">0% ~ 100%</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:5px;flex:1;justify-content:space-evenly;">
+        <div style="display:flex;flex-direction:column;gap:3px;">
           <div class="ai-slider-row">
-            <span style="width:92px;">1. 掠食嗜血 (w_aggr)</span>
+            <span style="width:86px;">1. 掠食 (aggr)</span>
             <input type="range" min="0" max="100" value="75" id="ai-w-aggr" />
-            <strong style="width:32px;text-align:right;" id="ai-val-aggr">75%</strong>
+            <strong style="width:30px;text-align:right;" id="ai-val-aggr">75%</strong>
           </div>
           <div class="ai-slider-row">
-            <span style="width:92px;">2. 群聚避险 (w_flock)</span>
+            <span style="width:86px;">2. 群聚 (flock)</span>
             <input type="range" min="0" max="100" value="40" id="ai-w-flock" />
-            <strong style="width:32px;text-align:right;" id="ai-val-flock">40%</strong>
+            <strong style="width:30px;text-align:right;" id="ai-val-flock">40%</strong>
           </div>
           <div class="ai-slider-row">
-            <span style="width:92px;">3. 危机逃跑 (w_flee)</span>
+            <span style="width:86px;">3. 规避 (flee)</span>
             <input type="range" min="0" max="100" value="35" id="ai-w-flee" />
-            <strong style="width:32px;text-align:right;" id="ai-val-flee">35%</strong>
+            <strong style="width:30px;text-align:right;" id="ai-val-flee">35%</strong>
           </div>
           <div class="ai-slider-row">
-            <span style="width:92px;">4. 繁衍急迫 (w_repro)</span>
+            <span style="width:86px;">4. 繁衍 (repro)</span>
             <input type="range" min="0" max="100" value="80" id="ai-w-repro" />
-            <strong style="width:32px;text-align:right;" id="ai-val-repro">80%</strong>
+            <strong style="width:30px;text-align:right;" id="ai-val-repro">80%</strong>
           </div>
-          <div class="ai-slider-row">
-            <span style="width:92px;">5. 逆境变异 (w_mut)</span>
-            <input type="range" min="0" max="100" value="25" id="ai-w-mut" />
-            <strong style="width:32px;text-align:right;" id="ai-val-mut">25%</strong>
-          </div>
+          <input type="range" min="0" max="100" value="25" id="ai-w-mut" style="display:none;" />
+          <strong id="ai-val-mut" style="display:none;">25%</strong>
         </div>
       </div>
     </div>
@@ -1037,7 +1154,7 @@
         <div style="background:rgba(15,23,42,0.82);border:1px solid var(--mg-border-subtle);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
             <strong style="font-size:0.72rem;color:var(--mg-text-primary);">【可加入局域网房间列表 · 点击一键加入免输 ID】</strong>
-            <button class="btn-ghost" id="lobby-refresh-rooms-btn" style="min-height:36px;padding:0 10px;font-size:0.64rem;border-color:var(--mg-accent-gold);color:var(--mg-accent-gold);">
+            <button class="btn-ghost" id="lobby-refresh-rooms-btn" style="min-height:44px;min-width:44px;padding:0 12px;font-size:0.64rem;border-color:var(--mg-accent-gold);color:var(--mg-accent-gold);">
               ↻ 刷新房间列表
             </button>
           </div>
@@ -1080,57 +1197,61 @@
   </section>
 
   <!-- =====================================================================
-       页面 6：游戏画面 (#page-arena —— 感官着色视口、纯 SVG 图标 HUD、局内基因库存取)
+       页面 6：游戏画面 (#page-arena —— 进入房间直达限时战场、禁止局内生物编辑、支持客户样本切换、中途重返与种群营养物质总和胜负结算)
        ===================================================================== -->
-  <section class="mg-page" id="page-arena">
+  <section class="mg-page active" id="page-arena">
     <canvas id="petri-canvas"></canvas>
 
-    <!-- 顶部无文字纯 SVG 图标状态条 + 昼夜圆盘 + 生态微缩雷达 -->
+    <!-- 顶部生命/能量状态条 + 限时赛倒计时与控制的种群营养物质总和计分板 + 生态微缩雷达 -->
     <header class="arena-top-hud">
       <div class="arena-bars-pill">
-        <!-- 生命值 HP 进度条 (翠绿/警报红) -->
-        <div class="icon-meter" title="生命值 (HP)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#10b981"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-          <div class="meter-track"><div class="meter-fill" id="hud-hp-bar" style="width:100%;background:linear-gradient(90deg,#10b981,#34d399);"></div></div>
+        <!-- 生命值 HP 进度条 -->
+        <div class="icon-meter" title="当前受控个体生命值 (HP)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#10b981"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <div class="meter-track" style="width:54px;"><div class="meter-fill" id="hud-hp-bar" style="width:100%;background:linear-gradient(90deg,#10b981,#34d399);"></div></div>
         </div>
-        <!-- 能量值 Energy 进度条 (电光青) -->
-        <div class="icon-meter" title="能量值 (Energy / 饱食度)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#2dd4bf"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <div class="meter-track"><div class="meter-fill" id="hud-energy-bar" style="width:85%;background:linear-gradient(90deg,#0284c7,#2dd4bf);"></div></div>
-        </div>
-        <!-- 基因值 GP 进度环条 (电弧金) -->
-        <div class="icon-meter" title="种群共享基因值 (GP)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.4"><polygon points="12 2 21 8.5 17.5 20 6.5 20 3 8.5"/></svg>
-          <div class="meter-track" style="width:52px;"><div class="meter-fill" id="hud-gp-bar" style="width:45%;background:linear-gradient(90deg,#d97706,#fbbf24);"></div></div>
+        <!-- 能量值 Energy 进度条 -->
+        <div class="icon-meter" title="当前受控个体能量值 (Energy)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#2dd4bf"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <div class="meter-track" style="width:54px;"><div class="meter-fill" id="hud-energy-bar" style="width:85%;background:linear-gradient(90deg,#0284c7,#2dd4bf);"></div></div>
         </div>
         <!-- 昼夜交替相位 SVG 图标 -->
         <div class="icon-meter" id="hud-circadian-ico" title="昼夜交替相位">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
         </div>
       </div>
 
-      <!-- 右上角返回游戏大厅纯图标胶囊 + 微缩生态雷达 -->
+      <!-- 顶部中央：限时赛倒计时 & 控制的种群营养物质总和胜负计分板 -->
+      <div class="arena-match-scoreboard" id="arena-match-hud">
+        <div class="match-timer-box" id="hud-match-timer-box" title="本局剩余时间 (最后30秒决胜阶段禁止复活)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/></svg>
+          <span id="hud-match-timer">03:00</span>
+        </div>
+        <div class="match-nutrient-stat">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="color:var(--mg-accent-cyan);font-weight:900;" id="hud-player-nutrients">我方种群营养: 120 质 (1只)</span>
+            <span style="color:var(--mg-accent-gold);font-weight:800;" id="hud-player-rank">第 1 名</span>
+          </div>
+          <div style="color:var(--mg-text-secondary);font-size:0.56rem;" id="hud-rival-nutrients">头名竞争种群: 110 质 · 进化点储备: 260 EP</div>
+        </div>
+        <span class="match-phase-tag" id="hud-match-phase-badge">常规阶段·可换样本/复活</span>
+        <button type="button" class="btn-ghost gold" id="btn-arena-settle-early" style="min-height:44px;min-width:64px;padding:0 10px;font-size:0.60rem;font-weight:800;border-color:rgba(251,191,36,0.55);color:var(--mg-accent-gold);white-space:nowrap;" title="结束本局并按当前种群营养物质总和结算，进入局外样本与进化点工坊">
+          结算/工坊
+        </button>
+      </div>
+
+      <!-- 右上角微缩生态雷达 -->
       <div style="display:flex;align-items:center;gap:8px;pointer-events:auto;">
         <canvas id="arena-minimap" width="44" height="44" style="width:44px;height:44px;border-radius:50%;background:rgba(7,12,24,0.85);border:1.5px solid rgba(45,212,191,0.4);" title="2800×1800 微观培养皿态势雷达"></canvas>
-        <button class="pure-svg-btn" id="arena-back-lobby-btn" style="display:none;" style="width:44px;height:44px;min-width:44px;min-height:44px;" aria-label="返回六大页面导航大厅" title="返回游戏大厅 / 编辑页面">
+        <button class="pure-svg-btn" id="arena-back-lobby-btn" style="display:none;width:44px;height:44px;min-width:44px;min-height:44px;" aria-label="返回房间大厅" title="返回房间大厅">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         </button>
       </div>
     </header>
 
-    <!-- 底部纯 SVG 图标无文字按钮组：左下 [基因库] [信标] [感官锥]，右下 [器官主动技] [分裂繁殖] -->
+    <!-- 底部操控区：左下 [信标] [感官辅助]，底部中央 [客户储存样本切换栏 (游戏内禁止生物编辑)]，右下 [器官主动技] [分裂繁殖] -->
     <div class="arena-bottom-hud">
       <div class="arena-btn-cluster">
-        <!-- [SVG:基因库] 呼出局内修改物种、存入基因库与加载基因库抽屉 -->
-        <button class="pure-svg-btn" id="btn-open-genebank" style="border-color:rgba(45,212,191,0.7);" aria-label="局内基因库与物种进化" title="局内修改物种 / 存入基因库 / 加载基因库">
-          <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 4c5 0 11 16 16 16"/>
-            <path d="M20 4c-5 0-11 16-16 16"/>
-            <line x1="6.5" y1="8" x2="17.5" y2="8"/>
-            <line x1="8" y1="12" x2="16" y2="12"/>
-            <line x1="6.5" y1="16" x2="17.5" y2="16"/>
-          </svg>
-        </button>
         <!-- [SVG:信标] 切换同族电脑 NPC 群体指令 (forage ➔ guard ➔ hunt) -->
         <button class="pure-svg-btn" id="btn-pheromone" style="border-color:rgba(16,185,129,0.7);" aria-label="切换同族NPC信息素信标" title="切换同族NPC信标 (采食散开 / 护卫环绕 / 猎杀包抄)">
           <svg id="pheromone-svg-ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2">
@@ -1140,9 +1261,14 @@
           </svg>
         </button>
         <!-- [SVG:感官锥] 显隐感官视野扇区/声呐环与仇恨锁定连线 -->
-        <button class="pure-svg-btn" id="btn-toggle-fov" style="border-color:rgba(45,212,191,0.45);" aria-label="切换感官范围与仇恨连线辅助层" title="显隐感官视野边界与仇恨锁定线">
+        <button class="pure-svg-btn" id="btn-toggle-fov" style="border-color:rgba(45,212,191,0.45);" aria-label="切换感官范围辅助层" title="显隐感官视野边界">
           <img id="fov-btn-organ-img" src="../assets/micro-genesis/sprites/sensory-ear-lv2.svg" alt="" />
         </button>
+      </div>
+
+      <!-- 底部中央：客户储存样本快速切换栏 (游戏房间内禁止生物编辑，仅可切换客户储存的样本) -->
+      <div class="arena-sample-switcher" id="arena-sample-switcher" role="toolbar" aria-label="客户储存样本切换栏 (对局内禁止生物编辑)">
+        <!-- 由 engine.js 动态渲染客户已解锁的样本槽位 #1 ~ #N -->
       </div>
 
       <div class="arena-btn-cluster">
@@ -1153,74 +1279,73 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5"><circle cx="12" cy="12" r="8" stroke-dasharray="32 18"/></svg>
           </div>
         </button>
-        <!-- [SVG:分裂] 无性二分裂繁衍同族电脑 NPC 后代 -->
-        <button class="pure-svg-btn primary-orb" id="btn-mitosis" aria-label="分裂繁殖同族电脑NPC" title="消耗能量分裂繁殖同族电脑 NPC">
+        <!-- [SVG:分裂] 无性二分裂繁衍同族电脑 NPC 后代 (扩大种群营养物质总和) -->
+        <button class="pure-svg-btn primary-orb" id="btn-mitosis" aria-label="分裂繁殖同族电脑NPC" title="消耗能量分裂繁殖同族电脑 NPC (提升种群营养物质总和)">
           <img id="mitosis-btn-organ-img" src="../assets/micro-genesis/sprites/core-vacuole-lv2.svg" alt="" />
         </button>
       </div>
     </div>
 
-    <!-- 局内修改物种、【存入基因库】与【加载基因库】毛玻璃抽屉 (#ingame-gene-drawer) -->
-    <div id="ingame-gene-drawer" role="dialog" aria-label="局内物种基因工坊与基因库加载">
-      <div class="drawer-header">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <strong style="font-size:0.82rem;color:var(--mg-accent-cyan);">【局内物种基因工坊】</strong>
-          <span class="badge-tag" id="drawer-cur-torso-lbl">当前种群躯干: T02 流线三节真核体</span>
-          <span class="badge-tag gold" id="drawer-cur-gp-lbl">可用基因值: 360 GP</span>
-          <span class="badge-tag green" id="drawer-cur-energy-lbl">当前能量: 85% MaxE</span>
-          <span style="font-size:0.64rem;color:var(--mg-text-secondary);" id="drawer-cd-status-lbl">重构冷却: 就绪</span>
+    <!-- 中途阵亡 · 选择客户储存样本再次加入战场弹窗 (常规阶段允许重返，最后30秒决胜阶段禁止复活) -->
+    <div class="arena-modal-backdrop" id="arena-rejoin-modal" role="dialog" aria-label="中途死亡选择样本再次加入">
+      <div class="arena-modal-card" style="max-width:540px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(45,212,191,0.22);padding-bottom:6px;">
+          <strong style="font-size:0.86rem;color:var(--mg-accent-cyan);" id="rejoin-modal-title">受控个体阵亡 · 选择储存样本再次加入</strong>
+          <span class="match-phase-tag" id="rejoin-modal-timer-tag">剩余 01:45 · 可重返战场</span>
         </div>
-        <button class="btn-ghost" id="drawer-close-btn" style="min-height:44px;padding:0 10px;">关闭抽屉 ×</button>
-      </div>
-
-      <!-- 跨躯干加载内联二次确认条 (严禁使用原生 confirm) -->
-      <div id="cross-torso-confirm-bar">
-        <span id="cross-torso-confirm-msg">
-          目标物种属于<strong>不同躯干</strong>，加载后将创立<strong>全新物种种群</strong>并以 <strong>1 只初始始祖个体 (100% HP, 50% MaxE)</strong> 重新开始演化！是否先将当前物种存入基因库？
-        </span>
-        <div style="display:flex;gap:6px;flex-shrink:0;">
-          <button class="btn-ghost gold" id="confirm-save-then-load-btn" style="min-height:44px;">先存入基因库再加载</button>
-          <button class="cta-primary" id="confirm-direct-load-btn" style="min-height:44px;padding:0 12px;font-size:0.7rem;">直接加载新种群</button>
-          <button class="btn-ghost" id="confirm-cancel-load-btn" style="min-height:44px;">取消</button>
+        <div style="font-size:0.68rem;color:var(--mg-text-secondary);line-height:1.45;" id="rejoin-modal-desc">
+          当前对局处于<strong>常规阶段</strong>，中途死亡可随时从您储存的样本槽中选择一个样本再次投放入场（游戏期间禁止生物编辑）。场上存活的同族后代将继续为您积累<strong>种群营养物质总和</strong>！
+        </div>
+        <div id="rejoin-sample-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;"></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
+          <button type="button" class="btn-ghost" id="btn-rejoin-settle-now" style="display:none;min-height:44px;padding:0 14px;">提前查看结算</button>
+          <button type="button" class="cta-primary" id="btn-rejoin-confirm" style="min-height:44px;padding:0 18px;width:100%;">
+            投放选中样本 · 再次加入战场
+          </button>
         </div>
       </div>
+    </div>
 
-      <div class="drawer-body">
-        <!-- 抽屉左栏：局内实时修改当前物种设计 + 点击【存入基因库】保存 -->
-        <div class="glass-col" style="padding:8px;">
-          <div class="sec-title">
-            <span>局内实时修改物种设计</span>
-            <span class="sec-sub" id="drawer-mod-diff-lbl">同躯干 · 种群内器官进化</span>
+    <!-- 限时游戏结束 · 种群营养物质总和胜负结算与进化点奖励弹窗 (#arena-settlement-modal) -->
+    <div class="arena-modal-backdrop" id="arena-settlement-modal" role="dialog" aria-label="限时演化胜负结算与进化点奖励">
+      <div class="arena-modal-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(45,212,191,0.25);padding-bottom:6px;">
+          <div>
+            <div style="font-size:0.92rem;font-weight:900;color:var(--mg-accent-gold);" id="settle-modal-title">限时演化胜利 · 种群营养物质总和第 1 名！</div>
+            <div style="font-size:0.64rem;color:var(--mg-text-secondary);" id="settle-modal-sub">胜负判定标准：倒计时结束时控制的种群营养物质总和排名</div>
           </div>
-          <div class="torso-row" id="drawer-torso-row"></div>
-          <div class="slot-editor-list" id="drawer-slot-list" style="flex:1;overflow-y:auto;"></div>
-          <div style="display:flex;align-items:center;gap:6px;padding-top:4px;border-top:1px solid rgba(45,212,191,0.15);">
-            <input type="text" class="mg-input" id="drawer-save-name-input" maxlength="12" placeholder="物种名称 (≤12字)" style="width:115px;" />
-            <button class="btn-ghost gold" id="drawer-save-to-gb-btn" style="flex:1;">
-              存入基因库 (0 消耗保存)
-            </button>
-            <button class="btn-ghost" id="drawer-apply-mod-btn" style="border-color:var(--mg-accent-cyan);color:var(--mg-accent-cyan);">
-              应用当前修改
-            </button>
+          <div class="nav-gp-badge" style="font-size:0.74rem;padding:5px 12px;" id="settle-ep-reward-badge">
+            奖励 +220 进化点 (EP)
           </div>
         </div>
 
-        <!-- 抽屉右栏：个人基因库存档列表 + 点击【加载基因库】(自动区分同躯干 vs 不同躯干) -->
-        <div class="glass-col" style="padding:8px;">
-          <div class="sec-title">
-            <span>个人基因库存档列表 (与 2.基因库 实时同步)</span>
-            <span class="sec-sub">注意是否属于不同躯干</span>
+        <!-- 各大种群营养物质总和排行榜 -->
+        <div id="settle-colony-leaderboard" style="display:flex;flex-direction:column;gap:5px;max-height:155px;overflow-y:auto;"></div>
+
+        <!-- 进化点用途提示与快捷操作 -->
+        <div style="background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.28);border-radius:10px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:0.64rem;">
+          <div>
+            <strong style="color:var(--mg-accent-cyan);">当前持有进化点：<span id="settle-total-ep-lbl" style="color:var(--mg-accent-gold);">480 EP</span></strong>
+            <div style="color:var(--mg-text-secondary);margin-top:2px;">可在局外【样本与进化点工坊】中使用进化点：<strong>① 解锁器官</strong>、<strong>② 购买样本槽位</strong>、<strong>③ 购买器官库存</strong>并更新储存样本。</div>
           </div>
-          <div id="drawer-gb-list" style="display:flex;flex-direction:column;gap:6px;flex:1;overflow-y:auto;"></div>
-          <button class="cta-primary" id="drawer-load-gb-btn" style="width:100%;">
-            加载基因库 (应用选中物种至当前对局)
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:2px;flex-wrap:wrap;">
+          <button type="button" class="btn-ghost gold" id="btn-settle-open-workshop" style="flex:1.2;min-height:44px;font-weight:800;border-color:var(--mg-accent-gold);color:var(--mg-accent-gold);">
+            前往局外样本工坊 (解锁/购买器官与样本槽)
+          </button>
+          <button type="button" class="cta-primary" id="btn-settle-rematch" style="flex:1;min-height:44px;">
+            再战一局 (限时 03:00)
+          </button>
+          <button type="button" class="btn-ghost" id="btn-settle-back-room" style="min-height:44px;padding:0 12px;">
+            返回房间大厅
           </button>
         </div>
       </div>
     </div>
   </section>
 
-  <script src="../shared/nexus-sdk.js?v=4.0"></script>
+  <script src="../shared/nexus-sdk.js?v=20261108"></script>
   <script>
   /**
    * 标准微游菜单清单入口 (Step 1 & Step 3 标准模板结构)
@@ -1232,12 +1357,15 @@
     gameId: 'micro-genesis',
     gameTitle: '微界演化 · 培养皿基因序列库',
     engineUrl: './engine.js',
-    storagePrefix: 'MICRO_GENESIS_V4_SAVE_',
+    storagePrefix: 'NEXUS_MINI_MICRO_GENESIS_',
     defaultSave: function(isAdmin) {
       return {
-        atp: isAdmin ? 999999 : 1500,
-        unlockedGenes: ['flagella', 'spike', 'chloroplast', 'cilia', 'toxin_sac', 'chitin_shell'],
-        speciesPreset: 'apex_leviathan'
+        version: '3.4.0',
+        gpReserve: isAdmin ? 99999 : 480,
+        evolutionPoints: isAdmin ? 99999 : 260,
+        maxSampleSlots: isAdmin ? 8 : 3,
+        selectedSampleSlotIdx: 0,
+        currency: { genePoints: isAdmin ? 99999 : 480, helixShards: isAdmin ? 999 : 80 }
       };
     }
   });

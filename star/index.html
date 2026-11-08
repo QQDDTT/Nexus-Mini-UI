@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN" data-faction="helios">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#050914" />
   <title>星轨防线 · STAR DEFENDER | Nexus-Mini</title>
   <link rel="icon" type="image/svg+xml" href="../assets/star-defender/icon.svg" />
@@ -20,14 +22,32 @@
       --text: #f8fafc;
       --muted: #94a3b8;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-    html, body {
-      width: 100vw; height: 100dvh; overflow: hidden; overscroll-behavior: none;
-      background: var(--sd-bg-void, #050914); color: var(--sd-text-telemetry, #f8fafc);
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100vw;
+      height: 100dvh;
+      overflow: hidden;
+      overscroll-behavior: none;
+      background: var(--sd-bg-void, #050914);
+      color: var(--sd-text-telemetry, #f8fafc);
       font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
     }
+
     #space-canvas {
-      position: fixed; inset: 0; width: 100%; height: 100%; display: block;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
       z-index: 1;
       touch-action: none;
     }
@@ -45,6 +65,7 @@
       flex-wrap: nowrap;
       pointer-events: none;
     }
+
     .hud-pill {
       pointer-events: auto;
       background: var(--sd-hud-deck-bg, rgba(7, 15, 34, 0.84));
@@ -59,10 +80,24 @@
       white-space: nowrap;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
     }
-    .hud-val { font-weight: 800; font-family: 'Consolas', monospace; color: var(--sd-accent-ion-cyan, #00f0ff); }
-    .hud-val.gold { color: var(--sd-accent-warp-gold, #fbbf24); }
-    .hud-val.green { color: #10b981; }
-    .hud-val.red { color: #f43f5e; }
+
+    .hud-val {
+      font-weight: 800;
+      font-family: 'Consolas', monospace;
+      color: var(--sd-accent-ion-cyan, #00f0ff);
+    }
+
+    .hud-val.gold {
+      color: var(--sd-accent-warp-gold, #fbbf24);
+    }
+
+    .hud-val.green {
+      color: #10b981;
+    }
+
+    .hud-val.red {
+      color: #f43f5e;
+    }
 
     /* Top-Right Mini Radar Pod (placed cleanly to the left of .nx-return-pill) */
     .radar-pod {
@@ -82,6 +117,7 @@
       justify-content: center;
       cursor: pointer;
     }
+
     #radar-canvas {
       width: 72px;
       height: 48px;
@@ -107,12 +143,22 @@
       pointer-events: none;
       box-shadow: 0 0 18px rgba(168, 85, 247, 0.45);
     }
-    .boss-hud-banner.active { display: flex; }
-    .boss-bar-track {
-      width: 100%; height: 6px; background: rgba(0,0,0,0.75); border-radius: 2px; overflow: hidden;
+
+    .boss-hud-banner.active {
+      display: flex;
     }
+
+    .boss-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.75);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
     .boss-bar-fill {
-      height: 100%; width: 100%;
+      height: 100%;
+      width: 100%;
       background: linear-gradient(90deg, #a855f7 0%, #ef4444 50%, #a3e635 100%);
       transition: width 0.1s linear;
     }
@@ -128,17 +174,22 @@
       gap: 10px;
       pointer-events: none;
     }
+
     .stick-zone {
       pointer-events: auto;
-      width: 122px; height: 122px;
+      width: 122px;
+      height: 122px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, rgba(8, 16, 34, 0.68) 75%);
       border: 1.5px solid var(--sd-hud-border-cyan, rgba(56, 189, 248, 0.42));
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       touch-action: none;
       position: relative;
       box-shadow: inset 0 0 18px rgba(0, 240, 255, 0.14);
     }
+
     .stick-zone::after {
       content: 'FCS 矢量推进';
       position: absolute;
@@ -148,8 +199,10 @@
       color: var(--sd-text-muted, #94a3b8);
       letter-spacing: 0.04em;
     }
+
     .stick-knob {
-      width: 48px; height: 48px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: radial-gradient(circle, var(--sd-accent-ion-cyan, #00f0ff) 0%, #0284c7 100%);
       border: 1.5px solid #ffffff;
@@ -170,14 +223,27 @@
       min-width: 142px;
       font-size: 0.62rem;
     }
+
     .tele-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
       font-family: 'Consolas', monospace;
     }
+
     .tele-bar {
-      flex: 1; height: 5px; background: rgba(0,0,0,0.65); border-radius: 2px; overflow: hidden;
+      flex: 1;
+      height: 5px;
+      background: rgba(0, 0, 0, 0.65);
+      border-radius: 2px;
+      overflow: hidden;
     }
-    .tele-fill { height: 100%; transition: width 0.12s ease; }
+
+    .tele-fill {
+      height: 100%;
+      transition: width 0.12s ease;
+    }
 
     /* Bottom-Right WCS Weapon Fire Control & Outfitting Cluster */
     .right-wcs-cluster {
@@ -190,13 +256,17 @@
       align-items: flex-end;
       gap: 7px;
     }
-    .wcs-top-row, .wcs-bot-row {
+
+    .wcs-top-row,
+    .wcs-bot-row {
       display: flex;
       align-items: center;
       gap: 7px;
     }
+
     .tac-btn {
-      min-height: 46px; min-width: 46px;
+      min-height: 46px;
+      min-width: 46px;
       padding: 0 11px;
       border-radius: 8px;
       background: var(--sd-hud-deck-bg, rgba(9, 18, 38, 0.88));
@@ -205,18 +275,29 @@
       color: var(--sd-text-telemetry, #f8fafc);
       font-size: 0.7rem;
       font-weight: 800;
-      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
       cursor: pointer;
       white-space: nowrap;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
     }
-    .tac-btn:active { transform: scale(0.95); }
+
+    .tac-btn:active {
+      transform: scale(0.95);
+    }
+
     .tac-btn.gold {
       border-color: var(--sd-accent-warp-gold, #fbbf24);
       color: var(--sd-accent-warp-gold, #fbbf24);
     }
+
     .tac-btn.primary {
-      width: 64px; height: 64px; min-width: 64px; min-height: 64px;
+      width: 64px;
+      height: 64px;
+      min-width: 64px;
+      min-height: 64px;
       padding: 0;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--sd-accent-ion-cyan, #00f0ff) 0%, #0284c7 100%);
@@ -228,19 +309,25 @@
 
     /* ===== 3栏正交剖面星际船坞改装弹窗 (#dockyard-modal) ===== */
     .modal-backdrop {
-      position: fixed; inset: 0; z-index: 8600;
+      position: fixed;
+      inset: 0;
+      z-index: 8600;
       background: rgba(3, 8, 18, 0.90);
       backdrop-filter: blur(12px);
-      display: none; align-items: center; justify-content: center;
+      display: none;
+      align-items: center;
+      justify-content: center;
       padding:
-        max(8px, env(safe-area-inset-top))
-        max(12px, env(safe-area-inset-right))
-        max(8px, env(safe-area-inset-bottom))
-        max(12px, env(safe-area-inset-left));
+        max(8px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
     }
-    .modal-backdrop.active { display: flex; }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
     .dockyard-shell {
-      width: 100%; max-width: 828px;
+      width: 100%;
+      max-width: 828px;
       height: min(370px, 94dvh);
       background-color: transparent;
       background-image: url('../assets/star-defender/sprites/ui-console-chassis-frame.svg');
@@ -249,37 +336,58 @@
       border: none;
       border-radius: 24px;
       padding: 18px 22px;
-      display: flex; flex-direction: column; gap: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95);
       overflow: hidden;
     }
+
     .dock-header {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
       border-bottom: 1px solid rgba(250, 204, 21, 0.35);
       padding-bottom: 5px;
       flex-shrink: 0;
     }
+
     .dock-3col {
-      flex: 1; min-height: 0;
+      flex: 1;
+      min-height: 0;
       display: grid;
       grid-template-columns: 1.05fr 1.25fr 1.05fr;
       gap: 8px;
     }
+
     .dock-col {
       background: rgba(6, 10, 18, 0.86);
       border: 1px solid rgba(226, 186, 98, 0.42);
       border-radius: 8px;
       padding: 6px 8px;
-      display: flex; flex-direction: column; gap: 5px;
-      overflow-y: auto; overscroll-behavior: contain;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
       min-height: 0;
     }
+
     .dock-col-title {
-      font-size: 0.64rem; font-weight: 800; color: #fde047;
-      letter-spacing: 0.02em; border-bottom: 1px solid rgba(250,204,21,0.22); padding-bottom: 3px;
-      display: flex; justify-content: space-between; align-items: center;
-      white-space: nowrap; gap: 4px;
+      font-size: 0.64rem;
+      font-weight: 800;
+      color: #fde047;
+      letter-spacing: 0.02em;
+      border-bottom: 1px solid rgba(250, 204, 21, 0.22);
+      padding-bottom: 3px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      white-space: nowrap;
+      gap: 4px;
     }
+
     .dock-hull-item {
       min-height: 46px;
       padding: 5px 12px;
@@ -287,9 +395,13 @@
       background-image: url('../assets/star-defender/sprites/ui-meteorite-vault-box.svg');
       background-size: 100% 100%;
       border: none;
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
       cursor: pointer;
     }
+
     .dock-mod-item {
       min-height: 46px;
       padding: 5px 12px;
@@ -297,16 +409,27 @@
       background-image: url('../assets/star-defender/sprites/ui-capsule-vault-box.svg');
       background-size: 100% 100%;
       border: none;
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
       cursor: pointer;
     }
-    .dock-hull-item.active, .dock-mod-item.active {
+
+    .dock-hull-item.active,
+    .dock-mod-item.active {
       filter: brightness(1.16) drop-shadow(0 0 6px rgba(253, 224, 71, 0.5));
     }
-    .dock-hull-item img, .dock-mod-item img {
-      width: 34px; height: 34px; object-fit: contain; flex-shrink: 0;
+
+    .dock-hull-item img,
+    .dock-mod-item img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      flex-shrink: 0;
       filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.9));
     }
+
     .cutaway-stage {
       flex: 1;
       background-color: transparent;
@@ -314,40 +437,94 @@
       background-size: 100% 100%;
       border: none;
       border-radius: 8px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 6px; position: relative; min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      position: relative;
+      min-height: 110px;
     }
+
     .cutaway-stage img.main-hull-blueprint {
-      width: 84px; height: 84px; object-fit: contain;
+      width: 84px;
+      height: 84px;
+      object-fit: contain;
       filter: drop-shadow(0 0 14px rgba(0, 240, 255, 0.35));
     }
+
     .hardpoint-sockets-row {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: 100%;
     }
+
     .hp-socket-box {
       min-height: 44px;
       padding: 3px 5px;
       border-radius: 4px;
       background: rgba(6, 13, 28, 0.9);
-      display: flex; align-items: center; gap: 4px;
-      font-size: 0.54rem; font-family: 'Consolas', monospace;
-      white-space: nowrap; overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.54rem;
+      font-family: 'Consolas', monospace;
+      white-space: nowrap;
+      overflow: hidden;
       cursor: pointer;
     }
-    .hp-socket-box > div { min-width: 0; overflow: hidden; }
-    .hp-socket-box > div > div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .hp-socket-box.zone-w { border: 1px solid #ef4444; color: #fca5a5; }
-    .hp-socket-box.zone-b { border: 1px solid #10b981; color: #6ee7b7; }
-    .hp-socket-box.zone-p { border: 1px solid #a855f7; color: #d8b4fe; }
-    .hp-socket-box img { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+
+    .hp-socket-box>div {
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .hp-socket-box>div>div {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hp-socket-box.zone-w {
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+    }
+
+    .hp-socket-box.zone-b {
+      border: 1px solid #10b981;
+      color: #6ee7b7;
+    }
+
+    .hp-socket-box.zone-p {
+      border: 1px solid #a855f7;
+      color: #d8b4fe;
+    }
+
+    .hp-socket-box img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
 
     @media (max-width: 720px) {
-      .ship-telemetry-box { display: none; }
-      .stick-zone { width: 106px; height: 106px; }
-      .dock-3col { grid-template-columns: 1fr 1fr; }
+      .ship-telemetry-box {
+        display: none;
+      }
+
+      .stick-zone {
+        width: 106px;
+        height: 106px;
+      }
+
+      .dock-3col {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="sd-cosmos-backdrop"></div>
   <canvas id="space-canvas"></canvas>
@@ -400,17 +577,23 @@
     <div class="ship-telemetry-box">
       <div class="tele-row">
         <span>护盾 SHD</span>
-        <div class="tele-bar"><div class="tele-fill" id="bar-shield" style="width:100%;background:#00f0ff;"></div></div>
+        <div class="tele-bar">
+          <div class="tele-fill" id="bar-shield" style="width:100%;background:#00f0ff;"></div>
+        </div>
         <span id="val-shield">100%</span>
       </div>
       <div class="tele-row">
         <span>装甲 ARM</span>
-        <div class="tele-bar"><div class="tele-fill" id="bar-armor" style="width:100%;background:#10b981;"></div></div>
+        <div class="tele-bar">
+          <div class="tele-fill" id="bar-armor" style="width:100%;background:#10b981;"></div>
+        </div>
         <span id="val-armor">100%</span>
       </div>
       <div class="tele-row">
         <span>电网 PWR</span>
-        <div class="tele-bar"><div class="tele-fill" id="bar-power" style="width:76%;background:#fbbf24;"></div></div>
+        <div class="tele-bar">
+          <div class="tele-fill" id="bar-power" style="width:76%;background:#fbbf24;"></div>
+        </div>
         <span id="val-twr" style="color:#fbbf24;">TWR 1.9S</span>
       </div>
     </div>
@@ -419,26 +602,47 @@
   <!-- 右下角：WCS 武器火控、阵营/底盘切换与 3栏船坞改装入口 -->
   <div class="right-wcs-cluster">
     <div class="wcs-top-row">
-      <button class="tac-btn gold" id="btn-open-dock" aria-label="打开星际船坞改装台" title="打开星际船坞改装台" style="width:50px;height:50px;padding:0;">
-        <img id="btn-mod-ico" src="../assets/star-defender/sprites/module-railgun.svg" alt="改装" style="width:28px;height:28px;object-fit:contain;" />
+      <button class="tac-btn gold" id="btn-open-dock" aria-label="打开星际船坞改装台" title="打开星际船坞改装台"
+        style="width:50px;height:50px;padding:0;">
+        <img id="btn-mod-ico" src="../assets/star-defender/sprites/module-railgun.svg" alt="改装"
+          style="width:28px;height:28px;object-fit:contain;" />
         <span id="btn-mod-lbl" style="display:none;">船坞改装</span>
       </button>
-      <button class="tac-btn" id="btn-switch-faction" aria-label="切换阵营涂装" title="实时切换赫利俄斯/格拉基斯阵营涂装" style="width:50px;height:50px;padding:0;">
+      <button class="tac-btn" id="btn-switch-faction" aria-label="切换阵营涂装" title="实时切换赫利俄斯/格拉基斯阵营涂装"
+        style="width:50px;height:50px;padding:0;">
         <span id="btn-fac-ico" style="display:inline-flex;align-items:center;justify-content:center;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2"><circle cx="12" cy="12" r="5" fill="#f59e0b" fill-opacity="0.3"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2">
+            <circle cx="12" cy="12" r="5" fill="#f59e0b" fill-opacity="0.3" />
+            <line x1="12" y1="1" x2="12" y2="4" />
+            <line x1="12" y1="20" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" />
+            <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="4" y2="12" />
+            <line x1="20" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" />
+            <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" />
+          </svg>
         </span>
         <span id="btn-fac-lbl" style="display:none;">阵营: 赫</span>
       </button>
     </div>
     <div class="wcs-bot-row">
-      <button class="tac-btn gold" id="btn-cycle-hull" aria-label="切换星舰底盘" title="切换星舰底盘" style="width:50px;height:50px;padding:0;">
-        <img id="btn-hull-ico" src="../assets/star-defender/sprites/hull-delta.svg" alt="Hull" style="width:32px;height:32px;object-fit:contain;" />
+      <button class="tac-btn gold" id="btn-cycle-hull" aria-label="切换星舰底盘" title="切换星舰底盘"
+        style="width:50px;height:50px;padding:0;">
+        <img id="btn-hull-ico" src="../assets/star-defender/sprites/hull-delta.svg" alt="Hull"
+          style="width:32px;height:32px;object-fit:contain;" />
       </button>
-      <button class="tac-btn" id="btn-nova" aria-label="脉冲超新星 EMP" title="释放超新星全屏EMP震荡" style="width:50px;height:50px;padding:0;">
-        <img src="../assets/star-defender/sprites/module-emp-missile.svg" alt="EMP" style="width:28px;height:28px;object-fit:contain;" />
+      <button class="tac-btn" id="btn-nova" aria-label="脉冲超新星 EMP" title="释放超新星全屏EMP震荡"
+        style="width:50px;height:50px;padding:0;">
+        <img src="../assets/star-defender/sprites/module-emp-missile.svg" alt="EMP"
+          style="width:28px;height:28px;object-fit:contain;" />
       </button>
       <button class="tac-btn primary" id="btn-burst" aria-label="主炮超载齐射" title="触发全挂点超载齐射">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6">
+          <circle cx="12" cy="12" r="9" />
+          <line x1="12" y1="3" x2="12" y2="21" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+        </svg>
       </button>
     </div>
   </div>
@@ -450,8 +654,10 @@
         <div style="display:flex;align-items:center;gap:8px;">
           <img src="../assets/star-defender/icon.svg" alt="" width="22" height="22" />
           <div>
-            <div style="font-size:0.82rem;font-weight:900;color:var(--sd-text-telemetry);">星际船坞 · 3栏正交剖面改装台 (ORTHOGRAPHIC DOCKYARD)</div>
-            <div style="font-size:0.6rem;font-family:Consolas,monospace;color:var(--sd-accent-warp-gold);" id="dock-sub-metrics">
+            <div style="font-size:0.82rem;font-weight:900;color:var(--sd-text-telemetry);">星际船坞 · 3栏正交剖面改装台
+              (ORTHOGRAPHIC DOCKYARD)</div>
+            <div style="font-size:0.6rem;font-family:Consolas,monospace;color:var(--sd-accent-warp-gold);"
+              id="dock-sub-metrics">
               反应堆功率备份比: +28% SAFE · 推重比 TWR: 1.92 (S级) · 固定槽位体积恒定
             </div>
           </div>
@@ -463,62 +669,80 @@
       </div>
 
       <div class="dock-3col">
-        <!-- 左栏：双阵营主力星舰底盘选择 -->
+        <!-- 左栏：5级无翼主力战舰底盘选择 -->
         <div class="dock-col">
           <div class="dock-col-title">
-            <span>① 主力星舰底盘 (4×2 双阵营)</span>
+            <span>① 五级无翼战舰底盘 (2~6副炮槽)</span>
             <span id="dock-fac-badge" style="color:var(--sd-accent-ion-cyan);">HELIOS</span>
           </div>
           <div id="dock-hull-list" style="display:flex;flex-direction:column;gap:4px;"></div>
         </div>
 
-        <!-- 中栏：正交工程剖面图与 [红W / 绿B / 紫P] 挂点插槽 -->
+        <!-- 中栏：船体插槽列表 (主炮槽 + 2~6船体副炮槽及遮蔽射界 + 战机机库槽 + 引擎槽) -->
         <div class="dock-col">
           <div class="dock-col-title">
-            <span>② 舰体剖面与三色挂点</span>
-            <span id="dock-hull-title" style="color:var(--sd-text-telemetry);">Delta 截击舰</span>
+            <span>② 船体插槽与副炮射界</span>
+            <span id="dock-hull-title" style="color:var(--sd-text-telemetry);">铁楔驱逐舰</span>
           </div>
-          <div class="cutaway-stage" style="position:relative;">
-            <div style="position:relative;width:82px;height:82px;margin:0 auto;">
-              <img id="dock-cutaway-img" class="main-hull-blueprint" src="../assets/star-defender/sprites/hull-delta.svg" alt="Blueprint" style="width:82px;height:82px;display:block;" />
-              <img id="dock-overlay-w" src="../assets/star-defender/sprites/module-railgun.svg" alt="Mounted Weapon" style="position:absolute;left:50%;top:54%;width:30px;height:30px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 0 4px rgba(239,68,68,0.65));" />
-              <img id="dock-overlay-b" src="../assets/star-defender/sprites/module-hangar.svg" alt="Mounted Bay" style="position:absolute;left:50%;top:32%;width:20px;height:20px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 0 3px rgba(16,185,129,0.65));" />
-              <img id="dock-overlay-p" src="../assets/star-defender/sprites/module-thruster.svg" alt="Mounted Engine" style="position:absolute;left:50%;top:82%;width:22px;height:22px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 0 3px rgba(168,85,247,0.65));" />
+          <div class="cutaway-stage" style="position:relative;min-height:94px;padding:4px;">
+            <div style="position:relative;width:72px;height:72px;margin:0 auto;">
+              <img id="dock-cutaway-img" class="main-hull-blueprint"
+                src="../assets/star-defender/sprites/hull-delta.svg" alt="Blueprint"
+                style="width:72px;height:72px;display:block;" />
+              <img id="dock-overlay-w" src="../assets/star-defender/sprites/module-railgun.svg" alt="Mounted Weapon"
+                style="position:absolute;left:50%;top:50%;width:26px;height:26px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 0 4px rgba(239,68,68,0.65));" />
+              <img id="dock-overlay-b" src="../assets/star-defender/sprites/unit-fighter-drone.svg" alt="Mounted Bay"
+                style="position:absolute;left:50%;top:30%;width:18px;height:18px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 0 3px rgba(16,185,129,0.65));" />
+              <img id="dock-overlay-p" src="../assets/star-defender/sprites/module-thruster.svg" alt="Mounted Engine"
+                style="position:absolute;left:50%;top:82%;width:20px;height:20px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 0 3px rgba(168,85,247,0.65));" />
             </div>
-            <div style="font-size:0.55rem;font-family:Consolas,monospace;color:var(--sd-text-vector);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;" id="dock-cutaway-desc">
-              NASA 白瓷热防护瓦 + 24K 聚酰亚胺金箔舱
+            <div
+              style="font-size:0.54rem;font-family:Consolas,monospace;color:var(--sd-text-vector);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;"
+              id="dock-cutaway-desc">
+              无翼装甲船体 · 副炮固定于船体廓台 (受船体遮蔽射界)
             </div>
           </div>
-          <div class="hardpoint-sockets-row">
-            <div class="hp-socket-box zone-w" id="sock-w" title="点击切换主武器模块">
+          <div class="hardpoint-sockets-row" style="grid-template-columns:repeat(2, 1fr);">
+            <div class="hp-socket-box zone-w" id="sock-w" title="点击筛选/切换主炮插槽装备">
               <img id="sock-w-img" src="../assets/star-defender/sprites/module-railgun.svg" alt="" />
               <div>
-                <div style="font-weight:800;">[红 W] 火控</div>
+                <div style="font-weight:800;">[主炮槽 ×1] 舰脊</div>
                 <div id="sock-w-name" style="color:#f8fafc;">电磁轨道炮</div>
               </div>
             </div>
-            <div class="hp-socket-box zone-b" id="sock-b" title="点击切换内部 1×1 方舱">
-              <img id="sock-b-img" src="../assets/star-defender/sprites/module-hangar.svg" alt="" />
+            <div class="hp-socket-box zone-w" id="sock-s" style="border-color:#fbbf24;color:#fde047;"
+              title="点击筛选/切换船体副炮插槽装备">
+              <img id="sock-s-img" src="../assets/star-defender/sprites/weapon-turret.svg" alt="" />
               <div>
-                <div style="font-weight:800;">[绿 B] 内舱</div>
-                <div id="sock-b-name" style="color:#f8fafc;">无人机母舱</div>
+                <div style="font-weight:800;" id="sock-s-title">[船体副炮槽 ×3]</div>
+                <div id="sock-s-name" style="color:#f8fafc;">近防速射副炮</div>
               </div>
             </div>
-            <div class="hp-socket-box zone-p" id="sock-p" title="点击扩建轨道炮塔与尾喷">
+            <div class="hp-socket-box zone-b" id="sock-b" title="点击筛选/切换舰载战机与内舱装备">
+              <img id="sock-b-img" src="../assets/star-defender/sprites/unit-fighter-drone.svg" alt="" />
+              <div>
+                <div style="font-weight:800;">[机库槽 ×1] 战机装备</div>
+                <div id="sock-b-name" style="color:#f8fafc;">苍鹰战机编队</div>
+              </div>
+            </div>
+            <div class="hp-socket-box zone-p" id="sock-p" title="点击筛选/切换推进引擎插槽装备">
               <img id="sock-p-img" src="../assets/star-defender/sprites/module-thruster.svg" alt="" />
               <div>
-                <div style="font-weight:800;">[紫 P] 引擎</div>
-                <div id="sock-p-name" style="color:#f8fafc;">霍尔推进器</div>
+                <div style="font-weight:800;">[引擎槽 ×1] 舰艉</div>
+                <div id="sock-p-name" style="color:#f8fafc;">霍尔复合引擎</div>
               </div>
             </div>
           </div>
+          <div id="dock-sec-slots-detail"
+            style="font-size:0.52rem;font-family:Consolas,monospace;color:#94a3b8;background:rgba(4,9,20,0.85);border:1px solid rgba(251,191,36,0.25);border-radius:4px;padding:3px 6px;line-height:1.35;">
+          </div>
         </div>
 
-        <!-- 右栏：火控武器与方舱模块库 -->
+        <!-- 右栏：对应插槽装备清单 -->
         <div class="dock-col">
           <div class="dock-col-title">
-            <span>③ 航宇武器与内部方舱库</span>
-            <span>点击立即挂载</span>
+            <span id="dock-mod-col-title">③ 对应插槽装备清单</span>
+            <span>点击立即装配</span>
           </div>
           <div id="dock-mod-list" style="display:flex;flex-direction:column;gap:4px;"></div>
         </div>
@@ -526,30 +750,42 @@
     </div>
   </div>
 
-  <script src="../shared/nexus-sdk.js?v=20261102a"></script>
+  <script src="../shared/nexus-sdk.js?v=20261108"></script>
   <script>
-  /**
-   * 标准微游菜单清单入口 (Step 1 & Step 3 标准模板结构)
-   * - 仅初始化第二层游戏菜单清单 (Tier 2 Menu)，零游戏引擎逻辑、零后台循环、零自动建房广播。
-   * - 唯有通过【⑥ 房间大厅】创建/加入房间并点击【🚀 启动游戏 · 进入战场】，
-   *   才由 SDK 唤起启动加载画面并按需加载 ./engine.js 启动游戏。
-   */
-  NexusSDK.initShellUI({
-    gameId: 'star-defender',
-    gameTitle: '星轨防线 · 赫利俄斯星际船坞',
-    engineUrl: './engine.js',
-    storagePrefix: 'STAR_DEFENDER_V3_SAVE_',
-    defaultSave: function(isAdmin) {
-      return {
-        titanium: isAdmin ? 999999 : 3200,
-        activeShip: 'helios_wing',
-        unlockedShips: isAdmin
-          ? ['helios_delta', 'helios_wing', 'helios_ring', 'helios_cross', 'glacies_delta', 'glacies_wing', 'glacies_ring', 'glacies_cross']
-          : ['helios_delta', 'helios_wing', 'glacies_delta'],
-        loadouts: {}
-      };
-    }
-  });
-</script>
+    /**
+     * 标准微游菜单清单入口 (Step 1 & Step 3 标准模板结构)
+     * - 仅初始化第二层游戏菜单清单 (Tier 2 Menu)，零游戏引擎逻辑、零后台循环、零自动建房广播。
+     * - 唯有通过【⑥ 房间大厅】创建/加入房间并点击【🚀 启动游戏 · 进入战场】，
+     *   才由 SDK 唤起启动加载画面并按需加载 ./engine.js 启动游戏。
+     */
+    NexusSDK.initShellUI({
+      gameId: 'star-defender',
+      gameTitle: '星轨防线 · 赫利俄斯星际船坞',
+      engineUrl: './engine.js',
+      storagePrefix: 'NEXUS_MINI_SD_',
+      defaultSave: function (isAdmin) {
+        return {
+          currency: { warMerits: isAdmin ? 999999 : 1200, scraps: isAdmin ? 99999 : 150 },
+          faction: 'helios',
+          unlockedShips: 5,
+          highestWave: isAdmin ? 100 : 1,
+          weaponLv: isAdmin ? 5 : 1,
+          engineLv: isAdmin ? 3 : 1,
+          engineType: 'thrusterCompound',
+          selectedEngine: 'thrusterCompound',
+          droneDoctrine: 'mixed',
+          turretCount: isAdmin ? 6 : 3,
+          selectedHull: 'hullDelta',
+          activeModule: 'railgun',
+          selectedWeapon: 'railgun',
+          secWeapon: 'secAutocannon',
+          selectedSecWeapon: 'secAutocannon',
+          internalBay: 'hangar',
+          selectedBay: 'hangar'
+        };
+      }
+    });
+  </script>
 </body>
+
 </html>

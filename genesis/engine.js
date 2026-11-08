@@ -686,9 +686,51 @@
         }
       ];
 
+      const DEFAULT_UNLOCKED_ITEMS = [
+        'torso-t1-micro',
+        'torso-t2-stream',
+        'torso-t3-predator',
+        'core-vacuole:1', 'core-vacuole:2',
+        'core-mitosis:1',
+        'sensory-eye:1', 'sensory-eye:2',
+        'sensory-ear:1', 'sensory-ear:2',
+        'mouth-herb:1',
+        'mouth-carn:1', 'mouth-carn:2',
+        'mouth-omni:1',
+        'loco-flagella:1', 'loco-flagella:2',
+        'loco-fin:1', 'loco-fin:2',
+        'loco-jet:1', 'loco-jet:2',
+        'util-scales:1', 'util-scales:2',
+        'util-spike:1', 'util-spike:2',
+        'util-ink:1',
+        'util-electric:2'
+      ];
+
+      const DEFAULT_ORGAN_INVENTORY = {
+        'core-vacuole:1': 3, 'core-vacuole:2': 3,
+        'core-mitosis:1': 3,
+        'sensory-eye:1': 3, 'sensory-eye:2': 2,
+        'sensory-ear:1': 3, 'sensory-ear:2': 3,
+        'mouth-herb:1': 3,
+        'mouth-carn:1': 3, 'mouth-carn:2': 3,
+        'mouth-omni:1': 3,
+        'loco-flagella:1': 4, 'loco-flagella:2': 3,
+        'loco-fin:1': 3, 'loco-fin:2': 2,
+        'loco-jet:1': 2, 'loco-jet:2': 2,
+        'util-scales:1': 4, 'util-scales:2': 2,
+        'util-spike:1': 3, 'util-spike:2': 2,
+        'util-ink:1': 3,
+        'util-electric:2': 2
+      };
+
       const gameStorage = NexusSDK.createGameStorage('NEXUS_MINI_MICRO_GENESIS_', () => ({
-        version: '3.2.0',
+        version: '3.4.0',
         gpReserve: 480,
+        evolutionPoints: 260,
+        maxSampleSlots: 3,
+        selectedSampleSlotIdx: 0,
+        unlockedItems: DEFAULT_UNLOCKED_ITEMS,
+        organInventory: DEFAULT_ORGAN_INVENTORY,
         geneBank: DEFAULT_PLAYER_SPECIES.map(validateAndSanitizeBlueprint)
       }));
       let savedData = gameStorage.load() || {};
@@ -696,16 +738,217 @@
         ? savedData.geneBank.map(validateAndSanitizeBlueprint)
         : DEFAULT_PLAYER_SPECIES.map(validateAndSanitizeBlueprint);
       let officialFossils = OFFICIAL_FOSSILS.map(validateAndSanitizeBlueprint);
-      let globalGpReserve = Number.isFinite(savedData.gpReserve) ? Math.max(0, Math.round(savedData.gpReserve)) : 480;
+      function sanitizeOrganInventory(rawInv) {
+        const clean = { ...DEFAULT_ORGAN_INVENTORY };
+        if (rawInv && typeof rawInv === 'object') {
+          Object.keys(rawInv).forEach((k) => {
+            const v = Number(rawInv[k]);
+            if (Number.isFinite(v)) {
+              clean[k] = Math.max(0, Math.min(99, Math.round(v)));
+            }
+          });
+        }
+        return clean;
+      }
+
+      let globalGpReserve = Number.isFinite(savedData.gpReserve) ? Math.max(0, Math.min(999999, Math.round(savedData.gpReserve))) : 480;
+      let evolutionPoints = Number.isFinite(savedData.evolutionPoints) ? Math.max(0, Math.min(999999, Math.round(savedData.evolutionPoints))) : 260;
+      let maxSampleSlots = Number.isFinite(savedData.maxSampleSlots) ? Math.max(3, Math.min(6, Math.round(savedData.maxSampleSlots))) : 3;
+      let selectedSampleSlotIdx = Number.isFinite(savedData.selectedSampleSlotIdx)
+        ? Math.max(0, Math.min(maxSampleSlots - 1, Math.round(savedData.selectedSampleSlotIdx)))
+        : 0;
+      let unlockedItems = new Set(Array.isArray(savedData.unlockedItems) && savedData.unlockedItems.length > 0 ? savedData.unlockedItems.filter((x) => typeof x === 'string') : DEFAULT_UNLOCKED_ITEMS);
+      DEFAULT_UNLOCKED_ITEMS.forEach((item) => unlockedItems.add(item));
+      let organInventory = sanitizeOrganInventory(savedData.organInventory);
+
+      // 确保客户储存样本槽数量对齐 maxSampleSlots (初始 3 槽，可用进化点扩充至最多 6 槽)
+      function ensureCustomerSampleSlots() {
+        while (playerGeneBank.length < maxSampleSlots) {
+          const templateIdx = playerGeneBank.length % DEFAULT_PLAYER_SPECIES.length;
+          const cloned = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(DEFAULT_PLAYER_SPECIES[templateIdx])));
+          cloned.speciesId = 'sp_slot_' + (playerGeneBank.length + 1) + '_' + Date.now();
+          cloned.speciesName = sanitizeSpeciesName(`样本${playerGeneBank.length + 1}·${cloned.speciesName}`);
+          playerGeneBank.push(cloned);
+        }
+        if (selectedSampleSlotIdx >= maxSampleSlots) {
+          selectedSampleSlotIdx = 0;
+        }
+      }
+      ensureCustomerSampleSlots();
+
+      function getOrganKey(organId, level) {
+        return `${organId}:${level}`;
+      }
+      function isTorsoUnlocked(torsoId) {
+        return unlockedItems.has(torsoId) || torsoId === 'torso-t1-micro';
+      }
+      function isOrganUnlocked(organId, level) {
+        return unlockedItems.has(getOrganKey(organId, level));
+      }
+      function getOwnedOrganCount(organId, level) {
+        const v = Number(organInventory[getOrganKey(organId, level)] || 0);
+        return Number.isFinite(v) ? Math.max(0, Math.min(99, Math.round(v))) : 0;
+      }
+      function countBlueprintOrganUsage(bp, organId, level, excludeSlotObj = null) {
+        if (!bp || !bp.slots) return 0;
+        let used = 0;
+        const allSlots = [
+          bp.slots.core,
+          ...(bp.slots.sensory || []),
+          ...(bp.slots.mouth || []),
+          ...(bp.slots.locomotion || []),
+          ...(bp.slots.utility || [])
+        ];
+        allSlots.forEach((s) => {
+          if (!s || s === excludeSlotObj) return;
+          if (s.id === organId && Number(s.level) === Number(level)) {
+            used += 1;
+          }
+        });
+        return used;
+      }
+
+      // 强制校验客户样本蓝图中的躯干与器官是否已解锁且拥有足够库存副本（防止通过化石克隆或基因码导入白嫖未解锁/未购买的高阶躯干与器官）
+      function enforceOwnedBlueprintConstraints(bp, notifyOnDowngrade = false) {
+        const clean = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(bp || {})));
+        let downgradedCount = 0;
+
+        if (!isTorsoUnlocked(clean.torsoId)) {
+          const fallbackOrder = ['torso-t3-predator', 'torso-t2-stream', 'torso-t1-micro'];
+          clean.torsoId = fallbackOrder.find((tid) => isTorsoUnlocked(tid)) || 'torso-t1-micro';
+          downgradedCount += 1;
+        }
+
+        const fallbackByCat = {
+          core: { id: 'core-vacuole', level: 1 },
+          sensory: { id: 'sensory-eye', level: 1 },
+          mouth: { id: 'mouth-omni', level: 1 },
+          locomotion: { id: 'loco-flagella', level: 1 },
+          utility: { id: 'util-scales', level: 1 }
+        };
+        const usedMap = {};
+
+        function coerceSlot(slotObj, catKey) {
+          if (!slotObj) return;
+          const tryCandidates = [
+            { id: slotObj.id, level: Number(slotObj.level) || 1 },
+            { id: slotObj.id, level: 2 },
+            { id: slotObj.id, level: 1 },
+            fallbackByCat[catKey]
+          ];
+          for (let i = 0; i < tryCandidates.length; i++) {
+            const cand = tryCandidates[i];
+            if (!cand || !ORGAN_CATALOG[cand.id]) continue;
+            const key = getOrganKey(cand.id, cand.level);
+            const usedSoFar = usedMap[key] || 0;
+            const owned = getOwnedOrganCount(cand.id, cand.level);
+            if (isOrganUnlocked(cand.id, cand.level) && owned >= usedSoFar + 1) {
+              if (cand.id !== slotObj.id || cand.level !== Number(slotObj.level)) {
+                downgradedCount += 1;
+              }
+              slotObj.id = cand.id;
+              slotObj.level = cand.level;
+              usedMap[key] = usedSoFar + 1;
+              return;
+            }
+          }
+          const fb = fallbackByCat[catKey];
+          if (slotObj.id !== fb.id || Number(slotObj.level) !== fb.level) {
+            downgradedCount += 1;
+          }
+          slotObj.id = fb.id;
+          slotObj.level = fb.level;
+          const fbKey = getOrganKey(fb.id, fb.level);
+          usedMap[fbKey] = (usedMap[fbKey] || 0) + 1;
+        }
+
+        coerceSlot(clean.slots.core, 'core');
+        (clean.slots.sensory || []).forEach((s) => coerceSlot(s, 'sensory'));
+        (clean.slots.mouth || []).forEach((m) => coerceSlot(m, 'mouth'));
+        (clean.slots.locomotion || []).forEach((l) => coerceSlot(l, 'locomotion'));
+        (clean.slots.utility || []).forEach((u) => coerceSlot(u, 'utility'));
+
+        const finalBp = validateAndSanitizeBlueprint(clean);
+        if (notifyOnDowngrade && downgradedCount > 0 && typeof showToast === 'function') {
+          showToast(`已自动将 ${downgradedCount} 处未解锁/库存不足的高阶部件降级为已拥有的基础部件`);
+        }
+        return finalBp;
+      }
+      function getTorsoUnlockCostEp(torsoId) {
+        if (torsoId === 'torso-t1-micro') return 0;
+        if (torsoId === 'torso-t2-stream') return 50;
+        if (torsoId === 'torso-t3-predator') return 95;
+        return 160;
+      }
+      function getOrganUnlockCostEp(organId, level) {
+        const gp = ORGAN_CATALOG[organId]?.levels?.[level]?.gp || (level * 50);
+        return Math.max(25, Math.round(gp * 0.42));
+      }
+      function getOrganBuyCostEp(organId, level) {
+        const gp = ORGAN_CATALOG[organId]?.levels?.[level]?.gp || (level * 40);
+        return Math.max(15, Math.round(gp * 0.28));
+      }
+      function getNextSampleSlotCostEp() {
+        if (maxSampleSlots >= 6) return 0;
+        const costs = { 3: 120, 4: 180, 5: 260 };
+        return costs[maxSampleSlots] || 200;
+      }
+
+      // 计算单个蓝图或存活个体的【营养物质总量 (Nutrient Biomass)】
+      function computeBlueprintBaseNutrients(bp) {
+        if (!bp || !bp.statsSummary) return 80;
+        const torso = TORSOS[bp.torsoId] || TORSOS['torso-t1-micro'];
+        const st = bp.statsSummary;
+        return Math.round(32 * Math.pow(torso.volume, 0.80) + st.maxEnergy * 0.85 + st.maxHp * 0.35 + st.totalGpCost * 0.08);
+      }
+
+      function computeOrganismNutrients(org) {
+        if (!org || org.hp <= 0 || !org.blueprint) return 0;
+        const torso = TORSOS[org.blueprint.torsoId] || TORSOS['torso-t1-micro'];
+        const g = org.growthScale !== undefined ? org.growthScale : 1.0;
+        const gpVal = org.blueprint.statsSummary?.totalGpCost || 120;
+        return Math.max(10, Math.round(
+          32 * Math.pow(torso.volume, 0.80) * g +
+          Math.max(0, org.energy) +
+          Math.max(0, org.hp) * 0.35 +
+          gpVal * 0.08 * g
+        ));
+      }
+
+      function syncEvolutionPointsUI() {
+        const navEpEl = document.getElementById('nav-ep-text');
+        if (navEpEl) navEpEl.textContent = `进化点: ${evolutionPoints} EP`;
+        const edEpEl = document.getElementById('editor-ep-balance-lbl');
+        if (edEpEl) edEpEl.textContent = `进化点: ${evolutionPoints} EP`;
+        const slotCountLbl = document.getElementById('editor-slot-count-lbl');
+        if (slotCountLbl) slotCountLbl.textContent = `${maxSampleSlots} / 6 槽`;
+        const nextSlotCost = getNextSampleSlotCostEp();
+        ['workshop-buy-slot-btn', 'editor-buy-slot-inline-btn'].forEach((btnId) => {
+          const btn = document.getElementById(btnId);
+          if (!btn) return;
+          if (maxSampleSlots >= 6) {
+            btn.textContent = '样本槽已满 (6/6)';
+            btn.disabled = true;
+          } else {
+            btn.textContent = `+ 购买样本槽位 (${nextSlotCost} EP)`;
+            btn.disabled = false;
+          }
+        });
+      }
 
       function persistState() {
+        ensureCustomerSampleSlots();
         gameStorage.save({
-          version: '3.2.0',
+          version: '3.4.0',
           gpReserve: globalGpReserve,
+          evolutionPoints,
+          maxSampleSlots,
+          selectedSampleSlotIdx,
+          unlockedItems: Array.from(unlockedItems),
+          organInventory,
           geneBank: playerGeneBank
         });
-        const navGpEl = document.getElementById('nav-gp-text');
-        if (navGpEl) navGpEl.textContent = 'GP: ' + globalGpReserve;
+        syncEvolutionPointsUI();
       }
 
       function encodeGeneCode(bp) {
@@ -1138,17 +1381,104 @@
       }
 
       /* =====================================================================
-       * 6. 六大页面导航与交互控制器 (Page 1 ~ Page 5)
+       * 6. 页面导航与局外样本工坊控制器 (进入房间直达 #page-arena，仅局外可打开 #page-editor)
        * ===================================================================== */
-      let currentActivePage = 'editor';
+      let currentActivePage = 'arena';
       let selectedGbSpeciesId = playerGeneBank[0]?.speciesId || '';
       let selectedFossilSpeciesId = officialFossils[0]?.speciesId || '';
-      let editorDraft = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(playerGeneBank[0])));
+      let editorDraft = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(playerGeneBank[selectedSampleSlotIdx] || playerGeneBank[0])));
       let editorPreviewIsNight = false;
-      let selectedLobbySpeciesId = playerGeneBank[0]?.speciesId || '';
+      let selectedLobbySpeciesId = playerGeneBank[selectedSampleSlotIdx]?.speciesId || playerGeneBank[0]?.speciesId || '';
       let selectedBiomeId = 0;
 
+      // 局外进化点操作：购买样本槽位、解锁躯干、解锁器官、购买器官库存
+      function buySampleSlotWithEp() {
+        if (maxSampleSlots >= 6) {
+          showToast('客户样本槽已达上限 (6 / 6 槽)！');
+          return false;
+        }
+        const cost = getNextSampleSlotCostEp();
+        if (evolutionPoints < cost) {
+          NexusSDK.audio.warn();
+          showToast(`进化点不足！购买第 ${maxSampleSlots + 1} 号样本槽位需 ${cost} EP（当前 ${evolutionPoints} EP）`);
+          return false;
+        }
+        evolutionPoints -= cost;
+        maxSampleSlots += 1;
+        ensureCustomerSampleSlots();
+        selectedSampleSlotIdx = maxSampleSlots - 1;
+        editorDraft = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(playerGeneBank[selectedSampleSlotIdx])));
+        persistState();
+        NexusSDK.audio.upgrade();
+        showToast(`成功消耗 ${cost} EP 购买样本槽位 #${maxSampleSlots}！`);
+        if (currentActivePage === 'editor') renderEditorPage();
+        renderArenaSampleSwitcher();
+        return true;
+      }
+
+      function unlockTorsoWithEp(torsoId) {
+        if (isTorsoUnlocked(torsoId)) return true;
+        const cost = getTorsoUnlockCostEp(torsoId);
+        if (evolutionPoints < cost) {
+          NexusSDK.audio.warn();
+          showToast(`进化点不足！解锁躯干【${TORSOS[torsoId]?.shortName || torsoId}】需 ${cost} EP（当前 ${evolutionPoints} EP）`);
+          return false;
+        }
+        evolutionPoints -= cost;
+        unlockedItems.add(torsoId);
+        persistState();
+        NexusSDK.audio.upgrade();
+        showToast(`已消耗 ${cost} EP 解锁躯干底盘：【${TORSOS[torsoId]?.name || torsoId}】！`);
+        return true;
+      }
+
+      function unlockOrganWithEp(organId, level) {
+        const key = getOrganKey(organId, level);
+        if (unlockedItems.has(key)) return true;
+        const cost = getOrganUnlockCostEp(organId, level);
+        const sp = ORGAN_CATALOG[organId]?.levels?.[level];
+        if (evolutionPoints < cost) {
+          NexusSDK.audio.warn();
+          showToast(`进化点不足！解锁器官【${sp?.name || organId}】需 ${cost} EP（当前 ${evolutionPoints} EP）`);
+          return false;
+        }
+        evolutionPoints -= cost;
+        unlockedItems.add(key);
+        // 解锁器官时赠送 1 件初始器官库存
+        organInventory[key] = (organInventory[key] || 0) + 1;
+        persistState();
+        NexusSDK.audio.upgrade();
+        showToast(`已消耗 ${cost} EP 解锁器官【${sp?.name || organId}】并获赠 1 件库存！`);
+        return true;
+      }
+
+      function buyOrganCopyWithEp(organId, level) {
+        const key = getOrganKey(organId, level);
+        if (!unlockedItems.has(key)) {
+          return unlockOrganWithEp(organId, level);
+        }
+        const cost = getOrganBuyCostEp(organId, level);
+        const sp = ORGAN_CATALOG[organId]?.levels?.[level];
+        if (evolutionPoints < cost) {
+          NexusSDK.audio.warn();
+          showToast(`进化点不足！购买 1 件【${sp?.name || organId}】需 ${cost} EP（当前 ${evolutionPoints} EP）`);
+          return false;
+        }
+        evolutionPoints -= cost;
+        organInventory[key] = (organInventory[key] || 0) + 1;
+        persistState();
+        NexusSDK.audio.pickup();
+        showToast(`已消耗 ${cost} EP 购买器官【${sp?.name || organId}】×1（当前库存: ${organInventory[key]} 件）`);
+        return true;
+      }
+
       function switchPage(pageKey) {
+        // 铁律：当游戏对局正在进行中且未结束时，禁止在房间对局内进入物种编辑界面
+        if (pageKey !== 'arena' && arenaState.running && !arenaState.matchEnded) {
+          NexusSDK.audio.warn();
+          showToast('对局进行期间禁止生物编辑！请使用底部切换栏切换已储存的样本');
+          return;
+        }
         currentActivePage = pageKey;
         document.querySelectorAll('.mg-page').forEach((sec) => {
           sec.classList.toggle('active', sec.id === 'page-' + pageKey);
@@ -1158,9 +1488,9 @@
         });
         const topNav = document.getElementById('mg-top-nav');
         if (topNav) {
-          // 在 6.游戏画面 全屏沉浸时自动隐藏顶部栏，使用画面右上角纯 SVG 图标返回
           topNav.style.display = pageKey === 'arena' ? 'none' : 'flex';
         }
+        syncEvolutionPointsUI();
         NexusSDK.audio.tap();
 
         if (pageKey === 'gene-bank') renderGeneBankPage();
@@ -1176,8 +1506,38 @@
         }
       }
 
+      // 打开局外样本与进化点工坊 (从结算弹窗或第二层菜单调用)
+      function openOutOfGameWorkshop() {
+        arenaState.running = false;
+        arenaState.matchEnded = true;
+        document.getElementById('arena-settlement-modal')?.classList.remove('open');
+        document.getElementById('arena-rejoin-modal')?.classList.remove('open');
+        const t2Overlay = document.getElementById('nx-tier2-overlay');
+        if (t2Overlay) {
+          t2Overlay.classList.remove('open');
+          t2Overlay.setAttribute('aria-hidden', 'true');
+        }
+        document.body.classList.remove('nx-tier2-active');
+        ensureCustomerSampleSlots();
+        editorDraft = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(playerGeneBank[selectedSampleSlotIdx] || playerGeneBank[0])));
+        switchPage('editor');
+      }
+      window.openMicroGenesisWorkshop = openOutOfGameWorkshop;
+
       document.querySelectorAll('.nav-tab-btn').forEach((btn) => {
         btn.addEventListener('click', () => switchPage(btn.dataset.page));
+      });
+
+      document.getElementById('workshop-buy-slot-btn')?.addEventListener('click', buySampleSlotWithEp);
+      document.getElementById('editor-buy-slot-inline-btn')?.addEventListener('click', buySampleSlotWithEp);
+      document.getElementById('workshop-back-room-btn')?.addEventListener('click', () => {
+        saveBlueprintToGeneBank(editorDraft);
+        if (window.NexusSDK && window.NexusSDK.openTier2Menu) {
+          window.NexusSDK.openTier2Menu('lan');
+          return;
+        }
+        startArenaMatch();
+        switchPage('arena');
       });
 
       // 页面 1：游戏介绍快捷跳转
@@ -1307,19 +1667,20 @@
 
       document.getElementById('gb-import-btn')?.addEventListener('click', () => {
         const inp = document.getElementById('gb-import-input');
-        const decoded = decodeGeneCode(inp?.value || '');
-        if (!decoded) {
+        const decodedRaw = decodeGeneCode(inp?.value || '');
+        if (!decodedRaw) {
           NexusSDK.audio.warn();
           showToast('基因序列码校验失败，请检查格式！');
           return;
         }
-        playerGeneBank.unshift(decoded);
+        const decoded = enforceOwnedBlueprintConstraints(decodedRaw, true);
+        playerGeneBank[selectedSampleSlotIdx] = decoded;
         selectedGbSpeciesId = decoded.speciesId;
         if (inp) inp.value = '';
         persistState();
         renderGeneBankPage();
         NexusSDK.audio.upgrade();
-        showToast('成功导入物种：【' + decoded.speciesName + '】');
+        showToast('成功导入样本至槽位 #' + (selectedSampleSlotIdx + 1) + '：【' + decoded.speciesName + '】');
       });
 
       document.getElementById('gb-new-species-btn')?.addEventListener('click', () => {
@@ -1411,30 +1772,37 @@
         cloned.speciesId = 'sp_' + Date.now();
         cloned.origin = 'player';
         cloned.speciesName = sanitizeSpeciesName(f.speciesName + '改');
-        editorDraft = validateAndSanitizeBlueprint(cloned);
+        editorDraft = enforceOwnedBlueprintConstraints(cloned, true);
         switchPage('editor');
-        showToast('已克隆官方化石【' + f.speciesName + '】至 4.编辑页面！');
+        showToast('已克隆官方化石【' + f.speciesName + '】至 4.编辑页面（按已解锁/库存部件自动适配）！');
       });
 
       /* =====================================================================
-       * 7. 页面 4：编辑页面 (#page-editor) 与通用插槽编辑器组件
+       * 7. 页面 4：局外样本与进化点工坊 (#page-editor —— 解锁器官 / 购买样本槽位 / 购买器官 / 装配客户样本)
        * ===================================================================== */
       function buildSlotControls(blueprint, torsoRowEl, slotListEl, onChangeCallback) {
         if (!torsoRowEl || !slotListEl) return;
-        const curTorso = TORSOS[blueprint.torsoId];
+        const curTorso = TORSOS[blueprint.torsoId] || TORSOS['torso-t1-micro'];
 
-        // 1. 4阶躯干底盘切换按钮组
+        // 1. 4阶躯干底盘切换按钮组 (支持进化点解锁高阶躯干)
         torsoRowEl.innerHTML = '';
         Object.values(TORSOS).forEach((t) => {
+          const unlocked = isTorsoUnlocked(t.id);
+          const unlockCost = getTorsoUnlockCostEp(t.id);
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'torso-btn' + (t.id === blueprint.torsoId ? ' active' : '');
           btn.innerHTML = `
             <img src="../assets/micro-genesis/sprites/${t.sprite}" alt="" />
             <span class="t-name">${t.shortName}</span>
-            <span class="t-sub">${t.totalSlots}槽·V${t.volume}</span>
+            <span class="t-sub" style="color:${unlocked ? 'var(--mg-text-secondary)' : 'var(--mg-accent-gold)'};">
+              ${unlocked ? `${t.totalSlots}槽·V${t.volume}` : `解锁 ${unlockCost}EP`}
+            </span>
           `;
           btn.addEventListener('click', () => {
+            if (!isTorsoUnlocked(t.id)) {
+              if (!unlockTorsoWithEp(t.id)) return;
+            }
             blueprint.torsoId = t.id;
             const rebuilt = validateAndSanitizeBlueprint(blueprint);
             Object.assign(blueprint, rebuilt);
@@ -1444,13 +1812,18 @@
           torsoRowEl.appendChild(btn);
         });
 
-        // 2. 五大器官插槽列表
+        // 2. 五大器官插槽列表 (支持进化点解锁器官与购买器官库存)
         slotListEl.innerHTML = '';
 
         function appendSlotRow(catLabel, categoryKey, slotObj, indexInCat) {
           const seriesOptions = Object.values(ORGAN_CATALOG).filter((s) => s.category === categoryKey);
           const curSeries = ORGAN_CATALOG[slotObj.id] || seriesOptions[0];
           const curSpec = curSeries.levels[slotObj.level];
+          const curUnlocked = isOrganUnlocked(slotObj.id, slotObj.level);
+          const ownedCount = getOwnedOrganCount(slotObj.id, slotObj.level);
+          const usedTotal = countBlueprintOrganUsage(blueprint, slotObj.id, slotObj.level, null);
+          const buyCost = getOrganBuyCostEp(slotObj.id, slotObj.level);
+          const unlockCost = getOrganUnlockCostEp(slotObj.id, slotObj.level);
 
           const row = document.createElement('div');
           row.className = 'slot-row';
@@ -1461,15 +1834,37 @@
               ${seriesOptions.map((opt) => `<option value="${opt.id}" ${opt.id === slotObj.id ? 'selected' : ''}>${opt.branchName}</option>`).join('')}
             </select>
             <div class="lvl-pill-group">
-              ${[1, 2, 3].map((lv) => `<button type="button" class="lvl-pill ${slotObj.level === lv ? 'active' : ''}" data-lv="${lv}">Lv.${lv}</button>`).join('')}
+              ${[1, 2, 3].map((lv) => {
+                const lvUnlocked = isOrganUnlocked(slotObj.id, lv);
+                return `<button type="button" class="lvl-pill ${slotObj.level === lv ? 'active' : ''}" data-lv="${lv}" title="${lvUnlocked ? '已解锁' : '点击使用进化点解锁'}">Lv.${lv}${lvUnlocked ? '' : '·锁'}</button>`;
+              }).join('')}
             </div>
+            <button type="button" class="btn-ghost gold slot-ep-action-btn" style="min-height:44px;min-width:44px;padding:0 6px;font-size:0.55rem;white-space:nowrap;" title="使用进化点解锁或购买该器官库存">
+              ${curUnlocked ? `库存${usedTotal}/${ownedCount}(+${buyCost}EP)` : `解锁(${unlockCost}EP)`}
+            </button>
           `;
 
           const selectEl = row.querySelector('.slot-select');
           selectEl.addEventListener('change', (e) => {
-            slotObj.id = e.target.value;
+            const nextId = e.target.value;
+            const nextLv = slotObj.level;
+            const neededCopies = (categoryKey === 'mouth' && blueprint.slots.mouth.length > 1)
+              ? blueprint.slots.mouth.length
+              : (countBlueprintOrganUsage(blueprint, nextId, nextLv, slotObj) + 1);
+            if (!isOrganUnlocked(nextId, nextLv)) {
+              if (!unlockOrganWithEp(nextId, nextLv)) {
+                e.target.value = slotObj.id;
+                return;
+              }
+            }
+            while (getOwnedOrganCount(nextId, nextLv) < neededCopies) {
+              if (!buyOrganCopyWithEp(nextId, nextLv)) {
+                e.target.value = slotObj.id;
+                return;
+              }
+            }
+            slotObj.id = nextId;
             if (categoryKey === 'mouth' && blueprint.slots.mouth.length > 1) {
-              // T04 双口器自动保持同食性系列
               blueprint.slots.mouth.forEach((m) => { m.id = slotObj.id; });
             }
             const updated = validateAndSanitizeBlueprint(blueprint);
@@ -1480,12 +1875,29 @@
 
           row.querySelectorAll('.lvl-pill').forEach((pill) => {
             pill.addEventListener('click', () => {
-              slotObj.level = Number(pill.dataset.lv);
+              const targetLv = Number(pill.dataset.lv);
+              const neededCopies = countBlueprintOrganUsage(blueprint, slotObj.id, targetLv, slotObj) + 1;
+              if (!isOrganUnlocked(slotObj.id, targetLv)) {
+                if (!unlockOrganWithEp(slotObj.id, targetLv)) return;
+              }
+              while (getOwnedOrganCount(slotObj.id, targetLv) < neededCopies) {
+                if (!buyOrganCopyWithEp(slotObj.id, targetLv)) return;
+              }
+              slotObj.level = targetLv;
               const updated = validateAndSanitizeBlueprint(blueprint);
               Object.assign(blueprint, updated);
               NexusSDK.audio.tap();
               onChangeCallback();
             });
+          });
+
+          row.querySelector('.slot-ep-action-btn')?.addEventListener('click', () => {
+            if (!isOrganUnlocked(slotObj.id, slotObj.level)) {
+              unlockOrganWithEp(slotObj.id, slotObj.level);
+            } else {
+              buyOrganCopyWithEp(slotObj.id, slotObj.level);
+            }
+            onChangeCallback();
           });
 
           slotListEl.appendChild(row);
@@ -1522,10 +1934,86 @@
         blueprint.slots.utility.forEach((u, idx) => appendSlotRow('功能槽' + (idx + 1), 'utility', u, idx));
       }
 
+      // 渲染右栏【3. 进化点商城 · 解锁器官 / 购买器官库存】
+      function renderEditorEpOrganShop() {
+        const shopEl = document.getElementById('editor-ep-organ-shop');
+        if (!shopEl) return;
+        shopEl.innerHTML = '';
+        Object.values(ORGAN_CATALOG).forEach((series) => {
+          [1, 2, 3].forEach((lv) => {
+            const spec = series.levels[lv];
+            const unlocked = isOrganUnlocked(series.id, lv);
+            const owned = getOwnedOrganCount(series.id, lv);
+            const cost = unlocked ? getOrganBuyCostEp(series.id, lv) : getOrganUnlockCostEp(series.id, lv);
+            const item = document.createElement('div');
+            item.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:6px;padding:3px 6px;border-radius:6px;background:rgba(15,23,42,0.86);border:1px solid rgba(45,212,191,0.18);font-size:0.60rem;';
+            item.innerHTML = `
+              <div style="display:flex;align-items:center;gap:5px;min-width:0;">
+                <img src="../assets/micro-genesis/sprites/${spec.sprite}" width="18" height="18" alt="" />
+                <div style="min-width:0;">
+                  <div style="color:var(--mg-text-primary);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${spec.name} (Lv.${lv})</div>
+                  <div style="color:${unlocked ? 'var(--mg-accent-emerald)' : 'var(--mg-text-secondary)'};font-size:0.54rem;">
+                    ${unlocked ? `已解锁 · 库存 ${owned} 件` : '未解锁器官图纸'}
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn-ghost ${unlocked ? '' : 'gold'}" style="min-height:44px;min-width:44px;padding:0 8px;font-size:0.56rem;white-space:nowrap;border-color:${unlocked ? 'var(--mg-accent-cyan)' : 'var(--mg-accent-gold)'};color:${unlocked ? 'var(--mg-accent-cyan)' : 'var(--mg-accent-gold)'};">
+                ${unlocked ? `+购买器官 (${cost} EP)` : `解锁器官 (${cost} EP)`}
+              </button>
+            `;
+            item.querySelector('button')?.addEventListener('click', () => {
+              if (!unlocked) {
+                unlockOrganWithEp(series.id, lv);
+              } else {
+                buyOrganCopyWithEp(series.id, lv);
+              }
+              renderEditorPage();
+            });
+            shopEl.appendChild(item);
+          });
+        });
+      }
+
+      function renderEditorSampleSlotsBar() {
+        const barEl = document.getElementById('editor-sample-slots-bar');
+        if (!barEl) return;
+        ensureCustomerSampleSlots();
+        barEl.innerHTML = '';
+        for (let i = 0; i < maxSampleSlots; i++) {
+          const sp = playerGeneBank[i];
+          const t = TORSOS[sp.torsoId] || TORSOS['torso-t1-micro'];
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'sample-slot-pill' + (i === selectedSampleSlotIdx ? ' active' : '');
+          btn.style.minHeight = '44px';
+          btn.style.minWidth = '88px';
+          btn.innerHTML = `
+            <img src="../assets/micro-genesis/sprites/${t.sprite}" alt="" />
+            <div class="sample-slot-info">
+              <span class="sample-slot-name">#${i + 1} ${escapeHtml(sp.speciesName)}</span>
+              <span class="sample-slot-sub">${t.code} · ${computeBlueprintBaseNutrients(sp)}质</span>
+            </div>
+          `;
+          btn.addEventListener('click', () => {
+            // 切换前自动将当前修改保存到原样本槽（强制校验已解锁与库存副本约束）
+            playerGeneBank[selectedSampleSlotIdx] = enforceOwnedBlueprintConstraints(editorDraft, false);
+            selectedSampleSlotIdx = i;
+            editorDraft = enforceOwnedBlueprintConstraints(playerGeneBank[i], false);
+            persistState();
+            NexusSDK.audio.tap();
+            renderEditorPage();
+          });
+          barEl.appendChild(btn);
+        }
+      }
+
       function renderEditorPage() {
+        syncEvolutionPointsUI();
+        renderEditorSampleSlotsBar();
         const torsoRowEl = document.getElementById('editor-torso-row');
         const slotListEl = document.getElementById('editor-slot-list');
         buildSlotControls(editorDraft, torsoRowEl, slotListEl, renderEditorPage);
+        renderEditorEpOrganShop();
 
         const torso = TORSOS[editorDraft.torsoId];
         const st = editorDraft.statsSummary;
@@ -1534,7 +2022,7 @@
         const capLbl = document.getElementById('editor-slot-cap-lbl');
         if (capLbl) capLbl.textContent = torso.totalSlots + ' 槽';
         const titleEl = document.getElementById('editor-preview-title');
-        if (titleEl) titleEl.textContent = '当前物种：' + editorDraft.speciesName;
+        if (titleEl) titleEl.textContent = `样本槽 #${selectedSampleSlotIdx + 1}：${editorDraft.speciesName}`;
         const subEl = document.getElementById('editor-preview-sub');
         const visionTag = st.maxEyeLv > 0 ? ` · ${st.visionModeLabel || ''}` : (st.maxEarLv > 0 ? ' · 纯声呐广域监听' : ' · 近体绝对感知');
         if (subEl) subEl.textContent = `${torso.name} (${torso.code}) · ${dietLabel}${visionTag}`;
@@ -1550,7 +2038,7 @@
         const spdEl = document.getElementById('ed-stat-speed');
         if (spdEl) spdEl.textContent = `${st.maxSpeed} px/s · ${st.maxTurnRate}`;
         const gpEl = document.getElementById('ed-stat-gpcost');
-        if (gpEl) gpEl.textContent = `${st.totalGpCost} GP`;
+        if (gpEl) gpEl.textContent = `${computeBlueprintBaseNutrients(editorDraft)} 营养质`;
 
         // 同步 5 维 AI 滑块
         const aiKeys = [
@@ -1584,7 +2072,7 @@
       document.getElementById('editor-species-name')?.addEventListener('input', (e) => {
         editorDraft.speciesName = sanitizeSpeciesName(e.target.value);
         const titleEl = document.getElementById('editor-preview-title');
-        if (titleEl) titleEl.textContent = '当前物种：' + editorDraft.speciesName;
+        if (titleEl) titleEl.textContent = `样本槽 #${selectedSampleSlotIdx + 1}：${editorDraft.speciesName}`;
       });
 
       document.getElementById('editor-toggle-daynight-btn')?.addEventListener('click', (e) => {
@@ -1594,25 +2082,52 @@
       });
 
       function saveBlueprintToGeneBank(bp) {
-        const sanitized = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(bp)));
-        const existingIdx = playerGeneBank.findIndex((s) => s.speciesId === sanitized.speciesId || s.speciesName === sanitized.speciesName);
-        if (existingIdx >= 0) {
-          sanitized.records = playerGeneBank[existingIdx].records;
-          playerGeneBank[existingIdx] = sanitized;
+        ensureCustomerSampleSlots();
+        const sanitized = enforceOwnedBlueprintConstraints(bp, true);
+        if (playerGeneBank[selectedSampleSlotIdx]) {
+          sanitized.speciesId = playerGeneBank[selectedSampleSlotIdx].speciesId || ('sp_slot_' + (selectedSampleSlotIdx + 1));
+          sanitized.records = playerGeneBank[selectedSampleSlotIdx].records || sanitized.records;
+          playerGeneBank[selectedSampleSlotIdx] = sanitized;
         } else {
-          sanitized.speciesId = 'sp_' + Date.now();
-          playerGeneBank.unshift(sanitized);
+          playerGeneBank[0] = sanitized;
         }
+        editorDraft = JSON.parse(JSON.stringify(sanitized));
         selectedGbSpeciesId = sanitized.speciesId;
         selectedLobbySpeciesId = sanitized.speciesId;
         persistState();
+        renderEditorSampleSlotsBar();
+        renderArenaSampleSwitcher();
         NexusSDK.audio.upgrade();
-        showToast('已将物种【' + sanitized.speciesName + '】存入个人基因库！');
+        showToast(`已保存至客户储存样本槽 #${selectedSampleSlotIdx + 1}：【${sanitized.speciesName}】！`);
         return sanitized;
       }
 
       document.getElementById('editor-save-to-gb-btn')?.addEventListener('click', () => {
         saveBlueprintToGeneBank(editorDraft);
+      });
+
+      document.getElementById('editor-quick-play-btn')?.addEventListener('click', () => {
+        saveBlueprintToGeneBank(editorDraft);
+        startArenaMatch();
+        switchPage('arena', { allowDuringMatch: true });
+      });
+
+      document.getElementById('editor-buy-slot-inline-btn')?.addEventListener('click', () => {
+        buySampleSlotWithEp();
+      });
+
+      document.getElementById('workshop-buy-slot-btn')?.addEventListener('click', () => {
+        buySampleSlotWithEp();
+      });
+
+      document.getElementById('workshop-back-room-btn')?.addEventListener('click', () => {
+        saveBlueprintToGeneBank(editorDraft);
+        if (window.NexusSDK && window.NexusSDK.openTier2Menu) {
+          window.NexusSDK.openTier2Menu('lan');
+          return;
+        }
+        startArenaMatch();
+        switchPage('arena', { allowDuringMatch: true });
       });
 
       // 编辑页面中栏 60Hz 实时生物体节与感官仿真培养皿动画
@@ -1862,6 +2377,31 @@
               if (Number.isFinite(msg.hostY)) arenaState.rivalAlpha.y = msg.hostY;
               if (Number.isFinite(msg.hostAng)) arenaState.rivalAlpha.angle = msg.hostAng;
               if (Number.isFinite(msg.hostHp)) arenaState.rivalAlpha.hp = msg.hostHp;
+            } else if ((msg.type === 'SAMPLE_SWITCH' || msg.type === 'SAMPLE_REJOIN') && arenaState.running && msg.blueprint) {
+              // 局域网可靠通道同步对端玩家切换客户样本或中途重生
+              const safeRivalBp = validateAndSanitizeBlueprint(msg.blueprint);
+              if (arenaState.rivalAlpha && arenaState.rivalAlpha.hp > 0 && msg.type === 'SAMPLE_SWITCH') {
+                const rSt = safeRivalBp.statsSummary;
+                arenaState.rivalAlpha.blueprint = safeRivalBp;
+                arenaState.rivalAlpha.maxHp = rSt.maxHp;
+                arenaState.rivalAlpha.hp = Math.min(rSt.maxHp, arenaState.rivalAlpha.hp);
+                arenaState.rivalAlpha.maxEnergy = rSt.maxEnergy;
+                arenaState.rivalAlpha.energy = Math.min(rSt.maxEnergy, arenaState.rivalAlpha.energy);
+                arenaState.rivalAlpha.radius = TORSOS[safeRivalBp.torsoId].sizePx * 0.44;
+                syncOrganismMaturity(arenaState.rivalAlpha, false);
+              } else if (msg.type === 'SAMPLE_REJOIN' && !isFinalPhaseLockout()) {
+                const shoalX = arenaState.genesisShoal ? arenaState.genesisShoal.x + 80 : WORLD_W * 0.55;
+                const shoalY = arenaState.genesisShoal ? arenaState.genesisShoal.y : WORLD_H * 0.5;
+                const rebornRival = spawnOrganismEntity(safeRivalBp, shoalX, shoalY, 'enemy', {
+                  colonyId: 'rival_colony',
+                  isAlpha: false,
+                  hpRatio: 1.0,
+                  energyRatio: 0.90,
+                  spawnShieldSec: 5.0
+                });
+                arenaState.rivalAlpha = rebornRival;
+                arenaState.organisms.push(rebornRival);
+              }
             }
           };
           lanSession.onReliable(onMsg);
@@ -2280,14 +2820,23 @@
       }
 
       function startArenaMatch() {
-        const allChoices = [...playerGeneBank, ...officialFossils];
-        const chosen = allChoices.find((s) => s.speciesId === selectedLobbySpeciesId) || playerGeneBank[0];
+        ensureCustomerSampleSlots();
+        const chosen = playerGeneBank[selectedSampleSlotIdx] || playerGeneBank[0] || officialFossils[0];
         const modeSel = document.getElementById('lobby-match-mode');
         const gpSel = document.getElementById('lobby-gp-rule');
         arenaState.matchMode = modeSel ? modeSel.value : 'pve_campaign';
-        arenaState.gpRule = gpSel ? gpSel.value : 'standard';
+        arenaState.gpRule = gpSel ? gpSel.value : 'apex';
         arenaState.biome = BIOMES[selectedBiomeId] || BIOMES[0];
         arenaState.timeSec = 0;
+        arenaState.matchDurationSec = 180;
+        arenaState.timeLeftSec = 180;
+        arenaState.finalPhaseSec = 30;
+        arenaState.finalPhaseAnnounced = false;
+        arenaState.matchEnded = false;
+        arenaState.waitingForRejoin = false;
+        arenaState.activeSampleSlotIdx = selectedSampleSlotIdx;
+        arenaState.rejoinSelectedSlotIdx = selectedSampleSlotIdx;
+        arenaState.sampleSwitchCd = 0;
         arenaState.lastAlgaeSpawnSec = 0;
         arenaState.lastLanSyncSec = 0;
         arenaState.intraSpeciesCd = 0;
@@ -2298,6 +2847,9 @@
         arenaState.hazards = [];
         arenaState.vents = [];
         arenaState.territories = [];
+        document.getElementById('arena-rejoin-modal')?.classList.remove('open');
+        document.getElementById('arena-settlement-modal')?.classList.remove('open');
+
         // 【起源浅滩 (Genesis Shoal)】：位于培养皿中央的新物种摇篮生态庇护区 (半径 340px，阻挡野生捕食者与首领入内)
         arenaState.genesisShoal = {
           name: '起源浅滩 (Genesis Shoal)',
@@ -2306,15 +2858,9 @@
           radius: 340
         };
 
+        // 铁律：对局内禁止生物编辑，直接使用客户储存的完整样本出战，并支持局内切换样本
         arenaState.playerFullBlueprint = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(chosen)));
-        if (arenaState.gpRule === 'apex' || arenaState.matchMode === 'free_sandbox') {
-          globalGpReserve = Math.max(globalGpReserve, 2400);
-          persistState();
-        }
-        // 双轨开局：标准演进模式以 0 GP 基础表型起步，或巅峰满配模式直接挂载全等级蓝图
-        arenaState.playerActiveBlueprint = arenaState.gpRule === 'standard'
-          ? makeStarterLv1Blueprint(arenaState.playerFullBlueprint)
-          : validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(arenaState.playerFullBlueprint)));
+        arenaState.playerActiveBlueprint = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(chosen)));
         arenaState.unlockedTorsos = new Set([arenaState.playerActiveBlueprint.torsoId]);
         arenaState.unlockedOrganLevels = new Map();
         recordBlueprintUnlocked(arenaState.playerActiveBlueprint);
@@ -2341,7 +2887,7 @@
           });
         }
 
-        // 唯一始祖降生法则：开局在中央【起源浅滩】内生成 1 只玩家控制的始祖个体 Alpha，并附带 5.0s【破膜适应期】
+        // 开局在中央【起源浅滩】内生成 1 只玩家控制的客户样本始祖个体 Alpha，附带 5.0s【破膜适应期】
         const alpha = spawnOrganismEntity(arenaState.playerActiveBlueprint, arenaState.genesisShoal.x, arenaState.genesisShoal.y, 'player', {
           colonyId: 'player_colony',
           isAlpha: true,
@@ -2357,9 +2903,7 @@
         spawnNutrientCluster(arenaState.genesisShoal.x, arenaState.genesisShoal.y, 24);
         spawnAlgaeCluster(alpha.x + 150, alpha.y - 110, 10);
 
-        // 生成野生生态种群与章节首领：
-        // - 起源浅滩边缘仅分布温和植食羊群 (herd) 供感官探测与早期捕食；
-        // - 狼群捕食者 (pack) 与顶级领主 (apex) 严格分布在外圈独立领地 (距离浅滩中心 >= 560px)
+        // 生成野生生态种群与章节首领
         const wildPool = [
           ...officialFossils,
           ...playerGeneBank.filter((s) => s.wildEnabled && s.speciesId !== chosen.speciesId)
@@ -2400,14 +2944,14 @@
         arenaState.organisms.push(bossEnt);
         arenaState.rivalAlpha = bossEnt;
 
-        arenaState.drawerDraft = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(arenaState.playerFullBlueprint)));
-        arenaState.drawerSelectedGbId = arenaState.playerFullBlueprint.speciesId;
         arenaState.running = true;
         arenaState.lastTickMs = performance.now();
 
         syncArenaHudButtons();
+        renderArenaSampleSwitcher();
+        updateMatchTimerAndScoreboard(0);
         resizeArenaCanvas();
-        showToast('唯一始祖已降生！通过觅食与分裂繁衍你的同族电脑 NPC 群落');
+        showToast(`限时演化对局开启 (03:00)！当前投放样本 #${selectedSampleSlotIdx + 1}【${chosen.speciesName}】，按控制的种群营养总和决胜负`);
       }
 
       function syncArenaHudButtons() {
@@ -2623,300 +3167,476 @@
         return true;
       }
 
-      // 局内加载基因库核心执行器：严格区分【同躯干种群内进化】与【跨躯干创立全新物种种群】
-      function executeInGameBlueprintLoad(targetRawBp, requireConfirmForCrossTorso = true) {
-        const alpha = arenaState.alpha;
-        if (!alpha || alpha.hp <= 0) return;
-        const targetBp = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(targetRawBp)));
-        const currentBp = alpha.blueprint;
-        const isSameTorso = targetBp.torsoId === currentBp.torsoId;
+      /* =====================================================================
+       * 10.B 局内客户储存样本切换栏、中途死亡再次加入 (最后阶段禁止复活) 与限时种群营养物质总和胜负结算
+       * ===================================================================== */
+      function formatSecondsMmSs(sec) {
+        const s = Math.max(0, Math.ceil(sec));
+        const m = Math.floor(s / 60);
+        const r = s % 60;
+        return String(m).padStart(2, '0') + ':' + String(r).padStart(2, '0');
+      }
 
-        const deltaGp = computeBlueprintDeltaGp(targetBp);
+      function isFinalPhaseLockout() {
+        return (arenaState.timeLeftSec !== undefined ? arenaState.timeLeftSec : 180) <= (arenaState.finalPhaseSec || 30);
+      }
 
-        if (isSameTorso) {
-          // 情形 A：同躯干 —— 种群内器官进化与表型同步更新 (04 第 5.4.3.A 节)
-          if (arenaState.intraSpeciesCd > 0) {
-            NexusSDK.audio.warn();
-            showToast(`同躯干进化冷却中 (${arenaState.intraSpeciesCd.toFixed(1)}s)`);
-            return;
-          }
-          if (alpha.energy < 0.45 * alpha.maxEnergy) {
-            NexusSDK.audio.warn();
-            showToast('同躯干进化需要当前能量 ≥ 45% MaxE！');
-            return;
-          }
-          if (globalGpReserve < deltaGp) {
-            NexusSDK.audio.warn();
-            showToast(`基因值不足！升级差额需 ${deltaGp} GP（当前 ${globalGpReserve} GP）`);
-            return;
-          }
+      // 渲染对局画面底部的【客户储存样本切换栏】(#arena-sample-switcher —— 游戏期间禁止生物编辑，仅可切换客户储存的样本)
+      function renderArenaSampleSwitcher() {
+        const barEl = document.getElementById('arena-sample-switcher');
+        if (!barEl) return;
+        ensureCustomerSampleSlots();
+        const inFinal = isFinalPhaseLockout();
+        barEl.innerHTML = '';
 
-          globalGpReserve -= deltaGp;
-          arenaState.intraSpeciesCd = 8.0;
-
-          // 对玩家始祖与全场存活的同族电脑 NPC 同步应用能量/生命守恒方程 (05 第 5.3.A 节)
-          const newSt = targetBp.statsSummary;
-          const oldSkillId = currentBp.statsSummary.activeSkill?.organId || null;
-          const newSkillId = newSt.activeSkill?.organId || null;
-
-          arenaState.organisms.forEach((org) => {
-            if (org.colonyId === 'player_colony' && !org.formerKin && org.hp > 0) {
-              const oldMaxE = org.maxEnergy;
-              const oldMaxHp = org.maxHp;
-              if (org === alpha) {
-                // 玩家始祖：扣除 40% MaxE_old 并以 MaxE_new 封顶，等比例折算生命值，继承或置入战备适应冷却
-                const newE = Math.min(newSt.maxEnergy, Math.max(0, org.energy - 0.40 * oldMaxE));
-                const hpRatio = oldMaxHp > 0 ? Math.min(1, org.hp / oldMaxHp) : 1;
-                org.blueprint = targetBp;
-                org.maxEnergy = newSt.maxEnergy;
-                org.energy = newE;
-                org.maxHp = newSt.maxHp;
-                org.hp = Math.max(1, Math.round(newSt.maxHp * hpRatio));
-                org.radius = TORSOS[targetBp.torsoId].sizePx * 0.44;
-                syncOrganismMaturity(org, false);
-                if (newSt.activeSkill) {
-                  if (oldSkillId !== newSkillId) {
-                    org.skillCd = Math.max(org.skillCd, Math.min(2.0, newSt.activeSkill.cd));
-                  }
-                }
-              } else if (org.energy >= 0.60 * oldMaxE) {
-                // 同族电脑 NPC (能量 >= 60% MaxE_old)：立即自动蜕皮同步，保持绝对能量值不变并以 MaxE_new 封顶
-                const newE = Math.min(newSt.maxEnergy, org.energy);
-                const hpRatio = oldMaxHp > 0 ? Math.min(1, org.hp / oldMaxHp) : 1;
-                org.blueprint = targetBp;
-                org.maxEnergy = newSt.maxEnergy;
-                org.energy = newE;
-                org.maxHp = newSt.maxHp;
-                org.hp = Math.max(1, Math.round(newSt.maxHp * hpRatio));
-                org.radius = TORSOS[targetBp.torsoId].sizePx * 0.44;
-                org.pendingBlueprint = null;
-                syncOrganismMaturity(org, false);
-                if (newSt.activeSkill && oldSkillId !== newSkillId) {
-                  org.skillCd = Math.max(org.skillCd, Math.min(2.0, newSt.activeSkill.cd));
-                }
-              } else {
-                // 能量暂低于 60% MaxE_old 的同族 NPC：挂载待蜕皮蓝图，待进食恢复至 >= 60% MaxE 时自动蜕皮
-                org.pendingBlueprint = targetBp;
-              }
-            }
+        for (let i = 0; i < maxSampleSlots; i++) {
+          const sp = playerGeneBank[i];
+          if (!sp) continue;
+          const t = TORSOS[sp.torsoId] || TORSOS['torso-t1-micro'];
+          const dietTag = sp.dietType === 'herbivore' ? '植食' : (sp.dietType === 'carnivore' ? '肉食' : '杂食');
+          const isActive = i === arenaState.activeSampleSlotIdx;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'sample-slot-pill' + (isActive ? ' active' : '');
+          btn.disabled = Boolean(arenaState.waitingForRejoin && inFinal);
+          btn.title = inFinal && arenaState.waitingForRejoin
+            ? '最后30秒决胜阶段禁止复活投放'
+            : `切换为客户样本 #${i + 1}：${sp.speciesName} (${t.code} · ${dietTag})`;
+          btn.innerHTML = `
+            <img src="../assets/micro-genesis/sprites/${t.sprite}" alt="" />
+            <div class="sample-slot-info">
+              <span class="sample-slot-name">#${i + 1} ${escapeHtml(sp.speciesName)}</span>
+              <span class="sample-slot-sub">${t.code} · ${dietTag} · ${computeBlueprintBaseNutrients(sp)}质</span>
+            </div>
+          `;
+          btn.addEventListener('click', () => {
+            switchArenaSample(i);
           });
-
-          arenaState.playerActiveBlueprint = targetBp;
-          arenaState.playerFullBlueprint = targetBp;
-          recordBlueprintUnlocked(targetBp);
-          persistState();
-          syncArenaHudButtons();
-          closeInGameDrawer();
-          NexusSDK.audio.upgrade();
-          showToast(`同躯干种群进化完成：【${targetBp.speciesName}】（同族 NPC 已同步进化）`);
-          return;
+          barEl.appendChild(btn);
         }
+      }
 
-        // 情形 B：不同躯干 —— 创立全新物种种群并以 1 只初始始祖重新开始演化 (04 第 5.4.3.B 节)
-        if (requireConfirmForCrossTorso) {
-          arenaState.pendingCrossTorsoTarget = targetBp;
-          const bar = document.getElementById('cross-torso-confirm-bar');
-          if (bar) bar.classList.add('show');
-          return;
-        }
+      // 局内切换客户储存的样本 (存活时立即切换受控样本表型并保留场上同族；中途死亡且非最后阶段时直接投放该样本重返战场)
+      function switchArenaSample(slotIdx) {
+        if (arenaState.matchEnded) return;
+        ensureCustomerSampleSlots();
+        const targetRaw = playerGeneBank[slotIdx];
+        if (!targetRaw) return;
 
-        if (arenaState.crossTorsoCd > 0) {
-          NexusSDK.audio.warn();
-          showToast(`跨躯干物种跃迁冷却中 (${arenaState.crossTorsoCd.toFixed(1)}s)`);
-          return;
-        }
-        if (alpha.energy < 0.50 * alpha.maxEnergy || alpha.hp < 0.30 * alpha.maxHp) {
-          NexusSDK.audio.warn();
-          showToast('跨躯干跃迁需满足：能量 ≥ 50% MaxE 且 生命 ≥ 30% MaxHP！');
-          return;
-        }
-        const totalNeedGp = deltaGp;
-        if (globalGpReserve < totalNeedGp) {
-          NexusSDK.audio.warn();
-          showToast(`跨躯干跃迁需 ${totalNeedGp} GP（当前 ${globalGpReserve} GP）！`);
-          return;
-        }
-
-        globalGpReserve -= totalNeedGp;
-        arenaState.crossTorsoCd = 30.0;
-
-        // 1. 处置旧躯干同族电脑 NPC：单人/PVE 最多保留 1 支剥离种群 (更早剥离的旧种群无肉块消散) 并打上 formerKin:true；局域网 PVP 直接无肉块/无微藻耗散消亡
-        const isLanPvp = arenaState.matchMode === 'lan_1v1' || arenaState.matchMode === 'lan_2v2';
-        arenaState.organisms = arenaState.organisms.filter((org) => {
-          if (org === alpha) return false;
-          if (org.formerKin) {
-            // 再次跨躯干时，更早剥离的上一代旧种群无肉块直接消散，确保单局最多保留 1 支剥离种群
-            return false;
+        // 若当前处于中途阵亡等待再次加入状态：
+        if (arenaState.waitingForRejoin || !arenaState.alpha || arenaState.alpha.hp <= 0) {
+          if (isFinalPhaseLockout()) {
+            NexusSDK.audio.warn();
+            showToast('最后决胜阶段（剩余 ≤30秒）禁止复活！');
+            return;
           }
-          if (org.colonyId === 'player_colony') {
-            if (isLanPvp) {
-              // 局域网 PVP：旧躯干残余同族个体直接无肉块/无食物耗散消亡
-              return false;
-            } else {
-              org.faction = 'wild';
-              org.colonyId = 'former_kin_' + Date.now();
-              org.formerKin = true;
-              org.pendingBlueprint = null;
-              return true;
-            }
+          respawnPlayerWithSample(slotIdx);
+          return;
+        }
+
+        if (slotIdx === arenaState.activeSampleSlotIdx) {
+          NexusSDK.audio.tap();
+          showToast(`当前已在使用样本槽 #${slotIdx + 1}：【${targetRaw.speciesName}】`);
+          return;
+        }
+        if (arenaState.sampleSwitchCd > 0) {
+          NexusSDK.audio.warn();
+          showToast(`样本切换冷却中 (${arenaState.sampleSwitchCd.toFixed(1)}s)`);
+          return;
+        }
+
+        const targetBp = enforceOwnedBlueprintConstraints(targetRaw, false);
+        const newSt = targetBp.statsSummary;
+        const alpha = arenaState.alpha;
+        const oldTorsoId = alpha.blueprint?.torsoId || 'torso-t1-micro';
+        const isSameTorso = targetBp.torsoId === oldTorsoId;
+        const reqEnergyRatio = isSameTorso ? 0.25 : 0.40;
+        const costEnergyRatio = isSameTorso ? 0.15 : 0.25;
+
+        if (alpha.maxEnergy > 0 && alpha.energy < alpha.maxEnergy * reqEnergyRatio) {
+          NexusSDK.audio.warn();
+          showToast(`能量低于 ${Math.round(reqEnergyRatio * 100)}%，无法切换样本（防止濒死刷状态）！`);
+          return;
+        }
+
+        // 严格守恒：绝不凭空抬高生命比例或能量比例，扣除切换代谢成本并保留主动技能冷却
+        const hpRatio = alpha.maxHp > 0 ? Math.max(0.02, Math.min(1, alpha.hp / alpha.maxHp)) : 1.0;
+        const postCostEnergy = Math.max(2, alpha.energy - alpha.maxEnergy * costEnergyRatio);
+        const enRatio = alpha.maxEnergy > 0 ? Math.max(0.02, Math.min(1, postCostEnergy / alpha.maxEnergy)) : 0.50;
+
+        alpha.blueprint = targetBp;
+        alpha.maxHp = newSt.maxHp;
+        alpha.hp = Math.max(1, Math.round(newSt.maxHp * hpRatio));
+        alpha.maxEnergy = newSt.maxEnergy;
+        alpha.energy = Math.max(2, Math.round(newSt.maxEnergy * enRatio));
+        alpha.radius = TORSOS[targetBp.torsoId].sizePx * 0.44;
+        alpha.skillCd = Math.max(alpha.skillCd || 0, 2.0);
+        syncOrganismMaturity(alpha, false);
+
+        // 同步场上同族电脑 NPC：同躯干样本排入待蜕皮队列；跨躯干样本剥离旧躯干同族为野生竞争种群 (formerKin = true)
+        arenaState.organisms.forEach((org) => {
+          if (!org || org.hp <= 0 || org === alpha || org.colonyId !== 'player_colony' || org.formerKin) return;
+          if (isSameTorso) {
+            org.pendingBlueprint = targetBp;
+          } else {
+            org.formerKin = true;
+            org.colonyId = 'former_kin_colony';
+            org.faction = 'wild';
           }
-          return true;
         });
 
-        // 2. 在原位置降生唯一 1 只新物种始祖 (100% MaxHP, 50% MaxE)
-        const newAlpha = spawnOrganismEntity(targetBp, alpha.x, alpha.y, 'player', {
+        selectedSampleSlotIdx = slotIdx;
+        arenaState.activeSampleSlotIdx = slotIdx;
+        arenaState.rejoinSelectedSlotIdx = slotIdx;
+        arenaState.playerActiveBlueprint = targetBp;
+        arenaState.playerFullBlueprint = targetBp;
+        arenaState.sampleSwitchCd = isSameTorso ? 8.0 : 15.0;
+        if (lanSession && lanSession.sendReliable) {
+          lanSession.sendReliable({ type: 'SAMPLE_SWITCH', slotIdx, blueprint: targetBp });
+        }
+        persistState();
+        syncArenaHudButtons();
+        renderArenaSampleSwitcher();
+        NexusSDK.audio.upgrade();
+        showToast(isSameTorso
+          ? `已切换同躯干样本 #${slotIdx + 1}：【${targetBp.speciesName}】（同族后代保留并同步蜕皮）`
+          : `已切换跨躯干样本 #${slotIdx + 1}：【${targetBp.speciesName}】（开启新躯干种群演化）`);
+      }
+
+      // 中途死亡后选择客户储存样本再次加入战场 (仅限常规阶段 timeLeftSec > 30；最后阶段禁止复活)
+      function respawnPlayerWithSample(slotIdx) {
+        if (arenaState.matchEnded) return false;
+        if (isFinalPhaseLockout()) {
+          NexusSDK.audio.warn();
+          showToast('最后决胜阶段（剩余 ≤30秒）禁止复活！');
+          return false;
+        }
+        ensureCustomerSampleSlots();
+        const idx = (slotIdx !== undefined && playerGeneBank[slotIdx]) ? slotIdx : selectedSampleSlotIdx;
+        const targetBp = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(playerGeneBank[idx] || playerGeneBank[0])));
+        selectedSampleSlotIdx = idx;
+        arenaState.activeSampleSlotIdx = idx;
+        arenaState.rejoinSelectedSlotIdx = idx;
+        arenaState.playerActiveBlueprint = targetBp;
+        arenaState.playerFullBlueprint = targetBp;
+
+        const shoalX = arenaState.genesisShoal ? arenaState.genesisShoal.x : WORLD_W * 0.5;
+        const shoalY = arenaState.genesisShoal ? arenaState.genesisShoal.y : WORLD_H * 0.5;
+        const reborn = spawnOrganismEntity(targetBp, shoalX, shoalY, 'player', {
           colonyId: 'player_colony',
           isAlpha: true,
           hpRatio: 1.0,
-          energyRatio: 0.50
+          energyRatio: 0.90,
+          spawnShieldSec: 5.0
         });
-        arenaState.alpha = newAlpha;
-        arenaState.organisms.unshift(newAlpha);
-        arenaState.playerActiveBlueprint = targetBp;
-        arenaState.playerFullBlueprint = targetBp;
-        recordBlueprintUnlocked(targetBp);
-
+        arenaState.alpha = reborn;
+        arenaState.organisms.push(reborn);
+        arenaState.waitingForRejoin = false;
+        if (lanSession && lanSession.sendReliable) {
+          lanSession.sendReliable({ type: 'SAMPLE_REJOIN', slotIdx: idx, blueprint: targetBp });
+        }
+        spawnNutrientCluster(shoalX, shoalY, 10);
+        document.getElementById('arena-rejoin-modal')?.classList.remove('open');
         persistState();
         syncArenaHudButtons();
-        closeInGameDrawer();
-        NexusSDK.audio.win();
-        showToast(`跨躯干新物种【${targetBp.speciesName}】诞生！以唯一始祖重新开启种群演化`);
+        renderArenaSampleSwitcher();
+        NexusSDK.audio.upgrade();
+        showToast(`已投放样本 #${idx + 1}【${targetBp.speciesName}】再次加入战场（附带 5 秒破膜保护）！`);
+        return true;
       }
 
-      // 局内基因库毛玻璃抽屉打开/关闭与渲染
-      function openInGameDrawer() {
-        const drawer = document.getElementById('ingame-gene-drawer');
-        if (!drawer || !arenaState.alpha) return;
-        arenaState.drawerDraft = validateAndSanitizeBlueprint(JSON.parse(JSON.stringify(arenaState.alpha.blueprint)));
-        const nameInp = document.getElementById('drawer-save-name-input');
-        if (nameInp) nameInp.value = arenaState.drawerDraft.speciesName;
-        document.getElementById('cross-torso-confirm-bar')?.classList.remove('show');
-        drawer.classList.add('open');
-        NexusSDK.audio.tap();
-        renderInGameDrawer();
-      }
+      function openMidGameRejoinModal() {
+        const modal = document.getElementById('arena-rejoin-modal');
+        if (!modal || arenaState.matchEnded) return;
+        ensureCustomerSampleSlots();
+        const inFinal = isFinalPhaseLockout();
+        const titleEl = document.getElementById('rejoin-modal-title');
+        const tagEl = document.getElementById('rejoin-modal-timer-tag');
+        const descEl = document.getElementById('rejoin-modal-desc');
+        const listEl = document.getElementById('rejoin-sample-list');
+        const confirmBtn = document.getElementById('btn-rejoin-confirm');
+        const settleNowBtn = document.getElementById('btn-rejoin-settle-now');
 
-      function closeInGameDrawer() {
-        document.getElementById('ingame-gene-drawer')?.classList.remove('open');
-        document.getElementById('cross-torso-confirm-bar')?.classList.remove('show');
-      }
-
-      function renderInGameDrawer() {
-        const alpha = arenaState.alpha;
-        if (!alpha || !arenaState.drawerDraft) return;
-        const curTorso = TORSOS[alpha.blueprint.torsoId];
-        const draftTorso = TORSOS[arenaState.drawerDraft.torsoId];
-
-        const curTorsoLbl = document.getElementById('drawer-cur-torso-lbl');
-        if (curTorsoLbl) curTorsoLbl.textContent = `当前种群躯干: ${curTorso.code} ${curTorso.name}`;
-        const curGpLbl = document.getElementById('drawer-cur-gp-lbl');
-        if (curGpLbl) curGpLbl.textContent = `可用基因值: ${globalGpReserve} GP`;
-        const curEnLbl = document.getElementById('drawer-cur-energy-lbl');
-        if (curEnLbl) curEnLbl.textContent = `当前能量: ${Math.round((alpha.energy / alpha.maxEnergy) * 100)}% MaxE`;
-        const cdLbl = document.getElementById('drawer-cd-status-lbl');
-        if (cdLbl) {
-          cdLbl.textContent = arenaState.intraSpeciesCd > 0 || arenaState.crossTorsoCd > 0
-            ? `冷却中: 同躯干 ${arenaState.intraSpeciesCd.toFixed(0)}s / 跨躯干 ${arenaState.crossTorsoCd.toFixed(0)}s`
-            : '重构冷却: 就绪';
+        if (titleEl) {
+          titleEl.textContent = inFinal
+            ? '最后决胜阶段 · 禁止复活'
+            : '中途阵亡 · 选择客户储存样本再次加入';
+          titleEl.style.color = inFinal ? '#f43f5e' : 'var(--mg-accent-cyan)';
+        }
+        if (tagEl) {
+          tagEl.textContent = inFinal
+            ? `决胜阶段 (${formatSecondsMmSs(arenaState.timeLeftSec)}) · 禁止复活`
+            : `常规阶段 (${formatSecondsMmSs(arenaState.timeLeftSec)}) · 可再次加入`;
+          tagEl.classList.toggle('locked', inFinal);
+        }
+        if (descEl) {
+          descEl.innerHTML = inFinal
+            ? '对局已进入<strong>最后 30 秒决胜阶段</strong>，遵循规则<strong>【最后阶段禁止复活】</strong>，无法再次投放样本。您可以等待倒计时归零，或点击下方按钮立即按当前种群营养物质总和结算！'
+            : '当前处于<strong>常规阶段</strong>，中途死亡可从您储存的样本槽中任选一个样本<strong>再次加入战场</strong>（对局期间禁止生物编辑）。';
         }
 
-        const diffLbl = document.getElementById('drawer-mod-diff-lbl');
-        if (diffLbl) {
-          const same = draftTorso.id === curTorso.id;
-          const draftDeltaGp = computeBlueprintDeltaGp(arenaState.drawerDraft);
-          diffLbl.textContent = same
-            ? `同躯干 · 种群内器官进化 (差额 ${draftDeltaGp} GP)`
-            : `跨躯干 · 诞生全新物种 (1只始祖 · 差额 ${draftDeltaGp} GP)`;
-          diffLbl.style.color = same ? 'var(--mg-accent-emerald)' : 'var(--mg-accent-gold)';
-        }
-
-        // 左栏：局内实时修改插槽控件
-        buildSlotControls(
-          arenaState.drawerDraft,
-          document.getElementById('drawer-torso-row'),
-          document.getElementById('drawer-slot-list'),
-          renderInGameDrawer
-        );
-
-        // 右栏：个人基因库存档列表
-        const gbListEl = document.getElementById('drawer-gb-list');
-        if (gbListEl) {
-          gbListEl.innerHTML = '';
-          playerGeneBank.forEach((sp) => {
-            const t = TORSOS[sp.torsoId];
-            const isSame = sp.torsoId === alpha.blueprint.torsoId;
-            const deltaGp = computeBlueprintDeltaGp(sp);
+        if (listEl) {
+          listEl.innerHTML = '';
+          for (let i = 0; i < maxSampleSlots; i++) {
+            const sp = playerGeneBank[i];
+            if (!sp) continue;
+            const t = TORSOS[sp.torsoId] || TORSOS['torso-t1-micro'];
+            const dietName = sp.dietType === 'herbivore' ? '植食' : (sp.dietType === 'carnivore' ? '肉食' : '杂食');
             const card = document.createElement('div');
-            card.className = 'species-card' + (sp.speciesId === arenaState.drawerSelectedGbId ? ' selected' : '');
+            card.className = 'species-card' + (i === arenaState.rejoinSelectedSlotIdx ? ' selected' : '');
+            card.style.opacity = inFinal ? '0.5' : '1';
             card.innerHTML = `
               <div class="sp-card-top">
                 <div class="sp-thumb"><img src="../assets/micro-genesis/sprites/${t.sprite}" alt="" /></div>
                 <div style="flex:1;min-width:0;">
-                  <div class="sp-title">${escapeHtml(sp.speciesName)}</div>
-                  <div class="sp-meta">${t.code} · 差额消耗 ${deltaGp} GP</div>
+                  <div class="sp-title">#${i + 1} ${escapeHtml(sp.speciesName)}</div>
+                  <div class="sp-meta">${t.code} · ${dietName} · 基准 ${computeBlueprintBaseNutrients(sp)} 质</div>
                 </div>
-                <span class="badge-tag ${isSame ? 'green' : 'gold'}">${isSame ? '同躯干进化' : '不同躯干·新种群'}</span>
               </div>
             `;
             card.addEventListener('click', () => {
-              arenaState.drawerSelectedGbId = sp.speciesId;
+              if (inFinal) return;
+              arenaState.rejoinSelectedSlotIdx = i;
               NexusSDK.audio.tap();
-              renderInGameDrawer();
+              openMidGameRejoinModal();
             });
-            gbListEl.appendChild(card);
-          });
+            listEl.appendChild(card);
+          }
+        }
+
+        if (confirmBtn) {
+          confirmBtn.disabled = inFinal;
+          confirmBtn.textContent = inFinal
+            ? '最后决胜阶段禁止复活'
+            : `投放样本 #${(arenaState.rejoinSelectedSlotIdx || 0) + 1} · 再次加入战场`;
+        }
+        if (settleNowBtn) {
+          settleNowBtn.style.display = inFinal ? 'inline-flex' : 'none';
+        }
+        modal.classList.add('open');
+      }
+
+      document.getElementById('btn-rejoin-confirm')?.addEventListener('click', () => {
+        respawnPlayerWithSample(arenaState.rejoinSelectedSlotIdx);
+      });
+      document.getElementById('btn-rejoin-settle-now')?.addEventListener('click', () => {
+        settleTimedMatch();
+      });
+
+      // 实时统计全场所有种群的【营养物质总和】并排序
+      function computeColonyStandings() {
+        const map = new Map();
+        const playerBpName = arenaState.playerActiveBlueprint?.speciesName || playerGeneBank[selectedSampleSlotIdx]?.speciesName || '我方受控种群';
+        map.set('player_colony', {
+          colonyId: 'player_colony',
+          isPlayer: true,
+          name: `我方 · ${playerBpName}`,
+          count: 0,
+          totalNutrients: 0
+        });
+
+        arenaState.organisms.forEach((org) => {
+          if (!org || org.hp <= 0) return;
+          const cid = (org.colonyId === 'player_colony' && !org.formerKin) ? 'player_colony' : (org.colonyId || 'wild_colony');
+          let entry = map.get(cid);
+          if (!entry) {
+            const spName = org.blueprint?.speciesName || '野生种群';
+            entry = {
+              colonyId: cid,
+              isPlayer: false,
+              name: org.isBoss ? `首领 · ${spName}` : `野生 · ${spName}`,
+              count: 0,
+              totalNutrients: 0
+            };
+            map.set(cid, entry);
+          }
+          entry.count += 1;
+          entry.totalNutrients += computeOrganismNutrients(org);
+        });
+
+        const standings = Array.from(map.values()).sort((a, b) => (b.totalNutrients - a.totalNutrients) || (b.count - a.count));
+        return standings;
+      }
+
+      // 更新顶部限时赛倒计时、阶段标签与控制的种群营养物质总和计分板
+      function updateMatchTimerAndScoreboard(dt) {
+        if (arenaState.matchEnded) return;
+        if (arenaState.sampleSwitchCd > 0) {
+          arenaState.sampleSwitchCd = Math.max(0, arenaState.sampleSwitchCd - dt);
+        }
+        if (dt > 0) {
+          arenaState.timeLeftSec = Math.max(0, (arenaState.timeLeftSec !== undefined ? arenaState.timeLeftSec : 180) - dt);
+        }
+
+        const inFinal = isFinalPhaseLockout();
+        if (inFinal && !arenaState.finalPhaseAnnounced) {
+          arenaState.finalPhaseAnnounced = true;
+          NexusSDK.audio.warn();
+          showToast('进入最后 30 秒决胜阶段！中途死亡将禁止复活，全力冲刺种群营养物质总和！');
+          renderArenaSampleSwitcher();
+          if (arenaState.waitingForRejoin) {
+            openMidGameRejoinModal();
+          }
+        }
+
+        const timerEl = document.getElementById('hud-match-timer');
+        if (timerEl) timerEl.textContent = formatSecondsMmSs(arenaState.timeLeftSec);
+        const timerBox = document.getElementById('hud-match-timer-box');
+        if (timerBox) timerBox.classList.toggle('final-phase', inFinal);
+
+        const phaseBadge = document.getElementById('hud-match-phase-badge');
+        if (phaseBadge) {
+          phaseBadge.textContent = inFinal ? '决胜阶段·禁止复活' : '常规阶段·可换样本/复活';
+          phaseBadge.classList.toggle('locked', inFinal);
+        }
+
+        const standings = computeColonyStandings();
+        const pIdx = standings.findIndex((s) => s.isPlayer);
+        const playerRank = pIdx >= 0 ? (pIdx + 1) : standings.length;
+        const playerEntry = pIdx >= 0 ? standings[pIdx] : { totalNutrients: 0, count: 0 };
+        const topRival = standings.find((s) => !s.isPlayer) || { name: '竞争种群', totalNutrients: 0, count: 0 };
+
+        const pNutEl = document.getElementById('hud-player-nutrients');
+        if (pNutEl) {
+          pNutEl.textContent = `我方种群营养: ${playerEntry.totalNutrients} 质 (${playerEntry.count}只)`;
+        }
+        const pRankEl = document.getElementById('hud-player-rank');
+        if (pRankEl) {
+          pRankEl.textContent = `第 ${playerRank} / ${standings.length} 名`;
+          pRankEl.style.color = playerRank === 1 ? 'var(--mg-accent-gold)' : '#f43f5e';
+        }
+        const rNutEl = document.getElementById('hud-rival-nutrients');
+        if (rNutEl) {
+          rNutEl.textContent = `头名竞争 [${topRival.name}]: ${topRival.totalNutrients} 质 · 进化点: ${evolutionPoints} EP`;
+        }
+
+        if (arenaState.waitingForRejoin) {
+          const rejoinTagEl = document.getElementById('rejoin-modal-timer-tag');
+          if (rejoinTagEl) {
+            rejoinTagEl.textContent = inFinal
+              ? `决胜阶段 (${formatSecondsMmSs(arenaState.timeLeftSec)}) · 禁止复活`
+              : `常规阶段 (${formatSecondsMmSs(arenaState.timeLeftSec)}) · 可再次加入`;
+          }
+        }
+
+        if (arenaState.timeLeftSec <= 0) {
+          settleTimedMatch();
         }
       }
 
-      document.getElementById('btn-open-genebank')?.addEventListener('click', openInGameDrawer);
-      document.getElementById('drawer-close-btn')?.addEventListener('click', closeInGameDrawer);
+      // 限时游戏结束：按控制的种群营养物质总和判断胜负，并奖励进化点 (EP)
+      function settleTimedMatch(opts = {}) {
+        if (arenaState.matchEnded) return;
+        arenaState.matchEnded = true;
+        arenaState.running = false;
+        arenaState.waitingForRejoin = false;
+        document.getElementById('arena-rejoin-modal')?.classList.remove('open');
 
-      // 局内点击【存入基因库】：0 E / 0 GP 消耗保存
-      document.getElementById('drawer-save-to-gb-btn')?.addEventListener('click', () => {
-        if (!arenaState.drawerDraft) return;
-        const nameInp = document.getElementById('drawer-save-name-input');
-        if (nameInp && nameInp.value.trim()) {
-          arenaState.drawerDraft.speciesName = sanitizeSpeciesName(nameInp.value);
-        }
-        const saved = saveBlueprintToGeneBank(arenaState.drawerDraft);
-        arenaState.drawerSelectedGbId = saved.speciesId;
-        renderInGameDrawer();
-      });
+        const standings = computeColonyStandings();
+        const pIdx = standings.findIndex((s) => s.isPlayer);
+        const playerRank = pIdx >= 0 ? (pIdx + 1) : standings.length;
+        const playerEntry = pIdx >= 0 ? standings[pIdx] : { totalNutrients: 0, count: 0, name: '我方受控种群' };
 
-      // 局内点击【应用当前修改】
-      document.getElementById('drawer-apply-mod-btn')?.addEventListener('click', () => {
-        if (!arenaState.drawerDraft) return;
-        const nameInp = document.getElementById('drawer-save-name-input');
-        if (nameInp && nameInp.value.trim()) {
-          arenaState.drawerDraft.speciesName = sanitizeSpeciesName(nameInp.value);
-        }
-        executeInGameBlueprintLoad(arenaState.drawerDraft, true);
-      });
+        const matchDuration = arenaState.matchDurationSec || 180;
+        const timeLeft = Math.max(0, arenaState.timeLeftSec !== undefined ? arenaState.timeLeftSec : 0);
+        const elapsedSec = Math.max(0, matchDuration - timeLeft);
+        const finalEliminated = isFinalPhaseLockout() && (!arenaState.alpha || arenaState.alpha.hp <= 0);
+        const isEarlyAbort = Boolean(opts && opts.earlyAbort) && timeLeft > 0 && !finalEliminated;
 
-      // 局内点击【加载基因库】
-      document.getElementById('drawer-load-gb-btn')?.addEventListener('click', () => {
-        const target = playerGeneBank.find((s) => s.speciesId === arenaState.drawerSelectedGbId) || playerGeneBank[0];
-        if (!target) return;
-        executeInGameBlueprintLoad(target, true);
-      });
+        // 唯有真正完成限时对局（或决胜阶段阵亡完赛）且营养物质总和排名第 1 方可判定为游戏胜利，彻底阻断“开局 1 秒点提前结算无限刷胜利进化点”漏洞
+        const isVictory = !isEarlyAbort && playerRank === 1 && playerEntry.totalNutrients > 0;
 
-      // 跨躯干内联二次确认条按钮组
-      document.getElementById('confirm-save-then-load-btn')?.addEventListener('click', () => {
-        if (arenaState.alpha) {
-          saveBlueprintToGeneBank(arenaState.alpha.blueprint);
+        let rewardEp = 0;
+        if (isEarlyAbort) {
+          if (elapsedSec < 45) {
+            rewardEp = 0;
+          } else {
+            const progressRatio = Math.min(0.85, elapsedSec / matchDuration);
+            rewardEp = Math.round((25 + Math.min(35, playerEntry.totalNutrients * 0.05)) * progressRatio);
+          }
+        } else {
+          rewardEp = isVictory
+            ? (180 + Math.min(220, Math.round(playerEntry.totalNutrients * 0.22)))
+            : (playerRank === 2
+              ? (80 + Math.min(80, Math.round(playerEntry.totalNutrients * 0.10)))
+              : (45 + Math.min(50, Math.round(playerEntry.totalNutrients * 0.08))));
         }
-        if (arenaState.pendingCrossTorsoTarget) {
-          executeInGameBlueprintLoad(arenaState.pendingCrossTorsoTarget, false);
+
+        evolutionPoints = Math.min(999999, evolutionPoints + rewardEp);
+        persistState();
+
+        const titleEl = document.getElementById('settle-modal-title');
+        if (titleEl) {
+          titleEl.textContent = isEarlyAbort
+            ? `提前结束对局 · 当前种群营养总和第 ${playerRank} 名`
+            : (isVictory
+              ? `限时演化胜利 · 控制的种群营养总和第 1 名！`
+              : `限时演化结束 · 控制的种群营养总和第 ${playerRank} 名`);
+          titleEl.style.color = isVictory ? 'var(--mg-accent-gold)' : 'var(--mg-accent-cyan)';
         }
+        const subEl = document.getElementById('settle-modal-sub');
+        if (subEl) {
+          subEl.textContent = isEarlyAbort && elapsedSec < 45
+            ? `本局仅进行 ${Math.round(elapsedSec)} 秒（提前退赛未满 45 秒不发放进化点） · 当前营养总和：${playerEntry.totalNutrients} 质`
+            : `我方最终营养物质总和：${playerEntry.totalNutrients} 质（存活 ${playerEntry.count} 只）`;
+        }
+        const epBadge = document.getElementById('settle-ep-reward-badge');
+        if (epBadge) {
+          epBadge.textContent = isEarlyAbort
+            ? `提前结算 +${rewardEp} 进化点 (EP)`
+            : `${isVictory ? '胜利奖励' : '完赛奖励'} +${rewardEp} 进化点 (EP)`;
+        }
+        const totalEpLbl = document.getElementById('settle-total-ep-lbl');
+        if (totalEpLbl) {
+          totalEpLbl.textContent = `${evolutionPoints} EP`;
+        }
+
+        const boardEl = document.getElementById('settle-colony-leaderboard');
+        if (boardEl) {
+          boardEl.innerHTML = standings.slice(0, 6).map((item, idx) => {
+            const rankNum = idx + 1;
+            const highlight = item.isPlayer ? 'border:1.5px solid var(--mg-accent-cyan);background:rgba(45,212,191,0.16);' : 'border:1px solid rgba(148,163,184,0.22);background:rgba(15,23,42,0.82);';
+            return `
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:8px;font-size:0.68rem;${highlight}">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <strong style="color:${rankNum === 1 ? 'var(--mg-accent-gold)' : 'var(--mg-text-secondary)'};">#${rankNum}</strong>
+                  <span style="font-weight:${item.isPlayer ? '900' : '600'};color:var(--mg-text-primary);">${escapeHtml(item.name)}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span style="color:var(--mg-text-secondary);font-size:0.62rem;">存活 ${item.count} 只</span>
+                  <strong style="color:${item.isPlayer ? 'var(--mg-accent-cyan)' : 'var(--mg-accent-gold)'};">${item.totalNutrients} 营养质</strong>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        document.getElementById('arena-settlement-modal')?.classList.add('open');
+        if (isVictory) {
+          NexusSDK.audio.win();
+        } else {
+          NexusSDK.audio.upgrade();
+        }
+      }
+
+      document.getElementById('btn-settle-open-workshop')?.addEventListener('click', () => {
+        openOutOfGameWorkshop();
       });
-      document.getElementById('confirm-direct-load-btn')?.addEventListener('click', () => {
-        if (arenaState.pendingCrossTorsoTarget) {
-          executeInGameBlueprintLoad(arenaState.pendingCrossTorsoTarget, false);
-        }
+      document.getElementById('btn-settle-rematch')?.addEventListener('click', () => {
+        document.getElementById('arena-settlement-modal')?.classList.remove('open');
+        startArenaMatch();
+        switchPage('arena', { allowDuringMatch: true });
       });
-      document.getElementById('confirm-cancel-load-btn')?.addEventListener('click', () => {
-        document.getElementById('cross-torso-confirm-bar')?.classList.remove('show');
-        arenaState.pendingCrossTorsoTarget = null;
+      document.getElementById('btn-settle-back-room')?.addEventListener('click', () => {
+        document.getElementById('arena-settlement-modal')?.classList.remove('open');
+        if (window.NexusSDK && window.NexusSDK.openTier2Menu) {
+          window.NexusSDK.openTier2Menu('lan');
+          return;
+        }
+        switchPage('lobby');
+      });
+      document.getElementById('btn-arena-settle-early')?.addEventListener('click', () => {
+        settleTimedMatch({ earlyAbort: true });
       });
 
       // 底部 HUD 其余纯 SVG 图标按钮事件
@@ -2971,8 +3691,6 @@
       }
 
       // 判定捕食者与猎物是否存在【极大体型悬殊】从而允许直接一口吞噬活体 (Swallow Whole)：
-      // - 相似/相近体型 (如 T01 vs T01、T02 vs T02、T02 vs T01、T03 vs T02、T04 vs T03)：返回 false，严禁直接吞噬活体，必须通过攻击杀死猎物，待猎物死后转化为【肉 (meat)】才能吞噬！
-      // - 极大体型悬殊 (有效体积比 >= 3.2 倍 且 半径比 >= 1.55 倍，如成年 T03/T04 捕食 T01、成年 T04 捕食 T02 或成年巨兽捕食刚分裂的极小幼体，且猎物非首领)：返回 true，允许直接活体吞噬！
       function canSwallowWhole(predator, prey) {
         if (!predator || !prey || predator.hp <= 0 || prey.hp <= 0) return false;
         if (predator.colonyId === prey.colonyId || prey.isBoss) return false;
@@ -3103,7 +3821,7 @@
           }
         });
 
-        // GP 差分概率掉落 (玩家亲手击杀 75%，同族 NPC 击杀 12%，首领 100%，formerKin 0%；幼体按发育体型 growthScale 折算)
+        // 击败异族奖励战地基因值与击杀记录
         if (killer && killer.colonyId === 'player_colony' && victim.colonyId !== 'player_colony' && !victim.formerKin) {
           const dropChance = victim.isBoss ? 1.0 : (killer.isAlpha ? 0.75 : 0.12);
           if (Math.random() <= dropChance) {
@@ -3112,36 +3830,30 @@
             arenaState.playerFullBlueprint.records.totalKills += 1;
             persistState();
             NexusSDK.audio.pickup();
-            showToast(`${killer.isAlpha ? '玩家始祖击杀' : '同族NPC协战击杀'}！获得 +${gpGain} GP`);
           }
         }
 
-        // 若玩家当前控制的始祖死亡：优先接管存活的同族电脑 NPC，若全灭则在【起源浅滩】中心降生新始祖并赋予 5s 破膜适应期
+        // 若玩家当前控制的始祖死亡：
+        // 1. 若场上仍有存活的同族电脑 NPC 后代，无缝移交控制权；
+        // 2. 若场上已无存活同族个体：
+        //    - 常规阶段 (剩余 >30s)：弹出【中途阵亡 · 选择客户储存样本再次加入】面板，允许换样本或原样本再次加入；
+        //    - 最后决胜阶段 (剩余 <=30s)：严格执行【最后阶段禁止复活】，锁定再次加入并提示等待或立即结算！
         if (victim === arenaState.alpha) {
           const survivingKin = arenaState.organisms
             .filter((o) => o.hp > 0 && o.colonyId === 'player_colony' && !o.formerKin && o !== victim)
-            .sort((a, b) => (((b.maturity ?? 1) >= 1 ? 1 : 0) - ((a.maturity ?? 1) >= 1 ? 1 : 0)) || (b.hp - a.hp));
+            .sort((a, b) => (((b.maturity ?? 1) >= 1 ? 1 : 0) - ((a.maturity ?? 1) >= 1 ? 0 : 0)) || (b.hp - a.hp));
           if (survivingKin.length > 0) {
             const heir = survivingKin[0];
             heir.isAlpha = true;
             arenaState.alpha = heir;
             NexusSDK.audio.warn();
-            showToast('始祖陨落！镜头与控制权已无缝移交至最健康的同族后代');
+            showToast('受控个体陨落！控制权已无缝移交至场上存活的同族后代');
           } else {
-            const shoalX = arenaState.genesisShoal ? arenaState.genesisShoal.x : WORLD_W * 0.5;
-            const shoalY = arenaState.genesisShoal ? arenaState.genesisShoal.y : WORLD_H * 0.5;
-            const reborn = spawnOrganismEntity(arenaState.playerActiveBlueprint, shoalX, shoalY, 'player', {
-              colonyId: 'player_colony',
-              isAlpha: true,
-              hpRatio: 1.0,
-              energyRatio: 0.85,
-              spawnShieldSec: 5.0
-            });
-            arenaState.alpha = reborn;
-            arenaState.organisms.push(reborn);
-            spawnNutrientCluster(shoalX, shoalY, 10);
+            arenaState.waitingForRejoin = true;
+            arenaState.rejoinSelectedSlotIdx = selectedSampleSlotIdx;
             NexusSDK.audio.warn();
-            showToast('种群全灭！已在【起源浅滩】中心重新降生新一代始祖（5秒破膜适应期保护 + 全食性通用营养质）');
+            renderArenaSampleSwitcher();
+            openMidGameRejoinModal();
           }
         }
       }
@@ -3907,11 +4619,12 @@
           if (hpBar) hpBar.style.width = Math.max(0, Math.min(100, (alpha.hp / alpha.maxHp) * 100)) + '%';
           const enBar = document.getElementById('hud-energy-bar');
           if (enBar) enBar.style.width = Math.max(0, Math.min(100, (alpha.energy / alpha.maxEnergy) * 100)) + '%';
-          const gpBar = document.getElementById('hud-gp-bar');
-          if (gpBar) gpBar.style.width = Math.min(100, (globalGpReserve / 800) * 100) + '%';
           const cdOverlay = document.getElementById('skill-cd-overlay');
           if (cdOverlay) cdOverlay.classList.toggle('active', alpha.skillCd > 0);
         }
+
+        // 实时推进限时游戏倒计时与种群营养物质总和计分板
+        updateMatchTimerAndScoreboard(dt);
       }
 
       // =====================================================================
@@ -4927,12 +5640,15 @@
       }
 
       function launchArenaFromRoom() {
-        if (!arenaState.organisms || arenaState.organisms.length === 0) {
+        if (!arenaState.organisms || arenaState.organisms.length === 0 || arenaState.matchEnded) {
           startArenaMatch();
         }
-        switchPage('arena');
+        switchPage('arena', { allowDuringMatch: true });
         arenaState.running = true;
         arenaState.lastTickMs = performance.now();
+        syncEvolutionPointsUI();
+        renderArenaSampleSwitcher();
+        updateMatchTimerAndScoreboard(0);
       }
       window.addEventListener('nexus:gameplay-started', launchArenaFromRoom);
       if (window.NexusSDK && window.NexusSDK.isGameplayActive()) {
@@ -4979,7 +5695,53 @@
         }
       } catch (_e) {}
       // 调试探针导出
-      window.__debugGenesis = () => ({ arenaState, TORSOS, validateAndSanitizeBlueprint, decodeGeneCode, sanitizeSpeciesName, executeInGameBlueprintLoad, getEffectiveStats, syncOrganismMaturity, accelerateJuvenileGrowth, resolveOrganismCollisions, spawnOrganismEntity, spawnNutrientCluster, tryMitosisReproduce, classifySonarRelation, getSonarPalette, getSonarDistanceFactor, computeColorVisionEnvelope, canEntitySenseTarget, isInsideGenesisShoal, clampOutsideGenesisShoal, applyDamage, stepArenaSimulation });
+      window.__debugGenesis = () => ({
+        arenaState,
+        TORSOS,
+        ORGAN_CATALOG,
+        getEvolutionPoints: () => evolutionPoints,
+        getMaxSampleSlots: () => maxSampleSlots,
+        getSelectedSampleSlotIdx: () => selectedSampleSlotIdx,
+        getPlayerGeneBank: () => playerGeneBank,
+        getUnlockedItems: () => unlockedItems,
+        getOrganInventory: () => organInventory,
+        sanitizeOrganInventory,
+        countBlueprintOrganUsage,
+        enforceOwnedBlueprintConstraints,
+        validateAndSanitizeBlueprint,
+        decodeGeneCode,
+        sanitizeSpeciesName,
+        executeInGameBlueprintLoad: switchArenaSample,
+        switchArenaSample,
+        respawnPlayerWithSample,
+        openMidGameRejoinModal,
+        computeColonyStandings,
+        updateMatchTimerAndScoreboard,
+        settleTimedMatch,
+        openOutOfGameWorkshop,
+        buySampleSlotWithEp,
+        unlockOrganWithEp,
+        unlockTorsoWithEp,
+        buyOrganCopyWithEp,
+        switchPage,
+        startArenaMatch,
+        getEffectiveStats,
+        syncOrganismMaturity,
+        accelerateJuvenileGrowth,
+        resolveOrganismCollisions,
+        spawnOrganismEntity,
+        spawnNutrientCluster,
+        tryMitosisReproduce,
+        classifySonarRelation,
+        getSonarPalette,
+        getSonarDistanceFactor,
+        computeColorVisionEnvelope,
+        canEntitySenseTarget,
+        isInsideGenesisShoal,
+        clampOutsideGenesisShoal,
+        applyDamage,
+        stepArenaSimulation
+      });
     })();
     }
 

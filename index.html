@@ -160,11 +160,16 @@
         </span>
       </div>
       <div class="topbar-controls">
+        <button class="pill-btn" id="btn-user-menu" aria-label="打开指挥官用户菜单" title="指挥官身份与账号切换">
+          <svg class="nx-ico" viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#111111;">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span id="topbar-user-name">先锋指挥官</span>
+          <span id="topbar-user-badge" style="font-size:0.64rem;padding:1px 5px;border-radius:4px;border:1.5px solid #111111;background:#a3e635;color:#111111;font-weight:900;">指挥官</span>
+        </button>
         <button class="pill-btn" id="btn-pwa-install" aria-label="安装到手机桌面 (支持离线启动)" title="安装到手机桌面 (支持离线启动)">
           <img src="./sprites/badge-pwa.svg" alt="PWA" class="nx-badge-img" style="width:20px;height:20px;" />
-        </button>
-        <button class="pill-btn" id="btn-fullscreen-toggle" aria-label="切换全屏模式" title="切换全屏模式">
-          <img src="./sprites/badge-fullscreen.svg" alt="全屏" class="nx-badge-img" style="width:20px;height:20px;" />
         </button>
       </div>
     </header>
@@ -232,6 +237,62 @@
   <!-- 全屏内联微游容器 (Arcade Fullscreen Frame · 配备宿主级防死锁返回胶囊按钮) -->
   <div id="arcade-frame-overlay">
     <iframe id="game-iframe" title="Nexus-Mini Fullscreen Game Frame" allow="fullscreen; autoplay" style="width:100%;height:100%;border:none;display:block;background:#171513;"></iframe>
+  </div>
+
+  <!-- 指挥官用户菜单与本地账号切换模态弹窗 -->
+  <div class="modal-backdrop" id="user-modal" role="dialog" aria-modal="true" aria-labelledby="user-modal-title">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <span class="modal-title" id="user-modal-title">
+          <svg class="nx-ico" viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#ff5500;">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>指挥官用户菜单 · 本地身份与特权切换</span>
+        </span>
+        <button class="close-btn" data-close="user-modal" aria-label="关闭用户菜单">
+          <svg class="nx-ico" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:0.78rem;color:var(--nexus-text-secondary);">
+        <div class="stat-box" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <div>
+            <div class="stat-label">当前登录身份 (全局通行 5 款微游)</div>
+            <div class="stat-val" id="user-modal-cur-title" style="font-size:0.92rem;">先锋指挥官 (u_commander_01)</div>
+          </div>
+          <span id="user-modal-role-pill" style="padding:3px 8px;border-radius:6px;border:2px solid #111111;background:#a3e635;color:#111111;font-weight:900;font-size:0.72rem;white-space:nowrap;">标准玩家档</span>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-label" style="margin-bottom:6px;">修改指挥官呼号 / 昵称 (联机房间与战绩榜显示)</div>
+          <div style="display:flex;gap:8px;">
+            <input id="user-nickname-input" type="text" maxlength="18" placeholder="输入新昵称 (如: 星轨先锋号)" style="flex:1;min-height:44px;padding:0 10px;border:2.5px solid #111111;border-radius:6px;font-size:0.8rem;font-weight:800;background:#ffffff;color:#111111;" />
+            <button class="secondary-cta" id="btn-save-nickname" style="min-height:44px;">保存昵称</button>
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-label" style="margin-bottom:6px;">快速切换本地预设身份档案 (各游戏独立隔离存储)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="secondary-cta" id="btn-switch-commander" style="min-height:44px;justify-content:center;">
+              <span>先锋指挥官 (标准档)</span>
+            </button>
+            <button class="secondary-cta" id="btn-switch-admin" style="min-height:44px;justify-content:center;background:#facc15;">
+              <span>最高统帅 (Admin满资材)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-label" style="margin-bottom:6px;">账号登录 / 注册新本地指挥官账号</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;">
+            <input id="user-login-username" type="text" maxlength="16" placeholder="账号 (如 admin)" style="min-height:44px;padding:0 8px;border:2px solid #111111;border-radius:6px;font-size:0.76rem;font-weight:700;background:#ffffff;color:#111111;min-width:0;" />
+            <input id="user-login-password" type="password" maxlength="24" placeholder="密码 (admin: nexus2026)" style="min-height:44px;padding:0 8px;border:2px solid #111111;border-radius:6px;font-size:0.76rem;font-weight:700;background:#ffffff;color:#111111;min-width:0;" />
+            <button class="primary-cta" id="btn-user-login-submit" style="min-height:44px;padding:0 14px;font-size:0.78rem;flex:0;">登录/注册</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- PWA 桌面安装与离线包引导模态弹窗 -->
@@ -513,9 +574,42 @@
 
     function ensureGameSavesForUser(user) {
       const isAdmin = user.userId === 'u_admin_001';
-      // 存档单一事实源：各微游首次运行时由 NexusSDK.createGameStorage 按自身默认工厂初始化，
-      // 门户不再抢先写入任何（可能与游戏内默认值冲突的）预置存档。
       void isAdmin;
+    }
+
+    function setActiveSession(nextUser) {
+      currentUser = Object.assign({
+        userId: 'u_commander_01',
+        username: 'commander',
+        nickname: '先锋指挥官',
+        isGuest: false,
+        token: randomHex(32)
+      }, nextUser || {});
+      localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+      ensureGameSavesForUser(currentUser);
+      renderUserMenuUI();
+    }
+
+    function renderUserMenuUI() {
+      const isAdm = currentUser.userId === 'u_admin_001';
+      const nameEl = document.getElementById('topbar-user-name');
+      const badgeEl = document.getElementById('topbar-user-badge');
+      if (nameEl) nameEl.textContent = currentUser.nickname || '先锋指挥官';
+      if (badgeEl) {
+        badgeEl.textContent = isAdm ? '最高统帅' : '指挥官';
+        badgeEl.style.background = isAdm ? '#facc15' : '#a3e635';
+      }
+      const curTitleEl = document.getElementById('user-modal-cur-title');
+      const rolePillEl = document.getElementById('user-modal-role-pill');
+      const nickIn = document.getElementById('user-nickname-input');
+      if (curTitleEl) curTitleEl.textContent = `${currentUser.nickname || '先锋指挥官'} (${currentUser.userId})`;
+      if (rolePillEl) {
+        rolePillEl.textContent = isAdm ? '最高统帅 (Admin满资材)' : '标准玩家档';
+        rolePillEl.style.background = isAdm ? '#facc15' : '#a3e635';
+      }
+      if (nickIn && document.activeElement !== nickIn) {
+        nickIn.value = currentUser.nickname || '';
+      }
     }
 
     function getCurrentSession() {
@@ -881,19 +975,6 @@
       }
     });
 
-    document.getElementById('btn-fullscreen-toggle').addEventListener('click', async () => {
-      NexusAudio.tap();
-      try {
-        if (!document.fullscreenElement) {
-          await document.documentElement.requestFullscreen();
-        } else {
-          await document.exitFullscreen();
-        }
-      } catch (_) {
-        showToast('当前环境不支持直接切换全屏，建议添加到主屏幕运行');
-      }
-    });
-
     let deferredPwaPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -905,6 +986,86 @@
       document.getElementById('pwa-modal').classList.add('active');
     }
     document.getElementById('btn-pwa-install').addEventListener('click', openPwaModal);
+
+    // 主页右上角用户菜单与身份切换事件绑定
+    document.getElementById('btn-user-menu')?.addEventListener('click', () => {
+      NexusAudio.tap();
+      renderUserMenuUI();
+      document.getElementById('user-modal')?.classList.add('active');
+    });
+
+    document.getElementById('btn-save-nickname')?.addEventListener('click', () => {
+      const nickIn = document.getElementById('user-nickname-input');
+      const nextNick = String(nickIn?.value || '').trim().slice(0, 18);
+      if (!nextNick) {
+        showToast('请输入有效的指挥官昵称');
+        return;
+      }
+      NexusAudio.success();
+      setActiveSession(Object.assign({}, currentUser, { nickname: nextNick }));
+      showToast(`指挥官呼号已更新为「${nextNick}」`);
+    });
+
+    document.getElementById('btn-switch-commander')?.addEventListener('click', () => {
+      NexusAudio.success();
+      setActiveSession({
+        userId: 'u_commander_01',
+        username: 'commander',
+        nickname: '先锋指挥官',
+        isGuest: false,
+        token: randomHex(32)
+      });
+      showToast('已切换至「先锋指挥官 (标准玩家档)」');
+    });
+
+    document.getElementById('btn-switch-admin')?.addEventListener('click', () => {
+      NexusAudio.launch();
+      setActiveSession({
+        userId: 'u_admin_001',
+        username: 'admin',
+        nickname: '最高统帅 · 管理员',
+        isGuest: false,
+        token: randomHex(32)
+      });
+      showToast('已切换至「最高统帅 · 管理员 (全游戏满资材特权档)」');
+    });
+
+    document.getElementById('btn-user-login-submit')?.addEventListener('click', () => {
+      const uIn = document.getElementById('user-login-username');
+      const pIn = document.getElementById('user-login-password');
+      const uname = String(uIn?.value || '').trim().replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 16);
+      const pwd = String(pIn?.value || '').trim();
+      if (!uname) {
+        showToast('请输入登录账号 (如 admin 或自定义英文数字账号)');
+        return;
+      }
+      if (uname.toLowerCase() === 'admin') {
+        if (pwd && pwd !== 'nexus2026') {
+          showToast('管理员密码错误 (默认调试密码: nexus2026)');
+          return;
+        }
+        NexusAudio.launch();
+        setActiveSession({
+          userId: 'u_admin_001',
+          username: 'admin',
+          nickname: '最高统帅 · 管理员',
+          isGuest: false,
+          token: randomHex(32)
+        });
+        showToast('管理员登录成功：已激活最高统帅满资材特权！');
+        return;
+      }
+      NexusAudio.success();
+      const uid = 'u_' + uname.toLowerCase();
+      setActiveSession({
+        userId: uid,
+        username: uname,
+        nickname: `指挥官 · ${uname}`,
+        isGuest: false,
+        token: randomHex(32)
+      });
+      showToast(`已登录/注册本地指挥官账号：${uname} (${uid})`);
+    });
     document.getElementById('btn-trigger-native-pwa').addEventListener('click', async () => {
       NexusAudio.launch();
       if (deferredPwaPrompt) {
@@ -946,6 +1107,7 @@
     }
 
     handleUrlParams();
+    renderUserMenuUI();
     renderRoster();
     renderHeroStage();
     checkScreenGuard();

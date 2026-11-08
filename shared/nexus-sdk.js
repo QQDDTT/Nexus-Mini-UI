@@ -1023,57 +1023,65 @@
       storagePrefix: 'NEXUS_MINI_SD_',
       icon: '../assets/star-defender/icon.svg',
       preview: '../assets/star-defender/preview.png',
-      tagline: '360° 轨道拦截 · 赫利俄斯/格拉基斯双阵营 8 大主力星舰 · 12 模组与 6 大虚空虫群战役',
+      tagline: '深空战术防线 · 赫利俄斯/格拉基斯双阵营 5 级无翼主力战舰 · 船体副炮射界与舰载战机装备系统',
       modes: [
-        { id: 'solo-campaign', name: '单机百波战役', desc: '本地 60Hz 确定性牛顿物理与正交火控解算，AI 护航僚机全程协同守卫星轨核心站' },
+        { id: 'solo-campaign', name: '单机百波战役', desc: '本地 60Hz 确定性牛顿物理与船体遮蔽射界解算，AI 护航僚机全程协同守卫星轨核心站' },
         { id: 'lan-coop', name: '局域网双舰护航', desc: '同 Wi-Fi / 手机热点 WebRTC 双通道直连，双机集火深渊虚空利维坦 Boss' }
       ],
       starRosterUnits: [
-        { no: 'HL-01', cat: 'hull', faction: 'helios', hullKey: 'hullDelta', badge: '14格·120MW', file: 'hull-delta.svg', name: 'Delta 舰', weight: '1.92·S', fullTitle: '赫利俄斯 Delta 级高速三角截击舰', subCode: 'NASA 白瓷热防护瓦 + 24K 聚酰亚胺金箔舱 + 双矢量尾喷', zoneSpec: 'W:2S+1M | B:2×1格 | P:2×S', armorVal: '420 HP', armorPct: 62, velVal: '540 m/s', velPct: 96, pwrVal: '120 MW', pwrPct: 75 },
-        { no: 'HL-02', cat: 'hull', faction: 'helios', hullKey: 'hullWing', badge: '22格·185MW', file: 'hull-wing.svg', name: 'Wing 舰', weight: '1.48·A', fullTitle: '赫利俄斯 Wing 级前掠翼多挂点战术巡洋舰', subCode: '重型钛合金前掠翼梁 + 四联导弹垂发井 + 双核反应堆', zoneSpec: 'W:2S+2M | B:3×1格 | P:2×M', armorVal: '680 HP', armorPct: 78, velVal: '430 m/s', velPct: 82, pwrVal: '185 MW', pwrPct: 84 },
-        { no: 'HL-03', cat: 'hull', faction: 'helios', hullKey: 'hullRing', badge: '28格·260MW', file: 'hull-ring.svg', name: 'Ring 舰', weight: '1.22·B', fullTitle: '赫利俄斯 Ring 级磁约束环状护盾母舰', subCode: '360° 环形托卡马克聚变线圈 + 金箔辐射散热翼 + 无人机母舱', zoneSpec: 'W:2M+1L | B:4×1格 | P:2×M', armorVal: '920 HP', armorPct: 90, velVal: '360 m/s', velPct: 68, pwrVal: '260 MW', pwrPct: 94 },
-        { no: 'HL-04', cat: 'hull', faction: 'helios', hullKey: 'hullCross', badge: '36格·340MW', file: 'hull-cross.svg', name: 'Cross 舰', weight: '1.08·B', fullTitle: '赫利俄斯 Cross 级重装十字无畏歼星旗舰', subCode: '四象限重型装甲翼 + 轴向磁轨主炮槽 + 四联霍尔等离子推进阵', zoneSpec: 'W:2M+2L | B:4×1格 | P:3×L', armorVal: '1350 HP', armorPct: 100, velVal: '310 m/s', velPct: 58, pwrVal: '340 MW', pwrPct: 100 },
-        { no: 'GL-01', cat: 'hull', faction: 'glacies', hullKey: 'hullDelta', badge: '14格·135MW', file: 'hull-delta-glacies.svg', name: '霜刃舰', weight: '1.98·S', fullTitle: '格拉基斯 Delta 级深冷碳纤超导截击舰', subCode: '2x2 斜纹凝霜碳纤维 + 蓝宝石光学导流罩 + 切伦科夫冷离子推进', zoneSpec: 'W:2S+1M | B:2×1格 | P:2×S', armorVal: '390 HP', armorPct: 58, velVal: '565 m/s', velPct: 99, pwrVal: '135 MW', pwrPct: 80 },
-        { no: 'GL-02', cat: 'hull', faction: 'glacies', hullKey: 'hullWing', badge: '22格·200MW', file: 'hull-wing-glacies.svg', name: '寒翼舰', weight: '1.54·A', fullTitle: '格拉基斯 Wing 级液氮超导前掠翼科研巡洋舰', subCode: '深海蓝宝石棱镜阵列 + 零电阻超导电容舱 + 极光矢量翼', zoneSpec: 'W:2S+2M | B:3×1格 | P:2×M', armorVal: '640 HP', armorPct: 74, velVal: '450 m/s', velPct: 86, pwrVal: '200 MW', pwrPct: 88 },
-        { no: 'GL-03', cat: 'hull', faction: 'glacies', hullKey: 'hullRing', badge: '28格·285MW', file: 'hull-ring-glacies.svg', name: '极光舰', weight: '1.28·A', fullTitle: '格拉基斯 Ring 级量子纠缠环轨力场母舰', subCode: '超低温超导磁暴环 + 蓝宝石相控阵护盾发生器', zoneSpec: 'W:2M+1L | B:4×1格 | P:2×M', armorVal: '880 HP', armorPct: 86, velVal: '380 m/s', velPct: 72, pwrVal: '285 MW', pwrPct: 97 },
-        { no: 'GL-04', cat: 'hull', faction: 'glacies', hullKey: 'hullCross', badge: '36格·360MW', file: 'hull-cross-glacies.svg', name: '凛冬舰', weight: '1.12·B', fullTitle: '格拉基斯 Cross 级深渊极寒重装歼星旗舰', subCode: '四翼深冷超导磁轨阵列 + 切伦科夫重核反应堆 + 绝对零度力场', zoneSpec: 'W:2M+2L | B:4×1格 | P:3×L', armorVal: '1280 HP', armorPct: 96, velVal: '325 m/s', velPct: 62, pwrVal: '360 MW', pwrPct: 100 },
-        { no: 'FD-01', cat: 'hull', faction: 'all', hullKey: 'hullDelta', badge: '编队·45MW', file: 'unit-fighter-drone.svg', name: '苍鹰战机', weight: '2.45·S+', fullTitle: 'FD-01「苍鹰」前掠翼全自主舰载拦截战机', subCode: '24K金箔热脊 + 蓝宝石AI光电座舱 + 翼尖双联格斗弹 + 机首脉冲激光', zoneSpec: '4机编队自主掠袭狗斗 | 脉冲激光 + 穿甲曳光机炮', armorVal: '180 HP', armorPct: 48, velVal: '680 m/s', velPct: 100, pwrVal: '45 MW', pwrPct: 64 },
-        { no: 'MD-01', cat: 'module', faction: 'all', modKey: 'railgun', badge: 'W:M·2格', file: 'module-railgun.svg', name: '电磁轨道炮', weight: '动能 K·28MW', fullTitle: 'Mk.IV 双导轨高初速洛伦兹电磁加速炮', subCode: '铜金加速线圈 + 钨芯穿甲弹丸 · 对重甲外壳 135% 贯通伤害', zoneSpec: '挂载区: [红 W] 武器座 · 耗电 28MW', armorVal: '穿甲 135%', armorPct: 92, velVal: '1800 m/s', velPct: 98, pwrVal: '-28 MW', pwrPct: 65 },
-        { no: 'MD-02', cat: 'module', faction: 'all', modKey: 'laser', badge: 'W:S·1格', file: 'module-laser.svg', name: '高能激光塔', weight: '热能 E·24MW', fullTitle: 'Helios-L9 蓝宝石棱镜相控阵脉冲激光炮', subCode: '零飞行延迟瞬时命中 + 高频离散脉冲灼烧小型飞蝗集群', zoneSpec: '挂载区: [红 W] 武器座 · 耗电 24MW', armorVal: '精准 100%', armorPct: 100, velVal: '光速瞬达', velPct: 100, pwrVal: '-24 MW', pwrPct: 58 },
-        { no: 'MD-03', cat: 'module', faction: 'all', modKey: 'plasma', badge: 'W:M·2格', file: 'module-plasma.svg', name: '电浆重炮', weight: '电浆 E·34MW', fullTitle: '托卡马克磁约束高温电浆球团发射器', subCode: '发射高能紫红电浆球团，命中后融解异虫甲壳并附加灼烧', zoneSpec: '挂载区: [红 W] 武器座 · 耗电 34MW', armorVal: '融甲 140%', armorPct: 94, velVal: '920 m/s', velPct: 76, pwrVal: '-34 MW', pwrPct: 78 },
-        { no: 'MD-04', cat: 'module', faction: 'all', modKey: 'missile', badge: 'W:M·2格', file: 'module-missile.svg', name: '制导导弹井', weight: '高爆 X·26MW', fullTitle: '四联装垂发红外/雷达双模追踪导弹发射井', subCode: '自动偏转追踪高机动潜行者与螳螂刺客，范围破片杀伤', zoneSpec: '挂载区: [红 W] 武器座 · 耗电 26MW', armorVal: '爆破 125%', armorPct: 85, velVal: '780 m/s', velPct: 82, pwrVal: '-26 MW', pwrPct: 60 },
-        { no: 'MD-05', cat: 'module', faction: 'all', modKey: 'swarmMissile', badge: 'W:M·2格', file: 'module-swarm-missile.svg', name: '蜂群微导舱', weight: '齐射 X·30MW', fullTitle: '16 联装蜂巢微型制导飞弹齐射舱', subCode: '单次齐射多枚微型追踪弹幕，专克异虫飞蝗与自爆孢子海', zoneSpec: '挂载区: [红 W] 武器座 · 耗电 30MW', armorVal: '弹幕 16发', armorPct: 90, velVal: '840 m/s', velPct: 86, pwrVal: '-30 MW', pwrPct: 70 },
-        { no: 'MD-06', cat: 'module', faction: 'all', modKey: 'cryoMissile', badge: 'W:M·2格', file: 'module-cryo-missile.svg', name: '深冷冰霜弹', weight: '深冷 C·28MW', fullTitle: '格拉基斯液氮超导凝霜导弹发射舱', subCode: '命中后释放深冷结晶雾，令目标移速降低 45% 并脆化甲壳', zoneSpec: '挂载区: [红 W] 武器座 · 耗电 28MW', armorVal: '缓速 45%', armorPct: 88, velVal: '760 m/s', velPct: 78, pwrVal: '-28 MW', pwrPct: 64 },
-        { no: 'MD-07', cat: 'module', zone: 'W', faction: 'all', modKey: 'empMissile', badge: 'W:M·2格', file: 'module-emp-missile.svg', name: '电磁脉冲弹', weight: '脉冲 I·30MW', fullTitle: '高功率宽频电磁脉冲瘫痪飞弹井', subCode: '震荡异虫生物神经节，打断利维坦与母巢舰蓄力并瘫痪 2.5s', zoneSpec: '挂载区: [红 W] 武器座 · 耗电 30MW', armorVal: '瘫痪 2.5s', armorPct: 92, velVal: '800 m/s', velPct: 80, pwrVal: '-30 MW', pwrPct: 68 },
-        { no: 'MD-08', cat: 'module', zone: 'W', faction: 'all', modKey: 'hellfireMissile', badge: 'W:L·4格', file: 'module-hellfire-missile.svg', name: '地狱火重导', weight: '热核 X·42MW', fullTitle: '反物质超燃冲压重型巡航导弹吊舱', subCode: '超远距高敏巡航突防，触敌释放广域热核反物质聚爆冲击波', zoneSpec: '挂载区: [红 W] 战略座 · 耗电 42MW', armorVal: '聚爆 145%', armorPct: 96, velVal: '780 m/s', velPct: 84, pwrVal: '-42 MW', pwrPct: 88 },
-        { no: 'MD-09', cat: 'module', zone: 'W', faction: 'all', modKey: 'torpedo', badge: 'W:L·4格', file: 'module-torpedo.svg', name: '重型聚变鱼雷', weight: '聚变 X·48MW', fullTitle: '反主力舰重型热核聚变光子鱼雷发射管', subCode: '专用于攻坚腐蚀蜂巢母舰与虚空利维坦首领，巨额球形冲击波', zoneSpec: '挂载区: [红 W] 重型槽 · 耗电 48MW', armorVal: '毁伤 480', armorPct: 100, velVal: '520 m/s', velPct: 62, pwrVal: '-48 MW', pwrPct: 95 },
-        { no: 'MD-10', cat: 'module', zone: 'B', faction: 'all', modKey: 'hangar', badge: 'B:1格·内舱', file: 'module-hangar.svg', name: '无人机母舱', weight: '僚机 +4架', fullTitle: '全自动自主拦截无人机弹射与维护方舱', subCode: '标准 1×1 内部功能舱，自动释放苍鹰/猎隼/重锤无人机协同集火', zoneSpec: '挂载区: [绿 B] 内部1格舱 · 耗电 22MW', armorVal: '僚机 +4', armorPct: 88, velVal: '自主巡航', velPct: 90, pwrVal: '-22 MW', pwrPct: 52 },
-        { no: 'MD-11', cat: 'module', zone: 'B', faction: 'all', modKey: 'shield', badge: 'B:1格·内舱', file: 'module-shield.svg', name: '偏导护盾舱', weight: '护盾 +350', fullTitle: '多频段相控阵能量偏导护盾发生器方舱', subCode: '标准 1×1 内部功能舱，大幅提升战舰护盾容量与脱战自愈速率', zoneSpec: '挂载区: [绿 B] 内部1格舱 · 耗电 25MW', armorVal: '护盾 +350', armorPct: 95, velVal: '自愈 +18/s', velPct: 85, pwrVal: '-25 MW', pwrPct: 58 },
-        { no: 'MD-12', cat: 'module', zone: 'P', faction: 'all', modKey: 'thrusterCompound', badge: 'P:尾喷·2格', file: 'module-hall-thruster.svg', name: '霍尔复合引擎', weight: '双修 +18%', fullTitle: '大推力磁等离子霍尔复合推进器总成', subCode: '安装于舰艉 [紫 P] 推进槽，均衡提升巡航极速与转向角速度', zoneSpec: '挂载区: [紫 P] 舰艉推进槽 · 耗电 20MW', armorVal: '双修 +18%', armorPct: 90, velVal: 'TWR +0.25', velPct: 92, pwrVal: '-20 MW', pwrPct: 45 },
-        { no: 'MD-13', cat: 'module', zone: 'P', faction: 'all', modKey: 'thrusterVector', badge: 'P:尾喷·1格', file: 'module-thruster.svg', name: '多维矢量引擎', weight: '转向 +30%', fullTitle: '双喷口偏转磁流体多维矢量转向引擎', subCode: '安装于舰艉 [紫 P] 推进槽，专精提升笨重星舰回转角速度与角加速度', zoneSpec: '挂载区: [紫 P] 舰艉推进槽 · 耗电 18MW', armorVal: '转向 +30%', armorPct: 88, velVal: '角力矩 MAX', velPct: 96, pwrVal: '-18 MW', pwrPct: 42 },
-        { no: 'MD-14', cat: 'module', zone: 'CORE', faction: 'all', modKey: 'station', badge: 'CORE·卫戍', file: 'station-core.svg', name: '星轨核心空间站', weight: '炮塔 2~6座', fullTitle: '八边形金箔/超导星轨防卫核心枢纽与轨道炮塔群', subCode: '战区远端守护目标，支持战功扩建 2~6 座 360° 自动伺服卫戍炮塔', zoneSpec: '核心卫戍区 · 受击触发双色共振冲击波', armorVal: '1200 HP', armorPct: 100, velVal: '360° 卫戍', velPct: 88, pwrVal: '自持聚变', pwrPct: 100 },
-        { no: 'ZG-01', cat: 'zerg', faction: 'zerg', badge: 'SWARM·轻甲', file: 'enemy-swarm.svg', name: '刀锋飞蝗', weight: '弱点:激光/蜂群', fullTitle: '虚空虫群 · 刀锋毒刺飞蝗 (Razor-Sting Hornet)', subCode: '黑曜石几丁质薄壳 + 四片半透明脉络膜翼 + 腹尾翠绿酸液毒针', zoneSpec: '高速集群突袭 · 热能(E)与爆破(X)易伤 130%', armorVal: '36 HP', armorPct: 28, velVal: '高速突袭', velPct: 94, pwrVal: '集群撕咬', pwrPct: 45 },
-        { no: 'ZG-02', cat: 'zerg', faction: 'zerg', badge: 'BOMBER·自爆', file: 'enemy-bomber.svg', name: '自爆孢子虫', weight: '弱点:远程点杀', fullTitle: '虚空虫群 · 强酸易爆孢子囊虫 (Volatile Spore-Tick)', subCode: '半透明膨胀发光酸液巨囊 + 内部不稳定紫绿核脉冲 + 抱脸虫利爪', zoneSpec: '神风冲撞空间站自爆 · 需在安全距离外提前引爆', armorVal: '48 HP', armorPct: 36, velVal: '冲刺自爆', velPct: 86, pwrVal: '高危酸爆', pwrPct: 88 },
-        { no: 'ZG-03', cat: 'zerg', faction: 'zerg', badge: 'LURKER·相位', file: 'enemy-lurker.svg', name: '触须潜行者', weight: '弱点:制导导弹', fullTitle: '虚空虫群 · 深渊乌贼触须潜行者 (Void Tentacle Lurker)', subCode: '流线型头足类暗紫骨甲 + 6 条发光吸盘长触须 + 紫色灵能复眼', zoneSpec: '中程周期性侧向相位闪现 · 制导导弹(X)与EMP(I)克制', armorVal: '85 HP', armorPct: 56, velVal: '相位折跃', velPct: 90, pwrVal: '灵能穿刺', pwrPct: 68 },
-        { no: 'ZG-04', cat: 'zerg', faction: 'zerg', badge: 'STALKER·猎杀', file: 'enemy-stalker.svg', name: '镰刀螳螂', weight: '弱点:深冷减速', fullTitle: '虚空虫群 · 幽影双镰螳螂猎杀者 (Scythe-Mantis Stalker)', subCode: 'V型逆关节重装黑曜石胸甲 + 两柄锯齿翠绿等离子骨镰 + 6眼复眼簇', zoneSpec: '优先锁定玩家战舰高速斩击 · 深冷导弹(C)减速克制', armorVal: '120 HP', armorPct: 68, velVal: '极速猎杀', velPct: 92, pwrVal: '双镰撕裂', pwrPct: 82 },
-        { no: 'ZG-05', cat: 'zerg', faction: 'zerg', badge: 'CARRIER·母巢', file: 'enemy-carrier.svg', name: '孵化母巢舰', weight: '弱点:磁轨/鱼雷', fullTitle: '虚空虫群 · 重甲生物航空母巢舰 (Brood-Hive Carrier)', subCode: '不对称巨型甲虫背甲 + 两侧 6 座发光翠绿孵化腔 + 尾部生物等离子囊', zoneSpec: '每隔数秒孵化刀锋飞蝗集群 · 动能磁轨炮(K)与重型鱼雷克制', armorVal: '280 HP', armorPct: 88, velVal: '重甲推进', velPct: 42, pwrVal: '持续孵虫', pwrPct: 90 },
-        { no: 'ZG-06', cat: 'zerg', faction: 'zerg', badge: 'BOSS·利维坦', file: 'boss-leviathan.svg', name: '虚空利维坦', weight: '弱点:全舰集火', fullTitle: '十星域关底首领 · 克拉肯主宰利维坦 (Kraken Overmind Leviathan)', subCode: '多层黑曜石骨板王冠 + 暴露紫红主宰脑核 + 4 巨螯 + 8 生物激光触须', zoneSpec: '发射生物等离子束并召唤虫潮 · 击破脑核获海量战功', armorVal: '1200 HP', armorPct: 100, velVal: '主宰威压', velPct: 55, pwrVal: '毁灭光束', pwrPct: 100 }
+        { no: 'HL-01', cat: 'hull', faction: 'helios', hullKey: 'hullCorvette', hullScale: '小型战舰', secCount: 2, badge: '小型·2副炮槽', file: 'hull-corvette.svg', name: '棱卫护卫舰', weight: '小型·2副炮', fullTitle: '赫利俄斯 棱卫级轻型护卫舰 (小型战舰)', subCode: '无翼紧凑梭形白瓷隔热船壳 + 2座舷侧船体副炮廓台 (受船体遮蔽射界 ±70°)', zoneSpec: '主炮:1座 | 船体副炮:2座(左/右舷) | 机库内舱:1 | 引擎:1', armorVal: '320 HP', armorPct: 50, velVal: '260 m/s', velPct: 92, pwrVal: '95 MW', pwrPct: 65 },
+        { no: 'HL-02', cat: 'hull', faction: 'helios', hullKey: 'hullDelta', hullScale: '中型战舰', secCount: 3, badge: '中型·3副炮槽', file: 'hull-delta.svg', name: '铁楔驱逐舰', weight: '中型·3副炮', fullTitle: '赫利俄斯 铁楔级突击驱逐舰 (中型战舰)', subCode: '无翼阶梯楔形重装甲舰身 + 3座船体副炮廓台 (舰艏±75° / 左舷±70° / 右舷±70°)', zoneSpec: '主炮:1座 | 船体副炮:3座(艏/左/右) | 机库内舱:1 | 引擎:1', armorVal: '460 HP', armorPct: 65, velVal: '220 m/s', velPct: 80, pwrVal: '135 MW', pwrPct: 75 },
+        { no: 'HL-03', cat: 'hull', faction: 'helios', hullKey: 'hullWing', hullScale: '大型战舰', secCount: 4, badge: '大型·4副炮槽', file: 'hull-cruiser.svg', name: '长矛巡洋舰', weight: '大型·4副炮', fullTitle: '赫利俄斯 长矛级重装巡洋舰 (大型战舰)', subCode: '无翼修长主力巡洋舰体 + 4座前后交错舷侧副炮廓台 (左前/右前/左后/右后 受船体遮蔽)', zoneSpec: '主炮:1座 | 船体副炮:4座(四象限舷侧) | 机库内舱:1 | 引擎:1', armorVal: '680 HP', armorPct: 78, velVal: '185 m/s', velPct: 68, pwrVal: '195 MW', pwrPct: 84 },
+        { no: 'HL-04', cat: 'hull', faction: 'helios', hullKey: 'hullRing', hullScale: '重型战舰', secCount: 5, badge: '重型·5副炮槽', file: 'hull-ring.svg', name: '环轨母舰', weight: '重型·5副炮', fullTitle: '赫利俄斯 环轨级六角星堡母舰 (重型战舰)', subCode: '无翼环形托卡马克聚变装甲舰体 + 5座环廓船体副炮座 + 舰载战机弹射甲板', zoneSpec: '主炮:1座 | 船体副炮:5座(舰艏+四弦廓) | 机库内舱:1 | 引擎:1', armorVal: '920 HP', armorPct: 90, velVal: '155 m/s', velPct: 56, pwrVal: '260 MW', pwrPct: 94 },
+        { no: 'HL-05', cat: 'hull', faction: 'helios', hullKey: 'hullCross', hullScale: '超重型战舰', secCount: 6, badge: '超重·6副炮槽', file: 'hull-cross.svg', name: '泰坦战列舰', weight: '超重·6副炮', fullTitle: '赫利俄斯 泰坦级无畏战列舰 (超重型战舰)', subCode: '无翼多层装甲堡垒船体 + 6座舷侧排炮副炮炮房 (左舷3座+右舷3座 扇面交火)', zoneSpec: '主炮:1座 | 船体副炮:6座(左3+右3炮房) | 机库内舱:1 | 引擎:1', armorVal: '1350 HP', armorPct: 100, velVal: '125 m/s', velPct: 45, pwrVal: '340 MW', pwrPct: 100 },
+        { no: 'GL-01', cat: 'hull', faction: 'glacies', hullKey: 'hullCorvette', hullScale: '小型战舰', secCount: 2, badge: '小型·2副炮槽', file: 'hull-corvette-glacies.svg', name: '冰棱护卫舰', weight: '小型·2副炮', fullTitle: '格拉基斯 冰棱级深冷轻型护卫舰 (小型战舰)', subCode: '无翼破冰梭形凝霜碳纤船体 + 2座超导舷侧副炮廓台 (受船体遮蔽射界 ±70°)', zoneSpec: '主炮:1座 | 船体副炮:2座(左/右舷) | 机库内舱:1 | 引擎:1', armorVal: '300 HP', armorPct: 48, velVal: '275 m/s', velPct: 95, pwrVal: '105 MW', pwrPct: 68 },
+        { no: 'GL-02', cat: 'hull', faction: 'glacies', hullKey: 'hullDelta', hullScale: '中型战舰', secCount: 3, badge: '中型·3副炮槽', file: 'hull-delta-glacies.svg', name: '霜楔驱逐舰', weight: '中型·3副炮', fullTitle: '格拉基斯 霜楔级超导突击驱逐舰 (中型战舰)', subCode: '无翼深冷碳纤楔形装甲舰体 + 3座船体副炮廓台 (舰艏±75° / 左舷±70° / 右舷±70°)', zoneSpec: '主炮:1座 | 船体副炮:3座(艏/左/右) | 机库内舱:1 | 引擎:1', armorVal: '430 HP', armorPct: 62, velVal: '235 m/s', velPct: 84, pwrVal: '145 MW', pwrPct: 78 },
+        { no: 'GL-03', cat: 'hull', faction: 'glacies', hullKey: 'hullWing', hullScale: '大型战舰', secCount: 4, badge: '大型·4副炮槽', file: 'hull-cruiser-glacies.svg', name: '寒矛巡洋舰', weight: '大型·4副炮', fullTitle: '格拉基斯 寒矛级蓝宝石重装巡洋舰 (大型战舰)', subCode: '无翼深海蓝宝石棱镜巡洋舰体 + 4座前后交错舷侧副炮廓台 (受船体遮蔽)', zoneSpec: '主炮:1座 | 船体副炮:4座(四象限舷侧) | 机库内舱:1 | 引擎:1', armorVal: '640 HP', armorPct: 74, velVal: '195 m/s', velPct: 72, pwrVal: '210 MW', pwrPct: 88 },
+        { no: 'GL-04', cat: 'hull', faction: 'glacies', hullKey: 'hullRing', hullScale: '重型战舰', secCount: 5, badge: '重型·5副炮槽', file: 'hull-ring-glacies.svg', name: '极光母舰', weight: '重型·5副炮', fullTitle: '格拉基斯 极光级量子环轨母舰 (重型战舰)', subCode: '无翼超低温超导磁暴环舰体 + 5座环廓船体副炮座 + 舰载战机弹射舱', zoneSpec: '主炮:1座 | 船体副炮:5座(舰艏+四弦廓) | 机库内舱:1 | 引擎:1', armorVal: '880 HP', armorPct: 86, velVal: '165 m/s', velPct: 60, pwrVal: '285 MW', pwrPct: 97 },
+        { no: 'GL-05', cat: 'hull', faction: 'glacies', hullKey: 'hullCross', hullScale: '超重型战舰', secCount: 6, badge: '超重·6副炮槽', file: 'hull-cross-glacies.svg', name: '凛冬战列舰', weight: '超重·6副炮', fullTitle: '格拉基斯 凛冬级极寒无畏战列舰 (超重型战舰)', subCode: '无翼深冷超导无畏战列舰体 + 6座舷侧排炮副炮炮房 (左舷3座+右舷3座 扇面交火)', zoneSpec: '主炮:1座 | 船体副炮:6座(左3+右3炮房) | 机库内舱:1 | 引擎:1', armorVal: '1280 HP', armorPct: 96, velVal: '132 m/s', velPct: 48, pwrVal: '360 MW', pwrPct: 100 },
+        { no: 'MD-01', cat: 'module', zone: 'W', faction: 'all', modKey: 'railgun', badge: '主炮槽·动能', file: 'module-railgun.svg', name: '电磁轨道炮', weight: '动能 K·28MW', fullTitle: 'Mk.IV 双导轨高初速洛伦兹电磁加速主炮', subCode: '安装于 [主炮插槽] · 钨芯穿甲弹丸对重甲外壳 135% 贯通伤害', zoneSpec: '适配插槽: [主炮插槽 W] · 耗电 28MW', armorVal: '穿甲 135%', armorPct: 92, velVal: '850 m/s', velPct: 92, pwrVal: '-28 MW', pwrPct: 65 },
+        { no: 'MD-02', cat: 'module', zone: 'W', faction: 'all', modKey: 'laser', badge: '主炮槽·热能', file: 'module-laser.svg', name: '高能激光塔', weight: '热能 E·24MW', fullTitle: 'Helios-L9 蓝宝石棱镜相控阵脉冲激光主炮', subCode: '安装于 [主炮插槽] · 零飞行延迟瞬时命中 + 高频离散脉冲灼烧飞蝗集群', zoneSpec: '适配插槽: [主炮插槽 W] · 耗电 24MW', armorVal: '精准 100%', armorPct: 100, velVal: '光速瞬达', velPct: 100, pwrVal: '-24 MW', pwrPct: 58 },
+        { no: 'MD-03', cat: 'module', zone: 'W', faction: 'all', modKey: 'plasma', badge: '主炮槽·电浆', file: 'module-plasma.svg', name: '电浆重炮', weight: '电浆 E·34MW', fullTitle: '托卡马克磁约束高温电浆球团主炮', subCode: '安装于 [主炮插槽] · 发射慢速高能紫红电浆球团，融解异虫甲壳', zoneSpec: '适配插槽: [主炮插槽 W] · 耗电 34MW', armorVal: '融甲 140%', armorPct: 94, velVal: '520 m/s', velPct: 68, pwrVal: '-34 MW', pwrPct: 78 },
+        { no: 'MD-04', cat: 'module', zone: 'W', faction: 'all', modKey: 'missile', badge: '主炮槽·制导', file: 'module-missile.svg', name: '制导导弹井', weight: '高爆 X·26MW', fullTitle: '四联装垂发红外/雷达双模追踪导弹发射井', subCode: '安装于 [主炮插槽] · 自动偏转追踪高机动潜行者与螳螂刺客', zoneSpec: '适配插槽: [主炮插槽 W] · 耗电 26MW', armorVal: '爆破 125%', armorPct: 85, velVal: '420 m/s', velPct: 64, pwrVal: '-26 MW', pwrPct: 60 },
+        { no: 'MD-05', cat: 'module', zone: 'W', faction: 'all', modKey: 'swarmMissile', badge: '主炮槽·蜂群', file: 'module-swarm-missile.svg', name: '蜂群微导舱', weight: '齐射 X·30MW', fullTitle: '16 联装蜂巢微型制导飞弹齐射舱', subCode: '安装于 [主炮插槽] · 单次齐射多枚微型追踪弹幕，专克异虫飞蝗海', zoneSpec: '适配插槽: [主炮插槽 W] · 耗电 30MW', armorVal: '弹幕 16发', armorPct: 90, velVal: '450 m/s', velPct: 66, pwrVal: '-30 MW', pwrPct: 70 },
+        { no: 'MD-06', cat: 'module', zone: 'W', faction: 'all', modKey: 'cryoMissile', badge: '主炮槽·深冷', file: 'module-cryo-missile.svg', name: '深冷冰霜弹', weight: '深冷 C·28MW', fullTitle: '格拉基斯液氮超导凝霜导弹发射舱', subCode: '安装于 [主炮插槽] · 命中后释放深冷结晶雾，令目标移速降低 45%', zoneSpec: '适配插槽: [主炮插槽 W] · 耗电 28MW', armorVal: '缓速 45%', armorPct: 88, velVal: '400 m/s', velPct: 62, pwrVal: '-28 MW', pwrPct: 64 },
+        { no: 'MD-07', cat: 'module', zone: 'W', faction: 'all', modKey: 'empMissile', badge: '主炮槽·脉冲', file: 'module-emp-missile.svg', name: '电磁脉冲弹', weight: '脉冲 I·30MW', fullTitle: '高功率宽频电磁脉冲瘫痪飞弹井', subCode: '安装于 [主炮插槽] · 震荡异虫神经节，打断利维坦蓄力并瘫痪 2.5s', zoneSpec: '适配插槽: [主炮插槽 W] · 耗电 30MW', armorVal: '瘫痪 2.5s', armorPct: 92, velVal: '420 m/s', velPct: 64, pwrVal: '-30 MW', pwrPct: 68 },
+        { no: 'MD-08', cat: 'module', zone: 'W', faction: 'all', modKey: 'hellfireMissile', badge: '主炮槽·重导', file: 'module-hellfire-missile.svg', name: '地狱火重导', weight: '热核 X·42MW', fullTitle: '反物质超燃冲压重型巡航导弹吊舱', subCode: '安装于 [主炮插槽] · 触敌释放广域热核反物质聚爆冲击波', zoneSpec: '适配插槽: [主炮插槽 W] · 耗电 42MW', armorVal: '聚爆 145%', armorPct: 96, velVal: '390 m/s', velPct: 60, pwrVal: '-42 MW', pwrPct: 88 },
+        { no: 'MD-09', cat: 'module', zone: 'W', faction: 'all', modKey: 'torpedo', badge: '主炮槽·鱼雷', file: 'module-torpedo.svg', name: '重型聚变鱼雷', weight: '聚变 X·48MW', fullTitle: '反主力舰重型热核聚变光子鱼雷发射管', subCode: '安装于 [主炮插槽] · 专用于攻坚孵化母巢舰与虚空利维坦首领', zoneSpec: '适配插槽: [主炮插槽 W] · 耗电 48MW', armorVal: '毁伤 480', armorPct: 100, velVal: '320 m/s', velPct: 52, pwrVal: '-48 MW', pwrPct: 95 },
+        { no: 'ST-01', cat: 'module', zone: 'S', faction: 'all', modKey: 'secAutocannon', badge: '副炮槽·近防', file: 'weapon-turret.svg', name: '近防速射副炮', weight: '船体副炮·12MW', fullTitle: 'Mk.II 船体舷侧双联近防穿甲速射副炮', subCode: '固定于战舰船体副炮插槽(2~6座)，受船体遮蔽仅在舷侧扇区(±66°~±75°)内自动索敌点射', zoneSpec: '适配插槽: [船体副炮插槽 S1~S6] · 射界受船体遮蔽', armorVal: '穿甲速射', armorPct: 84, velVal: '520 m/s', velPct: 78, pwrVal: '-12 MW/座', pwrPct: 45 },
+        { no: 'ST-02', cat: 'module', zone: 'S', faction: 'all', modKey: 'secLaser', badge: '副炮槽·光棱', file: 'weapon-turret-glacies.svg', name: '点防御激光副炮', weight: '船体副炮·15MW', fullTitle: '相控阵船体舷侧点防御脉冲激光副炮', subCode: '固定于战舰船体副炮插槽(2~6座)，在未受船体遮蔽的扇区内瞬时拦截高速飞蝗与自爆虫', zoneSpec: '适配插槽: [船体副炮插槽 S1~S6] · 射界受船体遮蔽', armorVal: '瞬时拦截', armorPct: 90, velVal: '光速脉冲', velPct: 96, pwrVal: '-15 MW/座', pwrPct: 52 },
+        { no: 'ST-03', cat: 'module', zone: 'S', faction: 'all', modKey: 'secPlasma', badge: '副炮槽·电浆', file: 'module-plasma.svg', name: '舷侧电浆副炮', weight: '船体副炮·18MW', fullTitle: '重型船体炮房磁约束电浆副炮', subCode: '固定于战舰船体副炮插槽(2~6座)，向舷侧射界扇区发射高温电浆弹丸，融解近身重甲目标', zoneSpec: '适配插槽: [船体副炮插槽 S1~S6] · 射界受船体遮蔽', armorVal: '高伤害融甲', armorPct: 92, velVal: '440 m/s', velPct: 68, pwrVal: '-18 MW/座', pwrPct: 60 },
+        { no: 'FG-01', cat: 'module', zone: 'B', faction: 'all', modKey: 'hangar', badge: '机库装备·混编', file: 'unit-fighter-drone.svg', name: '苍鹰/猎隼混编战机 [装备]', weight: '舰载战机·22MW', fullTitle: 'FD-01/02「苍鹰·猎隼」混编舰载战机联队 (机库挂载装备)', subCode: '战机属于舰载装备而非独立战舰 · 挂载于 [机库内舱插槽]，自动出击 4 架混编战机护航', zoneSpec: '适配插槽: [机库/内舱插槽 B] · 释放 4 架混编战机', armorVal: '战机编队 ×4', armorPct: 88, velVal: '自主巡航', velPct: 85, pwrVal: '-22 MW', pwrPct: 52 },
+        { no: 'FG-02', cat: 'module', zone: 'B', faction: 'all', modKey: 'hangarInterceptor', badge: '机库装备·截击', file: 'unit-fighter-drone.svg', name: 'FD-01 苍鹰截击机编队 [装备]', weight: '舰载战机·20MW', fullTitle: 'FD-01「苍鹰」舰载高敏格斗截击机编队 (机库挂载装备)', subCode: '战机属于舰载装备 · 挂载于 [机库/内舱插槽]，专精高频激光拦截敌方飞蝗与导弹', zoneSpec: '适配插槽: [机库/内舱插槽 B] · 释放 4 架苍鹰截击机', armorVal: '截击联队 ×4', armorPct: 84, velVal: '极速格斗', velPct: 92, pwrVal: '-20 MW', pwrPct: 48 },
+        { no: 'FG-03', cat: 'module', zone: 'B', faction: 'all', modKey: 'hangarBomber', badge: '机库装备·重轰', file: 'module-hangar.svg', name: 'FD-03 重锤鱼雷机编队 [装备]', weight: '舰载战机·26MW', fullTitle: 'FD-03「重锤」舰载重型鱼雷攻击战机联队 (机库挂载装备)', subCode: '战机属于舰载装备 · 挂载于 [机库/内舱插槽]，释放重装攻击机投射反舰微型鱼雷', zoneSpec: '适配插槽: [机库/内舱插槽 B] · 释放 4 架重锤攻击机', armorVal: '重轰联队 ×4', armorPct: 92, velVal: '攻坚齐射', velPct: 82, pwrVal: '-26 MW', pwrPct: 62 },
+        { no: 'MD-11', cat: 'module', zone: 'B', faction: 'all', modKey: 'shield', badge: '内舱装备·护盾', file: 'module-shield.svg', name: '偏导护盾发生舱 [装备]', weight: '护盾 +350', fullTitle: '多频段相控阵能量偏导护盾发生器方舱', subCode: '挂载于 [机库/内舱插槽] · 大幅提升战舰护盾容量与脱战自愈速率', zoneSpec: '适配插槽: [机库/内舱插槽 B] · 耗电 25MW', armorVal: '护盾 +350', armorPct: 95, velVal: '自愈 +18/s', velPct: 85, pwrVal: '-25 MW', pwrPct: 58 },
+        { no: 'MD-12', cat: 'module', zone: 'P', faction: 'all', modKey: 'thrusterCompound', badge: '引擎槽·复合', file: 'module-hall-thruster.svg', name: '霍尔复合引擎', weight: '双修 +18%', fullTitle: '大推力磁等离子霍尔复合推进器总成', subCode: '挂载于 [舰艉引擎插槽 P] · 均衡提升战舰巡航速度与转向角速度', zoneSpec: '适配插槽: [舰艉引擎插槽 P] · 耗电 22MW', armorVal: '双修 +18%', armorPct: 90, velVal: 'TWR +0.25', velPct: 88, pwrVal: '-22 MW', pwrPct: 45 },
+        { no: 'MD-13', cat: 'module', zone: 'P', faction: 'all', modKey: 'thrusterVector', badge: '引擎槽·矢量', file: 'module-thruster.svg', name: '多维矢量引擎', weight: '转向 +30%', fullTitle: '双喷口偏转磁流体多维矢量转向引擎', subCode: '挂载于 [舰艉引擎插槽 P] · 专精提升大吨位战舰回转角速度与船体副炮射界切换效率', zoneSpec: '适配插槽: [舰艉引擎插槽 P] · 耗电 20MW', armorVal: '转向 +30%', armorPct: 88, velVal: '角力矩 MAX', velPct: 92, pwrVal: '-20 MW', pwrPct: 42 },
+        { no: 'MD-14', cat: 'module', zone: 'P', faction: 'all', modKey: 'thrusterCruise', badge: '引擎槽·巡航', file: 'module-thruster.svg', name: '脉冲巡航引擎', weight: '直线 +26%', fullTitle: '磁约束脉冲爆发直线巡航推进引擎', subCode: '挂载于 [舰艉引擎插槽 P] · 专精提升战舰直线巡航加速度与最大航速上限', zoneSpec: '适配插槽: [舰艉引擎插槽 P] · 耗电 18MW', armorVal: '巡航 +26%', armorPct: 86, velVal: '直线推进', velPct: 94, pwrVal: '-18 MW', pwrPct: 40 },
+        { no: 'ZG-01', cat: 'zerg', faction: 'zerg', badge: 'SWARM·轻甲', file: 'enemy-swarm.svg', name: '刀锋飞蝗', weight: '弱点:激光/蜂群', fullTitle: '虚空虫群 · 刀锋毒刺飞蝗 (Razor-Sting Hornet)', subCode: '黑曜石几丁质薄壳 + 四片半透明脉络膜翼 + 腹尾翠绿酸液毒针', zoneSpec: '集群突袭 · 热能(E)与爆破(X)易伤 130%', armorVal: '36 HP', armorPct: 28, velVal: '集群突袭', velPct: 78, pwrVal: '集群撕咬', pwrPct: 45 },
+        { no: 'ZG-02', cat: 'zerg', faction: 'zerg', badge: 'BOMBER·自爆', file: 'enemy-bomber.svg', name: '自爆孢子虫', weight: '弱点:远程点杀', fullTitle: '虚空虫群 · 强酸易爆孢子囊虫 (Volatile Spore-Tick)', subCode: '半透明膨胀发光酸液巨囊 + 内部不稳定紫绿核脉冲 + 抱脸虫利爪', zoneSpec: '冲撞空间站自爆 · 需在安全距离外提前引爆', armorVal: '48 HP', armorPct: 36, velVal: '冲刺自爆', velPct: 72, pwrVal: '高危酸爆', pwrPct: 88 },
+        { no: 'ZG-03', cat: 'zerg', faction: 'zerg', badge: 'LURKER·相位', file: 'enemy-lurker.svg', name: '触须潜行者', weight: '弱点:制导导弹', fullTitle: '虚空虫群 · 深渊乌贼触须潜行者 (Void Tentacle Lurker)', subCode: '流线型头足类暗紫骨甲 + 6 条发光吸盘长触须 + 紫色灵能复眼', zoneSpec: '中程周期性侧向相位闪现 · 制导导弹(X)与EMP(I)克制', armorVal: '85 HP', armorPct: 56, velVal: '相位折跃', velPct: 74, pwrVal: '灵能穿刺', pwrPct: 68 },
+        { no: 'ZG-04', cat: 'zerg', faction: 'zerg', badge: 'STALKER·猎杀', file: 'enemy-stalker.svg', name: '镰刀螳螂', weight: '弱点:深冷减速', fullTitle: '虚空虫群 · 幽影双镰螳螂猎杀者 (Scythe-Mantis Stalker)', subCode: 'V型逆关节重装黑曜石胸甲 + 两柄锯齿翠绿等离子骨镰 + 6眼复眼簇', zoneSpec: '优先锁定玩家战舰斩击 · 深冷导弹(C)减速克制', armorVal: '120 HP', armorPct: 68, velVal: '近战猎杀', velPct: 76, pwrVal: '双镰撕裂', pwrPct: 82 },
+        { no: 'ZG-05', cat: 'zerg', faction: 'zerg', badge: 'CARRIER·母巢', file: 'enemy-carrier.svg', name: '孵化母巢舰', weight: '弱点:磁轨/鱼雷', fullTitle: '虚空虫群 · 重甲生物航空母巢舰 (Brood-Hive Carrier)', subCode: '不对称巨型甲虫背甲 + 两侧 6 座发光翠绿孵化腔 + 尾部生物等离子囊', zoneSpec: '每隔数秒孵化刀锋飞蝗集群 · 动能磁轨炮(K)与重型鱼雷克制', armorVal: '280 HP', armorPct: 88, velVal: '重甲推进', velPct: 38, pwrVal: '持续孵虫', pwrPct: 90 },
+        { no: 'ZG-06', cat: 'zerg', faction: 'zerg', badge: 'BOSS·利维坦', file: 'boss-leviathan.svg', name: '虚空利维坦', weight: '弱点:全舰集火', fullTitle: '十星域关底首领 · 克拉肯主宰利维坦 (Kraken Overmind Leviathan)', subCode: '多层黑曜石骨板王冠 + 暴露紫红主宰脑核 + 4 巨螯 + 8 生物激光触须', zoneSpec: '发射生物等离子束并召唤虫潮 · 击破脑核获海量战功', armorVal: '1200 HP', armorPct: 100, velVal: '主宰威压', velPct: 42, pwrVal: '毁灭光束', pwrPct: 100 }
       ],
       formulas: [
-        { title: '牛顿推重比 (TWR) 与正交火控解算', desc: 'a = F_thrust / M_total，飞行姿态控制 (FCS) 与武器火控索敌 (WCS) 正交解耦，支持移动中 360° 独立锁定开火。' },
-        { title: '红/绿/紫三色正交挂点与体积恒定铁律', desc: '[红 W] 武器挂点、[绿 B] 内部 1×1 方舱、[紫 P] 舰艉推进槽严格分区；T1→T5 晋升仅强化内部拓扑与发光，绝不膨胀体积。' },
-        { title: '反应堆功率备份比 (Reactor Power Margin)', desc: 'Margin = (P_max - P_used) / P_max；维持高备份比可提升护盾充能与冷却效率，超载时自动切断低优先级非致命舱室。' },
-        { title: '双阵营涂装与六大虚空虫群克制矩阵', desc: '支持赫利俄斯(金箔白瓷)与格拉基斯(深冷蓝宝石)实时切换；针对飞蝗/孢子/潜行者/螳螂/母巢/利维坦调配 K/E/X/C/I 武器。' }
+        { title: '五级无翼主力战舰与船体副炮插槽 (2~6座)', desc: '涵盖棱卫级小型护卫舰(2副炮)、铁楔级中型驱逐舰(3副炮)、长矛级大型巡洋舰(4副炮)、环轨级重型母舰(5副炮)与泰坦级超重型战列舰(6副炮)。' },
+        { title: '船体遮蔽副炮射界解算 (Hull-Occluded Firing Arcs)', desc: '防御副炮直接安装于战舰船体廓台而非环绕卫星；每座副炮受船体结构遮蔽，仅能向其安装舷侧外方法线扇区 (±66°~±75°) 内索敌开火。' },
+        { title: '舰载战机编队归属机库装备系统', desc: '苍鹰截击机与重锤鱼雷机属于机库内舱挂载装备 [绿B]，不再混作独立战舰底盘；可在船坞插槽清单中自由装配切换。' },
+        { title: '低节奏海军级战术走位与弹道解算', desc: '全面降低星舰巡航速度与投射物飞行速度，凸显船体转向迎敌角度、侧舷副炮齐射扇面与主炮提前量预判的战术博弈。' }
       ],
       sprites: [
-        { file: 'hull-delta.svg', name: 'Delta 截击舰 (Helios)', role: '赫利俄斯高速拦截舰' },
-        { file: 'hull-wing.svg', name: 'Wing 巡洋舰 (Helios)', role: '赫利俄斯多挂点主力舰' },
-        { file: 'hull-ring.svg', name: 'Ring 环轨舰 (Helios)', role: '赫利俄斯环状护盾母舰' },
-        { file: 'hull-cross.svg', name: 'Cross 歼星舰 (Helios)', role: '赫利俄斯重装十字旗舰' },
-        { file: 'hull-delta-glacies.svg', name: 'Delta 截击舰 (Glacies)', role: '格拉基斯深冷超导截击舰' },
-        { file: 'hull-wing-glacies.svg', name: 'Wing 巡洋舰 (Glacies)', role: '格拉基斯蓝宝石巡洋舰' },
-        { file: 'hull-ring-glacies.svg', name: 'Ring 环轨舰 (Glacies)', role: '格拉基斯量子力场母舰' },
-        { file: 'hull-cross-glacies.svg', name: 'Cross 歼星舰 (Glacies)', role: '格拉基斯极寒无畏旗舰' },
+        { file: 'hull-corvette.svg', name: '棱卫护卫舰 (Helios)', role: '小型战舰 · 2船体副炮槽' },
+        { file: 'hull-delta.svg', name: '铁楔驱逐舰 (Helios)', role: '中型战舰 · 3船体副炮槽' },
+        { file: 'hull-cruiser.svg', name: '长矛巡洋舰 (Helios)', role: '大型战舰 · 4船体副炮槽' },
+        { file: 'hull-ring.svg', name: '环轨母舰 (Helios)', role: '重型战舰 · 5船体副炮槽' },
+        { file: 'hull-cross.svg', name: '泰坦战列舰 (Helios)', role: '超重型战舰 · 6船体副炮槽' },
+        { file: 'hull-corvette-glacies.svg', name: '冰棱护卫舰 (Glacies)', role: '小型战舰 · 2船体副炮槽' },
+        { file: 'hull-delta-glacies.svg', name: '霜楔驱逐舰 (Glacies)', role: '中型战舰 · 3船体副炮槽' },
+        { file: 'hull-cruiser-glacies.svg', name: '寒矛巡洋舰 (Glacies)', role: '大型战舰 · 4船体副炮槽' },
+        { file: 'hull-ring-glacies.svg', name: '极光母舰 (Glacies)', role: '重型战舰 · 5船体副炮槽' },
+        { file: 'hull-cross-glacies.svg', name: '凛冬战列舰 (Glacies)', role: '超重型战舰 · 6船体副炮槽' },
         { file: 'station-core.svg', name: '星轨空间站 (Helios)', role: '赫利俄斯核心卫戍站' },
         { file: 'station-core-glacies.svg', name: '星轨空间站 (Glacies)', role: '格拉基斯深冷核心站' },
         { file: 'weapon-turret.svg', name: '轨道炮塔 (Helios)', role: '赫利俄斯自动防空塔' },
@@ -1271,7 +1279,7 @@
       name: '微界演化：基因沙盘',
       en: 'MICRO-GENESIS',
       styleCode: 'STYLE-23+133 · 深海培养皿与生物荧光青绿主题',
-      storagePrefix: 'NEXUS_MINI_GENESIS_',
+      storagePrefix: 'NEXUS_MINI_MICRO_GENESIS_',
       icon: '../assets/micro-genesis/icon.svg',
       preview: '../assets/micro-genesis/preview.png',
       tagline: '4 阶躯干与五大器官插槽 · 视觉扇形/听觉声呐视界 · 昼夜动态能量平衡沙盘',
@@ -1352,12 +1360,12 @@
     const settingsKey = `NEXUS_SETTINGS_${gameId}`;
     document.body.setAttribute('data-game', gameId);
 
-    // 如果传入了 defaultSave，在清单阶段轻量初始化存档实例（零游戏引擎启动）
+    // 如果传入了 defaultSave，在清单阶段轻量初始化存档实例（零游戏引擎启动，强制对齐 GAME_META_DB 权威 storagePrefix）
     if (options.defaultSave && !activeStoreInstance) {
       const saveFactory = typeof options.defaultSave === 'function'
         ? options.defaultSave
         : () => JSON.parse(JSON.stringify(options.defaultSave));
-      createGameStorage(options.storagePrefix || meta.storagePrefix, saveFactory);
+      createGameStorage(meta.storagePrefix || options.storagePrefix, saveFactory);
     }
 
     function loadSettings() {
@@ -1599,6 +1607,50 @@
         scrollbar-width: none;
       }
       .nx-t2-tabs::-webkit-scrollbar { display: none; }
+      .nx-t2-header-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        flex-shrink: 1;
+        min-width: 0;
+      }
+      .nx-t2-header-status::-webkit-scrollbar { display: none; }
+      .nx-hdr-stat-pill {
+        min-height: 30px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.42);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: var(--text, #f8fafc);
+        font-size: 0.62rem;
+        font-family: Consolas, Monaco, monospace;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.14s ease;
+      }
+      .nx-hdr-stat-pill:hover {
+        border-color: var(--cyan, #2dd4bf);
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .nx-hdr-stat-pill .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 6px #10b981;
+        flex-shrink: 0;
+      }
+      .nx-hdr-stat-pill .dot.amber {
+        background: #fbbf24;
+        box-shadow: 0 0 6px #fbbf24;
+      }
       .nx-t2-tab {
         min-height: 44px;
         min-width: 44px;
@@ -2072,9 +2124,9 @@
             <span class="sd-crest-side-txt">(星轨防线)</span>
           </div>
         ` : ''}
+        <div class="nx-t2-header-status" id="nx-t2-header-status" aria-label="系统服务实时状态栏"></div>
         <nav class="nx-t2-tabs" id="nx-t2-tabs">
-          ${isStarRoster ? `<span class="sd-crest-status-led arm" style="margin-right:4px;"><span class="dot"></span>Armament Ready</span>` : ''}
-          <button class="nx-t2-tab active" data-menu-tab="home" title="${isStarRoster ? '① 舰艇清单' : (isHeavyArmory ? '① 装甲清单' : '① 游戏清单')}" aria-label="${isStarRoster ? '舰艇清单' : (isHeavyArmory ? '装甲清单' : '游戏清单')}">
+          <button class="nx-t2-tab active" data-menu-tab="home" title="${isStarRoster ? '① 战舰清单' : (isHeavyArmory ? '① 装甲清单' : '① 游戏清单')}" aria-label="${isStarRoster ? '战舰清单' : (isHeavyArmory ? '装甲清单' : '游戏清单')}">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </button>
           <button class="nx-t2-tab" data-menu-tab="details" title="${isStarRoster ? '② 舰体百科' : (isHeavyArmory ? '② 战车百科' : '② 游戏详情')}" aria-label="${isStarRoster ? '舰体百科' : (isHeavyArmory ? '战车百科' : '游戏详情')}">
@@ -2083,13 +2135,10 @@
           <button class="nx-t2-tab" data-menu-tab="settings" title="${isStarRoster ? '③ 战备设置' : (isHeavyArmory ? '③ 战车设置' : '③ 游戏设置')}" aria-label="${isStarRoster ? '战备设置' : (isHeavyArmory ? '战车设置' : '游戏设置')}">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </button>
-          <button class="nx-t2-tab" data-menu-tab="assets" title="${isStarRoster ? '④ 战备整备' : (isHeavyArmory ? '④ 军械配装' : '④ 资材管理')}" aria-label="${isStarRoster ? '战备整备' : (isHeavyArmory ? '军械配装' : '资材管理')}">
+          <button class="nx-t2-tab" data-menu-tab="assets" title="${isStarRoster ? '④ 船坞改装与插槽装备' : (isHeavyArmory ? '④ 军械配装' : '④ 资材管理')}" aria-label="${isStarRoster ? '船坞改装与插槽装备' : (isHeavyArmory ? '军械配装' : '资材管理')}">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
           </button>
-          <button class="nx-t2-tab" data-menu-tab="services" title="${isStarRoster ? '⑤ 系统自检' : (isHeavyArmory ? '⑤ 战车维保' : '⑤ 服务管理')}" aria-label="${isStarRoster ? '系统自检' : (isHeavyArmory ? '战车维保' : '服务管理')}">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </button>
-          <button class="nx-t2-tab" data-menu-tab="lan" title="${isStarRoster ? '⑥ 局域舰队' : (isHeavyArmory ? '⑥ 局域车组' : '⑥ 局域网房间大厅')}" aria-label="${isStarRoster ? '局域舰队' : (isHeavyArmory ? '局域车组' : '局域网房间大厅')}">
+          <button class="nx-t2-tab" data-menu-tab="lan" title="${isStarRoster ? '⑤ 局域舰队' : (isHeavyArmory ? '⑤ 局域车组' : '⑤ 局域网房间大厅')}" aria-label="${isStarRoster ? '局域舰队' : (isHeavyArmory ? '局域车组' : '局域网房间大厅')}">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
           </button>
         </nav>
@@ -2180,6 +2229,64 @@
         statusLine.textContent = `统帅: ${auth.nickname} (${auth.userId}) · 房间: ${lanCode} (${lanConn ? 'LAN已连 ' + lanRtt + 'ms' : '本地单机 + AI僚机'}) · 零远端通信`;
       }
 
+      // Header 状态栏 (替代原“服务校验”页面，常驻于全平台 5 款游戏二级菜单顶部 Header)
+      const hdrStatusEl = document.getElementById('nx-t2-header-status');
+      if (hdrStatusEl) {
+        let storageBytes = 0;
+        try {
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            storageBytes += (k.length + (localStorage.getItem(k) || '').length) * 2;
+          }
+        } catch (_) {}
+        const swShort = swCacheStatus.includes('已就绪') || swCacheStatus.includes('已激活') ? 'PWA离线就绪' : '本地离线模式';
+        const fpsText = Number.isFinite(measuredFps) ? `${measuredFps}FPS` : '60Hz';
+        const audioSt = AudioEngine.getState();
+        hdrStatusEl.innerHTML = `
+          <button type="button" class="nx-hdr-stat-pill" id="nx-hdr-pill-sw" title="${escapeHtml(swCacheStatus)} (点击校验刷新离线缓存)">
+            <span class="dot"></span>
+            <span>${swShort}</span>
+          </button>
+          <button type="button" class="nx-hdr-stat-pill" id="nx-hdr-pill-fps" title="客户端物理与渲染帧率基准 (点击重测 60Hz 帧率)">
+            <span class="dot"></span>
+            <span>${fpsText}</span>
+          </button>
+          <button type="button" class="nx-hdr-stat-pill" id="nx-hdr-pill-audio" title="离散瞬态音频合成器状态: ${audioSt} (点击自愈重置并试音)">
+            <span class="dot ${audioSt === 'running' ? '' : 'amber'}"></span>
+            <span>瞬态音效:${userSettings.muted ? '静音' : '就绪'}</span>
+          </button>
+          <span class="nx-hdr-stat-pill" style="cursor:default;" title="本地独立存储占用 (${escapeHtml(meta.storagePrefix)})">
+            <span>存档 ${(storageBytes / 1024).toFixed(1)}KB</span>
+          </span>
+        `;
+        document.getElementById('nx-hdr-pill-sw')?.addEventListener('click', async () => {
+          AudioEngine.tap();
+          await probeSwAndCacheStatus(true);
+          AudioEngine.win();
+          renderTier2Module();
+        });
+        document.getElementById('nx-hdr-pill-fps')?.addEventListener('click', () => {
+          AudioEngine.tap();
+          let frames = 0;
+          const t0 = performance.now();
+          function sample() {
+            frames++;
+            if (performance.now() - t0 < 400) {
+              requestAnimationFrame(sample);
+            } else {
+              measuredFps = Math.round((frames * 1000) / (performance.now() - t0));
+              AudioEngine.win();
+              renderTier2Module();
+            }
+          }
+          requestAnimationFrame(sample);
+        });
+        document.getElementById('nx-hdr-pill-audio')?.addEventListener('click', () => {
+          AudioEngine.resetContext();
+          renderTier2Module();
+        });
+      }
+
       document.querySelectorAll('#nx-t2-tabs .nx-t2-tab').forEach((b) => {
         b.classList.toggle('active', b.getAttribute('data-menu-tab') === currentMenuTab);
       });
@@ -2189,16 +2296,16 @@
           const curFaction = saveData.faction || 'helios';
           document.documentElement.setAttribute('data-faction', curFaction);
 
-          // 核心规约：飞船列表（舰艇清单）仅收录星舰与战机 (cat === 'hull')，绝不混入武器模块 (cat === 'module') 或异虫
+          // 核心规约：战舰列表仅收录 5 级无翼战舰 (cat === 'hull')，战机已归入装备清单 (cat === 'module')
           const allShips = meta.starRosterUnits
             .map((item, idx) => ({ ...item, _origIdx: idx }))
             .filter((item) => item.cat === 'hull');
 
           let filteredUnits = allShips.filter((item) => {
-            if (starCategory === 'interceptor') return item.hullKey === 'hullDelta' || item.no === 'FD-01';
+            if (starCategory === 'corvette') return item.hullKey === 'hullCorvette';
+            if (starCategory === 'destroyer') return item.hullKey === 'hullDelta';
             if (starCategory === 'cruiser') return item.hullKey === 'hullWing';
             if (starCategory === 'capital') return item.hullKey === 'hullRing' || item.hullKey === 'hullCross';
-            if (starCategory === 'faction') return item.faction === curFaction || item.faction === 'all';
             return true; // 'all'
           });
 
@@ -2212,14 +2319,12 @@
             return rank(a) - rank(b) || (a._origIdx - b._origIdx);
           });
 
-          // 保证选中的是指针内的合法飞船，不出现越界
+          // 保证选中的是指针内的合法战舰，不出现越界
           if (!filteredUnits.some((it) => it._origIdx === selectedUnitIdx)) {
             const defaultShip = filteredUnits.find(it => it.faction === curFaction) || filteredUnits[0];
             selectedUnitIdx = defaultShip ? defaultShip._origIdx : 0;
           }
           const u = meta.starRosterUnits[selectedUnitIdx] || allShips[0];
-          const merits = (saveData.currency?.warMerits ?? 1200).toLocaleString();
-          const scraps = (saveData.currency?.scraps ?? 150).toLocaleString();
           const activeHullKey = saveData.selectedHull || 'hullDelta';
           const isCurrentFlagship = u.hullKey === activeHullKey && (u.faction === curFaction || u.faction === 'all');
 
@@ -2241,10 +2346,11 @@
                   </button>
                 </div>
                 <div class="sd-cat-pills">
-                  <button class="sd-pill-btn ${starCategory === 'all' ? 'active' : ''}" data-sd-cat="all">全部星舰 (${allShips.length})</button>
-                  <button class="sd-pill-btn ${starCategory === 'interceptor' ? 'active' : ''}" data-sd-cat="interceptor">截击与战机 (${allShips.filter(x => x.hullKey === 'hullDelta' || x.no === 'FD-01').length})</button>
-                  <button class="sd-pill-btn ${starCategory === 'cruiser' ? 'active' : ''}" data-sd-cat="cruiser">巡洋舰 (${allShips.filter(x => x.hullKey === 'hullWing').length})</button>
-                  <button class="sd-pill-btn ${starCategory === 'capital' ? 'active' : ''}" data-sd-cat="capital">母舰与旗舰 (${allShips.filter(x => x.hullKey === 'hullRing' || x.hullKey === 'hullCross').length})</button>
+                  <button class="sd-pill-btn ${starCategory === 'all' ? 'active' : ''}" data-sd-cat="all">全部战舰 (${allShips.length})</button>
+                  <button class="sd-pill-btn ${starCategory === 'corvette' ? 'active' : ''}" data-sd-cat="corvette">小型护卫舰 (${allShips.filter(x => x.hullKey === 'hullCorvette').length})</button>
+                  <button class="sd-pill-btn ${starCategory === 'destroyer' ? 'active' : ''}" data-sd-cat="destroyer">中型驱逐舰 (${allShips.filter(x => x.hullKey === 'hullDelta').length})</button>
+                  <button class="sd-pill-btn ${starCategory === 'cruiser' ? 'active' : ''}" data-sd-cat="cruiser">大型巡洋舰 (${allShips.filter(x => x.hullKey === 'hullWing').length})</button>
+                  <button class="sd-pill-btn ${starCategory === 'capital' ? 'active' : ''}" data-sd-cat="capital">母舰与战列舰 (${allShips.filter(x => x.hullKey === 'hullRing' || x.hullKey === 'hullCross').length})</button>
                 </div>
               </div>
 
@@ -2651,6 +2757,271 @@
         const metrics = meta.getMetrics(saveData);
         const nsKey = `${meta.storagePrefix}${auth.userId}`;
         const encodedSave = btoa(encodeURIComponent(JSON.stringify(saveData)));
+
+        if (isStarRoster) {
+          const curFaction = saveData.faction || 'helios';
+          const curHullKey = saveData.selectedHull || 'hullDelta';
+          const curWeapon = saveData.selectedWeapon || saveData.activeModule || 'railgun';
+          const curSecWeapon = saveData.selectedSecWeapon || saveData.secWeapon || 'secAutocannon';
+          const curBay = saveData.selectedBay || saveData.internalBay || 'hangar';
+          const curEngine = saveData.selectedEngine || saveData.engineType || 'thrusterCompound';
+          const activeSlotZone = window._nxSdActiveDockZone || 'W';
+
+          const HULL_SLOT_LAYOUTS = {
+            hullCorvette: {
+              scale: '小型战舰',
+              name: curFaction === 'glacies' ? '冰棱级轻型护卫舰' : '棱卫级轻型护卫舰',
+              file: curFaction === 'glacies' ? 'hull-corvette-glacies.svg' : 'hull-corvette.svg',
+              secSlots: [
+                { id: 'S1', pos: '左舷廓台 #1 (-12,-2)', arc: '左舷扇区 ±70° (右舷受船体遮蔽)' },
+                { id: 'S2', pos: '右舷廓台 #2 (+12,-2)', arc: '右舷扇区 ±70° (左舷受船体遮蔽)' }
+              ]
+            },
+            hullDelta: {
+              scale: '中型战舰',
+              name: curFaction === 'glacies' ? '霜楔级突击驱逐舰' : '铁楔级突击驱逐舰',
+              file: curFaction === 'glacies' ? 'hull-delta-glacies.svg' : 'hull-delta.svg',
+              secSlots: [
+                { id: 'S1', pos: '舰艏廓台 #1 (0,-18)', arc: '前向扇区 ±75° (后方受船体遮蔽)' },
+                { id: 'S2', pos: '左舷廓台 #2 (-14,+3)', arc: '左舷扇区 ±70° (右舷受船体遮蔽)' },
+                { id: 'S3', pos: '右舷廓台 #3 (+14,+3)', arc: '右舷扇区 ±70° (左舷受船体遮蔽)' }
+              ]
+            },
+            hullWing: {
+              scale: '大型战舰',
+              name: curFaction === 'glacies' ? '寒矛级重装巡洋舰' : '长矛级重装巡洋舰',
+              file: curFaction === 'glacies' ? 'hull-cruiser-glacies.svg' : 'hull-cruiser.svg',
+              secSlots: [
+                { id: 'S1', pos: '左前廓台 #1 (-14,-9)', arc: '左前扇区 ±68° (受船体遮蔽)' },
+                { id: 'S2', pos: '右前廓台 #2 (+14,-9)', arc: '右前扇区 ±68° (受船体遮蔽)' },
+                { id: 'S3', pos: '左后廓台 #3 (-15,+9)', arc: '左后扇区 ±68° (受船体遮蔽)' },
+                { id: 'S4', pos: '右后廓台 #4 (+15,+9)', arc: '右后扇区 ±68° (受船体遮蔽)' }
+              ]
+            },
+            hullRing: {
+              scale: '重型战舰',
+              name: curFaction === 'glacies' ? '极光级环轨母舰' : '环轨级六角星堡母舰',
+              file: curFaction === 'glacies' ? 'hull-ring-glacies.svg' : 'hull-ring.svg',
+              secSlots: [
+                { id: 'S1', pos: '舰艏环座 #1 (0,-21)', arc: '前向扇区 ±66° (后方受船体遮蔽)' },
+                { id: 'S2', pos: '左前环座 #2 (-18,-8)', arc: '左前扇区 ±66° (受船体遮蔽)' },
+                { id: 'S3', pos: '右前环座 #3 (+18,-8)', arc: '右前扇区 ±66° (受船体遮蔽)' },
+                { id: 'S4', pos: '左后环座 #4 (-18,+11)', arc: '左后扇区 ±66° (受船体遮蔽)' },
+                { id: 'S5', pos: '右后环座 #5 (+18,+11)', arc: '右后扇区 ±66° (受船体遮蔽)' }
+              ]
+            },
+            hullCross: {
+              scale: '超重型战舰',
+              name: curFaction === 'glacies' ? '凛冬级无畏战列舰' : '泰坦级无畏战列舰',
+              file: curFaction === 'glacies' ? 'hull-cross-glacies.svg' : 'hull-cross.svg',
+              secSlots: [
+                { id: 'S1', pos: '左前炮房 #1 (-16,-14)', arc: '左前扇区 ±66° (受船体遮蔽)' },
+                { id: 'S2', pos: '右前炮房 #2 (+16,-14)', arc: '右前扇区 ±66° (受船体遮蔽)' },
+                { id: 'S3', pos: '左中炮房 #3 (-18,0)', arc: '左舷正侧 ±66° (受船体遮蔽)' },
+                { id: 'S4', pos: '右中炮房 #4 (+18,0)', arc: '右舷正侧 ±66° (受船体遮蔽)' },
+                { id: 'S5', pos: '左后炮房 #5 (-16,+14)', arc: '左后扇区 ±66° (受船体遮蔽)' },
+                { id: 'S6', pos: '右后炮房 #6 (+16,+14)', arc: '右后扇区 ±66° (受船体遮蔽)' }
+              ]
+            }
+          };
+
+          const hullLayout = HULL_SLOT_LAYOUTS[curHullKey] || HULL_SLOT_LAYOUTS.hullDelta;
+          const allModules = meta.starRosterUnits.filter((it) => it.cat === 'module');
+          const findMod = (key, fallbackKey) => allModules.find((m) => m.modKey === key) || allModules.find((m) => m.modKey === fallbackKey) || allModules[0];
+          const eqW = findMod(curWeapon, 'railgun');
+          const eqS = findMod(curSecWeapon, 'secAutocannon');
+          const eqB = findMod(curBay, 'hangar');
+          const eqP = findMod(curEngine, 'thrusterCompound');
+
+          const slotFilterMods = allModules.filter((m) => (m.zone || 'W') === activeSlotZone);
+          const zoneTitleMap = {
+            W: '[主炮插槽 W] 可选主炮武器装备清单',
+            S: `[船体副炮插槽 S1~S${hullLayout.secSlots.length}] 可选副炮装备清单`,
+            B: '[机库/内舱插槽 B] 舰载战机编队与护盾装备清单',
+            P: '[推进引擎插槽 P] 舰艉推进器装备清单'
+          };
+
+          body.innerHTML = `
+            <div style="display:grid;grid-template-columns:1.05fr 1.35fr 1.2fr;gap:8px;flex:1;min-height:0;overflow:hidden;">
+              <!-- 左栏：5级无翼战舰底盘与资材概览 -->
+              <div class="nx-t2-card" style="display:flex;flex-direction:column;gap:6px;overflow-y:auto;min-height:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <h4>① 战舰规模与底盘选择 (无翼舰体)</h4>
+                  <span style="font-size:0.62rem;color:var(--gold,#fbbf24);font-family:Consolas,monospace;">战功 ${(saveData.currency?.warMerits ?? 1200).toLocaleString()}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  ${Object.entries(HULL_SLOT_LAYOUTS).map(([hKey, hCfg]) => `
+                    <button type="button" class="nx-t2-btn" data-sd-dock-hull="${hKey}" style="justify-content:space-between;min-height:44px;padding:4px 8px;border-color:${curHullKey === hKey ? 'var(--gold,#fbbf24)' : 'rgba(255,255,255,0.14)'};background:${curHullKey === hKey ? 'rgba(251,191,36,0.14)' : 'rgba(9,14,26,0.75)'};">
+                      <span style="display:inline-flex;align-items:center;gap:6px;">
+                        <img src="../assets/star-defender/sprites/${hCfg.file}?v=20261108" alt="" style="width:26px;height:26px;object-fit:contain;" />
+                        <span style="text-align:left;">
+                          <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;">${hCfg.name}</div>
+                          <div style="font-size:0.56rem;color:#94a3b8;">${hCfg.scale} · 船体副炮槽 ×${hCfg.secSlots.length}</div>
+                        </span>
+                      </span>
+                      <span style="font-size:0.6rem;color:${curHullKey === hKey ? '#fde047' : '#64748b'};font-weight:800;">${curHullKey === hKey ? '当前舰体' : '切换'}</span>
+                    </button>
+                  `).join('')}
+                </div>
+                <div style="margin-top:auto;padding-top:6px;border-top:1px solid rgba(255,255,255,0.1);display:flex;gap:6px;flex-wrap:wrap;">
+                  <button class="nx-t2-btn" id="nx-asset-bonus-btn" style="flex:1;min-height:44px;border-color:var(--gold,#fbbf24);color:var(--gold,#fbbf24);font-size:0.64rem;">+ 战备补给</button>
+                  <button class="nx-t2-btn" id="nx-asset-admin-btn" style="flex:1;min-height:44px;font-size:0.64rem;">${auth.isAdmin ? '切标准档' : '切统帅档'}</button>
+                </div>
+              </div>
+
+              <!-- 中栏：当前战舰船体插槽拓扑与副炮遮蔽射界明细 -->
+              <div class="nx-t2-card" style="display:flex;flex-direction:column;gap:6px;overflow-y:auto;min-height:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <h4>② 船体插槽列表 (${hullLayout.name} · ${hullLayout.scale})</h4>
+                  <span style="font-size:0.6rem;color:var(--cyan,#00f0ff);">点击插槽切换右侧装备清单</span>
+                </div>
+
+                <!-- 4 大核心插槽交互卡 (主炮槽 W / 船体副炮槽 S / 战机机库内舱槽 B / 引擎槽 P) -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+                  <button type="button" class="nx-t2-btn" data-sd-slot-zone="W" style="min-height:48px;justify-content:flex-start;gap:7px;padding:4px 8px;border-color:${activeSlotZone === 'W' ? '#ef4444' : 'rgba(239,68,68,0.35)'};background:${activeSlotZone === 'W' ? 'rgba(239,68,68,0.18)' : 'rgba(9,14,26,0.8)'};">
+                    <img src="../assets/star-defender/sprites/${eqW.file}" alt="" style="width:24px;height:24px;object-fit:contain;" />
+                    <span style="text-align:left;min-width:0;">
+                      <div style="font-size:0.58rem;color:#fca5a5;">[主炮插槽 ×1] 舰脊中轴</div>
+                      <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;">${eqW.name}</div>
+                    </span>
+                  </button>
+
+                  <button type="button" class="nx-t2-btn" data-sd-slot-zone="S" style="min-height:48px;justify-content:flex-start;gap:7px;padding:4px 8px;border-color:${activeSlotZone === 'S' ? '#fbbf24' : 'rgba(251,191,36,0.35)'};background:${activeSlotZone === 'S' ? 'rgba(251,191,36,0.18)' : 'rgba(9,14,26,0.8)'};">
+                    <img src="../assets/star-defender/sprites/${eqS.file}" alt="" style="width:24px;height:24px;object-fit:contain;" />
+                    <span style="text-align:left;min-width:0;">
+                      <div style="font-size:0.58rem;color:#fde047;">[船体副炮插槽 ×${hullLayout.secSlots.length}] 舷侧廓台</div>
+                      <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;">${eqS.name}</div>
+                    </span>
+                  </button>
+
+                  <button type="button" class="nx-t2-btn" data-sd-slot-zone="B" style="min-height:48px;justify-content:flex-start;gap:7px;padding:4px 8px;border-color:${activeSlotZone === 'B' ? '#10b981' : 'rgba(16,185,129,0.35)'};background:${activeSlotZone === 'B' ? 'rgba(16,185,129,0.18)' : 'rgba(9,14,26,0.8)'};">
+                    <img src="../assets/star-defender/sprites/${eqB.file}" alt="" style="width:24px;height:24px;object-fit:contain;" />
+                    <span style="text-align:left;min-width:0;">
+                      <div style="font-size:0.58rem;color:#6ee7b7;">[机库/内舱插槽 ×1] 战机装备</div>
+                      <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;">${eqB.name}</div>
+                    </span>
+                  </button>
+
+                  <button type="button" class="nx-t2-btn" data-sd-slot-zone="P" style="min-height:48px;justify-content:flex-start;gap:7px;padding:4px 8px;border-color:${activeSlotZone === 'P' ? '#a855f7' : 'rgba(168,85,247,0.35)'};background:${activeSlotZone === 'P' ? 'rgba(168,85,247,0.18)' : 'rgba(9,14,26,0.8)'};">
+                    <img src="../assets/star-defender/sprites/${eqP.file}" alt="" style="width:24px;height:24px;object-fit:contain;" />
+                    <span style="text-align:left;min-width:0;">
+                      <div style="font-size:0.58rem;color:#d8b4fe;">[推进引擎插槽 ×1] 舰艉喷口</div>
+                      <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;">${eqP.name}</div>
+                    </span>
+                  </button>
+                </div>
+
+                <!-- 船体副炮插槽详细位置与受船体遮蔽射界表 -->
+                <div style="background:rgba(4,9,20,0.82);border:1px solid rgba(251,191,36,0.28);border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;">
+                  <div style="font-size:0.62rem;font-weight:800;color:#fde047;display:flex;justify-content:space-between;">
+                    <span>船体防御副炮插槽方位 (${hullLayout.secSlots.length} 座固定于船体)</span>
+                    <span>受船体遮蔽射界 (非360°)</span>
+                  </div>
+                  ${hullLayout.secSlots.map((sl) => `
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.58rem;font-family:Consolas,monospace;color:#cbd5e1;border-top:1px solid rgba(255,255,255,0.06);padding-top:2px;">
+                      <span><strong style="color:#fbbf24;">[${sl.id}]</strong> ${sl.pos} · 挂载: ${eqS.name}</span>
+                      <span style="color:#38bdf8;">${sl.arc}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- 右栏：对应插槽的装备清单 -->
+              <div class="nx-t2-card" style="display:flex;flex-direction:column;gap:6px;overflow-y:auto;min-height:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <h4>③ ${zoneTitleMap[activeSlotZone] || '对应装备清单'}</h4>
+                  <span style="font-size:0.58rem;color:#94a3b8;">共 ${slotFilterMods.length} 项可选装备</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  ${slotFilterMods.map((mod) => {
+                    const isEquipped =
+                      (activeSlotZone === 'W' && curWeapon === mod.modKey) ||
+                      (activeSlotZone === 'S' && curSecWeapon === mod.modKey) ||
+                      (activeSlotZone === 'B' && curBay === mod.modKey) ||
+                      (activeSlotZone === 'P' && curEngine === mod.modKey);
+                    return `
+                      <button type="button" class="nx-t2-btn" data-sd-equip-mod="${mod.modKey}" data-sd-equip-zone="${activeSlotZone}" style="min-height:46px;justify-content:space-between;padding:4px 8px;border-color:${isEquipped ? '#10b981' : 'rgba(255,255,255,0.14)'};background:${isEquipped ? 'rgba(16,185,129,0.16)' : 'rgba(9,14,26,0.75)'};">
+                        <span style="display:inline-flex;align-items:center;gap:7px;min-width:0;">
+                          <img src="../assets/star-defender/sprites/${mod.file}" alt="" style="width:26px;height:26px;object-fit:contain;flex-shrink:0;" />
+                          <span style="text-align:left;min-width:0;">
+                            <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;">${mod.name} <small style="color:#fbbf24;font-weight:700;">${mod.weight}</small></div>
+                            <div style="font-size:0.56rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px;">${mod.subCode}</div>
+                          </span>
+                        </span>
+                        <span style="font-size:0.6rem;font-weight:800;color:${isEquipped ? '#34d399' : '#38bdf8'};flex-shrink:0;">${isEquipped ? '✓ 已装配' : '装配'}</span>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+
+          body.querySelectorAll('[data-sd-dock-hull]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              AudioEngine.upgrade();
+              const nextHull = btn.getAttribute('data-sd-dock-hull') || 'hullDelta';
+              const cur = getSaveDataSafe();
+              cur.selectedHull = nextHull;
+              if (activeStoreInstance) activeStoreInstance.save(cur);
+              else localStorage.setItem(nsKey, JSON.stringify(cur));
+              window.dispatchEvent(new CustomEvent('nexus:star-config-changed', { detail: cur }));
+              renderTier2Module();
+            });
+          });
+
+          body.querySelectorAll('[data-sd-slot-zone]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              AudioEngine.tap();
+              window._nxSdActiveDockZone = btn.getAttribute('data-sd-slot-zone') || 'W';
+              renderTier2Module();
+            });
+          });
+
+          body.querySelectorAll('[data-sd-equip-mod]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              AudioEngine.upgrade();
+              const mKey = btn.getAttribute('data-sd-equip-mod');
+              const zKey = btn.getAttribute('data-sd-equip-zone') || 'W';
+              const cur = getSaveDataSafe();
+              if (zKey === 'W') {
+                cur.selectedWeapon = mKey;
+                cur.activeModule = mKey;
+              } else if (zKey === 'S') {
+                cur.selectedSecWeapon = mKey;
+                cur.secWeapon = mKey;
+              } else if (zKey === 'B') {
+                cur.selectedBay = mKey;
+                cur.internalBay = mKey;
+              } else if (zKey === 'P') {
+                cur.selectedEngine = mKey;
+                cur.engineType = mKey;
+              }
+              if (activeStoreInstance) activeStoreInstance.save(cur);
+              else localStorage.setItem(nsKey, JSON.stringify(cur));
+              window.dispatchEvent(new CustomEvent('nexus:star-config-changed', { detail: cur }));
+              renderTier2Module();
+            });
+          });
+
+          document.getElementById('nx-asset-bonus-btn')?.addEventListener('click', () => {
+            const cur = getSaveDataSafe();
+            meta.grantBonus(cur);
+            if (activeStoreInstance) activeStoreInstance.save(cur);
+            else localStorage.setItem(nsKey, JSON.stringify(cur));
+            AudioEngine.upgrade();
+            renderTier2Module();
+          });
+          document.getElementById('nx-asset-admin-btn')?.addEventListener('click', () => {
+            AudioEngine.upgrade();
+            if (activeStoreInstance) {
+              activeStoreInstance.switchProfile(auth.isAdmin ? 'commander' : 'admin');
+            }
+            window.location.reload();
+          });
+          return;
+        }
+
         body.innerHTML = `
           <div class="nx-t2-grid3">
             ${metrics.map((m) => `
@@ -2735,75 +3106,6 @@
           } catch (_) {
             AudioEngine.warn();
           }
-        });
-      } else if (currentMenuTab === 'services') {
-        let storageBytes = 0;
-        try {
-          for (let i = 0; i < localStorage.length; i++) {
-            const k = localStorage.key(i);
-            storageBytes += (k.length + (localStorage.getItem(k) || '').length) * 2;
-          }
-        } catch (_) {}
-        body.innerHTML = `
-          <div class="nx-t2-grid3">
-            <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">离线 PWA 资源服务</div>
-              <div id="nx-srv-sw-status" style="font-size:0.82rem;font-weight:800;color:#10b981;margin-top:2px;">${swCacheStatus}</div>
-            </div>
-            <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">客户端物理/渲染帧率基准</div>
-              <div style="font-size:0.82rem;font-weight:800;color:var(--cyan,#f59e0b);margin-top:2px;">${Number.isFinite(measuredFps) ? measuredFps + ' FPS (实测 rAF 帧率)' : '采样中...'}</div>
-            </div>
-            <div class="nx-t2-card">
-              <div style="font-size:0.66rem;color:var(--muted,#94a3b8);">本地存储占用 / 音频节点</div>
-              <div style="font-size:0.82rem;font-weight:800;color:var(--gold,#fbbf24);margin-top:2px;">${(storageBytes / 1024).toFixed(1)} KB · Audio: ${AudioEngine.getState()}</div>
-            </div>
-          </div>
-          <div class="nx-t2-grid2">
-            <div class="nx-t2-card">
-              <h4>PWA 离线缓存校验与刷新 (Service Worker &amp; CacheStorage)</h4>
-              <p style="margin-bottom:8px;">静态资源、SVG 矢量精灵与骨骼动画脚本均缓存在本地浏览器，支持无外网离线启动。</p>
-              <button class="nx-t2-btn" id="nx-svc-refresh-sw" style="border-color:var(--cyan,#f59e0b);">
-                校验并刷新本地离线缓存
-              </button>
-            </div>
-            <div class="nx-t2-card">
-              <h4>离散瞬态音频自愈与 60Hz 帧率基准自检</h4>
-              <p style="margin-bottom:8px;">若移动浏览器切后台后声音挂起，可一键重置 Web Audio 瞬态合成器或重测帧率。</p>
-              <div style="display:flex;gap:8px;">
-                <button class="nx-t2-btn" id="nx-svc-heal-audio">重置音频上下文并试音</button>
-                <button class="nx-t2-btn" id="nx-svc-bench-fps">执行 60Hz 帧率基准诊断</button>
-              </div>
-            </div>
-          </div>
-        `;
-        document.getElementById('nx-svc-refresh-sw')?.addEventListener('click', async () => {
-          AudioEngine.tap();
-          swCacheStatus = '正在校验离线运行环境与 CacheStorage...';
-          renderTier2Module();
-          await probeSwAndCacheStatus(true);
-          AudioEngine.win();
-          renderTier2Module();
-        });
-        document.getElementById('nx-svc-heal-audio')?.addEventListener('click', () => {
-          AudioEngine.resetContext();
-          renderTier2Module();
-        });
-        document.getElementById('nx-svc-bench-fps')?.addEventListener('click', () => {
-          AudioEngine.tap();
-          let frames = 0;
-          const t0 = performance.now();
-          function sample() {
-            frames++;
-            if (performance.now() - t0 < 500) {
-              requestAnimationFrame(sample);
-            } else {
-              measuredFps = Math.round((frames * 1000) / (performance.now() - t0));
-              AudioEngine.win();
-              renderTier2Module();
-            }
-          }
-          requestAnimationFrame(sample);
         });
       } else if (currentMenuTab === 'lan') {
         if (!activeLanInstance) {
@@ -3194,7 +3496,8 @@
         try { activeLanInstance.leaveRoom(); } catch (_) {}
       }
       if (window.parent && window.parent !== window) {
-        window.parent.postMessage({ type: 'NEXUS_EXIT_GAME', gameId }, '*');
+        const postOrigin = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : '*';
+        window.parent.postMessage({ type: 'NEXUS_EXIT_GAME', gameId }, postOrigin);
       } else {
         window.location.href = `../index.html?game=${encodeURIComponent(gameId)}`;
       }
@@ -3234,7 +3537,7 @@
           return;
         }
         const s = document.createElement('script');
-        s.src = `${srcUrl}${srcUrl.includes('?') ? '&' : '?'}v=20261107`;
+        s.src = `${srcUrl}${srcUrl.includes('?') ? '&' : '?'}v=20261108`;
         s.async = true;
         s.onload = () => {
           engineScriptLoadedMap[gameId] = true;
@@ -3317,7 +3620,8 @@
           activeLanInstance.refreshRooms();
         }
         if (window.parent && window.parent !== window) {
-          try { window.parent.postMessage({ type: 'NEXUS_ENTER_TIER3' }, '*'); } catch (_) {}
+          const postOrigin = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : '*';
+          try { window.parent.postMessage({ type: 'NEXUS_ENTER_TIER3' }, postOrigin); } catch (_) {}
         }
 
         window.dispatchEvent(new CustomEvent('nexus:gameplay-started', {
@@ -3375,7 +3679,8 @@
       }
       renderTier2Module();
       if (window.parent && window.parent !== window) {
-        try { window.parent.postMessage({ type: 'NEXUS_WAKE_HOST_BACK' }, '*'); } catch (_) {}
+        const postOrigin = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : '*';
+        try { window.parent.postMessage({ type: 'NEXUS_WAKE_HOST_BACK' }, postOrigin); } catch (_) {}
       }
       window.dispatchEvent(new CustomEvent('nexus:gameplay-stopped', {
         detail: { gameId }

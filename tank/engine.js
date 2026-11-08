@@ -218,38 +218,35 @@
         }
       }
 
-      // 敌我通用的重装底盘运动学 + 转向减速 + 制动滑行 + 动态移动散布解算器
+      // 敌我通用的重装底盘运动学：强制原地转向 (In-Place Pivot Turning，严禁汽车式边走边拐弧线转向) + 动态移动散布解算器
       function stepTankKinematicsAndDispersion(tank, throttle, hullSteer, wTurret, maxFwdSpd, maxRevSpd, maxTurnRate, dt) {
-        // 1. 差速履带转向：行进间转向角速度折减为 0.78，原地转向为 1.0
-        const steerScale = Math.abs(throttle) > 0.05 ? 0.78 : 1.0;
-        if (Math.abs(hullSteer) > 0.02) {
-          tank.wHull = hullSteer * maxTurnRate * steerScale;
+        // 1. 履带原地中心转向 (In-Place Pivot Turn)：当存在转向输入时，锁定线速度为 0，仅在原地旋转车体
+        const isTurning = Math.abs(hullSteer) > 0.04;
+        if (isTurning) {
+          tank.vLin = 0;
+          tank.wHull = hullSteer * maxTurnRate;
           tank.hullAng = normalizeAngle(tank.hullAng + tank.wHull * dt);
-          tank.movePhase = (tank.movePhase || 0) + 0.14 * Math.abs(hullSteer);
-        } else {
-          tank.wHull = (tank.wHull || 0) * 0.72;
-          if (Math.abs(tank.wHull) < 0.04) tank.wHull = 0;
-        }
-
-        // 2. 车体推进加减速与转向自动降速 (模拟单侧履带制动转向降速与重装惯性滑行)
-        const turnSlowdown = Math.abs(hullSteer) > 0.25 ? 0.75 : 1.0;
-        const targetMaxFwd = maxFwdSpd * turnSlowdown;
-        if (throttle > 0.05) {
-          const nextV = (tank.vLin || 0) + 195 * throttle * dt;
-          tank.vLin = nextV > targetMaxFwd ? Math.max(targetMaxFwd, (tank.vLin || 0) * 0.92) : nextV;
-        } else if (throttle < -0.05) {
-          tank.vLin = Math.max(-maxRevSpd * turnSlowdown, (tank.vLin || 0) + 165 * throttle * dt);
-        } else {
-          // 松油门或短停制动：平滑惯性减速滑行直至完全驻停
-          tank.vLin = (tank.vLin || 0) * 0.78;
-          if (Math.abs(tank.vLin) < 1.2) tank.vLin = 0;
-        }
-
-        // 3. 连续位移与异形多边形切向滑移 (含制动减速滑行阶段)
-        if (Math.abs(tank.vLin) > 0.5) {
-          moveTankWithPolygonSliding(tank, dt);
-          tank.movePhase = (tank.movePhase || 0) + 0.16 * (Math.abs(tank.vLin) / Math.max(35, maxFwdSpd));
+          tank.movePhase = (tank.movePhase || 0) + 0.16 * Math.abs(hullSteer);
           recordTread(tank);
+        } else {
+          tank.wHull = 0;
+          // 2. 车体已对准目标航向，仅执行直线加减速推进与制动滑行
+          if (throttle > 0.05) {
+            const nextV = (tank.vLin || 0) + 210 * throttle * dt;
+            tank.vLin = Math.min(maxFwdSpd, nextV);
+          } else if (throttle < -0.05) {
+            tank.vLin = Math.max(-maxRevSpd, (tank.vLin || 0) + 180 * throttle * dt);
+          } else {
+            tank.vLin = (tank.vLin || 0) * 0.75;
+            if (Math.abs(tank.vLin) < 1.2) tank.vLin = 0;
+          }
+
+          // 3. 连续直线位移与异形多边形切向滑移
+          if (Math.abs(tank.vLin) > 0.5) {
+            moveTankWithPolygonSliding(tank, dt);
+            tank.movePhase = (tank.movePhase || 0) + 0.16 * (Math.abs(tank.vLin) / Math.max(35, maxFwdSpd));
+            recordTread(tank);
+          }
         }
 
         // 4. 实时解算动态移动散布与驻停火控缩圈
@@ -781,7 +778,7 @@
         return bestHit;
       }
 
-      // 对异形掩体造成局部扇区剥落或跳弹响应
+      // 战场障碍物保持永恒不可破坏地形 (Indestructible Terrain Obstacles)：拦截炮弹或触发斜面跳弹，绝不扣血或摧毁地形
       function handleBulletObstacleHit(bullet, hit) {
         const obs = hit.obs;
         const speed = Math.hypot(bullet.vx, bullet.vy) || 1;
@@ -789,61 +786,8 @@
         const uy = bullet.vy / speed;
         const cosIncidence = Math.abs(ux * hit.nx + uy * hit.ny); // cos(入射角)
 
-        if (obs.kind === 'hex-brick') {
-          // 六角蜂巢复合砖堡：按受击方位剥落对应扇区并扣减耐久
-          const relAng = normalizeAngle(Math.atan2(hit.y - obs.y, hit.x - obs.x) - obs.rot);
-          let bit = 1;
-          if (relAng >= -Math.PI && relAng < -Math.PI * 0.5) bit = 4; // TL
-          else if (relAng >= -Math.PI * 0.5 && relAng < 0) bit = 8;    // TR
-          else if (relAng >= 0 && relAng < Math.PI * 0.5) bit = 2;     // BR
-          else bit = 1;                                                // BL
-
-          if (bullet.breakSteel || bullet.dmg >= 3) {
-            obs.hp = 0;
-            obs.sectorMask = 0;
-          } else {
-            obs.hp -= bullet.dmg;
-            obs.sectorMask &= ~bit;
-            if (obs.sectorMask === 0) obs.hp = 0;
-          }
-          explode(hit.x, hit.y, '#b5604a', 8);
-          NexusSDK.audio.hit();
-          if (obs.hp <= 0) {
-            obstacles.splice(hit.obsIndex, 1);
-          }
-          terrainDirty = true;
-          syncObstacleDamageOverLan(obs);
-          return 'consumed';
-        }
-
-        if (obs.kind === 'pillbox') {
-          // 圆形钢筋混凝土暗堡：承受多发穿甲弹后坍塌
-          obs.hp -= bullet.breakSteel ? 2 : 1;
-          explode(hit.x, hit.y, '#9aa8bd', 7);
-          NexusSDK.audio.hit();
-          if (obs.hp <= 0) {
-            obstacles.splice(hit.obsIndex, 1);
-          }
-          terrainDirty = true;
-          syncObstacleDamageOverLan(obs);
-          return 'consumed';
-        }
-
         if (obs.kind === 'chevron-steel') {
-          // V 型折角防爆钢墙：3~4 阶重炮正入射可击毁；否则大倾角擦碰触发真实物理镜面跳弹 (Ricochet)
-          if (bullet.breakSteel && cosIncidence > 0.55) {
-            obs.hp -= bullet.dmg * 2;
-            explode(hit.x, hit.y, '#dfc08e', 10);
-            NexusSDK.audio.hit();
-            if (obs.hp <= 0) {
-              obstacles.splice(hit.obsIndex, 1);
-              terrainDirty = true;
-            }
-            syncObstacleDamageOverLan(obs);
-            return 'consumed';
-          }
-
-          // 斜面镜面反射跳弹：v' = v - 2(v·n)n (最多跳弹 1 次)
+          // V 型折角防爆钢墙：大倾角擦碰触发物理镜面跳弹 (Ricochet)，正入射直接阻挡吸收，地形完好无损
           if ((bullet.bounces || 0) < 1 && cosIncidence < 0.82) {
             const dot = bullet.vx * hit.nx + bullet.vy * hit.ny;
             bullet.vx = (bullet.vx - 2 * dot * hit.nx) * 0.90;
@@ -855,27 +799,20 @@
             NexusSDK.audio.hit();
             return 'ricochet';
           }
-
           explode(hit.x, hit.y, '#9eb0c7', 6);
           NexusSDK.audio.hit();
           return 'consumed';
         }
 
-        // 玄武岩断崖：吸收炮弹并迸发石屑火花
-        explode(hit.x, hit.y, '#8598b0', 6);
+        // 六角砖堡、混凝土暗堡、玄武岩断崖等所有障碍物：全部作为不可破坏地形阻挡炮弹并迸发受击火花
+        const sparkColor = obs.kind === 'hex-brick' ? '#b5604a' : (obs.kind === 'pillbox' ? '#9aa8bd' : '#8598b0');
+        explode(hit.x, hit.y, sparkColor, 7);
         NexusSDK.audio.hit();
         return 'consumed';
       }
 
-      function syncObstacleDamageOverLan(obs) {
-        if (lan.isConnected()) {
-          lan.sendReliable({
-            type: 'poly_obs_hit',
-            id: obs.id,
-            hp: obs.hp,
-            sectorMask: obs.sectorMask || 0
-          });
-        }
+      function syncObstacleDamageOverLan(_obs) {
+        // 障碍物为不可破坏恒定地形，无需同步毁伤
       }
 
       function spawnEnemy() {
@@ -1276,20 +1213,12 @@
           fortifyTimer = 1200;
           rebuildBasePerimeter(true);
           NexusSDK.audio.upgrade();
-        } else if (msg.type === 'poly_obs_hit') {
-          const idx = obstacles.findIndex((o) => o.id === msg.id);
-          if (idx >= 0) {
-            obstacles[idx].hp = msg.hp;
-            obstacles[idx].sectorMask = msg.sectorMask;
-            if (obstacles[idx].hp <= 0) obstacles.splice(idx, 1);
-            terrainDirty = true;
-          }
         } else if (msg.type === 'crate_spawn' && msg.crate) {
           crates.push(msg.crate);
         }
       });
 
-      // 2P 智能 AI 僚机：与玩家/敌坦同源调用 stepTankKinematicsAndDispersion + fireTank
+      // 2P 智能 AI 僚机：与玩家/敌坦同源调用 stepTankKinematicsAndDispersion (原地转向 + 直线推进) + fireTank
       function updateAIWingman(dt) {
         if (p2.isRemote && lan.isConnected()) return;
         const target = enemies[0];
@@ -1317,18 +1246,24 @@
           p2.haltTimer--;
           p2Throttle = 0;
           p2Steer = 0;
-        } else {
-          const desiredHullAng = Math.atan2(destX - p2.x, -(destY - p2.y));
-          if ((p2.aiSteerTimer || 0) > 0) {
-            p2.aiSteerTimer--;
+        } else if ((p2.aiSteerTimer || 0) > 0) {
+          p2.aiSteerTimer--;
+          if (p2.aiSteerTimer > 12) {
             p2Steer = p2.avoidDir || 1;
+            p2Throttle = 0;
           } else {
-            const hullDiff = shortestAngleDiff(p2.hullAng, desiredHullAng);
-            if (Math.abs(hullDiff) > 0.06) {
-              p2Steer = Math.sign(hullDiff) * Math.min(1, Math.abs(hullDiff) / (1.50 * dt));
-            }
+            p2Steer = 0;
+            p2Throttle = 1;
           }
-          if (Math.hypot(destX - p2.x, destY - p2.y) > 24) {
+        } else if (Math.hypot(destX - p2.x, destY - p2.y) > 24) {
+          const desiredHullAng = Math.atan2(destX - p2.x, -(destY - p2.y));
+          const hullDiff = shortestAngleDiff(p2.hullAng, desiredHullAng);
+          if (Math.abs(hullDiff) > 0.06) {
+            p2Steer = Math.sign(hullDiff) * Math.min(1, Math.abs(hullDiff) / (1.50 * dt));
+            p2Throttle = 0;
+          } else {
+            p2.hullAng = desiredHullAng;
+            p2Steer = 0;
             p2Throttle = 1;
           }
         }
@@ -1583,29 +1518,33 @@
 
         const joyMag = Math.min(1, Math.hypot(joyState.dx, joyState.dy));
         if (joyState.active && joyMag > 0.14) {
-          // 摇杆简化模式：推向任意 360° 方向时，车体自动转向摇杆指向并平滑推进 ("指哪走哪")
+          // 履带战车原地转向模式 (In-Place Pivot Turning)：当摇杆方向与车头存在夹角时，先在原地旋转车体对准方向，对准后再直线前进
           const targetHullAng = Math.atan2(joyState.dx, -joyState.dy);
           const angDiff = shortestAngleDiff(ctrlTank.hullAng, targetHullAng);
-          if (Math.abs(angDiff) < 0.04) {
+          const maxStepHull = rSpec.turnRate * DT;
+          if (Math.abs(angDiff) <= Math.max(0.06, maxStepHull)) {
             ctrlTank.hullAng = targetHullAng;
             hullSteer = 0;
+            throttle = joyMag;
           } else {
-            hullSteer = Math.max(-1, Math.min(1, angDiff / 0.36));
+            hullSteer = Math.sign(angDiff) * Math.min(1, Math.abs(angDiff) / maxStepHull);
+            throttle = 0;
           }
-          // 若角度偏差较小则全速推进；若正在大幅度掉头则边低速推进边快速转向
-          throttle = joyMag * (Math.abs(angDiff) > 1.15 ? 0.35 : 1.0);
         } else {
-          if (keys['KeyW'] || keys['ArrowUp'] || activeHullCommands.has('fwd') || activeHullCommands.has('fwd-ccw') || activeHullCommands.has('fwd-cw')) {
-            throttle += 1;
-          }
-          if (keys['KeyS'] || keys['ArrowDown'] || activeHullCommands.has('rev') || activeHullCommands.has('rev-ccw') || activeHullCommands.has('rev-cw')) {
-            throttle -= 1;
-          }
           if (keys['KeyA'] || keys['ArrowLeft'] || activeHullCommands.has('ccw') || activeHullCommands.has('fwd-ccw') || activeHullCommands.has('rev-ccw')) {
             hullSteer -= 1;
           }
           if (keys['KeyD'] || keys['ArrowRight'] || activeHullCommands.has('cw') || activeHullCommands.has('fwd-cw') || activeHullCommands.has('rev-cw')) {
             hullSteer += 1;
+          }
+          // 仅在未执行原地转向时才允许前后直线推进
+          if (hullSteer === 0) {
+            if (keys['KeyW'] || keys['ArrowUp'] || activeHullCommands.has('fwd') || activeHullCommands.has('fwd-ccw') || activeHullCommands.has('fwd-cw')) {
+              throttle += 1;
+            }
+            if (keys['KeyS'] || keys['ArrowDown'] || activeHullCommands.has('rev') || activeHullCommands.has('rev-ccw') || activeHullCommands.has('rev-cw')) {
+              throttle -= 1;
+            }
           }
         }
 
@@ -1685,27 +1624,35 @@
           const prevX = en.x, prevY = en.y;
 
           if ((en.haltTimer || 0) > 0) {
-            // 短停缩圈阶段：切断油门与转向，依靠 stepTankKinematicsAndDispersion 平滑减速滑行至静止并快速收拢散布圈
+            // 短停缩圈阶段：切断油门与转向，平滑减速滑行至静止并快速收拢散布圈
             en.haltTimer--;
             enThrottle = 0;
             enSteer = 0;
+          } else if (en.aiSteerTimer > 0) {
+            // 绕障阶段：先原地转向调整车头，再直线推进脱离障碍
+            en.aiSteerTimer--;
+            if (en.aiSteerTimer > 14) {
+              enSteer = en.avoidDir || 1;
+              enThrottle = 0;
+            } else {
+              enSteer = 0;
+              enThrottle = 1;
+            }
           } else {
-            // 巡航推进阶段：计算目标方位差速转向与油门推进
+            // 巡航推进阶段：先原地中心转向对准目标方位，对准后再直线前进
             const targetX = en.type === 'raider' ? eagleBase.x : (distP1 < p1DetectRadius ? p1.x : eagleBase.x);
             const targetY = en.type === 'raider' ? eagleBase.y : (distP1 < p1DetectRadius ? p1.y : eagleBase.y);
             const desiredHull = Math.atan2(targetX - en.x, -(targetY - en.y));
             const maxStepHull = (en.turnRate || eSpec.turnRate) * DT;
-
-            if (en.aiSteerTimer > 0) {
-              en.aiSteerTimer--;
-              enSteer = en.avoidDir || 1;
+            const hDiff = shortestAngleDiff(en.hullAng, desiredHull);
+            if (Math.abs(hDiff) > Math.max(0.06, maxStepHull)) {
+              enSteer = Math.sign(hDiff) * Math.min(1, Math.abs(hDiff) / maxStepHull);
+              enThrottle = 0;
             } else {
-              const hDiff = shortestAngleDiff(en.hullAng, desiredHull);
-              if (Math.abs(hDiff) > 0.04) {
-                enSteer = Math.sign(hDiff) * Math.min(1, Math.abs(hDiff) / maxStepHull);
-              }
+              en.hullAng = desiredHull;
+              enSteer = 0;
+              enThrottle = 1;
             }
-            enThrottle = 1;
           }
 
           // 敌坦炮塔独立 360° 旋转锁定目标

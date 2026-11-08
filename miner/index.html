@@ -177,7 +177,7 @@
   </div>
   <button id="btn-open-shop" type="button" hidden aria-hidden="true" tabindex="-1"></button>
 
-  <script src="../shared/nexus-sdk.js?v=4.0"></script>
+  <script src="../shared/nexus-sdk.js?v=20261108"></script>
   <script>
   /**
    * 标准微游菜单清单入口 (Step 1 & Step 3 标准模板结构)
@@ -189,13 +189,15 @@
     gameId: 'gold-miner',
     gameTitle: '掘金先锋 · 地心岩层勘探站',
     engineUrl: './engine.js',
-    storagePrefix: 'GOLD_MINER_V3_SAVE_',
+    storagePrefix: 'NEXUS_MINI_MINER_',
     defaultSave: function(isAdmin) {
       return {
-        gold: isAdmin ? 999999 : 1200,
-        stage: 1,
-        dynamite: isAdmin ? 99 : 3,
-        levels: { winch: isAdmin ? 5 : 1, cable: isAdmin ? 5 : 1, scanner: isAdmin ? 5 : 1, lamp: isAdmin ? 5 : 1 }
+        currency: { goldBars: isAdmin ? 999999 : 850 },
+        maxStage: isAdmin ? 50 : 1,
+        bestCash: isAdmin ? 888888 : 0,
+        dynamites: isAdmin ? 99 : 3,
+        tonicBuff: isAdmin ? true : false,
+        cloverBuff: isAdmin ? true : false
       };
     }
   });

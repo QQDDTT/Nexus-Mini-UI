@@ -25,31 +25,48 @@
       const store = NexusSDK.createGameStorage('NEXUS_MINI_SD_', (isAdmin) => ({
         currency: { warMerits: isAdmin ? 999999 : 1200, scraps: isAdmin ? 99999 : 150 },
         faction: 'helios',
-        unlockedShips: 4,
+        unlockedShips: 5,
         highestWave: isAdmin ? 100 : 1,
         weaponLv: isAdmin ? 5 : 1,
         engineLv: isAdmin ? 3 : 1,
         engineType: 'thrusterCompound',
+        selectedEngine: 'thrusterCompound',
         droneDoctrine: 'mixed',
-        turretCount: isAdmin ? 6 : 2,
+        turretCount: isAdmin ? 6 : 3,
         selectedHull: 'hullDelta',
         activeModule: 'railgun',
-        internalBay: 'hangar'
+        selectedWeapon: 'railgun',
+        secWeapon: 'secAutocannon',
+        selectedSecWeapon: 'secAutocannon',
+        internalBay: 'hangar',
+        selectedBay: 'hangar'
       }));
       let saveData = store.load();
       if (!saveData.engineLv) saveData.engineLv = 1;
-      if (!saveData.engineType) saveData.engineType = 'thrusterCompound';
+      saveData.activeModule = saveData.selectedWeapon || saveData.activeModule || 'railgun';
+      saveData.selectedWeapon = saveData.activeModule;
+      saveData.secWeapon = saveData.selectedSecWeapon || saveData.secWeapon || 'secAutocannon';
+      saveData.selectedSecWeapon = saveData.secWeapon;
+      saveData.internalBay = saveData.selectedBay || saveData.internalBay || 'hangar';
+      if (saveData.internalBay === 'hangarFalcon') saveData.internalBay = 'hangarBomber';
+      saveData.selectedBay = saveData.internalBay;
+      saveData.engineType = saveData.selectedEngine || saveData.engineType || 'thrusterCompound';
+      saveData.selectedEngine = saveData.engineType;
       if (!saveData.droneDoctrine) saveData.droneDoctrine = 'mixed';
       document.documentElement.setAttribute('data-faction', saveData.faction || 'helios');
 
-      // 预加载全部 32 项高精度 SVG 矢量贴图
+      // 预加载全部高精度无翼战舰与装备 SVG 矢量贴图
       const sprites = NexusSDK.loadSprites('star-defender', {
+        hullCorvette: 'hull-corvette.svg',
         hullDelta: 'hull-delta.svg',
-        hullWing: 'hull-wing.svg',
+        hullWing: 'hull-cruiser.svg',
+        hullCruiser: 'hull-cruiser.svg',
         hullRing: 'hull-ring.svg',
         hullCross: 'hull-cross.svg',
+        hullCorvetteGlacies: 'hull-corvette-glacies.svg',
         hullDeltaGlacies: 'hull-delta-glacies.svg',
-        hullWingGlacies: 'hull-wing-glacies.svg',
+        hullWingGlacies: 'hull-cruiser-glacies.svg',
+        hullCruiserGlacies: 'hull-cruiser-glacies.svg',
         hullRingGlacies: 'hull-ring-glacies.svg',
         hullCrossGlacies: 'hull-cross-glacies.svg',
         station: 'station-core.svg',
@@ -89,38 +106,46 @@
         fighterDrone: 'unit-fighter-drone.svg'
       });
 
-      // 法则1 & 法则2：重装星舰牛顿角惯性体系 + 体积/吨位与综合机动反比定律 + 四大舰型差异化运动专精
-      // - hullDelta (14格·2.5t): 体积最小，直线加速与回转角速度双优 (maxTurnRate = 0.022 rad/f ≈ 1.32 rad/s)
-      // - hullWing  (22格·4.2t): 直线加速特化 (双发大推力 linearAccel = 0.056)，但宽翼展大转动惯量使转向偏慢 (maxTurnRate = 0.013 rad/f ≈ 0.78 rad/s)
-      // - hullRing  (28格·5.4t): 环形陀螺转向特化 (maxTurnRate = 0.0175 rad/f ≈ 1.05 rad/s 反超 Wing 舰)，但直线加速与极速较低
-      // - hullCross (36格·8.5t): 超重型无畏移动要塞，体积最大最笨重，直线加速与回转角速度均极度迟缓 (maxTurnRate = 0.0085 rad/f ≈ 0.51 rad/s)
+      // 五级无翼主力战舰规格表 (全面降低战舰移动速度与角速度，降低战斗节奏；不同规模战舰配备 2~6 座船体副炮插槽)
       const HULL_SPECS = {
+        hullCorvette: {
+          name: '棱卫护卫舰', scaleLabel: '小型战舰', secCount: 2, drawSize: 50,
+          volumeGrid: 10, mass: 1.6, hp: 320, shield: 240,
+          linearAccel: 0.032, strafeAccel: 0.009, maxSpeed: 1.38, turnAccel: 0.0022, maxTurnRate: 0.014,
+          accel: 0.032, twr: '2副炮·小型', specialty: '小型护卫舰 · 2座舷侧船体副炮 (±70°射界)',
+          maxPwr: 95, basePwr: 38, desc: '10格·1.6t 无翼梭形轻型护卫舰 · 配备左/右舷 2 座船体副炮插槽',
+          heliosFile: 'hull-corvette.svg', glaciesFile: 'hull-corvette-glacies.svg'
+        },
         hullDelta: {
-          name: 'Delta 截击舰', volumeGrid: 14, mass: 2.5, hp: 420, shield: 320,
-          linearAccel: 0.062, strafeAccel: 0.018, maxSpeed: 2.65, turnAccel: 0.0038, maxTurnRate: 0.022,
-          accel: 0.062, twr: '1.92·S', specialty: '高敏截击·加速转向双优',
-          maxPwr: 120, basePwr: 52, desc: '14格·2.5t 轻型三角截击舰 · 体积最小机动最高 | W:2S+1M',
+          name: '铁楔驱逐舰', scaleLabel: '中型战舰', secCount: 3, drawSize: 56,
+          volumeGrid: 16, mass: 2.8, hp: 460, shield: 340,
+          linearAccel: 0.026, strafeAccel: 0.007, maxSpeed: 1.16, turnAccel: 0.0018, maxTurnRate: 0.011,
+          accel: 0.026, twr: '3副炮·中型', specialty: '中型驱逐舰 · 3座船体副炮 (艏/左/右扇区)',
+          maxPwr: 135, basePwr: 52, desc: '16格·2.8t 无翼楔形突击驱逐舰 · 配备舰艏+左右舷 3 座船体副炮插槽',
           heliosFile: 'hull-delta.svg', glaciesFile: 'hull-delta-glacies.svg'
         },
         hullWing: {
-          name: 'Wing 巡洋舰', volumeGrid: 22, mass: 4.2, hp: 680, shield: 480,
-          linearAccel: 0.068, strafeAccel: 0.011, maxSpeed: 2.38, turnAccel: 0.0020, maxTurnRate: 0.013,
-          accel: 0.068, twr: '1.48·A', specialty: '★直线加速特化·宽翼转向偏慢',
-          maxPwr: 185, basePwr: 78, desc: '22格·4.2t 双发直线冲刺巡洋舰 · 直线加速强但宽翼展回转较慢',
-          heliosFile: 'hull-wing.svg', glaciesFile: 'hull-wing-glacies.svg'
+          name: '长矛巡洋舰', scaleLabel: '大型战舰', secCount: 4, drawSize: 62,
+          volumeGrid: 24, mass: 4.5, hp: 680, shield: 480,
+          linearAccel: 0.022, strafeAccel: 0.0055, maxSpeed: 0.98, turnAccel: 0.0013, maxTurnRate: 0.0085,
+          accel: 0.022, twr: '4副炮·大型', specialty: '大型巡洋舰 · 4座舷侧船体副炮 (四象限扇区)',
+          maxPwr: 195, basePwr: 76, desc: '24格·4.5t 无翼重装巡洋舰 · 配备左前/右前/左后/右后 4 座船体副炮插槽',
+          heliosFile: 'hull-cruiser.svg', glaciesFile: 'hull-cruiser-glacies.svg'
         },
         hullRing: {
-          name: 'Ring 环轨舰', volumeGrid: 28, mass: 5.4, hp: 920, shield: 760,
-          linearAccel: 0.036, strafeAccel: 0.016, maxSpeed: 1.72, turnAccel: 0.0030, maxTurnRate: 0.0175,
-          accel: 0.036, twr: '1.22·B', specialty: '★环形转向特化·直线偏慢',
-          maxPwr: 260, basePwr: 105, desc: '28格·5.4t 轴对称环形母舰 · 360°周向矢量喷嘴转向反超巡洋舰',
+          name: '环轨母舰', scaleLabel: '重型战舰', secCount: 5, drawSize: 68,
+          volumeGrid: 30, mass: 6.0, hp: 920, shield: 760,
+          linearAccel: 0.017, strafeAccel: 0.006, maxSpeed: 0.82, turnAccel: 0.0015, maxTurnRate: 0.0095,
+          accel: 0.017, twr: '5副炮·重型', specialty: '重型星堡母舰 · 5座环廓船体副炮 + 战机甲板',
+          maxPwr: 260, basePwr: 102, desc: '30格·6.0t 环形托卡马克母舰 · 配备舰艏+四弦廓 5 座船体副炮插槽',
           heliosFile: 'hull-ring.svg', glaciesFile: 'hull-ring-glacies.svg'
         },
         hullCross: {
-          name: 'Cross 歼星舰', volumeGrid: 36, mass: 8.5, hp: 1450, shield: 980,
-          linearAccel: 0.026, strafeAccel: 0.007, maxSpeed: 1.35, turnAccel: 0.0013, maxTurnRate: 0.0085,
-          accel: 0.026, twr: '1.08·C', specialty: '超重型要塞·极高惯性极慢转向',
-          maxPwr: 340, basePwr: 138, desc: '36格·8.5t 泰坦十字无畏舰 · 极其笨重迟缓，依赖多炮塔与机群',
+          name: '泰坦战列舰', scaleLabel: '超重型战舰', secCount: 6, drawSize: 74,
+          volumeGrid: 38, mass: 8.5, hp: 1450, shield: 980,
+          linearAccel: 0.013, strafeAccel: 0.0038, maxSpeed: 0.66, turnAccel: 0.0009, maxTurnRate: 0.0058,
+          accel: 0.013, twr: '6副炮·超重', specialty: '超重型战列舰 · 6座舷侧排炮副炮炮房',
+          maxPwr: 340, basePwr: 132, desc: '38格·8.5t 无翼泰坦无畏战列舰 · 配备左3+右3共 6 座船体副炮插槽',
           heliosFile: 'hull-cross.svg', glaciesFile: 'hull-cross-glacies.svg'
         }
       };
@@ -138,7 +163,7 @@
           desc: '姿控回转特化引擎 · Lv.1~5 转向角速度提升 +12%~+30% (受限上限)'
         },
         thrusterCompound: {
-          name: '霍尔复合引擎', zone: 'P', pwr: 22, file: 'module-thruster.svg',
+          name: '霍尔复合引擎', zone: 'P', pwr: 22, file: 'module-hall-thruster.svg',
           baseLinearBonus: 0.08, perLvLinear: 0.025, baseTurnBonus: 0.08, perLvTurn: 0.025,
           desc: '双维均衡复合引擎 · Lv.1~5 直线与转向同步提升 +8%~+18% (受限上限)'
         }
@@ -148,7 +173,6 @@
         const hs = HULL_SPECS[hullKey] || HULL_SPECS.hullDelta;
         const es = ENGINE_SPECS[engineKey] || ENGINE_SPECS.thrusterCompound;
         const lv = Math.max(1, Math.min(5, engineLv || 1));
-        // 严格受限边际递减上限：直线最高 +26%，转向最高 +30%
         const linearMult = Math.min(1.28, 1 + es.baseLinearBonus + (lv - 1) * es.perLvLinear);
         const turnMult = Math.min(1.32, 1 + es.baseTurnBonus + (lv - 1) * es.perLvTurn);
         return {
@@ -162,45 +186,48 @@
         };
       }
 
-      // 法则6：舰载无人机三大谱系 —— 严格遵循「载弹量(火力载荷)与机动能力成反比」定律 + 可被敌方防御火力击落重构
+      // 舰载战机编队装备规格 (战机属于机库挂载装备，同时降低战机与投射物速度以放缓战斗节奏)
       const DRONE_SPECS = {
         interceptor: {
-          code: 'interceptor', model: 'FD-01 苍鹰', role: '轻型格斗截击机',
-          payloadClass: '轻载弹(14伤)', dmg: 14, fireCd: 15, projSpeed: 15.5, aoe: 0,
-          maxSpeed: 4.3, turnRate: 0.16, maxHp: 45, pdEvade: 0.35, respawnFrames: 330, drawSize: 21,
-          color: '#38bdf8', desc: '载弹最小·机动最强(4.3速/0.16转)·近防规避35%·45HP'
+          code: 'interceptor', model: 'FD-01 苍鹰', role: '轻型格斗截击机 [装备]',
+          payloadClass: '轻载弹(14伤)', dmg: 14, fireCd: 24, projSpeed: 8.2, aoe: 0,
+          maxSpeed: 2.35, turnRate: 0.11, maxHp: 45, pdEvade: 0.35, respawnFrames: 330, drawSize: 21,
+          color: '#38bdf8', desc: '机库装备战机 · 轻载弹高机动(2.35速)·近防规避35%'
         },
         multirole: {
-          code: 'multirole', model: 'FD-02 猎隼', role: '中型多用途战机',
-          payloadClass: '中载弹(28伤)', dmg: 28, fireCd: 22, projSpeed: 13.0, aoe: 18,
-          maxSpeed: 3.4, turnRate: 0.11, maxHp: 75, pdEvade: 0.15, respawnFrames: 480, drawSize: 24,
-          color: '#fbbf24', desc: '载弹与机动均衡(3.4速/0.11转)·双联机炮+微火箭·75HP'
+          code: 'multirole', model: 'FD-02 猎隼', role: '中型多用途战机 [装备]',
+          payloadClass: '中载弹(28伤)', dmg: 28, fireCd: 32, projSpeed: 6.8, aoe: 18,
+          maxSpeed: 1.85, turnRate: 0.08, maxHp: 75, pdEvade: 0.15, respawnFrames: 480, drawSize: 24,
+          color: '#fbbf24', desc: '机库装备战机 · 载弹与机动均衡(1.85速)·双联机炮'
         },
         bomber: {
-          code: 'bomber', model: 'FD-03 重锤', role: '重型鱼雷轰炸机',
-          payloadClass: '重载弹(68伤AOE)', dmg: 68, fireCd: 36, projSpeed: 8.5, aoe: 44,
-          maxSpeed: 2.4, turnRate: 0.065, maxHp: 125, pdEvade: 0.0, respawnFrames: 690, drawSize: 28,
-          color: '#f43f5e', desc: '载弹最大(重型微鱼雷)·机动最慢(2.4速/0.065转)·125HP'
+          code: 'bomber', model: 'FD-03 重锤', role: '重型鱼雷轰炸机 [装备]',
+          payloadClass: '重载弹(68伤AOE)', dmg: 68, fireCd: 48, projSpeed: 4.4, aoe: 44,
+          maxSpeed: 1.35, turnRate: 0.05, maxHp: 125, pdEvade: 0.0, respawnFrames: 690, drawSize: 28,
+          color: '#f43f5e', desc: '机库装备战机 · 重型反舰微鱼雷(1.35速)·125HP'
         }
       };
 
-      // 法则4 & 法则5：
-      // - 火炮 (railgun / plasma): 投射物速度最快 (13.2 ~ 16.5 px/f)，零转向 (homing: false)，灵敏目标可横向闪避
-      // - 导弹 (missile / swarmMissile / cryoMissile / empMissile / torpedo): 速度快 (6.0 ~ 7.8 px/f)，转向敏捷追踪，但拥有实体 HP 可被敌方防御火力 (Point-Defense) 拦截摧毁
+      // 装备清单规格表：涵盖 [主炮槽 W]、[船体副炮槽 S]、[机库战机/护盾内舱槽 B]、[推进引擎槽 P]
+      // 全面降低投射物速度 (~45%~50%) 与射速，打造沉稳海军级战术节奏
       const MODULE_SPECS = {
-        railgun:          { name: '电磁轨道炮', zone: 'W', spriteKey: 'modRailgun', pwr: 28, cd: 15, speed: 16.5, dmg: 28, color: '#fde047', projType: 'tracer',  projKey: 'projTracerKinetic', file: 'module-railgun.svg', desc: '火炮极速(16.5)·无制导直线穿甲 (高敏目标可闪避)' },
-        laser:            { name: '高能激光塔', zone: 'W', spriteKey: 'modLaser',   pwr: 24, cd: 11, speed: 20,   dmg: 18, color: '#00f0ff', projType: 'laser',   projKey: 'projLaserBeam',     file: 'module-laser.svg',   desc: '高频光速相干脉冲激光束 (克制高敏闪避飞蝗)' },
-        plasma:           { name: '电浆重炮',   zone: 'W', spriteKey: 'modPlasma',  pwr: 34, cd: 19, speed: 13.2, dmg: 38, color: '#e879f9', projType: 'plasma',  projKey: 'projPlasmaBolt',    file: 'module-plasma.svg',  desc: '高速(13.2)无制导电浆重炮 (高敏虫群可侧闪规避)' },
-        missile:          { name: '制导导弹井', zone: 'W', spriteKey: 'modMissile', pwr: 26, cd: 22, speed: 7.4,  dmg: 34, missileHp: 18, turnRate: 0.15, color: '#fbbf24', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-missile.svg', desc: '高敏追踪导弹(7.4速/18HP·可被敌方近防拦截)', homing: true },
-        swarmMissile:     { name: '蜂群微导舱', zone: 'W', spriteKey: 'modSwarm',   pwr: 30, cd: 24, speed: 7.8,  dmg: 18, missileHp: 8,  turnRate: 0.18, color: '#f59e0b', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-swarm-missile.svg', desc: '5发齐射饱和突防微导(7.8速/8HP·克制近防网)', homing: true, burst: 5 },
-        cryoMissile:      { name: '深冷冰霜弹', zone: 'W', spriteKey: 'modCryo',    pwr: 28, cd: 20, speed: 7.2,  dmg: 24, missileHp: 18, turnRate: 0.15, color: '#67e8f9', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-cryo-missile.svg', desc: '深冷追踪导弹(18HP·命中减速45%防闪避)', homing: true, cryo: true },
-        empMissile:       { name: '电磁脉冲弹', zone: 'W', spriteKey: 'modEmp',     pwr: 30, cd: 24, speed: 7.5,  dmg: 22, missileHp: 18, turnRate: 0.15, color: '#818cf8', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-emp-missile.svg', desc: 'EMP瘫痪导弹(18HP·震荡麻痹敌近防与闪避)', homing: true, emp: true },
-        hellfireMissile:  { name: '地狱火温压弹', zone: 'W', spriteKey: 'modHellfire', pwr: 36, cd: 26, speed: 7.1, dmg: 46, missileHp: 24, turnRate: 0.14, color: '#f97316', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-hellfire-missile.svg', desc: '高热铝热剂温压弹(24HP·广域热辐射爆破)', homing: true, aoe: 46 },
-        torpedo:          { name: '重型聚变鱼雷', zone: 'W', spriteKey: 'modTorpedo', pwr: 48, cd: 32, speed: 6.0,  dmg: 78, missileHp: 55, turnRate: 0.09, color: '#f43f5e', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-torpedo.svg', desc: '重甲聚变鱼雷(6.0速/55HP·硬抗近防强行突防)', homing: true, aoe: 58, isTorpedo: true },
-        hangar:           { name: '无人机母舱(混编)', zone: 'B', spriteKey: 'modHangar', pwr: 22, droneDoctrine: 'mixed', file: 'module-hangar.svg', desc: '混编苍鹰(轻)/猎隼(中)/重锤(重) 4机编队' },
-        hangarInterceptor:{ name: '苍鹰轻截击机库', zone: 'B', spriteKey: 'modHangar', pwr: 20, droneDoctrine: 'interceptor', file: 'module-hangar.svg', desc: '专精 FD-01 苍鹰：轻载弹·最高机动与防空闪避' },
-        hangarBomber:     { name: '重锤重鱼雷机库', zone: 'B', spriteKey: 'modHangar', pwr: 26, droneDoctrine: 'bomber', file: 'module-hangar.svg', desc: '专精 FD-03 重锤：最大载弹鱼雷·低机动重甲' },
-        shield:           { name: '偏导护盾舱', zone: 'B', spriteKey: 'modShield', pwr: 25, file: 'module-shield.svg', desc: '护盾上限 +350 且自愈翻倍' },
+        railgun:          { name: '电磁轨道炮', zone: 'W', spriteKey: 'modRailgun', pwr: 28, cd: 22, speed: 8.5,  dmg: 28, color: '#fde047', projType: 'tracer',  projKey: 'projTracerKinetic', file: 'module-railgun.svg', desc: '[主炮装备] 动能穿甲主炮 (初速8.5·无制导直线穿甲)' },
+        laser:            { name: '高能激光塔', zone: 'W', spriteKey: 'modLaser',   pwr: 24, cd: 16, speed: 14.0, dmg: 18, color: '#00f0ff', projType: 'laser',   projKey: 'projLaserBeam',     file: 'module-laser.svg',   desc: '[主炮装备] 相控阵脉冲激光主炮 (瞬时命中克制飞蝗)' },
+        plasma:           { name: '电浆重炮',   zone: 'W', spriteKey: 'modPlasma',  pwr: 34, cd: 26, speed: 6.8,  dmg: 38, color: '#e879f9', projType: 'plasma',  projKey: 'projPlasmaBolt',    file: 'module-plasma.svg',  desc: '[主炮装备] 磁约束高温电浆主炮 (初速6.8·高伤融甲)' },
+        missile:          { name: '制导导弹井', zone: 'W', spriteKey: 'modMissile', pwr: 26, cd: 30, speed: 4.2,  dmg: 34, missileHp: 18, turnRate: 0.11, color: '#fbbf24', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-missile.svg', desc: '[主炮装备] 四联追踪导弹井 (航速4.2·18HP可被拦截)', homing: true },
+        swarmMissile:     { name: '蜂群微导舱', zone: 'W', spriteKey: 'modSwarm',   pwr: 30, cd: 32, speed: 4.5,  dmg: 18, missileHp: 8,  turnRate: 0.13, color: '#f59e0b', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-swarm-missile.svg', desc: '[主炮装备] 5发齐射蜂群微导舱 (航速4.5·饱和突防)', homing: true, burst: 5 },
+        cryoMissile:      { name: '深冷冰霜弹', zone: 'W', spriteKey: 'modCryo',    pwr: 28, cd: 28, speed: 4.0,  dmg: 24, missileHp: 18, turnRate: 0.11, color: '#67e8f9', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-cryo-missile.svg', desc: '[主炮装备] 液氮超导深冷导弹 (命中减速45%)', homing: true, cryo: true },
+        empMissile:       { name: '电磁脉冲弹', zone: 'W', spriteKey: 'modEmp',     pwr: 30, cd: 32, speed: 4.2,  dmg: 22, missileHp: 18, turnRate: 0.11, color: '#818cf8', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-emp-missile.svg', desc: '[主炮装备] EMP神经瘫痪导弹 (震荡麻痹敌军2.5s)', homing: true, emp: true },
+        hellfireMissile:  { name: '地狱火重导', zone: 'W', spriteKey: 'modHellfire', pwr: 36, cd: 34, speed: 3.9, dmg: 46, missileHp: 24, turnRate: 0.10, color: '#f97316', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-hellfire-missile.svg', desc: '[主炮装备] 反物质温压巡航导弹 (广域聚爆AOE)', homing: true, aoe: 46 },
+        torpedo:          { name: '重型聚变鱼雷', zone: 'W', spriteKey: 'modTorpedo', pwr: 48, cd: 42, speed: 3.2, dmg: 78, missileHp: 55, turnRate: 0.065, color: '#f43f5e', projType: 'missile', projKey: 'projMissileWarhead', file: 'module-torpedo.svg', desc: '[主炮装备] 重甲反舰聚变鱼雷 (航速3.2·55HP攻坚)', homing: true, aoe: 58, isTorpedo: true },
+        secAutocannon:    { name: '近防速射副炮', zone: 'S', spriteKey: 'turret',     pwr: 12, cd: 28, speed: 7.6,  dmg: 16, color: '#fbbf24', projType: 'tracer',  projKey: 'projTracer', file: 'weapon-turret.svg', desc: '[船体副炮装备] 固定于船体副炮槽·受船体遮蔽扇区穿甲点射' },
+        secLaser:         { name: '点防御激光副炮', zone: 'S', spriteKey: 'turretGlacies', pwr: 15, cd: 30, speed: 12.0, dmg: 15, color: '#38bdf8', projType: 'laser', projKey: 'projLaserBeam', file: 'weapon-turret-glacies.svg', desc: '[船体副炮装备] 固定于船体副炮槽·受船体遮蔽扇区光速拦截' },
+        secPlasma:        { name: '舷侧电浆副炮', zone: 'S', spriteKey: 'modPlasma',  pwr: 18, cd: 34, speed: 6.0,  dmg: 24, color: '#e879f9', projType: 'plasma',  projKey: 'projPlasmaBolt', file: 'module-plasma.svg', desc: '[船体副炮装备] 固定于船体副炮槽·受船体遮蔽扇区高温电浆' },
+        hangar:           { name: '苍鹰/猎隼混编战机 [装备]', zone: 'B', spriteKey: 'unitFighterDrone', pwr: 22, droneDoctrine: 'mixed', file: 'unit-fighter-drone.svg', desc: '[机库战机装备] 战机属于装备·自动出击 4 机混编护航联队' },
+        hangarInterceptor:{ name: 'FD-01 苍鹰截击机编队 [装备]', zone: 'B', spriteKey: 'unitFighterDrone', pwr: 20, droneDoctrine: 'interceptor', file: 'unit-fighter-drone.svg', desc: '[机库战机装备] 专精 FD-01 苍鹰截击战机编队' },
+        hangarBomber:     { name: 'FD-03 重锤鱼雷机编队 [装备]', zone: 'B', spriteKey: 'modHangar', pwr: 26, droneDoctrine: 'bomber', file: 'module-hangar.svg', desc: '[机库战机装备] 专精 FD-03 重锤反舰鱼雷攻击机编队' },
+        hangarFalcon:     { name: 'FD-03 重锤鱼雷机编队 [装备]', zone: 'B', spriteKey: 'modHangar', pwr: 26, droneDoctrine: 'bomber', file: 'module-hangar.svg', desc: '[机库战机装备] 专精 FD-03 重锤反舰鱼雷攻击机编队' },
+        shield:           { name: '偏导护盾发生舱 [装备]', zone: 'B', spriteKey: 'modShield', pwr: 25, file: 'module-shield.svg', desc: '[内舱护盾装备] 战舰护盾上限 +350 且自愈速率翻倍' },
         thrusterCruise:   ENGINE_SPECS.thrusterCruise,
         thrusterVector:   ENGINE_SPECS.thrusterVector,
         thrusterCompound: ENGINE_SPECS.thrusterCompound
@@ -239,41 +266,75 @@
         pdShotsFired: 0
       };
 
-      // 四大舰型物理外挂点局部工程坐标 (对齐 10-WARSHIPS-HULLS-SPEC.md & 11-WEAPONS-EQUIPMENT-SPEC.md)
+      // 五级无翼战舰物理外挂点与船体副炮插槽工程坐标
+      // - 防御副炮直接安装在战舰船体廓台 (secMounts) 上，绝非环绕卫星
+      // - 不同规模战舰拥有不同数量与位置的船体副炮插槽 (小型2座 / 中型3座 / 大型4座 / 重型5座 / 超重型6座)
+      // - 每座船体副炮受船体遮蔽，仅能在 normalAng ± halfArc 扇区内索敌与开火 (非 360°)
       const HULL_HARDPOINTS = {
+        hullCorvette: {
+          mainTurret: { x: 0, y: -6, size: 18 },
+          secMounts: [
+            { id: 'S1', label: '左舷副炮#1', x: -11, y: -2, size: 12, normalAng: -Math.PI / 2, halfArc: 1.22, arcText: '左舷±70°' },
+            { id: 'S2', label: '右舷副炮#2', x: 11, y: -2, size: 12, normalAng: Math.PI / 2, halfArc: 1.22, arcText: '右舷±70°' }
+          ],
+          bayMount: { x: 0, y: 5, size: 13 },
+          engineMount: { x: 0, y: 18, size: 14 }
+        },
         hullDelta: {
-          mainTurret: { x: 0, y: 6, size: 22 },
-          sideWeapons: [{ x: -12, y: 8, size: 15 }, { x: 12, y: 8, size: 15 }],
-          bayMount: { x: 0, y: -9, size: 15 },
-          engineMount: { x: 0, y: 21, size: 16 }
+          mainTurret: { x: 0, y: -4, size: 20 },
+          secMounts: [
+            { id: 'S1', label: '舰艏副炮#1', x: 0, y: -16, size: 12, normalAng: 0, halfArc: 1.30, arcText: '舰艏±75°' },
+            { id: 'S2', label: '左舷副炮#2', x: -13, y: 3, size: 13, normalAng: -Math.PI / 2, halfArc: 1.22, arcText: '左舷±70°' },
+            { id: 'S3', label: '右舷副炮#3', x: 13, y: 3, size: 13, normalAng: Math.PI / 2, halfArc: 1.22, arcText: '右舷±70°' }
+          ],
+          bayMount: { x: 0, y: 7, size: 14 },
+          engineMount: { x: 0, y: 20, size: 15 }
         },
         hullWing: {
-          mainTurret: { x: 0, y: 5, size: 23 },
-          sideWeapons: [{ x: -16, y: 3, size: 17 }, { x: 16, y: 3, size: 17 }],
-          bayMount: { x: 0, y: -9, size: 16 },
-          engineMount: { x: 0, y: 21, size: 17 }
+          mainTurret: { x: 0, y: -5, size: 22 },
+          secMounts: [
+            { id: 'S1', label: '左前副炮#1', x: -14, y: -9, size: 13, normalAng: -Math.PI * 0.42, halfArc: 1.18, arcText: '左前±68°' },
+            { id: 'S2', label: '右前副炮#2', x: 14, y: -9, size: 13, normalAng: Math.PI * 0.42, halfArc: 1.18, arcText: '右前±68°' },
+            { id: 'S3', label: '左后副炮#3', x: -15, y: 9, size: 13, normalAng: -Math.PI * 0.58, halfArc: 1.18, arcText: '左后±68°' },
+            { id: 'S4', label: '右后副炮#4', x: 15, y: 9, size: 13, normalAng: Math.PI * 0.58, halfArc: 1.18, arcText: '右后±68°' }
+          ],
+          bayMount: { x: 0, y: 8, size: 15 },
+          engineMount: { x: 0, y: 22, size: 16 }
         },
         hullRing: {
-          mainTurret: { x: 0, y: 0, size: 24 },
-          sideWeapons: [{ x: -17, y: 0, size: 16 }, { x: 17, y: 0, size: 16 }],
-          bayMount: { x: 0, y: -15, size: 16 },
-          engineMount: { x: 0, y: 20, size: 16 }
+          mainTurret: { x: 0, y: 0, size: 23 },
+          secMounts: [
+            { id: 'S1', label: '舰艏环炮#1', x: 0, y: -20, size: 13, normalAng: 0, halfArc: 1.15, arcText: '舰艏±66°' },
+            { id: 'S2', label: '左前环炮#2', x: -18, y: -8, size: 13, normalAng: -Math.PI * 0.38, halfArc: 1.15, arcText: '左前±66°' },
+            { id: 'S3', label: '右前环炮#3', x: 18, y: -8, size: 13, normalAng: Math.PI * 0.38, halfArc: 1.15, arcText: '右前±66°' },
+            { id: 'S4', label: '左后环炮#4', x: -18, y: 11, size: 13, normalAng: -Math.PI * 0.62, halfArc: 1.15, arcText: '左后±66°' },
+            { id: 'S5', label: '右后环炮#5', x: 18, y: 11, size: 13, normalAng: Math.PI * 0.62, halfArc: 1.15, arcText: '右后±66°' }
+          ],
+          bayMount: { x: 0, y: -11, size: 15 },
+          engineMount: { x: 0, y: 21, size: 16 }
         },
         hullCross: {
-          mainTurret: { x: 0, y: 1, size: 25 },
-          sideWeapons: [{ x: -19, y: 1, size: 18 }, { x: 19, y: 1, size: 18 }],
-          bayMount: { x: 0, y: -13, size: 17 },
-          engineMount: { x: 0, y: 22, size: 18 }
+          mainTurret: { x: 0, y: -3, size: 25 },
+          secMounts: [
+            { id: 'S1', label: '左前炮房#1', x: -16, y: -14, size: 13, normalAng: -Math.PI * 0.38, halfArc: 1.15, arcText: '左前±66°' },
+            { id: 'S2', label: '右前炮房#2', x: 16, y: -14, size: 13, normalAng: Math.PI * 0.38, halfArc: 1.15, arcText: '右前±66°' },
+            { id: 'S3', label: '左中炮房#3', x: -18, y: 0, size: 14, normalAng: -Math.PI / 2, halfArc: 1.15, arcText: '左舷±66°' },
+            { id: 'S4', label: '右中炮房#4', x: 18, y: 0, size: 14, normalAng: Math.PI / 2, halfArc: 1.15, arcText: '右舷±66°' },
+            { id: 'S5', label: '左后炮房#5', x: -16, y: 14, size: 13, normalAng: -Math.PI * 0.62, halfArc: 1.15, arcText: '左后±66°' },
+            { id: 'S6', label: '右后炮房#6', x: 16, y: 14, size: 13, normalAng: Math.PI * 0.62, halfArc: 1.15, arcText: '右后±66°' }
+          ],
+          bayMount: { x: 0, y: 11, size: 16 },
+          engineMount: { x: 0, y: 24, size: 17 }
         }
       };
 
-      // 舰载武器与装备挂载计数遥测 (用于自动化审计核验舰体挂载武器贴图与炮塔转向瞄准状态)
+      // 舰载武器与装备挂载计数遥测
       const weaponMountTelemetry = {
         playerMountedSpritesDrawn: 0,
         wingmanMountedSpritesDrawn: 0,
         activeMainWeaponKey: 'modRailgun',
-        activeBaySpriteKey: 'modHangar',
-        activeEngineSpriteKey: 'modThruster',
+        activeBaySpriteKey: 'unitFighterDrone',
+        activeEngineSpriteKey: 'modHallThruster',
         mainTurretTrackingErrDeg: 0,
         laserTurretTrackingErrDeg: 0,
         defenseTurretsTrackingErrDeg: []
@@ -290,14 +351,10 @@
         angVel: 0,
         aimAngle: 0,
         mainTurretAngle: 0,
-        laserTurretAngle: 0,
-        missileTurretAngle: 0,
         hull: saveData.selectedHull || 'hullDelta',
-        hp: 420, maxHp: 420,
-        shield: 320, maxShield: 320,
+        hp: 460, maxHp: 460,
+        shield: 340, maxShield: 340,
         fireCd: 0,
-        auxLaserCd: 10,
-        auxMissileCd: 22,
         ciwsCd: 0
       };
 
@@ -306,15 +363,15 @@
         y: -42,
         angle: 0,
         aimAngle: 0,
-        hull: 'hullWing',
+        hull: 'hullCorvette',
         fireCd: 0,
         isRemote: false
       };
 
-      // 环绕玩家飞船的防御武器炮塔群每个炮塔的独立伺服瞄准角与冷却状态
+      // 战舰船体各副炮插槽 (S1~S6) 的独立伺服瞄准角与冷却状态 (受船体遮蔽射界约束)
       const defenseTurretStates = Array.from({ length: 6 }, () => ({
         aimAngle: 0,
-        fireCd: Math.floor(Math.random() * 14)
+        fireCd: Math.floor(Math.random() * 18)
       }));
 
       // 局部挂点坐标转换至世界坐标
@@ -408,6 +465,15 @@
       }));
 
       function syncShipSpecs() {
+        saveData.activeModule = saveData.activeModule || saveData.selectedWeapon || 'railgun';
+        saveData.selectedWeapon = saveData.activeModule;
+        saveData.secWeapon = saveData.secWeapon || saveData.selectedSecWeapon || 'secAutocannon';
+        saveData.selectedSecWeapon = saveData.secWeapon;
+        saveData.internalBay = saveData.internalBay || saveData.selectedBay || 'hangar';
+        saveData.selectedBay = saveData.internalBay;
+        saveData.engineType = saveData.engineType || saveData.selectedEngine || 'thrusterCompound';
+        saveData.selectedEngine = saveData.engineType;
+
         const spec = HULL_SPECS[saveData.selectedHull] || HULL_SPECS.hullDelta;
         ship.hull = saveData.selectedHull || 'hullDelta';
         ship.maxHp = spec.hp;
@@ -449,7 +515,12 @@
       }
 
       window.addEventListener('nexus:star-config-changed', (e) => {
-        saveData = Object.assign(saveData, e.detail || store.load());
+        const incoming = e.detail || store.load();
+        saveData = Object.assign(saveData, incoming);
+        if (incoming.selectedWeapon) saveData.activeModule = incoming.selectedWeapon;
+        if (incoming.selectedSecWeapon) saveData.secWeapon = incoming.selectedSecWeapon;
+        if (incoming.selectedBay) saveData.internalBay = incoming.selectedBay;
+        if (incoming.selectedEngine) saveData.engineType = incoming.selectedEngine;
         syncShipSpecs();
       });
 
@@ -462,7 +533,7 @@
           const dist = Math.max(canvas.width, canvas.height) * (0.42 + Math.random() * 0.32);
           const type = archetypes[(i + w) % archetypes.length];
           const hpMap = { swarm: 36, bomber: 46, lurker: 85, stalker: 112, carrier: 240, asteroidIron: 55, asteroidCrystal: 65 };
-          const spdMap = { swarm: 1.95, bomber: 1.62, lurker: 1.48, stalker: 1.82, carrier: 0.78, asteroidIron: 0.68, asteroidCrystal: 0.74 };
+          const spdMap = { swarm: 1.05, bomber: 0.88, lurker: 0.82, stalker: 0.96, carrier: 0.44, asteroidIron: 0.38, asteroidCrystal: 0.42 };
           const rMap = { swarm: 18, bomber: 20, lurker: 23, stalker: 24, carrier: 34, asteroidIron: 22, asteroidCrystal: 22 };
           const baseHp = (hpMap[type] || 40) + w * 9;
 
@@ -476,7 +547,7 @@
             pdCd: 12 + (i % 5) * 6,
             hp: baseHp,
             maxHp: baseHp,
-            speed: spdMap[type] || 1.2,
+            speed: spdMap[type] || 0.72,
             r: rMap[type] || 22,
             rot: Math.random() * Math.PI * 2,
             phaseCd: 90 + Math.floor(Math.random() * 90),
@@ -499,7 +570,7 @@
             pdCd: 10,
             hp: bossHp,
             maxHp: bossHp,
-            speed: 0.58,
+            speed: 0.34,
             r: 48,
             rot: Math.PI,
             phaseCd: 150,
@@ -600,6 +671,31 @@
         return best;
       }
 
+      // 在船体副炮无遮蔽射界扇区 [sectorCenterAng - halfArc, sectorCenterAng + halfArc] 内索敌（排除被船体遮蔽的后半球方向）
+      function findTargetInSector(srcX, srcY, sectorCenterAng, halfArc) {
+        if (lockedEnemy && enemies.includes(lockedEnemy) && lockedEnemy.hp > 0) {
+          const tAng = Math.atan2(lockedEnemy.y - srcY, lockedEnemy.x - srcX) + Math.PI / 2;
+          if (Math.abs(normalizeAngleRad(tAng - sectorCenterAng)) <= halfArc) {
+            return lockedEnemy;
+          }
+        }
+        let best = null;
+        let bestScore = -Infinity;
+        for (const en of enemies) {
+          if (en.hp <= 0) continue;
+          const tAng = Math.atan2(en.y - srcY, en.x - srcX) + Math.PI / 2;
+          if (Math.abs(normalizeAngleRad(tAng - sectorCenterAng)) > halfArc) continue; // 被战舰船体遮蔽，无法瞄准与射击
+          const d = Math.max(40, Math.hypot(en.x - srcX, en.y - srcY));
+          const wType = en.type === 'leviathan' ? 3.0 : (en.type === 'carrier' || en.type === 'stalker' ? 2.0 : (en.type.startsWith('asteroid') ? 1.5 : 1.0));
+          const score = wType * (500 / d) + (d < 220 ? 2.5 : 0);
+          if (score > bestScore) {
+            bestScore = score;
+            best = en;
+          }
+        }
+        return best;
+      }
+
       function spawnLaserBeam(x1, y1, target, dmg, color = '#00f0ff', width = 1.7, maxLife = 13, sourceFn = null) {
         if (!target) return;
         target.hp -= dmg;
@@ -629,11 +725,11 @@
         }
       }
 
-      // 法则5：制导导弹投射物速度快(6.0~7.8 px/f，低于火炮的13.2~16.5 px/f)、转向敏捷追踪锁定目标；若锁定的目标消失(被击毁或移除)，导弹立即解除制导并沿当前航向直线飞行
+      // 法则5：制导导弹投射物速度降低以放缓战斗节奏(3.2~4.5 px/f，低于火炮的7.2~9.0 px/f)、转向敏捷追踪锁定目标；若锁定的目标消失(被击毁或移除)，导弹立即解除制导并沿当前航向直线飞行
       function spawnGuidedMissile(x, y, launchAngle, dmg, color = '#fbbf24', aoe = 32, isTorpedo = false, customHp = null, customSpeed = null, customTurn = null, lockedTarget = undefined) {
-        const spd = customSpeed || (isTorpedo ? 6.0 : 7.4);
+        const spd = customSpeed || (isTorpedo ? 3.2 : 4.2);
         const mHp = customHp || (isTorpedo ? 55 : 18);
-        const tRate = customTurn || (isTorpedo ? 0.09 : 0.15);
+        const tRate = customTurn || (isTorpedo ? 0.065 : 0.11);
         const initialTarget = lockedTarget !== undefined
           ? lockedTarget
           : (enemies.length > 0 ? findPriorityTarget(x, y) : null);
@@ -659,7 +755,7 @@
           aoe,
           seed: Math.random() * 100,
           trail: [{ x, y }],
-          life: 125
+          life: 185
         });
       }
 
@@ -811,7 +907,8 @@
         renderDockyard();
       });
 
-      const HULL_ORDER = ['hullDelta', 'hullWing', 'hullRing', 'hullCross'];
+      const HULL_ORDER = ['hullCorvette', 'hullDelta', 'hullWing', 'hullRing', 'hullCross'];
+      let dockSelectedSlotZone = 'ALL';
       document.getElementById('btn-cycle-hull').addEventListener('click', () => {
         NexusSDK.audio.upgrade();
         const idx = (HULL_ORDER.indexOf(saveData.selectedHull) + 1) % HULL_ORDER.length;
@@ -821,23 +918,41 @@
         renderDockyard();
       });
 
-      // 点击 [红 W] 火控插槽可循环切换全部 9 款主武器模块
+      // 点击 [红 W] 火控插槽可循环切换全部 9 款主武器模块，并筛选右侧装备清单
       const WEAPON_ORDER = ['railgun', 'laser', 'plasma', 'missile', 'swarmMissile', 'cryoMissile', 'empMissile', 'hellfireMissile', 'torpedo'];
       document.getElementById('sock-w').addEventListener('click', () => {
         NexusSDK.audio.upgrade();
+        dockSelectedSlotZone = 'W';
         const idx = (WEAPON_ORDER.indexOf(saveData.activeModule) + 1) % WEAPON_ORDER.length;
-        saveData.activeModule = WEAPON_ORDER[idx];
+        saveData.activeModule = saveData.selectedWeapon = WEAPON_ORDER[idx];
         store.save(saveData);
         syncShipSpecs();
         renderDockyard();
       });
 
-      // 点击 [绿 B] 内舱插槽可循环切换机库编队与偏导护盾舱
+      // 点击 [琥珀 S] 船体副炮插槽可循环切换 3 款船体防御副炮型号，并筛选右侧装备清单
+      const SEC_WEAPON_ORDER = ['secAutocannon', 'secLaser', 'secPlasma'];
+      const sockSEl = document.getElementById('sock-s');
+      if (sockSEl) {
+        sockSEl.addEventListener('click', () => {
+          NexusSDK.audio.upgrade();
+          dockSelectedSlotZone = 'S';
+          const curSec = saveData.secWeapon || 'secAutocannon';
+          const idx = (SEC_WEAPON_ORDER.indexOf(curSec) + 1) % SEC_WEAPON_ORDER.length;
+          saveData.secWeapon = saveData.selectedSecWeapon = SEC_WEAPON_ORDER[idx];
+          store.save(saveData);
+          syncShipSpecs();
+          renderDockyard();
+        });
+      }
+
+      // 点击 [绿 B] 机库/内舱插槽可循环切换战机编队装备与偏导护盾舱
       const BAY_ORDER = ['hangar', 'hangarInterceptor', 'hangarBomber', 'shield'];
       document.getElementById('sock-b').addEventListener('click', () => {
         NexusSDK.audio.upgrade();
+        dockSelectedSlotZone = 'B';
         const idx = (BAY_ORDER.indexOf(saveData.internalBay) + 1) % BAY_ORDER.length;
-        saveData.internalBay = BAY_ORDER[idx];
+        saveData.internalBay = saveData.selectedBay = BAY_ORDER[idx];
         const bs = MODULE_SPECS[saveData.internalBay];
         if (bs && bs.droneDoctrine) saveData.droneDoctrine = bs.droneDoctrine;
         store.save(saveData);
@@ -847,6 +962,7 @@
 
       // 点击 [紫 P] 引擎插槽可升级引擎等级 (Lv.1 -> Lv.5，严格受限边际收益)
       document.getElementById('sock-p').addEventListener('click', () => {
+        dockSelectedSlotZone = 'P';
         const curEngLv = saveData.engineLv || 1;
         const cost = curEngLv * 200;
         if (curEngLv < 5 && (saveData.currency?.warMerits ?? 0) >= cost) {
@@ -856,7 +972,7 @@
         } else {
           // 切换三款引擎型号
           const engOrder = ['thrusterCompound', 'thrusterCruise', 'thrusterVector'];
-          saveData.engineType = engOrder[(engOrder.indexOf(saveData.engineType) + 1) % engOrder.length];
+          saveData.engineType = saveData.selectedEngine = engOrder[(engOrder.indexOf(saveData.engineType) + 1) % engOrder.length];
           NexusSDK.audio.tap();
         }
         store.save(saveData);
@@ -869,41 +985,54 @@
       function renderDockyard() {
         const isGlacies = (saveData.faction || 'helios') === 'glacies';
         const curSpec = HULL_SPECS[saveData.selectedHull] || HULL_SPECS.hullDelta;
+        const curHp = HULL_HARDPOINTS[saveData.selectedHull] || HULL_HARDPOINTS.hullDelta;
         const curMod = MODULE_SPECS[saveData.activeModule] || MODULE_SPECS.railgun;
+        const curSec = MODULE_SPECS[saveData.secWeapon || 'secAutocannon'] || MODULE_SPECS.secAutocannon;
         const curBay = MODULE_SPECS[saveData.internalBay] || MODULE_SPECS.hangar;
         const curEng = ENGINE_SPECS[saveData.engineType] || ENGINE_SPECS.thrusterCompound;
         const kin = getEffectiveShipKinematics(saveData.selectedHull, saveData.engineType, saveData.engineLv);
 
-        const usedPwr = curSpec.basePwr + curMod.pwr + (curBay.pwr || 22) + (curEng.pwr || 20);
+        const usedPwr = curSpec.basePwr + curMod.pwr + (curSec.pwr || 16) + (curBay.pwr || 22) + (curEng.pwr || 20);
         const marginPct = Math.max(5, Math.round(((curSpec.maxPwr - usedPwr) / curSpec.maxPwr) * 100));
         const linBonusPct = Math.round((kin.linearMult - 1) * 100);
         const turnBonusPct = Math.round((kin.turnMult - 1) * 100);
 
         document.getElementById('dock-fac-badge').textContent = isGlacies ? 'GLACIES 深冷' : 'HELIOS 金箔';
-        document.getElementById('dock-hull-title').textContent = `${curSpec.name} (${curSpec.volumeGrid}格·${curSpec.mass}t)`;
-        document.getElementById('dock-cutaway-img').src = `../assets/star-defender/sprites/${isGlacies ? curSpec.glaciesFile : curSpec.heliosFile}?v=20261101`;
+        document.getElementById('dock-hull-title').textContent = `${curSpec.name} (${curSpec.volumeGrid}格·${curSpec.mass}t·${curSpec.secSlots || curHp.secMounts.length}座船体副炮)`;
+        document.getElementById('dock-cutaway-img').src = `../assets/star-defender/sprites/${isGlacies ? curSpec.glaciesFile : curSpec.heliosFile}?v=20261108`;
         document.getElementById('dock-cutaway-desc').textContent = `${curSpec.specialty} · 极速 ${kin.maxSpeed.toFixed(2)} / 回转 ${(kin.maxTurnRate * 60).toFixed(2)} rad/s`;
         document.getElementById('dock-sub-metrics').textContent =
-          `功率备份: +${marginPct}% (${usedPwr}/${curSpec.maxPwr}MW) · 引擎增益: 直线+${linBonusPct}%/转向+${turnBonusPct}% (受限上限) · 战功: ${(saveData.currency?.warMerits ?? 0).toLocaleString()}`;
+          `功率备份: +${marginPct}% (${usedPwr}/${curSpec.maxPwr}MW) · 引擎增益: 直线+${linBonusPct}%/转向+${turnBonusPct}% · 战功: ${(saveData.currency?.warMerits ?? 0).toLocaleString()}`;
 
-        document.getElementById('sock-w-img').src = `../assets/star-defender/sprites/${curMod.file}?v=20261101`;
+        document.getElementById('sock-w-img').src = `../assets/star-defender/sprites/${curMod.file}?v=20261108`;
         document.getElementById('sock-w-name').textContent = curMod.name;
-        document.getElementById('sock-b-img').src = `../assets/star-defender/sprites/${curBay.file}?v=20261101`;
+        const sockSImg = document.getElementById('sock-s-img');
+        const sockSName = document.getElementById('sock-s-name');
+        const sockSTag = document.getElementById('sock-s-tag');
+        if (sockSImg) sockSImg.src = `../assets/star-defender/sprites/${curSec.file}?v=20261108`;
+        if (sockSName) sockSName.textContent = `${curSec.name} (×${curHp.secMounts.length}座)`;
+        if (sockSTag) sockSTag.textContent = `[琥珀 S] 船体副炮×${curHp.secMounts.length}`;
+        const secDetailEl = document.getElementById('dock-sec-slots-detail');
+        if (secDetailEl) {
+          secDetailEl.textContent = `船体副炮硬挂点 (${curHp.secMounts.length}座·受船体遮蔽射界): ` +
+            curHp.secMounts.map((m, idx) => `#${idx + 1} ${m.label}`).join(' | ');
+        }
+        document.getElementById('sock-b-img').src = `../assets/star-defender/sprites/${curBay.file}?v=20261108`;
         document.getElementById('sock-b-name').textContent = curBay.name;
-        document.getElementById('sock-p-img').src = `../assets/star-defender/sprites/${curEng.file || 'module-thruster.svg'}?v=20261101`;
+        document.getElementById('sock-p-img').src = `../assets/star-defender/sprites/${curEng.file || 'module-thruster.svg'}?v=20261108`;
         document.getElementById('sock-p-name').textContent = `${curEng.name} Lv.${saveData.engineLv || 1} (+${linBonusPct}%/+${turnBonusPct}%)`;
         const ovW = document.getElementById('dock-overlay-w');
         const ovB = document.getElementById('dock-overlay-b');
         const ovP = document.getElementById('dock-overlay-p');
-        if (ovW) ovW.src = `../assets/star-defender/sprites/${curMod.file}?v=20261101`;
-        if (ovB) ovB.src = `../assets/star-defender/sprites/${curBay.file}?v=20261101`;
-        if (ovP) ovP.src = `../assets/star-defender/sprites/${curEng.file || 'module-thruster.svg'}?v=20261101`;
+        if (ovW) ovW.src = `../assets/star-defender/sprites/${curMod.file}?v=20261108`;
+        if (ovB) ovB.src = `../assets/star-defender/sprites/${curBay.file}?v=20261108`;
+        if (ovP) ovP.src = `../assets/star-defender/sprites/${curEng.file || 'module-thruster.svg'}?v=20261108`;
 
         const upCost = (saveData.weaponLv || 1) * 250;
         document.getElementById('dock-btn-upgrade').textContent =
           (saveData.weaponLv || 1) >= 5 ? '火控已达满阶 Lv.5' : `晋升火控 Lv.${(saveData.weaponLv || 1) + 1} (${upCost}战功)`;
 
-        // Column 1: Hulls (展示体积/吨位反比与加速/转向专精)
+        // Column 1: Hulls (5级无机翼主力战舰：小型2副炮 -> 中型3副炮 -> 大型4副炮 -> 重型5副炮 -> 超重型6副炮)
         const hullListEl = document.getElementById('dock-hull-list');
         hullListEl.innerHTML = HULL_ORDER.map((hk) => {
           const hs = HULL_SPECS[hk];
@@ -911,9 +1040,9 @@
           return `
             <div class="dock-hull-item ${saveData.selectedHull === hk ? 'active' : ''}" data-dock-hull="${hk}">
               <div style="display:flex;align-items:center;gap:6px;min-width:0;">
-                <img src="../assets/star-defender/sprites/${f}?v=20261101" alt="${hs.name}" />
+                <img src="../assets/star-defender/sprites/${f}?v=20261108" alt="${hs.name}" />
                 <div style="min-width:0;">
-                  <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;white-space:nowrap;">${hs.name} <span style="font-size:0.54rem;color:#fbbf24;">${hs.volumeGrid}格·${hs.mass}t</span></div>
+                  <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;white-space:nowrap;">${hs.name} <span style="font-size:0.54rem;color:#fbbf24;">${hs.secSlots}副炮·${hs.mass}t</span></div>
                   <div style="font-size:0.53rem;font-family:Consolas,monospace;color:#7dd3fc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${hs.specialty}</div>
                 </div>
               </div>
@@ -932,23 +1061,44 @@
           });
         });
 
-        // Column 3: Modules (Weapons [W], Drone Hangars & Shields [B], Thruster Engines [P])
-        const modKeys = [
+        // Column 3: Modules (Weapons [W], Hull Secondary Turrets [S], Fighter Hangar Equipment & Shields [B], Thruster Engines [P])
+        const allModKeys = [
           'railgun', 'laser', 'plasma', 'missile', 'swarmMissile', 'cryoMissile', 'empMissile', 'hellfireMissile', 'torpedo',
+          'secAutocannon', 'secLaser', 'secPlasma',
           'hangar', 'hangarInterceptor', 'hangarBomber', 'shield',
           'thrusterCruise', 'thrusterVector', 'thrusterCompound'
         ];
+        const modColTitle = document.getElementById('dock-mod-col-title');
+        if (modColTitle) {
+          const zLabelMap = {
+            ALL: '全部插槽对应装备清单 (点击中栏插槽可按槽位筛选)',
+            W: '[红 W] 主炮插槽对应装备清单 (显示全部 · 当前高亮主炮)',
+            S: '[琥珀 S] 船体副炮插槽对应装备清单 (显示全部 · 当前高亮副炮)',
+            B: '[绿 B] 机库战机编队/内舱装备清单 (显示全部 · 战机归属装备)',
+            P: '[紫 P] 推进引擎插槽对应装备清单 (显示全部 · 当前高亮引擎)'
+          };
+          modColTitle.textContent = zLabelMap[dockSelectedSlotZone] || zLabelMap.ALL;
+        }
+        const sortedModKeys = dockSelectedSlotZone === 'ALL'
+          ? allModKeys
+          : allModKeys.slice().sort((a, b) => {
+              const za = MODULE_SPECS[a].zone === dockSelectedSlotZone ? 0 : 1;
+              const zb = MODULE_SPECS[b].zone === dockSelectedSlotZone ? 0 : 1;
+              return za - zb;
+            });
         const modListEl = document.getElementById('dock-mod-list');
-        modListEl.innerHTML = modKeys.map((mk) => {
+        modListEl.innerHTML = sortedModKeys.map((mk) => {
           const ms = MODULE_SPECS[mk];
           const isAct =
             (ms.zone === 'W' && saveData.activeModule === mk) ||
+            (ms.zone === 'S' && (saveData.secWeapon || 'secAutocannon') === mk) ||
             (ms.zone === 'B' && saveData.internalBay === mk) ||
             (ms.zone === 'P' && saveData.engineType === mk);
+          const isSlotFocus = dockSelectedSlotZone !== 'ALL' && ms.zone === dockSelectedSlotZone;
           return `
-            <div class="dock-mod-item ${isAct ? 'active' : ''}" data-dock-mod="${mk}">
+            <div class="dock-mod-item ${isAct ? 'active' : ''}" data-dock-mod="${mk}" style="${isSlotFocus && !isAct ? 'border-color:rgba(56,189,248,0.45);' : ''}">
               <div style="display:flex;align-items:center;gap:7px;min-width:0;">
-                <img src="../assets/star-defender/sprites/${ms.file}?v=20261101" alt="${ms.name}" />
+                <img src="../assets/star-defender/sprites/${ms.file}?v=20261108" alt="${ms.name}" />
                 <div style="min-width:0;">
                   <div style="font-size:0.68rem;font-weight:800;color:#f8fafc;">[${ms.zone}] ${ms.name}</div>
                   <div style="font-size:0.55rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ms.desc}</div>
@@ -965,12 +1115,14 @@
             const mk = el.getAttribute('data-dock-mod');
             const ms = MODULE_SPECS[mk];
             if (ms.zone === 'B') {
-              saveData.internalBay = mk;
+              saveData.internalBay = saveData.selectedBay = mk;
               if (ms.droneDoctrine) saveData.droneDoctrine = ms.droneDoctrine;
+            } else if (ms.zone === 'S') {
+              saveData.secWeapon = saveData.selectedSecWeapon = mk;
             } else if (ms.zone === 'P') {
-              saveData.engineType = mk;
+              saveData.engineType = saveData.selectedEngine = mk;
             } else {
-              saveData.activeModule = mk;
+              saveData.activeModule = saveData.selectedWeapon = mk;
             }
             store.save(saveData);
             syncShipSpecs();
@@ -1309,22 +1461,20 @@
           lan.sendFast({ type: 'ship', x: ship.x, y: ship.y, angle: ship.angle, hull: ship.hull });
         }
 
-        // ===== 动能武器（火炮）、激光武器、导弹发射器 360° 全向独立伺服转向与瞄准解算 =====
+        // ===== 主武器 360° 独立伺服转向 + 船体副炮受船体遮蔽射界解算 =====
         const curMod = MODULE_SPECS[saveData.activeModule] || MODULE_SPECS.railgun;
         const hpLayout = HULL_HARDPOINTS[ship.hull] || HULL_HARDPOINTS.hullDelta;
         const mainMountPos = getHardpointWorldPos(ship, hpLayout.mainTurret);
-        const sideLaserPos = getHardpointWorldPos(ship, hpLayout.sideWeapons?.[0] || { x: -12, y: 8 });
-        const sideMissilePos = getHardpointWorldPos(ship, hpLayout.sideWeapons?.[1] || { x: 12, y: 8 });
 
-        // 1. 主武器炮塔 (动能火炮 / 激光武器 / 导弹井) 独立伺服转向并瞄准目标 (含火炮二阶提前量 Lead Pursuit)
+        // 1. 舰脊主武器炮塔 (动能火炮 / 激光武器 / 导弹井) 独立 360° 伺服转向并瞄准目标 (含火炮二阶提前量 Lead Pursuit)
         const mainTarget = findPriorityTarget(mainMountPos.x, mainMountPos.y);
         const isBallisticCannon = !curMod.homing && curMod.projType !== 'laser';
         const desiredMainAngle = mainTarget
           ? (isBallisticCannon
-              ? computeLeadAimAngle(mainMountPos.x, mainMountPos.y, mainTarget, curMod.speed || 15.5)
+              ? computeLeadAimAngle(mainMountPos.x, mainMountPos.y, mainTarget, curMod.speed || 8.6)
               : (Math.atan2(mainTarget.y - mainMountPos.y, mainTarget.x - mainMountPos.x) + Math.PI / 2))
           : ship.angle;
-        const mainSlewRate = curMod.projType === 'laser' ? 0.28 : 0.22;
+        const mainSlewRate = curMod.projType === 'laser' ? 0.22 : 0.16;
         ship.mainTurretAngle = stepTurretAngle(
           typeof ship.mainTurretAngle === 'number' ? ship.mainTurretAngle : ship.angle,
           desiredMainAngle,
@@ -1334,36 +1484,12 @@
         weaponMountTelemetry.mainTurretTrackingErrDeg = Number(
           (Math.abs(normalizeAngleRad(desiredMainAngle - ship.mainTurretAngle)) * (180 / Math.PI)).toFixed(2)
         );
-
-        // 2. 左舷激光武器炮塔 (W2 相控阵副激光塔) 独立伺服转向并瞄准高机动目标
-        const laserTarget = findPriorityTarget(sideLaserPos.x, sideLaserPos.y);
-        const desiredLaserAngle = laserTarget
-          ? (Math.atan2(laserTarget.y - sideLaserPos.y, laserTarget.x - sideLaserPos.x) + Math.PI / 2)
-          : ship.angle;
-        ship.laserTurretAngle = stepTurretAngle(
-          typeof ship.laserTurretAngle === 'number' ? ship.laserTurretAngle : ship.angle,
-          desiredLaserAngle,
-          0.30
-        );
-        weaponMountTelemetry.laserTurretTrackingErrDeg = Number(
-          (Math.abs(normalizeAngleRad(desiredLaserAngle - ship.laserTurretAngle)) * (180 / Math.PI)).toFixed(2)
-        );
-
-        // 3. 右舷导弹发射塔 (W3 垂发导弹炮塔) 独立伺服转向并瞄准目标
-        const missileTarget = findPriorityTarget(sideMissilePos.x, sideMissilePos.y);
-        const desiredMissileAngle = missileTarget
-          ? (Math.atan2(missileTarget.y - sideMissilePos.y, missileTarget.x - sideMissilePos.x) + Math.PI / 2)
-          : ship.angle;
-        ship.missileTurretAngle = stepTurretAngle(
-          typeof ship.missileTurretAngle === 'number' ? ship.missileTurretAngle : ship.angle,
-          desiredMissileAngle,
-          0.22
-        );
+        weaponMountTelemetry.laserTurretTrackingErrDeg = weaponMountTelemetry.mainTurretTrackingErrDeg;
 
         ship.fireCd--;
         if (ship.fireCd <= 0 && enemies.length > 0 && weaponMountTelemetry.mainTurretTrackingErrDeg <= 18) {
           fireShipWeapons(ship, true);
-          ship.fireCd = Math.max(7, curMod.cd - (saveData.weaponLv || 1));
+          ship.fireCd = Math.max(10, curMod.cd - (saveData.weaponLv || 1));
         }
 
         // 旗舰舰艉尾焰火星喷射粒子 (随推力与速度动态喷出)
@@ -1373,7 +1499,7 @@
           const perpAng = ship.angle;
           const exX = ship.x + Math.cos(sternAng) * 24 + Math.cos(perpAng) * sideOff;
           const exY = ship.y + Math.sin(sternAng) * 24 + Math.sin(perpAng) * sideOff;
-          const jetSpd = 2.2 + Math.hypot(ship.vx, ship.vy) * 0.45 + Math.random() * 1.4;
+          const jetSpd = 1.6 + Math.hypot(ship.vx, ship.vy) * 0.45 + Math.random() * 1.1;
           sparks.push({
             x: exX,
             y: exY,
@@ -1385,44 +1511,6 @@
             isFlame: true,
             color: Math.random() < 0.45 ? '#fde047' : '#f97316'
           });
-        }
-
-        // 旗舰 W2 相控阵副激光火控 (从左舷激光炮塔挂点沿已瞄准方向发射高相干细光束)
-        ship.auxLaserCd = (ship.auxLaserCd || 0) - 1;
-        if (ship.auxLaserCd <= 0 && laserTarget && weaponMountTelemetry.laserTurretTrackingErrDeg <= 16) {
-          const la = ship.laserTurretAngle - Math.PI / 2;
-          spawnLaserBeam(
-            sideLaserPos.x + Math.cos(la) * 9,
-            sideLaserPos.y + Math.sin(la) * 9,
-            laserTarget,
-            18 + (saveData.weaponLv || 1) * 4,
-            '#00f0ff',
-            1.65,
-            14
-          );
-          ship.auxLaserCd = 22;
-        }
-
-        // 旗舰 W3 垂发制导导弹火控 (从右舷导弹井挂点沿炮塔方向齐射)
-        ship.auxMissileCd = (ship.auxMissileCd || 0) - 1;
-        if (ship.auxMissileCd <= 0 && enemies.length > 0) {
-          const baseAng = ship.missileTurretAngle - Math.PI / 2;
-          [-0.42, 0.42].forEach((offset) => {
-            spawnGuidedMissile(
-              sideMissilePos.x + Math.cos(baseAng + offset) * 9,
-              sideMissilePos.y + Math.sin(baseAng + offset) * 9,
-              baseAng + offset,
-              28 + (saveData.weaponLv || 1) * 6,
-              '#fbbf24',
-              34,
-              false,
-              null,
-              null,
-              null,
-              missileTarget
-            );
-          });
-          ship.auxMissileCd = 34;
         }
 
         // Autonomous Wingman (围绕玩家飞船伴飞护航，僚机激光炮塔同样独立 360° 伺服转向瞄准目标)
@@ -1533,7 +1621,7 @@
                 9
               );
             } else if (f.archetype === 'bomber') {
-              // FD-03 重锤：重载弹高爆微型反舰鱼雷 (含AOE)
+              // FD-03 重锤：重载弹高爆微型反舰鱼雷 (含AOE，低速投射物)
               spawnGuidedMissile(
                 f.x + Math.cos(fa) * 10,
                 f.y + Math.sin(fa) * 10,
@@ -1543,8 +1631,8 @@
                 dSpec.aoe,
                 true,
                 32,
-                6.4,
-                0.10
+                dSpec.projSpeed || 3.5,
+                0.08
               );
             } else {
               // FD-02 猎隼：中型多用途双联穿甲机炮 + 微爆破
@@ -1565,61 +1653,84 @@
                 isMicro: true,
                 seed: Math.random() * 100,
                 trail: [{ x: sx, y: sy }],
-                life: 52
+                life: 84
               });
             }
             f.fireCd = dSpec.fireCd;
           }
         });
 
-        // 旗舰近防卫戍浮游炮塔群 (防御武器：每个炮塔独立 360° 伺服转向瞄准目标，并沿已瞄准方向发射动能火炮或拦截激光)
-        const tCount = saveData.turretCount || 2;
+        // ===== 战舰船体防御副炮群 (直接安装在战舰船体硬挂点上，不同规模战舰拥有 2~6 座副炮，且射界严格受船体遮蔽限制，非 360°) =====
+        const secMounts = hpLayout.secMounts || [];
+        const secSpec = MODULE_SPECS[saveData.secWeapon || 'secAutocannon'] || MODULE_SPECS.secAutocannon;
         const defTrackingErrs = [];
-        for (let idx = 0; idx < tCount; idx++) {
-          const ta = orbitAngle + (Math.PI * 2 * idx) / tCount;
-          const tx = ship.x + Math.cos(ta) * 64;
-          const ty = ship.y + Math.sin(ta) * 64;
-          const tState = defenseTurretStates[idx] || (defenseTurretStates[idx] = { aimAngle: ta + Math.PI / 2, fireCd: 10 });
-          const target = findPriorityTarget(tx, ty);
-          const isLaserTurret = idx % 2 === 0;
-          const desiredTurretAng = target
-            ? (isLaserTurret
-                ? (Math.atan2(target.y - ty, target.x - tx) + Math.PI / 2)
-                : computeLeadAimAngle(tx, ty, target, 15.5))
-            : (ta + Math.PI / 2);
+        for (let idx = 0; idx < secMounts.length; idx++) {
+          const mount = secMounts[idx];
+          const mPos = getHardpointWorldPos(ship, mount);
+          const sectorCenterAng = normalizeAngleRad(ship.angle + mount.normalAng);
+          const halfArc = mount.halfArc || 1.35;
+          const tState = defenseTurretStates[idx] || (defenseTurretStates[idx] = { aimAngle: sectorCenterAng, fireCd: 10 + idx * 4 });
+
+          // 仅在未被战舰船体遮蔽的扇区 [sectorCenterAng - halfArc, sectorCenterAng + halfArc] 内搜索目标
+          const target = findTargetInSector(mPos.x, mPos.y, sectorCenterAng, halfArc);
+          const isLaserSec = secSpec.projType === 'laser';
+          let rawDesiredAng = sectorCenterAng;
+          if (target) {
+            rawDesiredAng = isLaserSec
+              ? (Math.atan2(target.y - mPos.y, target.x - mPos.x) + Math.PI / 2)
+              : computeLeadAimAngle(mPos.x, mPos.y, target, secSpec.speed || 8.0);
+          }
+          // 物理机械限位：副炮转向角严格钳制在船体无遮蔽射界扇区内 (±halfArc)
+          const clampedOffset = Math.max(-halfArc, Math.min(halfArc, normalizeAngleRad(rawDesiredAng - sectorCenterAng)));
+          const desiredTurretAng = normalizeAngleRad(sectorCenterAng + clampedOffset);
 
           tState.aimAngle = stepTurretAngle(
-            typeof tState.aimAngle === 'number' ? tState.aimAngle : desiredTurretAng,
+            typeof tState.aimAngle === 'number' ? tState.aimAngle : sectorCenterAng,
             desiredTurretAng,
-            0.32
+            0.22
           );
+          // 再次确保旋转结果不越过船体遮蔽边界
+          const curRelOffset = Math.max(-halfArc, Math.min(halfArc, normalizeAngleRad(tState.aimAngle - sectorCenterAng)));
+          tState.aimAngle = normalizeAngleRad(sectorCenterAng + curRelOffset);
+
           const errDeg = Math.abs(normalizeAngleRad(desiredTurretAng - tState.aimAngle)) * (180 / Math.PI);
           defTrackingErrs.push(Number(errDeg.toFixed(2)));
 
           tState.fireCd = (tState.fireCd || 0) - 1;
-          if (tState.fireCd <= 0 && target && errDeg <= 15) {
+          if (tState.fireCd <= 0 && target && errDeg <= 14) {
             const fireAng = tState.aimAngle - Math.PI / 2;
-            if (isLaserTurret) {
-              spawnLaserBeam(tx + Math.cos(fireAng) * 10, ty + Math.sin(fireAng) * 10, target, 15, '#38bdf8', 1.15, 11);
+            const wLv = saveData.weaponLv || 1;
+            const secDmg = Math.round((secSpec.dmg || 16) * (1 + (wLv - 1) * 0.15));
+            if (isLaserSec) {
+              spawnLaserBeam(
+                mPos.x + Math.cos(fireAng) * 8,
+                mPos.y + Math.sin(fireAng) * 8,
+                target,
+                secDmg,
+                secSpec.color || '#38bdf8',
+                1.15,
+                12
+              );
             } else {
               projectiles.push({
-                x: tx + Math.cos(fireAng) * 11,
-                y: ty + Math.sin(fireAng) * 11,
-                vx: Math.cos(fireAng) * 15.5,
-                vy: Math.sin(fireAng) * 15.5,
+                x: mPos.x + Math.cos(fireAng) * 9,
+                y: mPos.y + Math.sin(fireAng) * 9,
+                vx: Math.cos(fireAng) * (secSpec.speed || 8.0),
+                vy: Math.sin(fireAng) * (secSpec.speed || 8.0),
                 rot: tState.aimAngle,
-                dmg: 16,
-                color: '#fbbf24',
-                projKey: 'projTracer',
-                projType: 'tracer',
+                dmg: secDmg,
+                color: secSpec.color || '#fbbf24',
+                projKey: secSpec.projKey || 'projTracer',
+                projType: secSpec.projType || 'tracer',
                 homing: false,
+                aoe: secSpec.aoe || 0,
                 isMicro: true,
                 seed: Math.random() * 100,
-                trail: [{ x: tx, y: ty }],
-                life: 60
+                trail: [{ x: mPos.x, y: mPos.y }],
+                life: 95
               });
             }
-            tState.fireCd = isLaserTurret ? 24 : 20;
+            tState.fireCd = secSpec.cd || 22;
           }
         }
         weaponMountTelemetry.defenseTurretsTrackingErrDeg = defTrackingErrs;
@@ -2124,31 +2235,6 @@
           }
         }
 
-        // 环绕玩家飞船的近防浮游卫戍炮塔 (Orbiting Player Flagship at r=64px · 实时沿各自伺服瞄准角 aimAngle 旋转指向目标)
-        const tCount = saveData.turretCount || 2;
-        const turSprite = isGlacies ? (sprites.turretGlacies || sprites.turret) : sprites.turret;
-        for (let i = 0; i < tCount; i++) {
-          const ta = orbitAngle + (Math.PI * 2 * i) / tCount;
-          const tx = ship.x + Math.cos(ta) * 64;
-          const ty = ship.y + Math.sin(ta) * 64;
-          const tState = defenseTurretStates[i];
-          const drawAng = (tState && typeof tState.aimAngle === 'number') ? tState.aimAngle : (ta + Math.PI / 2);
-          if (turSprite?.complete) {
-            ctx.save();
-            ctx.translate(tx, ty);
-            ctx.rotate(drawAng);
-            // 防御武器火控瞄准线 (直观标示卫戍炮塔旋转朝向目标的方向)
-            ctx.strokeStyle = isGlacies ? 'rgba(186, 230, 253, 0.36)' : 'rgba(56, 189, 248, 0.36)';
-            ctx.lineWidth = 0.85;
-            ctx.beginPath();
-            ctx.moveTo(0, -10);
-            ctx.lineTo(0, -24);
-            ctx.stroke();
-            ctx.drawImage(turSprite, -13, -13, 26, 26);
-            ctx.restore();
-          }
-        }
-
         // Enemies in World Space
         enemies.forEach((en) => {
           const sp = sprites[en.type] || sprites.swarm;
@@ -2400,34 +2486,44 @@
             pMountedCount++;
           }
 
-          // 4. [红 W2/W3] 左右侧舷副武器硬挂点贴图 (左舷相控阵副激光塔 module-laser.svg + 右舷垂发导弹井 module-missile.svg，100% 沿各自伺服瞄准角旋转对准目标)
-          if (hpLayout.sideWeapons && hpLayout.sideWeapons.length >= 2) {
-            const swL = hpLayout.sideWeapons[0];
-            const swR = hpLayout.sideWeapons[1];
-            const laserWorldAng = typeof ship.laserTurretAngle === 'number' ? ship.laserTurretAngle : (ship.aimAngle || ship.angle);
-            const missileWorldAng = typeof ship.missileTurretAngle === 'number' ? ship.missileTurretAngle : (ship.aimAngle || ship.angle);
-            if (sprites.modLaser?.complete) {
-              ctx.save();
-              ctx.translate(swL.x, swL.y);
-              ctx.rotate(laserWorldAng - ship.angle);
-              ctx.strokeStyle = 'rgba(0, 240, 255, 0.32)';
-              ctx.lineWidth = 0.75;
-              ctx.beginPath();
-              ctx.moveTo(0, -swL.size * 0.4);
-              ctx.lineTo(0, -swL.size * 1.35);
-              ctx.stroke();
-              ctx.drawImage(sprites.modLaser, -swL.size / 2, -swL.size / 2, swL.size, swL.size);
-              ctx.restore();
-              pMountedCount++;
+          // 4. [琥珀 S] 船体防御副炮插槽贴图与受遮蔽射界扇区渲染 (直接挂载于战舰船体硬挂点，不同战舰规模 2~6 座，射界受船体遮蔽非360°)
+          const secMounts = hpLayout.secMounts || [];
+          const secSpec = MODULE_SPECS[saveData.secWeapon || 'secAutocannon'] || MODULE_SPECS.secAutocannon;
+          const secTurretImg = sprites[secSpec.spriteKey] || (isGlacies ? sprites.turretGlacies : sprites.turret) || sprites.modLaser;
+          for (let idx = 0; idx < secMounts.length; idx++) {
+            const sm = secMounts[idx];
+            const tState = defenseTurretStates[idx];
+            const sectorCenterWorld = normalizeAngleRad(ship.angle + sm.normalAng);
+            const turretWorldAng = (tState && typeof tState.aimAngle === 'number') ? tState.aimAngle : sectorCenterWorld;
+            const relTurretAng = normalizeAngleRad(turretWorldAng - ship.angle);
+
+            ctx.save();
+            ctx.translate(sm.x, sm.y);
+
+            // 绘制受船体遮蔽的副炮射界扇区边界微光弧 (直观体现非 360° 船体遮蔽射界)
+            const arcStart = sm.normalAng - Math.PI / 2 - sm.halfArc;
+            const arcEnd = sm.normalAng - Math.PI / 2 + sm.halfArc;
+            ctx.strokeStyle = isGlacies ? 'rgba(56, 189, 248, 0.18)' : 'rgba(251, 191, 36, 0.18)';
+            ctx.lineWidth = 0.7;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.arc(0, 0, sm.size * 1.35, arcStart, arcEnd);
+            ctx.closePath();
+            ctx.stroke();
+
+            // 绘制副炮炮塔本体与瞄准线
+            ctx.rotate(relTurretAng);
+            ctx.strokeStyle = isGlacies ? 'rgba(186, 230, 253, 0.42)' : 'rgba(251, 191, 36, 0.42)';
+            ctx.lineWidth = 0.75;
+            ctx.beginPath();
+            ctx.moveTo(0, -sm.size * 0.4);
+            ctx.lineTo(0, -sm.size * 1.25);
+            ctx.stroke();
+            if (secTurretImg?.complete) {
+              ctx.drawImage(secTurretImg, -sm.size / 2, -sm.size / 2, sm.size, sm.size);
             }
-            if (sprites.modMissile?.complete) {
-              ctx.save();
-              ctx.translate(swR.x, swR.y);
-              ctx.rotate(missileWorldAng - ship.angle);
-              ctx.drawImage(sprites.modMissile, -swR.size / 2, -swR.size / 2, swR.size, swR.size);
-              ctx.restore();
-              pMountedCount++;
-            }
+            ctx.restore();
+            pMountedCount++;
           }
 
           // 5. [红 W1] 舰脊主武器硬挂点回转炮塔贴图 (随火控瞄准角 ship.mainTurretAngle 独立 360° 伺服旋转并附带微弱准星射线指示)
@@ -2660,36 +2756,64 @@
 
       // 第二层检视台 (Tier 2 Inspector) 引擎火焰高频喷射动画驱动 (飞船保持绝对稳固不摇晃，舰艉喷口实时喷射三层激波火舌、行进马赫环与尾焰火星流)
       const INSPECTOR_NOZZLE_MAP = {
+        'hull-corvette.svg': {
+          theme: 'helios',
+          nozzles: [
+            { x: 52, y: 112, w: 10, len: 24, phase: 0 },
+            { x: 76, y: 112, w: 10, len: 24, phase: 1.7 }
+          ]
+        },
+        'hull-corvette-glacies.svg': {
+          theme: 'glacies',
+          nozzles: [
+            { x: 52, y: 112, w: 10, len: 24, phase: 0 },
+            { x: 76, y: 112, w: 10, len: 24, phase: 1.7 }
+          ]
+        },
         'hull-delta.svg': {
           theme: 'helios',
           nozzles: [
-            { x: 44, y: 104, w: 12.5, len: 29, phase: 0 },
-            { x: 84, y: 104, w: 12.5, len: 29, phase: 1.9 }
+            { x: 46, y: 112, w: 11, len: 26, phase: 0 },
+            { x: 82, y: 112, w: 11, len: 26, phase: 1.9 }
           ]
         },
         'hull-delta-glacies.svg': {
           theme: 'glacies',
           nozzles: [
-            { x: 48, y: 105, w: 11.5, len: 28, phase: 0 },
-            { x: 80, y: 105, w: 11.5, len: 28, phase: 1.9 }
+            { x: 48, y: 112, w: 11, len: 26, phase: 0 },
+            { x: 80, y: 112, w: 11, len: 26, phase: 1.9 }
+          ]
+        },
+        'hull-cruiser.svg': {
+          theme: 'helios',
+          nozzles: [
+            { x: 44, y: 114, w: 9.5, len: 24, phase: 0 },
+            { x: 64, y: 115, w: 11, len: 28, phase: 1.3 },
+            { x: 84, y: 114, w: 9.5, len: 24, phase: 2.6 }
+          ]
+        },
+        'hull-cruiser-glacies.svg': {
+          theme: 'glacies',
+          nozzles: [
+            { x: 44, y: 114, w: 9.5, len: 24, phase: 0 },
+            { x: 64, y: 115, w: 11, len: 28, phase: 1.3 },
+            { x: 84, y: 114, w: 9.5, len: 24, phase: 2.6 }
           ]
         },
         'hull-wing.svg': {
           theme: 'helios',
           nozzles: [
-            { x: 30, y: 104, w: 8.5, len: 23, phase: 0 },
-            { x: 47.5, y: 106, w: 10.5, len: 29, phase: 1.2 },
-            { x: 80.5, y: 106, w: 10.5, len: 29, phase: 2.5 },
-            { x: 98, y: 104, w: 8.5, len: 23, phase: 3.8 }
+            { x: 44, y: 114, w: 9.5, len: 24, phase: 0 },
+            { x: 64, y: 115, w: 11, len: 28, phase: 1.3 },
+            { x: 84, y: 114, w: 9.5, len: 24, phase: 2.6 }
           ]
         },
         'hull-wing-glacies.svg': {
           theme: 'glacies',
           nozzles: [
-            { x: 33, y: 103, w: 8.5, len: 23, phase: 0 },
-            { x: 50.5, y: 106, w: 10.5, len: 29, phase: 1.2 },
-            { x: 77.5, y: 106, w: 10.5, len: 29, phase: 2.5 },
-            { x: 95, y: 103, w: 8.5, len: 23, phase: 3.8 }
+            { x: 44, y: 114, w: 9.5, len: 24, phase: 0 },
+            { x: 64, y: 115, w: 11, len: 28, phase: 1.3 },
+            { x: 84, y: 114, w: 9.5, len: 24, phase: 2.6 }
           ]
         },
         'hull-ring.svg': {
@@ -2939,10 +3063,19 @@
         projectiles.length = 0;
         enemies.length = 0;
         sparks.length = 0;
-        fighterSquadron.length = 0;
         wave = 1;
         stationHp = stationMaxHp;
         syncShipSpecs();
+        fighterSquadron.forEach((f, idx) => {
+          const ds = resolveDroneSpecForSlot(idx);
+          f.alive = true;
+          f.hp = ds.maxHp;
+          f.maxHp = ds.maxHp;
+          f.respawnCd = 0;
+          f.x = ship.x + Math.cos((Math.PI * 2 * idx) / 4) * 86;
+          f.y = ship.y + Math.sin((Math.PI * 2 * idx) / 4) * 86;
+          f.trail = [];
+        });
         spawnWave(1);
         updateHud();
       }

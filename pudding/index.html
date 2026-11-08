@@ -178,7 +178,7 @@
     </footer>
   </div>
 
-  <script src="../shared/nexus-sdk.js?v=4.0"></script>
+  <script src="../shared/nexus-sdk.js?v=20261108"></script>
   <script>
   /**
    * 标准微游菜单清单入口 (Step 1 & Step 3 标准模板结构)
@@ -190,12 +190,12 @@
     gameId: 'pudding-defense',
     gameTitle: '保卫布丁 · 焦糖烘焙工坊',
     engineUrl: './engine.js',
-    storagePrefix: 'PUDDING_DEFENSE_V3_SAVE_',
+    storagePrefix: 'NEXUS_MINI_PUDDING_',
     defaultSave: function(isAdmin) {
       return {
-        sugarCoins: isAdmin ? 999999 : 1800,
-        unlockedTowers: ['macaron_cannon', 'matcha_sprayer', 'choco_lava', 'jelly_bounce'],
-        towerLevels: { macaron_cannon: isAdmin ? 5 : 2, matcha_sprayer: isAdmin ? 5 : 1, choco_lava: isAdmin ? 5 : 1, jelly_bounce: isAdmin ? 5 : 1 }
+        currency: { sugarCrystals: isAdmin ? 99999 : 600 },
+        goldenPuddings: isAdmin ? 30 : 0,
+        clearedChapters: isAdmin ? 5 : 1
       };
     }
   });

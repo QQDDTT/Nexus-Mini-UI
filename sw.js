@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexus-mini-portal-v23.6-modular-sprites';
+const CACHE_NAME = 'nexus-mini-portal-v24.0-fleet-corvette-header-status';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -56,6 +56,16 @@ const CORE_ASSETS = [
   './assets/star-defender/preview.png',
   './assets/star-defender/concept.jpg',
   './assets/star-defender/schematics.jpg',
+  './assets/star-defender/sprites/hull-corvette.svg',
+  './assets/star-defender/sprites/hull-corvette-glacies.svg',
+  './assets/star-defender/sprites/hull-delta.svg',
+  './assets/star-defender/sprites/hull-delta-glacies.svg',
+  './assets/star-defender/sprites/hull-cruiser.svg',
+  './assets/star-defender/sprites/hull-cruiser-glacies.svg',
+  './assets/star-defender/sprites/hull-ring.svg',
+  './assets/star-defender/sprites/hull-ring-glacies.svg',
+  './assets/star-defender/sprites/hull-cross.svg',
+  './assets/star-defender/sprites/hull-cross-glacies.svg',
   './assets/gold-miner/icon.svg',
   './assets/gold-miner/preview.png',
   './assets/pudding-defense/icon.svg',
